@@ -2,7 +2,7 @@
 
 Lambdahackers is a reddit-like community for programmers to discuss and share their thoughts.
 
-image::https://lambdahackers.com/images/logo.png[]
+https://lambdahackers.com[image:https://lambdahackers.com/images/logo.png[]]
 
 == Features
    * You can join any group you like, or create a group if it not exists.
