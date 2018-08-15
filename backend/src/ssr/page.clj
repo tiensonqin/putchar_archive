@@ -47,8 +47,8 @@
            :content "IE=edge"}]
 
    ;; google verification
-   [:meta {:name "google-site-verification"
-           :content "DdPD50TQmEAnOV2hW2GT8cSYrsC4RP9KA-YESrKDgu8"}]
+   ;; [:meta {:name "google-site-verification"
+   ;;         :content "DdPD50TQmEAnOV2hW2GT8cSYrsC4RP9KA-YESrKDgu8"}]
 
    ;; twitter
    [:meta {:name "twitter:card"
@@ -237,12 +237,12 @@ if ('serviceWorker' in navigator) {
        (when-not zh-cn?
          [:script {:async true
                    :defer true
-                   :src "https://www.googletagmanager.com/gtag/js?id=UA-116043102-1"}])
+                   :src "https://www.googletagmanager.com/gtag/js?id=UA-123974000-1"}])
 
        (when-not zh-cn?
          [:script "window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'UA-116043102-1');"])
+  gtag('config', 'UA-123974000-1');"])
        ]))))
