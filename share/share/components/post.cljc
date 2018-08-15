@@ -1214,7 +1214,7 @@
             [:div.column.auto-padding {:key "post"}
              [:div {:style {:padding "12px 0"}}
               [:div.center-area
-               [:div
+               [:div.ubuntu
                 {:style {:display "flex"
                          :flex-direction "row"
                          :padding-bottom 24}}
@@ -1228,10 +1228,10 @@
                   [:span {:style {:font-weight "600"
                                   :color "rgba(0,0,0,0.64)"}}
                    (:name user)]
-                  [:a {:href (str "/@" (:screen_name user))}
+                  [:a {:href (str "/@" (:screen_name user))
+                       :color "#666"}
                    [:span {:style {:margin-left 6
-                                   :color "#666"
-                                   :font-size 14}}
+                                   :font-size 15}}
                     "  @" (:screen_name user)]]]
                  [:div.row {:style {:color "#666"
                                     :margin-top 6
