@@ -1,0 +1,2 @@
+* linguist-vendored
+*.clj *.cljc *.clj *.css linguist-vendored=false
