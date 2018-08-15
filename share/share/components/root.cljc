@@ -224,7 +224,12 @@
        [:a {:href "/reports"}
         [:i {:class "fa fa-flag"
              :style {:font-size 20
-                     :color colors/primary}}]])]
+                     :color colors/primary}}]])
+
+     (when current-user
+       [:a {:href "/settings"}
+        (ui/icon {:type :settings
+                  :color "#666"})])]
 
 
     (group/stared-groups false groups group)
