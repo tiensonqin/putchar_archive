@@ -76,8 +76,9 @@
 
 (defn capitalize-first-char
   [s]
-  (str (.toUpperCase (str (first s)))
-       (subs s 1)))
+  (if s
+    (str (.toUpperCase (str (first s)))
+        (subs s 1))))
 
 (defn get-date []
   #?(:clj (java.util.Date.)
