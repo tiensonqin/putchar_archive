@@ -1162,11 +1162,11 @@
 (rum/defc tags
   [tags]
   (if (seq tags)
-    [:div#tags {:class "row"
-                :style {:flex-wrap "wrap"
-                        :margin-top 12
-                        :algin-items "center"
-                        :margin-bottom 24}}
+    [:div#tags.ubuntu {:class "row"
+                       :style {:flex-wrap "wrap"
+                               :margin-top 12
+                               :algin-items "center"
+                               :margin-bottom 24}}
      (ui/icon {:type :label_outline
                :color "rgb(127,127,127)"
                :opts {:margin-right 12}})
@@ -1177,7 +1177,7 @@
         [:a.control {:href (str "/tag/" (name tag))
                      :style {:border "1px solid #666"
                              :border-radius 6
-                             :padding "0 6px"
+                             :padding "2px 6px"
                              :font-size 14}}
          (util/tag-decode (name tag))]])]))
 

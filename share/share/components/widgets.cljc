@@ -642,7 +642,7 @@
                          :href (str "/@" screen-name "/tag/" (name tag))
                          :style {:border "1px solid #666"
                                  :border-radius 6
-                                 :padding "0 6px"
+                                 :padding "2px 6px"
                                  :font-size 14}}
              (util/tag-decode (name tag))]
             [:span {:style {:margin-left 6
