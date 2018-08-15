@@ -1,3 +1,5 @@
+// copy from https://github.com/component/textarea-caret-position/blob/af904838644c60a7c48b21ebcca8a533a5967074/index.js
+
 /* jshint browser: true */
 
 // We'll copy the properties below into the mirror div.
