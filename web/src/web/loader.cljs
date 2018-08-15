@@ -14,13 +14,6 @@
                            (async/put! ch :loaded)))
     ch))
 
-(defn load-highlight
-  []
-  (let [url (str config/website "/highlight.min.js")]
-    (go
-      (async/<! (load url))
-      (util/highlight!))))
-
 (defn load-math
   []
   (load "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"))

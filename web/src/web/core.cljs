@@ -75,13 +75,10 @@
                           (storage/get :comments-drafts))))
 
     (go
-      (async/<! (asciidoc/load-ascii))
       (start (some? current-user))
 
-      (loader/load-highlight)
-
-      ;; load MathJax
-      (loader/load-math)
+      ;; ;; load MathJax
+      ;; (loader/load-math)
 
       ;; stripe checkout
       ;; (loader/load-stripe-checkout)

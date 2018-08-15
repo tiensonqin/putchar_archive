@@ -12,7 +12,7 @@
             [share.util :as util]
             [share.dicts :refer [t] :as dicts]
             [appkit.macros :refer [oget oset!]]
-            #?(:cljs [web.dnd :as dnd])))
+            #?(:cljs [cljs-drag-n-drop.core :as dnd])))
 
 ;; don't support image uploading on comment
 (defn upload-images

@@ -23,7 +23,7 @@
             [share.components.widgets :as widgets]
             [share.components.post-box :as post-box]
             [share.kit.infinite-list :as inf]
-            #?(:cljs [web.dnd :as dnd])
+            #?(:cljs [cljs-drag-n-drop.core :as dnd])
             #?(:cljs [web.scroll :as scroll])))
 
 (rum/defcs vote < rum/reactive
@@ -1103,10 +1103,10 @@
                               (:channel post)
                               (assoc :channel_name (get-in post [:channel :name])
                                      :channel_id (get-in post [:channel :id])))))
-        [:div.column.center-area {:class "post-edit editor"
-                                  :style (cond-> {:padding "15px"}
-                                           (and preview? (> width 1024))
-                                           (assoc :max-width 1238))}
+        [:div.column.center-area.auto-padding {:class "post-edit editor"
+                                               :style (if (and preview? (> width 1024))
+                                                        {:max-width 1238}
+                                                        {})}
          (new-post-title form-data (:title post))
 
          (if show-poll?
