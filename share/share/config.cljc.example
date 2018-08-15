@@ -1,0 +1,28 @@
+(ns share.config
+  (:require [clojure.string :as s]
+            #?(:clj [environ.core :refer [env]])
+            ))
+
+(def development?
+  #?(:cljs ^boolean goog.DEBUG
+     :clj (or (nil? (:env env))
+              (= "dev" (:env env)))))
+
+(def website
+  (if development?
+    "http://localhost:3401"
+    "http://Your-domain"))
+
+(def api-host
+  (str website "/api/"))
+
+(def cookie-domain
+  (if development?
+    ""
+    ".your-domain"))
+
+(def img-cdn "https://your-img-cdn")
+
+(def stripe-publishable-key (if development?
+                              "pk_test_************************"
+                              "pk_live_************************"))

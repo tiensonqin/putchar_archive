@@ -1,0 +1,18 @@
+User-agent: *
+
+Disallow: /new-post
+Disallow: /new-group
+Disallow: /new-item
+Disallow: /new-channel
+Disallow: /*/*/edit
+Disallow: /*/edit
+Disallow: /logout
+Disallow: /auth
+Disallow: /notifications
+Disallow: /settings
+Disallow: /votes
+Disallow: /search
+Disallow: /reports
+
+Sitemap: https://lambdahackers.com/sitemap.xml
+Host: https://lambdahackers.com

@@ -1,0 +1,10 @@
+Hi, welcome to Lambdahackers!
+
+Lambdahackers is a platform built to help people to connect with their favorite groups. You can join or create any groups to post, comment or vote.
+
+Click https://lambdahackers.com/email_confirmation?code={{code}} to activate your account to receive email notifications.
+
+Or go to the home page, https://lambdahackers.com.
+
+Thanks,
+Tienson Qin

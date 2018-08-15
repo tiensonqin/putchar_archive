@@ -1,0 +1,19 @@
+* Notes
+** Dialog patch
+   _this.setScrollbar = function () {
+            if (_this.bodyIsOverflowing && _this.scrollbarWidth !== undefined) {
+              document.body.style.paddingRight = _this.scrollbarWidth + 'px';
+              var head = document.getElementById("head");
+              if (head) {
+                head.style.paddingRight = '30px';
+              }
+            }
+        };
+
+   _this.resetScrollbar = function () {
+          document.body.style.paddingRight = '';
+          var head = document.getElementById("head");
+          if (head) {
+            head.style.paddingRight = '15px';
+          }
+        };

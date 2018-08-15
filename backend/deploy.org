@@ -1,0 +1,6 @@
+* Deploy
+** POSTGRESQL
+*** UTC timezone
+*** Extensions
+    uuid-ossp
+    intarray

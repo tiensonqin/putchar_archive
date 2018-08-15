@@ -1,0 +1,212 @@
+(ns share.db
+  (:require [clojure.pprint :refer [pprint]]
+            [clojure.walk :as walk]))
+
+(def test-schema
+  {:user {:id :unique
+          :posts [:ref :post]}
+   :post {:id :unique
+          :user [:ref :user]}})
+
+(def test-data
+  {:current-user {:id 3
+                  :name "CurrentUser"}
+
+   :user {:all [{:id 1
+                 :name "Foo"
+                 :posts [{:id 1
+                          :permalink :a}
+                         {:id 2
+                          :permalink :b}]}
+                {:id 2
+                 :name "Bar"
+                 :posts [{:id 3
+                          :permalink :c}
+                         {:id 4
+                          :permalink :d}]}]}
+
+   :post {:hot {:all [{:id 3
+                       :permalink :c
+                       :user 2}
+                      {:id 4
+                       :permalink :d
+                       :user 2}]
+                :group {:group-1 [{:id 3
+                                   :permalink :c
+                                   :user 2}
+                                  {:id 4
+                                   :permalink :d
+                                   :user 2}]
+                        :group-2 [{:id 1
+                                   :permalink :a
+                                   :user 1}
+                                  {:id 2
+                                   :permalink :b
+                                   :user 1}]}}
+          :new {:all [{:id 3
+                       :permalink :c
+                       :user 2}
+                      {:id 4
+                       :permalink :d
+                       :user 2}]
+                :group {:group-1 [{:id 3
+                                   :permalink :c
+                                   :user 2}
+                                  {:id 4
+                                   :permalink :d
+                                   :user 2}]
+                        :group-2 [{:id 1
+                                   :permalink :a
+                                   :user 1}
+                                  {:id 2
+                                   :permalink :b
+                                   :user 1}]}}}})
+
+(defn by-field
+  [field]
+  (keyword (str "by-" (name field))))
+
+(defn get-unique-field
+  [schema k]
+  (->
+   (filter (fn [[_ v]]
+             (= :unique v))
+           (get schema k))
+   ffirst))
+
+(defn get-refs
+  [schema k]
+  (->> (filter (fn [[_ v]]
+                 (and (vector? v)
+                      (= :ref (first v))))
+               (get schema k))
+       (map (fn [[k v]]
+              [k (last v)]))
+       (into {})))
+
+(get-refs test-schema :user)
+{:posts :post}
+
+(declare record-item)
+(declare record-col)
+(defn transform-refs
+  [data schema k item]
+  (when (map? item)
+    (let [refs (get-refs schema k)]
+      (when (seq refs)
+        (->>
+         (for [[k v] item]
+           [k (if-let [typ (get refs k)]
+                (let [unique-field (get-unique-field schema typ)
+                      f (if (coll? v) record-col record-item)]
+                  (f data schema k unique-field v))
+                v)])
+         (into {}))))))
+
+(defn record-item
+  [data schema schema-key unique-field item]
+  (let [id (if (map? item)
+             (get item unique-field)
+             (if (vector? item)
+               (last item)))]
+
+    ;; ref handle
+    (let [new-item (transform-refs data schema schema-key item)
+          item (or new-item item)]
+      (when (and id (map? item))
+        (swap! data update-in [schema-key :items id] merge item)))
+
+    (if id
+      [(by-field unique-field) id]
+      item)))
+
+(defn record-col
+  [data schema schema-key unique-field col]
+  (mapv
+   (fn [item] (record-item data schema schema-key unique-field item))
+   col))
+
+(declare transform)
+
+(defn normalize
+  [data schema k col]
+  (let [unique-field (get-unique-field schema k)]
+    (swap! data assoc-in [k :unique-field] unique-field)
+    (if (vector? col)
+      (record-col data schema k unique-field col)
+      (if (map? col)
+        (transform data schema k col true)))))
+
+(defn transform
+  [data schema schema-key col nested?]
+  (if-let [typ (get schema schema-key)]
+    (let [result (walk/prewalk
+                  (fn [x]
+                    (if (and (map? x) (vector? (second (first x))))
+                      (let [result
+                            (->>
+                             (for [[k v] x]
+                               [k (normalize data schema schema-key v)])
+                             (into {}))]
+                        result)
+                      x))
+                  col)
+          unique-field (get-in @data [schema-key :unique-field])]
+      (cond-> result
+        (not nested?)
+        (assoc (by-field unique-field) (get-in @data [schema-key :items]))))
+    col))
+
+(defn ->db
+  [schema tree]
+  (let [data (atom nil)]
+    (->> (for [[k col] tree]
+           [k (transform data schema k col false)])
+         (into {}))))
+
+(defn deep-merge
+  "Like merge, but merges maps recursively."
+  [& maps]
+  (if (every? #(or (map? %) (nil? %)) maps)
+    (apply merge-with deep-merge maps)
+    (last maps)))
+
+(defn transact!
+  [db schema path data]
+  (cond
+    ;; insert or update single entity
+    (and (keyword? path) (get schema path) (map? data))
+    (let [unique-field (get-unique-field schema path)]
+      (update-in db [path (by-field unique-field)] merge data))
+
+    ;; insert entities
+    (and (keyword? path) (get schema path) (coll? data))
+    ;; concat
+    (let [a (atom nil)
+          unique-field (get-unique-field schema path)
+          data' (record-col a schema path
+                            unique-field
+                            data)]
+      (update-in db [path (by-field unique-field)]
+                 merge
+                 (get-in @a [path :items])))
+
+    (and (vector? path) (get schema (first path)) (coll? data))
+    (let [a (atom nil)
+          typ (first path)
+          unique-field (get-unique-field schema typ)
+          data' (record-col a schema typ
+                            unique-field
+                            data)]
+      (-> db
+          (update-in path
+                     (fn [result]
+                       (vec (distinct (concat result data')))))
+          (update-in [typ (by-field unique-field)]
+                     merge
+                     (get-in @a [typ :items]))))
+    :else
+    (update-in db path merge data)))
+
+(comment
+  (def db (->db test-schema test-data)))

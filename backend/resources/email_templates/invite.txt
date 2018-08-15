@@ -1,0 +1,14 @@
+Hi there,
+
+@{{who}} invited you to join the group of {{group-name}} on lambdahackers.com!
+
+Join group {{group-name}}  ( {{ group-link }} )
+
+Thanks,
+The lambdahackers.com Team
+
+If you’re having trouble with the button above, copy and paste the URL below into your web browser.
+
+{{group-link}}
+
+© 2018 lambdahackers.com. All rights reserved.

@@ -1,0 +1,647 @@
+* TODOS
+
+** Bugs
+*** DONE [#A] bug 1 - new group without channels data
+    CLOSED: [2018-01-30 Tue 19:39]
+*** DONE [#A] bug 2 - scroll not always triggered
+    CLOSED: [2018-01-30 Tue 20:13]
+*** DONE [#A] bug 3 - realtime comment not works
+    CLOSED: [2018-01-31 Wed 10:49]
+*** DONE [#A] bug 4 - safari iphone input box not show
+    CLOSED: [2018-04-05 Thu 10:37]
+*** DONE [#A] bug 5 - notification page render error
+    CLOSED: [2018-01-31 Wed 11:26]
+*** DONE [#A] bug 6 - new conversation information lost, also not show in left
+    CLOSED: [2018-02-02 Fri 17:09]
+*** DONE [#A] bug 7 - groups wrong order
+    CLOSED: [2018-02-02 Fri 15:51]
+*** DONE [#A] 点击channel会重新渲染channels
+    CLOSED: [2018-02-21 Wed 16:11]
+*** DONE unicode routes
+    CLOSED: [2018-03-15 Thu 09:58]
+*** DONE chat reload
+    CLOSED: [2018-03-15 Thu 11:06]
+
+
+** Experience
+*** TODO [#B] Exp 1 - chat background
+*** DONE [#B] Exp 2 - avoid preflight - using nginx forward
+    CLOSED: [2018-02-02 Fri 14:57]
+    There are two ways:
+    1. remove custom headers, application/transit+json -> text/plain
+    2. nginx forward https://lambdahackers.com/api to https://api.lambdahackers.com
+
+*** DONE Exp 4 - cache query
+    CLOSED: [2018-02-02 Fri 20:14]
+
+*** DONE Exp 5 - disable scroll
+    CLOSED: [2018-02-09 Fri 19:34]
+
+*** DONE [#B] post edit experience
+    CLOSED: [2018-05-08 Tue 17:09]
+**** DONE upload image
+     CLOSED: [2018-03-09 Fri 19:26]
+
+**** DONE auto extract links
+     CLOSED: [2018-03-10 Sat 05:47]
+
+**** DONE embed youtube, gifs, post
+     CLOSED: [2018-03-14 Wed 14:41]
+
+**** DONE twitter
+     CLOSED: [2018-03-14 Wed 13:17]
+
+** Features
+*** DONE [#B] 1 - add image support to comment
+    CLOSED: [2018-01-31 Wed 17:02]
+
+*** DONE [#A] 2 - add twitter and email avatar support
+    CLOSED: [2018-02-02 Fri 19:24]
+    currently only support facebook
+
+**** DONE default avatars
+     CLOSED: [2018-02-02 Fri 19:24]
+     1. https://d15mmb60wiwqvv.cloudfront.net/pics/17kX0V68OG.jpg
+     2. https://d15mmb60wiwqvv.cloudfront.net/pics/17kqELvJzc.jpg
+     3. https://d15mmb60wiwqvv.cloudfront.net/pics/17kskyF8ee.jpg
+
+*** TODO [#A] optimistic update
+*** DONE [#B] 3 - Locale
+    CLOSED: [2018-04-05 Thu 10:37]
+*** DONE [#A] 500
+    CLOSED: [2018-03-16 Fri 17:06]
+*** DONE [#A] 404
+    CLOSED: [2018-04-05 Thu 10:37]
+
+*** DONE [#A] tooltip using rc-tooltip
+    CLOSED: [2018-03-15 Thu 12:49]
+
+*** DONE [#A] more button not works
+    CLOSED: [2018-03-15 Thu 13:17]
+
+*** DONE [#A] menu-fold move to right (mobile)
+    CLOSED: [2018-03-16 Fri 09:31]
+
+*** DONE [#A] post page layout adjustment
+    CLOSED: [2018-03-16 Fri 15:19]
+
+
+*** DONE [#C] use original rum
+    CLOSED: [2018-04-14 Sat 03:20]
+
+*** DONE [#B] filter display using select
+    CLOSED: [2018-03-16 Fri 09:31]
+
+*** DONE [#B] channels display using select
+    CLOSED: [2018-03-16 Fri 09:31]
+
+*** DONE use rc-dropdown
+    CLOSED: [2018-03-16 Fri 16:56]
+
+*** DONE login
+    CLOSED: [2018-03-16 Fri 18:55]
+
+*** DONE [#A] comment box directly display, not through a modal
+    CLOSED: [2018-03-17 Sat 14:45]
+*** DONE [#A] seo title, description
+    CLOSED: [2018-03-20 Tue 11:15]
+*** DONE twitter pages
+    CLOSED: [2018-03-20 Tue 12:29]
+*** DONE [#A] google analytics
+    CLOSED: [2018-03-20 Tue 13:26]
+
+*** DONE [#A] group add logo support.
+    CLOSED: [2018-03-20 Tue 16:13]
+*** DONE [#A] group management (admins)
+    CLOSED: [2018-03-21 Wed 18:34]
+*** DONE [#A] group report
+    CLOSED: [2018-03-22 Thu 19:34]
+*** DONE [#A] time ago
+    CLOSED: [2018-03-21 Wed 19:29]
+*** DONE icons svg
+    CLOSED: [2018-03-24 Sat 13:04]
+*** DONE channel create
+    CLOSED: [2018-03-24 Sat 13:04]
+*** DONE switch layout
+    CLOSED: [2018-03-24 Sat 17:12]*
+*** DONE photo uploading
+    CLOSED: [2018-03-25 Sun 12:38]
+*** DONE page is not available
+    CLOSED: [2018-03-25 Sun 13:11]
+*** DONE [#A] disable button when input is not valid
+    CLOSED: [2018-03-25 Sun 14:15]
+*** DONE display group's page after loged in
+    CLOSED: [2018-03-25 Sun 15:08]
+*** DONE [#A] group top
+    CLOSED: [2018-03-25 Sun 17:13]
+*** DONE [#A] Home page
+    CLOSED: [2018-03-29 Thu 00:15]
+*** DONE login button not work on mobile
+    CLOSED: [2018-03-29 Thu 12:30]
+
+*** DONE replace group with group
+    CLOSED: [2018-03-29 Thu 12:31]
+*** DONE [#A] post multiple languages
+    CLOSED: [2018-03-29 Thu 18:57]
+*** DONE [#A] import countries, cities, colleges, hot hobbies
+    CLOSED: [2018-03-31 Sat 12:47]
+
+*** DONE [#A] login
+    CLOSED: [2018-04-03 Tue 12:00]
+
+*** DONE [#A] redirect to login panel if not logged.
+    CLOSED: [2018-04-03 Tue 13:41]
+
+*** DONE [#A] post edit
+    CLOSED: [2018-04-03 Tue 14:13]
+*** DONE [#A] post support multiple photos upload
+    CLOSED: [2018-04-03 Tue 15:18]
+*** DONE slack notifications for monitoring, new posts, users
+    CLOSED: [2018-04-03 Tue 10:12]
+*** DONE [#A] i18n
+    CLOSED: [2018-04-04 Wed 18:00]
+    add :language to cookie
+*** DONE [#A] user page
+    CLOSED: [2018-04-05 Thu 15:37]
+*** DONE [#A] groups order
+    CLOSED: [2018-04-05 Thu 15:51]
+*** DONE [#A] notifications
+    CLOSED: [2018-04-05 Thu 18:47]
+**** DONE new message
+     CLOSED: [2018-04-05 Thu 18:47]
+**** DONE new comment
+     CLOSED: [2018-04-05 Thu 18:47]
+**** DONE reply to my comment
+     CLOSED: [2018-04-05 Thu 18:47]
+**** DONE notifications settings
+     CLOSED: [2018-04-05 Thu 18:47]
+*** DONE [#A] post links
+    CLOSED: [2018-04-06 Fri 10:20]
+*** DONE [#A] group share
+    CLOSED: [2018-04-06 Fri 10:39]
+*** DONE [#A] twitter image (lambdahackers logo, group logo, post cover)
+    CLOSED: [2018-04-06 Fri 11:16]
+
+*** DONE [#A] post tags
+    CLOSED: [2018-04-06 Fri 18:57]
+*** DONE [#A] google login
+    CLOSED: [2018-04-07 Sat 15:39]
+
+*** DONE [#A] zerodown clojure deployment
+    CLOSED: [2018-04-07 Sat 17:27]
+*** DONE [#A] [BUG] post link not right, only permalink
+    CLOSED: [2018-04-07 Sat 09:01]
+*** DONE [#A] phone login (china)
+    CLOSED: [2018-04-10 Tue 13:46]
+**** DONE leancloud 0.5/per, 签名必须是中文, 叫啥呢
+     CLOSED: [2018-04-10 Tue 13:52]
+     hi不一样
+*** DONE [#A] cdn assets version
+    CLOSED: [2018-04-10 Tue 13:51]
+
+*** TODO [#C] sms recaptcha
+*** DONE [#A] post delete
+    CLOSED: [2018-04-10 Tue 17:34]
+*** DONE [#A] [BUG] wrong user posts
+    CLOSED: [2018-04-11 Wed 11:49]
+*** TODO normalization
+*** DONE [#A] RSS export
+    CLOSED: [2018-04-11 Wed 11:30]
+    group hot posts
+    user posts and replies
+
+*** DONE [#A] post image upload support drag n drop
+    CLOSED: [2018-04-11 Wed 18:15]
+    google closure
+*** DONE [#A] [BUG] multiple upload not works on Android
+    CLOSED: [2018-04-12 Thu 09:16]
+
+
+*** DONE [#A] group rules
+    CLOSED: [2018-04-12 Thu 12:23]
+    edited by group admin
+*** DONE [#A] [BUG] channel page
+    CLOSED: [2018-04-12 Thu 12:33]
+*** DONE [#A] scroll position
+    CLOSED: [2018-04-12 Thu 12:52]
+*** DONE [#A] related groups
+    CLOSED: [2018-04-12 Thu 13:33]
+*** DONE [#A] scroll loading
+    CLOSED: [2018-04-12 Thu 18:38]
+*** DONE [BUG] some groups don't have a general channel
+    CLOSED: [2018-04-28 Sat 13:53]
+*** DONE [#A] home page
+    CLOSED: [2018-04-13 Fri 19:49]
+*** DONE [#A] avatar looks not good
+    CLOSED: [2018-04-13 Fri 19:49]
+*** DONE [#A] Substraction
+    CLOSED: [2018-04-14 Sat 01:08]
+**** DONE realtime, chat, comment
+     CLOSED: [2018-04-17 Tue 13:18]
+**** DONE message
+     CLOSED: [2018-04-17 Tue 13:18]
+**** DONE browser notification
+     CLOSED: [2018-04-17 Tue 13:18]
+**** DONE add follow conversation, email
+     CLOSED: [2018-04-17 Tue 13:18]
+**** DONE inline styles
+     CLOSED: [2018-04-14 Sat 03:19]
+*** DONE [#A] sitemap
+    CLOSED: [2018-04-14 Sat 04:01]
+
+*** DONE back scroll position
+    CLOSED: [2018-04-17 Tue 17:33]
+
+*** DONE [#A] Android pwa
+    CLOSED: [2018-04-17 Tue 23:51]
+*** DONE [#C] Ios pwa
+    CLOSED: [2018-04-19 Thu 20:00]
+*** DONE logout not works
+    CLOSED: [2018-04-19 Thu 20:00]
+    web worker
+*** DONE ios search button style
+    CLOSED: [2018-04-19 Thu 10:38]
+*** DONE replies style
+    CLOSED: [2018-04-20 Fri 13:10]
+*** DONE [#A] fix query cache
+    CLOSED: [2018-05-08 Tue 17:09]
+*** DONE [#A] pick groups page
+    CLOSED: [2018-04-20 Fri 13:35]
+*** DONE [#A] follow conversation
+    CLOSED: [2018-04-20 Fri 19:28]
+*** DONE don't refresh after loaded
+    CLOSED: [2018-04-21 Sat 10:10]
+*** DONE my followed conversation page
+    CLOSED: [2018-04-21 Sat 10:34]
+*** DONE [#A] keydown tabindex
+    CLOSED: [2018-04-21 Sat 12:30]
+*** DONE [#A] add swap left,right, keyboard left right to switch group
+    CLOSED: [2018-04-21 Sat 13:47]
+*** DONE [#A] DB backup
+    CLOSED: [2018-04-21 Sat 16:01]
+*** DONE [#A] [BUG] edit post, delete too quickly cursor will jump
+    CLOSED: [2018-05-02 Wed 16:29]
+
+*** DONE post ui, fonts
+    CLOSED: [2018-05-18 Fri 13:20]
+*** DONE [#A] comment autosize textarea not works with chinese input method
+    CLOSED: [2018-05-18 Fri 13:17]
+*** draw resources
+    1. http://jsfiddle.net/pgkrvcdr/2/
+
+*** DONE [BUG] only allow switch group on :group and :channel pages
+    CLOSED: [2018-04-28 Sat 09:31]
+*** DONE [BUG] fix general channel
+    CLOSED: [2018-04-28 Sat 10:46]
+*** DONE [BUG] post title route
+    CLOSED: [2018-04-28 Sat 11:32]
+*** DONE [BUG] group page blink
+    CLOSED: [2018-05-08 Tue 17:08]
+*** DONE [BUG] twitter embed
+    CLOSED: [2018-05-03 Thu 09:58]
+*** DONE [BUG] youtube embed
+    CLOSED: [2018-05-03 Thu 09:54]
+*** DONE [BUG] asciidoctor preserve line breaks
+    CLOSED: [2018-05-02 Wed 20:13]
+*** DONE [BUG] post delete
+    CLOSED: [2018-05-03 Thu 10:44]
+
+*** DONE [#A] support asciidoc
+    CLOSED: [2018-05-08 Tue 14:51]
+
+*** DONE [#A] seperate asciidoc, paper.js from main bundle
+    CLOSED: [2018-05-09 Wed 11:19]
+    main
+    post
+    draw
+
+*** DONE votes filter
+    CLOSED: [2018-05-08 Tue 17:08]
+
+*** DONE [#A] [BUG] post edit
+    CLOSED: [2018-05-18 Fri 17:52]
+
+*** DONE post edit reload
+    CLOSED: [2018-05-18 Fri 17:52]
+*** DONE [#A] [BUG] group edit reload
+    CLOSED: [2018-05-18 Fri 18:10]
+*** DONE scrollbar position should be a map {path: int}
+    CLOSED: [2018-05-19 Sat 09:53]
+*** DONE fix scroll
+    CLOSED: [2018-05-22 Tue 10:16]
+*** DONE GDRP
+    CLOSED: [2018-05-25 Fri 14:24]
+**** DONE delete account
+     CLOSED: [2018-05-25 Fri 14:24]
+**** DONE export data
+     CLOSED: [2018-05-25 Fri 14:24]
+*** DONE link
+    CLOSED: [2018-05-25 Fri 15:25]
+
+*** DONE [#A] Group invitation
+    CLOSED: [2018-05-25 Fri 19:04]
+
+*** TODO weekly newsletter
+    top 3 communitites
+*** DONE [#A] landing page
+    CLOSED: [2018-05-29 Tue 20:03]
+
+**** What're you interested in?
+     group search
+**** Features
+***** Anyone can create public groups of unlimited members.
+      Group members can vote, comment, share links or their thoughts.
+***** Admins can create channels.
+      So you only subscribe to your favorite content.
+***** Writing
+****** Asciidoctor && Markdown
+****** Tags
+****** Translations
+****** Github backup && data export
+****** Drawing
+
+**** New && Hot groups
+
+*** DONE pwa can't login
+    CLOSED: [2018-05-31 Thu 15:10]
+
+*** DONE invite only groups
+    CLOSED: [2018-05-31 Thu 19:58]
+**** can't comment
+**** can vote
+**** can add translation link
+
+*** DONE [#A] pro members
+    CLOSED: [2018-05-31 Thu 18:40]
+    1. a better way to group groups
+
+**** handler acitons
+     2. citrus/group-new
+
+*** DONE twitter read only permissions
+    CLOSED: [2018-06-05 Tue 09:01]
+
+*** TODO Github don't ask for public_repo until user choose to sync a repo.
+
+*** DONE default sorted by new
+    CLOSED: [2018-06-07 Thu 11:57]
+
+*** DONE search groups
+    CLOSED: [2018-06-07 Thu 19:01]
+
+*** DONE associated culture elements
+    CLOSED: [2018-06-08 Fri 13:39]
+    country -> elements
+    city -> elements
+    group_id -> element_id
+    each element is a group itself.
+
+*** DONE remove breadcrumb
+    CLOSED: [2018-06-08 Fri 17:17]
+
+*** DONE remove tooltip
+    CLOSED: [2018-06-08 Fri 17:17]
+
+*** DONE user page avatar transition
+    CLOSED: [2018-06-08 Fri 18:16]
+
+*** DONE post page title show on header
+    CLOSED: [2018-06-08 Fri 18:16]
+
+*** DONE logo transition
+    CLOSED: [2018-06-09 Sat 09:35]
+*** DONE fix home post filter
+    CLOSED: [2018-06-12 Tue 10:23]
+
+*** DONE user page to group page, no data
+    CLOSED: [2018-06-12 Tue 10:23]
+
+*** DONE sort by hot
+    CLOSED: [2018-06-12 Tue 11:12]
+*** DONE channel edit
+    CLOSED: [2018-06-12 Tue 12:39]
+
+*** DONE channel delete
+    CLOSED: [2018-06-12 Tue 12:39]
+
+
+*** sort by last_reply
+
+*** DONE members
+    CLOSED: [2018-06-12 Tue 15:25]
+
+*** DONE title multiple lines
+    CLOSED: [2018-06-12 Tue 15:40]
+
+*** DONE pricing page
+    CLOSED: [2018-06-12 Tue 17:38]
+    ads free
+    pro badge
+    custom domain blog
+*** DONE [#A] Stripe payment
+    CLOSED: [2018-06-12 Tue 17:40]
+
+*** DONE browser title
+    CLOSED: [2018-06-12 Tue 18:13]
+*** DONE user links
+    CLOSED: [2018-06-13 Wed 10:37]
+*** DONE recompute links
+    CLOSED: [2018-06-13 Wed 11:36]
+*** DONE recompute stars
+    CLOSED: [2018-06-13 Wed 12:15]
+*** DONE channel not displayed on quanzhou group
+    CLOSED: [2018-06-15 Fri 12:41]
+
+*** DONE votes
+    CLOSED: [2018-06-15 Fri 12:27]
+
+*** DONE polls
+    CLOSED: [2018-06-15 Fri 18:48]
+    choices
+
+*** DONE poll disable
+    CLOSED: [2018-06-16 Sat 10:36]
+
+*** DONE post insert photo
+    CLOSED: [2018-06-16 Sat 11:21]
+
+*** DONE edit helpers
+    CLOSED: [2018-06-16 Sat 17:50]
+    bold, italic
+    subtitle
+    quote
+
+*** DONE post cover first image
+    CLOSED: [2018-06-20 Wed 17:00]
+*** DONE user posts with content
+    CLOSED: [2018-06-20 Wed 17:00]
+*** DONE group cover
+    CLOSED: [2018-06-21 Thu 18:07]
+*** DONE make name optional
+    CLOSED: [2018-06-27 Wed 11:16]
+*** DONE remove tags
+    CLOSED: [2018-06-27 Wed 16:42]
+*** DONE group add collections
+    CLOSED: [2018-06-29 Fri 11:02]
+*** DONE [#A] comment thread
+    CLOSED: [2018-07-03 Tue 11:57]
+*** DONE comment support quote
+    CLOSED: [2018-07-03 Tue 11:57]
+*** DONE items add votes, comments
+    CLOSED: [2018-07-03 Tue 11:57]
+*** DONE home page
+    CLOSED: [2018-07-05 Thu 10:55]
+*** DONE [#A] [BUG] ios photo rotation
+    CLOSED: [2018-07-10 Tue 12:20]
+
+*** DONE fix scroll
+    CLOSED: [2018-07-05 Thu 15:14]
+*** DONE 404
+    CLOSED: [2018-07-05 Thu 17:14]
+*** DONE post drafts
+    CLOSED: [2018-07-07 Sat 18:23]
+*** DONE toped and followed posts order by created_at
+    CLOSED: [2018-07-10 Tue 17:27]
+*** DONE Bug link
+    CLOSED: [2018-07-12 Thu 09:32]
+*** DONE show poll, video in post item.
+    CLOSED: [2018-07-12 Thu 19:26]
+*** DONE zh-cn privacy, terms, code_of_conduct
+    CLOSED: [2018-07-12 Thu 19:26]
+*** DONE bug auto save
+    CLOSED: [2018-07-13 Fri 13:42]
+*** DONE bug post edit
+    CLOSED: [2018-07-15 Sun 18:39]
+*** DONE comment quote
+    CLOSED: [2018-07-17 Tue 14:43]
+*** DONE comment link share
+    CLOSED: [2018-07-17 Tue 16:43]
+
+
+*** DONE bug header not fixed when modal is clicked
+    CLOSED: [2018-07-17 Tue 19:14]
+*** DONE sort posts by latest reply, and by who
+    CLOSED: [2018-07-18 Wed 10:26]
+*** DONE post page show updated_at
+    CLOSED: [2018-07-18 Wed 11:18]
+*** DONE mentions @
+    CLOSED: [2018-07-20 Fri 18:03]
+*** DONE emoji support
+    CLOSED: [2018-07-24 Tue 17:51]
+    https://github.com/asciidoctor/asciidoctor-extensions-lab/blob/master/lib/emoji-inline-macro/extension.rb
+*** DONE bug latest
+    CLOSED: [2018-07-26 Thu 13:01]
+*** DONE homepage
+    CLOSED: [2018-07-26 Thu 13:01]
+*** DONE comments loading
+    CLOSED: [2018-07-26 Thu 15:50]
+*** DONE autocomplete support up, down
+    CLOSED: [2018-07-26 Thu 16:50]
+
+*** DONE [#A] bug search
+    CLOSED: [2018-07-27 Fri 17:39]
+
+*** DONE [#A] hot groups
+    CLOSED: [2018-07-27 Fri 17:39]
+
+*** DONE [#A] bug scroll
+    CLOSED: [2018-07-27 Fri 17:58]
+
+*** DONE [#A] add bookmarks
+    CLOSED: [2018-07-27 Fri 18:57]
+
+*** DONE reports empty bug
+    CLOSED: [2018-07-27 Fri 19:13]
+
+*** DONE comment link not right
+    CLOSED: [2018-07-27 Fri 19:15]
+
+*** DONE domain name
+    CLOSED: [2018-07-28 Sat 15:28]
+*** DONE aws email
+    CLOSED: [2018-07-28 Sat 15:28]
+*** gsuite
+
+*** DONE bug report comment error
+    CLOSED: [2018-07-28 Sat 18:12]
+
+*** DONE wiki
+    CLOSED: [2018-08-03 Fri 10:08]
+
+*** DONE programming website
+    CLOSED: [2018-08-05 Sun 09:01]
+*** DONE remove poll channel
+    CLOSED: [2018-08-05 Sun 09:21]
+*** DONE signup
+    CLOSED: [2018-08-05 Sun 13:54]
+*** DONE remove group-dropdown
+    CLOSED: [2018-08-05 Sun 18:49]
+*** DONE [#A] github integration [3/3]
+    CLOSED: [2018-08-06 Mon 15:54]
+    - [X] github login
+    - [X] commit includes new posts, update and delete
+    - [X] maybe commit to github first and then publish on lambdahackers
+      Currently don't support this.
+*** DONE [Bug] github rename not works.
+    CLOSED: [2018-08-06 Mon 17:52]
+
+*** DONE BUG post update by git push not works
+    CLOSED: [2018-08-07 Tue 17:29]
+
+*** DONE [#A] post tags
+    CLOSED: [2018-08-11 Sat 11:46]
+
+*** DONE links
+    CLOSED: [2018-08-11 Sat 14:33]
+*** DONE refresh when group logo clicked.
+    CLOSED: [2018-08-11 Sat 15:03]
+*** DONE fixed issue of links
+    CLOSED: [2018-08-11 Sat 16:51]
+*** DONE fixed issue of post edit
+    CLOSED: [2018-08-11 Sat 17:14]
+*** DONE mention notification, email
+    CLOSED: [2018-08-14 Tue 14:46]
+*
+** DONE replace loading with text
+   CLOSED: [2018-08-14 Tue 14:58]
+*** DONE about text
+    CLOSED: [2018-08-14 Tue 16:32]
+*** DONE poll for notifications, reports every 30 seconds.
+    CLOSED: [2018-08-14 Tue 19:11]
+*** DONE IOS style
+    CLOSED: [2018-08-15 Wed 09:43]
+*** DONE IOS back button
+    CLOSED: [2018-08-15 Wed 09:43]
+
+*** TODO canonical url
+*** TODO open source
+*** TODO pwa android
+
+*** TODO pwa ios
+
+*** TODO github token revoked
+*** TODO [#A] reply by email
+    https://docs.gitlab.com/ce/administration/incoming_email.html
+    cost
+*** TODO [#A] notification && report zh-cn
+*** TODO [#A] test notifications
+*** TODO [#A] posts and comments, remember last visit
+*** TODO [#A] browser extension
+    Reasonml or Cljs
+*** TODO [#A] first 1000 users
+*** TODO [#A] spam users, contents detect
+*** TODO [#A] Sponsors && backers
+*** TODO [#B] night mode
+*** DONE [#C] exception reporting
+    CLOSED: [2018-04-17 Tue 18:27]
+    slack notifications first
+*** TODO [#C] keyboard shortcuts
+
+*** TODO [#C] Improve  Time-To-First-Byte
+    node support renderToNodeStream
+**** how to pass states to browser without affecting the dom size?
+     ask after websocket connected
+     ask after page was rendered
+     http2 stream
+*** TODO [#C] test
+*** TODO [#C] Limit pictures usage

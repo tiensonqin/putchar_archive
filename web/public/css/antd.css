@@ -1,0 +1,234 @@
+[type="search"] {
+    outline-offset: -2px;
+    -webkit-appearance: none;
+}
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+::-webkit-file-upload-button {
+    font: inherit;
+    -webkit-appearance: button;
+}
+
+/* avatar */
+.ant-avatar {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.65);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: inline-block;
+    text-align: center;
+    background: #ccc;
+    color: #fff;
+    white-space: nowrap;
+    position: relative;
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+}
+.ant-avatar > * {
+    line-height: 45px;
+}
+.ant-avatar.ant-avatar-icon {
+    font-size: 18px;
+}
+.ant-avatar-lg {
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+}
+.ant-avatar-lg > * {
+    line-height: 40px;
+}
+.ant-avatar-lg.ant-avatar-icon {
+    font-size: 24px;
+}
+.ant-avatar-md {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+}
+.ant-avatar-md > * {
+    line-height: 40px;
+}
+.ant-avatar-md.ant-avatar-icon {
+    font-size: 20px;
+}
+.ant-avatar-sm {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 50%;
+}
+.ant-avatar-sm > * {
+    line-height: 24px;
+}
+.ant-avatar-sm.ant-avatar-icon {
+    font-size: 14px;
+}
+.ant-avatar-mm {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+}
+.ant-avatar-mm > * {
+    line-height: 32px;
+}
+.ant-avatar-mm.ant-avatar-icon {
+    font-size: 16px;
+}
+
+.ant-avatar > img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 50%;
+}
+
+/* search */
+.ant-input {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+    display: inline-block;
+    padding: 4px 11px;
+    width: 100%;
+    height: 32px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.65);
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+}
+.ant-input::-moz-placeholder {
+    color: #bfbfbf;
+    opacity: 1;
+}
+.ant-input:-ms-input-placeholder {
+    color: #bfbfbf;
+}
+.ant-input::-webkit-input-placeholder {
+    color: #bfbfbf;
+}
+.ant-input:hover {
+    border-color: #1a1a1a;
+}
+.ant-input:focus {
+    border-color: #1a1a1a;
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+.ant-input-disabled {
+    background-color: #f5f5f5;
+    opacity: 1;
+    cursor: not-allowed;
+    color: rgba(0, 0, 0, 0.25);
+}
+.ant-input-disabled:hover {
+    border-color: #e6d8d8;
+}
+textarea.ant-input {
+    max-width: 100%;
+    height: auto;
+    vertical-align: bottom;
+    -webkit-transition: all .3s, height 0s;
+    transition: all .3s, height 0s;
+    min-height: 32px;
+}
+
+/* message */
+.ant-message {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.65);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: fixed;
+    z-index: 1080;
+    width: 100%;
+    top: 16px;
+    left: 0;
+    pointer-events: none;
+}
+.ant-message-notice {
+    padding: 8px;
+    text-align: center;
+}
+.ant-message-notice:first-child {
+    margin-top: -8px;
+}
+.ant-message-notice-content {
+    padding: 10px 16px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #fff;
+    display: inline-block;
+    pointer-events: all;
+}
+.ant-message-success .anticon {
+    color: #52c41a;
+}
+.ant-message-error .anticon {
+    color: #f5222d;
+}
+.ant-message-warning .anticon {
+    color: #faad14;
+}
+.ant-message-info .anticon,
+.ant-message-loading .anticon {
+    color: #1890ff;
+}
+.ant-message .anticon {
+    margin-right: 8px;
+    font-size: 16px;
+    top: 1px;
+    position: relative;
+}
+.ant-message-notice.move-up-leave.move-up-leave-active {
+    -webkit-animation-name: MessageMoveOut;
+    animation-name: MessageMoveOut;
+    overflow: hidden;
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+}
+@-webkit-keyframes MessageMoveOut {
+    0% {
+        opacity: 1;
+        max-height: 150px;
+        padding: 8px;
+    }
+    100% {
+        opacity: 0;
+        max-height: 0;
+        padding: 0;
+    }
+}
+@keyframes MessageMoveOut {
+    0% {
+        opacity: 1;
+        max-height: 150px;
+        padding: 8px;
+    }
+    100% {
+        opacity: 0;
+        max-height: 0;
+        padding: 0;
+    }
+}
