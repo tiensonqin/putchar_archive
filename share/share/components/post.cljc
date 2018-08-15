@@ -1033,7 +1033,8 @@
                 posts)
         posts (util/remove-duplicates :id posts)
         scroll-loading? (citrus/react [:query :scroll-loading? current-path])]
-    (reset! last-post (last posts))
+    (when (nil? @last-post)
+      (reset! last-post (last posts)))
     (if (seq posts)
       (posts-stream
        posts
