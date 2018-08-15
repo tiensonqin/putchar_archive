@@ -930,11 +930,12 @@
              (:comments_count post)]]]
 
           (if-let [cover (:cover post)]
-            [:img.hover-shadow {:src (str cover "?w=" 200)
-                                :style {:max-width 200
-                                        :border-radius 4
-                                        :margin-top 8
-                                        :margin-bottom 6}}])]
+            [:a {:href post-link}
+             [:img.hover-shadow {:src (str cover "?w=" 200)
+                                 :style {:max-width 200
+                                         :border-radius 4
+                                         :margin-top 8
+                                         :margin-bottom 6}}]])]
 
          (when (:choices post)
            [:div {:style {:margin-top 24
