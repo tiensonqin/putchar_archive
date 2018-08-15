@@ -70,7 +70,7 @@
               :padding-bottom "24px"
               :align-items "center"}}
      [:div.column
-      [:div.row1
+      [:div.row1 {:style {:flex-wrap "wrap"}}
        (if name
          [:span {:style {:font-size (if mobile? 24 33)
                         :color "rgba(0,0,0,0.84)"}}

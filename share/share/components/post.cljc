@@ -1225,14 +1225,20 @@
                 [:div {:style {:margin-left 12
                                :margin-top -4}}
                  [:div.row1
-                  [:span {:style {:font-weight "600"
-                                  :color "rgba(0,0,0,0.64)"}}
-                   (:name user)]
+                  (if (:name user)
+                    [:span {:style {:font-weight "600"
+                                    :color "rgba(0,0,0,0.64)"}}
+                     (:name user)])
                   [:a {:href (str "/@" (:screen_name user))
                        :color "#666"}
-                   [:span {:style {:margin-left 6
-                                   :font-size 15}}
-                    "  @" (:screen_name user)]]]
+                   [:span {:style (if (:name user)
+                                    {:margin-left 6
+                                     :font-size 15
+                                     :color "#666"}
+                                    {:font-weight "600"
+                                     :color "rgba(0,0,0,0.64)"
+                                     :font-size 18})}
+                    (if (:name user) " @" "@") (:screen_name user)]]]
                  [:div.row {:style {:color "#666"
                                     :margin-top 6
                                     :max-height 60
