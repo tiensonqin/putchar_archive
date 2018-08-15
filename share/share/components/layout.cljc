@@ -70,4 +70,14 @@
                        (util/set-href! (str config/website "/code-of-conduct")))}
        (t :code-of-conduct)]]
 
-     ]))
+     [:div.row1 {:style {:align-items "center"
+                         :flex-wrap "wrap"
+                         :margin-top 16}}
+      [:a {:href "https://twitter.com/lambdahackers"
+           :style {:margin-right 24}}
+       (ui/icon {:type :twitter})]
+
+      [:a {:href "https://github.com/tiensonqin/lambdahackers"
+           :style {:margin-right 24}}
+       (ui/icon {:type :github
+                 :width 18})]]]))
