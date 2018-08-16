@@ -91,7 +91,7 @@
         new-post? (= :new-post current-path)
         body-format (or (citrus/react [:post :form-data :body_format])
                         (citrus/react [:latest-body-format])
-                        :asciidoc)]
+                        :markdown)]
     [:div {:style {:display "flex"
                    :margin-right margin
                    :align-items "center"}}
@@ -168,7 +168,7 @@
         body-format (or (citrus/react [:post :form-data :body_format])
                         body-format
                         (citrus/react [:lateset-form-data])
-                        :asciidoc)]
+                        :markdown)]
     [:div.row
      (when-not (and mobile? (:preview? form-data))
        [:div.editor.row {:style {:margin-top 12
@@ -449,7 +449,7 @@
                                  (:tags form-data)
                                  (assoc :tags (:tags form-data)))
                           data (if (nil? (:body_format data))
-                                 (assoc data :body_format :asciidoc)
+                                 (assoc data :body_format :markdown)
                                  data)
                           data (util/map-remove-nil? data)]
                       (citrus/dispatch! :post/update data)

@@ -73,7 +73,7 @@ CREATE TABLE posts (
     is_wiki boolean not null default false,
     title text not null,
     body text not null,
-    body_format text not null default 'asciidoc',
+    body_format text not null default 'markdown',
     cover text default null,
     link text default null,
     lang text default null,

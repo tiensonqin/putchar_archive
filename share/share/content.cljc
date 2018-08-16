@@ -225,7 +225,7 @@
   [body body-format]
   (let [body-format (keyword body-format)
         render-fn (if (= body-format :markdown)
-                    md/md->html
+                    md/render
                     ascii/render)]
     (some-> body
             (pre-transform body-format)

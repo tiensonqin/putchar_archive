@@ -12,7 +12,10 @@
             [share.content :as content]
             [bidi.bidi :as bidi]
             #?(:cljs [goog.dom :as gdom])
-            #?(:cljs [appkit.macros :refer [oget]])))
+            #?(:cljs [appkit.macros :refer [oget]])
+            #?(:cljs [cljs.core.async :as async]))
+  #?(:cljs
+     (:require-macros [cljs.core.async.macros :refer [go]])))
 
 (rum/defc avatar
   [user {:keys [class title pro?]}]
@@ -38,27 +41,45 @@
   [html]
   [:div {:dangerouslySetInnerHTML {:__html html}}])
 
-(rum/defc transform-content < rum/reactive
-  {:after-render (fn [state]
+(rum/defcs transform-content < rum/reactive
+  {:init (fn [state props]
+           #?(:cljs
+              (let [ascii-loaded? (ascii/ascii-loaded?)
+                    adoc-format? (= :asciidoc (keyword (:body-format (second (:rum/args state)))))]
+                (when (and adoc-format? (not ascii-loaded?))
+                  (citrus/dispatch-sync! :citrus/default-update
+                                         [:ascii-loaded?]
+                                         false)
+                  (go
+                    (async/<! (ascii/load-ascii))
+                    (citrus/dispatch! :citrus/default-update
+                                      [:ascii-loaded?]
+                                      true)))))
+           state)
+   :after-render (fn [state]
                    (util/highlight!)
                    state)}
-  [body {:keys [style
+  [state body {:keys [style
                 body-format
                 render-opts
                 on-mouse-up]
-         :or {body-format :asciidoc}
-         :as attrs}]
-  [:div.column (cond->
-                 {:class "editor"
-                  :style (merge
-                          {:word-wrap "break-word"}
-                          style)
-                  :dangerouslySetInnerHTML {:__html
-                                            (if (str/blank? body)
-                                              ""
-                                              (content/render body body-format))}}
-                 on-mouse-up
-                 (assoc :on-mouse-up on-mouse-up))])
+         :or {body-format :markdown}
+               :as attrs}]
+  (let [ascii-loaded? (citrus/react [:ascii-loaded?])]
+    (if (false? ascii-loaded?)
+      [:div (t :loading)]
+      [:div.column
+       (cond->
+         {:class "editor"
+          :style (merge
+                  {:word-wrap "break-word"}
+                  style)
+          :dangerouslySetInnerHTML {:__html
+                                    (if (str/blank? body)
+                                      ""
+                                      (content/render body body-format))}}
+         on-mouse-up
+         (assoc :on-mouse-up on-mouse-up))])))
 
 (rum/defc user-card < rum/reactive
   [{:keys [id name screen_name bio website github_handle twitter_handle] :as user}]
@@ -218,7 +239,7 @@
     (let [rule (:rule group)]
       [:div {:style {:max-height 400}}
        [:div.divider]
-       (transform-content rule {:body-format :asciidoc
+       (transform-content rule {:body-format :markdown
                                 :style {:font-size 15}})])))
 
 (rum/defc share < rum/reactive
@@ -310,7 +331,7 @@
 
        [:div {:style {:font-size "1.125em"}}
         (transform-content (:purpose group)
-                           {:body-format :asciidoc})]
+                           {:body-format :markdown})]
 
 
        [:div.row1 {:style {:align-items "center"}}

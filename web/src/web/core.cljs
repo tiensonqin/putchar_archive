@@ -74,15 +74,15 @@
                 (assoc-in [:comment :drafts]
                           (storage/get :comments-drafts))))
 
-    (go
-      (start (some? current-user))
+    (start (some? current-user))
 
-      ;; ;; load MathJax
-      ;; (loader/load-math)
+    ;; (go
+    ;;   ;; ;; load MathJax
+    ;;   ;; (loader/load-math)
 
-      ;; stripe checkout
-      ;; (loader/load-stripe-checkout)
-      )
+    ;;   ;; stripe checkout
+    ;;   ;; (loader/load-stripe-checkout)
+    ;;   )
 
     (when (nil? emojis)
       (citrus/dispatch! :data/pull-emojis))

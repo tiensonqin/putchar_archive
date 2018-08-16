@@ -27,7 +27,8 @@
             [share.util :as su]
             [bidi.bidi :as bidi]
             [api.services.slack :as slack]
-            [clojure.set :as set]))
+            [clojure.set :as set]
+            [share.content :as content]))
 
 (defonce ^:private table :posts)
 (defonce ^:private fields [:*])
@@ -559,9 +560,9 @@
 (defn ->rss
   [posts]
   (let [rfc822-format (tf/formatters :rfc822)]
-    (for [{:keys [title body permalink user group tags created_at]} posts]
+    (for [{:keys [title body body_format permalink user group tags created_at body_format]} posts]
       {:title title
-       :description (format "<![CDATA[ %s ]]>" (ascii/render body))
+       :description (format "<![CDATA[ %s ]]>" (content/render body body_format))
        :link (str (:website-uri config) "/" permalink)
        :category (str/join ", " (cons (su/original-name (:name group))
                                       (map su/tag-decode tags)))

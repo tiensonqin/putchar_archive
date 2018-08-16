@@ -2,12 +2,12 @@
   (:require [share.util :as util]
             [share.dicts :refer [t]]
             [share.config :refer [img-cdn] :as config]
-            [share.asciidoc :as ascii]))
+            [share.markdown :as md]))
 
-(defn get-ascii-description
+(defn get-description
   [body]
   (if body
-    (str (apply str (take 300 (util/full-strip (ascii/render body))))
+    (str (apply str (take 300 (util/full-strip (md/render body))))
         "...")))
 
 (defn seo-title-content
@@ -22,7 +22,7 @@
                                                                    "/"
                                                                    (:permalink route-params))])]
                                       [(:title post)
-                                       (get-ascii-description (:body post))
+                                       (get-description (:body post))
                                        (if (:cover post)
                                          (:cover post)
                                          (util/cdn-image (get-in post [:user :screen_name]) :width 300 :height 300))])
@@ -31,7 +31,7 @@
                                     ;; by-name
                                     (let [name (util/internal-name (:group-name route-params))
                                           group (get-in state [:group :by-name name])]
-                                      [(util/original-name name) (get-ascii-description (:purpose group)) (util/group-logo name 300 300)])
+                                      [(util/original-name name) (get-description (:purpose group)) (util/group-logo name 300 300)])
 
                                     :channel
                                     ;; by-id

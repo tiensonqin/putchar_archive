@@ -211,7 +211,7 @@
           (str (:stars group) " " (str/lower-case (t :group-members)))]]
 
         (if (:purpose group)
-          (w/transform-content (:purpose group) {:body-format :asciidoc
+          (w/transform-content (:purpose group) {:body-format :markdown
                                                  :style {:margin-top 12
                                                         :font-size 14}}))
 
