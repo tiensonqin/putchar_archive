@@ -1,0 +1,65 @@
+(ns api.config
+  (:require [environ.core :refer [env]]
+            [share.util :as util]
+            [share.config :as config]))
+
+(def config
+  (let [default-env "dev"
+        environment (or (:env env) default-env)]
+    {:http-port (Integer. (or (:port env) 8001))
+     :ssr-port (Integer. (or (:ssr-port env) 3401))
+     :env environment
+
+     :hikari-spec {:auto-commit        true
+                   :read-only          false
+                   :connection-timeout 30000
+                   :validation-timeout 5000
+                   :idle-timeout       600000
+                   :max-lifetime       1800000
+                   :minimum-idle       10
+                   :maximum-pool-size 48
+                   :pool-name          "db-pool"
+                   :adapter            "postgresql"
+                   :username           (or (:pg-user env) "xxx")
+                   :password           (or (:pg-password env) "xxx")
+                   :database-name      "xxx"
+                   :server-name        "localhost"
+                   :port-number        5432
+                   :register-mbeans    false}
+
+     :redis {:pool {
+                    ;; :max-active 8
+                    }
+             :spec {:host "127.0.0.1"
+                    :port 6380
+                    :timeout  4000}}
+
+     :oauth {:github {:app-key (if util/development?
+                                 "xxx"
+                                 "xxx")
+                      :app-secret (if util/development?
+                                    "xxx"
+                                    "xxx")
+                      :redirect-uri (str config/website "/auth/github")}}
+     :aws {:access-key "xxx"
+           :secret-key "xxx"
+           :endpoint   "us-east-1"}
+
+     :us-east-1 {:access-key "xxx"
+                 :secret-key "xxx"
+                 :endpoint   "us-east-1"}
+
+     :search {:index-path (or (:search-index-path env) "xxx")}
+
+     :log-path (or (:log-path env) "xxx")
+     :flake-path (or (:flake-path env) "xxx")
+     :error-uri (str config/website "/error.html")
+     :img-cdn config/img-cdn
+     :website-uri config/website
+     :imgix-key "xxx"
+     :stripe-secret-key (if util/development?
+                          "xxx"
+                          "xxx")
+     :cookie-secret "xxx"
+     :jwt-secret "xxx"
+     :slack-hook "xxx"}))
