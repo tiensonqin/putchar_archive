@@ -120,7 +120,7 @@
 
 (rum/defc mention
   [screen-name]
-  [:a.mention {:href (str "/@" screen-name)}
+  [:a.mention.ubuntu {:href (str "/@" screen-name)}
    (str "@" screen-name)])
 
 (def mention-pattern #"\B@(\w+)")

@@ -13,9 +13,6 @@
                    com.vladsch.flexmark.html.HtmlRenderer
                    com.vladsch.flexmark.parser.Parser
                    com.vladsch.flexmark.util.options.MutableDataSet
-                   [com.vladsch.flexmark.ext.yaml.front.matter
-                    AbstractYamlFrontMatterVisitor
-                    YamlFrontMatterExtension]
                    java.util.ArrayList)))
 
 #?(:clj
@@ -29,8 +26,7 @@
                           (StrikethroughExtension/create)
                           (TocExtension/create)
                           (TablesExtension/create)
-                          (YouTubeLinkExtension/create)
-                          (YamlFrontMatterExtension/create)])))))
+                          (YouTubeLinkExtension/create)])))))
 
 #?(:clj
    (defn parser-builder
@@ -50,15 +46,13 @@
    (defonce markdown-html-renderer ^HtmlRenderer$Builder
      (renderer (build-options))))
 
+(def test-str (atom nil))
 (defn render [str]
+  (reset! test-str str)
   #?(:clj
      (let [doc (.parse markdown-parser str)]
-            (into {:content (.render markdown-html-renderer doc)}
-                  (map (fn [[key [value]]]
-                         [(keyword key)
-                          value]))
-                  (.getData (doto (AbstractYamlFrontMatterVisitor.)
-                              (.visit doc)))))
+
+       (.render markdown-html-renderer doc))
      :cljs
      ;; TODO: add toc extension
      (marked str)
