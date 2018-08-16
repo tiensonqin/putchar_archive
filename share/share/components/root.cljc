@@ -602,7 +602,8 @@
                           "bigger-wrap"
 
                           :else
-                          "wrap")}
+                          "wrap")
+                 :style {:overflow-y "hidden"}}
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"

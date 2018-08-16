@@ -21,7 +21,7 @@
 (defmacro aws-with-credential
   [& body]
   `(try
-     (let [config# (:us-east-1 config)
+     (let [config# (:aws config)
            access-key# (:access-key config#)
            secret-key# (:secret-key config#)
            endpoint# (:endpoint config#)]

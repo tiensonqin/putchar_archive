@@ -453,7 +453,7 @@
 
             (util/time-ago created_at)] ]
 
-          [:div {:style {:padding "8px 0 0 8px"}}
+          [:div {:style {:padding "4px 0 0 8px"}}
            (if @edit-mode?
              (update-comment-box comment edit-mode? [table fk])
              (widgets/transform-content body

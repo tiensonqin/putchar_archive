@@ -45,10 +45,6 @@
            :secret-key "xxx"
            :endpoint   "us-east-1"}
 
-     :us-east-1 {:access-key "xxx"
-                 :secret-key "xxx"
-                 :endpoint   "us-east-1"}
-
      :search {:index-path (or (:search-index-path env) "xxx")}
 
      :log-path (or (:log-path env) "xxx")
