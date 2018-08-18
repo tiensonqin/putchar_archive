@@ -437,4 +437,6 @@
 * 我想成为某个小组的管理员，该怎么做？
   你可以联系该组管理员，或者发邮件到: tiensonqin@gmail.com。
 "
+   :ui-settings "UI 设置"
+   :dont-show-vote-numbers "不显示顶数量"
    })

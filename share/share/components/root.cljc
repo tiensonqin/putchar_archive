@@ -578,7 +578,7 @@
         post-page? (= route :post)
         group-path? (contains? #{:post :comment :group :group-edit :channel :channel-edit :new-channel :group-hot-posts :group-new-posts :channels :channel-new-posts :channel-hot-posts :members} route)
         group-or-channel? (contains? #{:group :channel} route)
-        hide-github-connect? (citrus/react [:hide-github-connect?])]
+        hide-github-connect? (= (citrus/react [:hide-github-connect?]) "true")]
     [:div.column
      [:div.main {:style {:background "#F6F6F6"}}
 

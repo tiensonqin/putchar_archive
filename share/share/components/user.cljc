@@ -310,6 +310,27 @@
            :loading? [:user :loading?]})])]))
 
 
+(rum/defc ui-settings < rum/reactive
+  []
+  (let [hide-votes? (citrus/react [:hide-votes?])]
+    [:div {:style {:padding "24px 12px"}}
+    [:h3 {:style {:margin-bottom 24}}
+     (t :ui-settings)]
+
+    [:div.row1
+     [:a {:on-click (fn []
+                      (citrus/dispatch!
+                       (if hide-votes?
+                         :citrus/show-votes
+                         :citrus/hide-votes)))}
+      [:i {:class (if hide-votes?
+                    "fa fa-check-square"
+                    "fa fa-square-o")
+           :style {:font-size 20
+                   :margin-right 12
+                   :color "#1a1a1a"}}]]
+     (t :dont-show-vote-numbers)]]))
+
 (rum/defcs profile < rum/reactive
   < (rum/local false ::uploading?)
   (rum/local false ::delete-dialog?)
@@ -372,6 +393,8 @@
 
      ;; connect with github
      (github-repo user)
+
+     (ui-settings)
 
      [:div {:style {:padding "24px 12px"}}
       [:h3 {:style {:margin-bottom 24}}

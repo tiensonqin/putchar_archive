@@ -39,7 +39,8 @@
         title (if toped? (t :unvote) (t :vote))
         on-click (fn [e]
                    (citrus/dispatch! (if toped? :post/untop :post/top) (:id post))
-                   (swap! init-tops (if toped? dec inc)))]
+                   (swap! init-tops (if toped? dec inc)))
+        hide-votes? (citrus/react [:hide-votes?])]
     [:div.row1.scale.control {:style {:align-items "center"}}
      [:a.scale.control {:title title
                         :on-click on-click}
@@ -47,11 +48,12 @@
                 :width 14
                 :color (if toped? "#000" "#666")
                 :opts {:style {:margin-top -2}}})]
-     [:a.control.ubuntu {:on-click on-click
-                  :style {:margin-left 6
-                          :color "rgb(127,127,127)"
-                          :font-weight "600"}}
-      tops]]))
+     (when-not hide-votes?
+       [:a.control.ubuntu {:on-click on-click
+                          :style {:margin-left 6
+                                  :color "rgb(127,127,127)"
+                                  :font-weight "600"}}
+       tops])]))
 
 (rum/defcs bookmark-text < rum/reactive
   [state post]

@@ -45,6 +45,9 @@
         locale           (or
                           (keyword (cookie/cookie-get :locale))
                           (:locale state))
+        hide-votes?      (or
+                          (= (cookie/cookie-get :hide-votes) "true")
+                          (:hid-votes? state))
         zh-cn? (= locale :zh-cn)
         current-user (get-in state [:user :current])
         emojis (storage/get :emojis)]
@@ -68,7 +71,8 @@
                            (fn [m]
                              (if m
                                (update m :stared_groups util/normalize))))
-                (assoc :locale locale)
+                (assoc :locale locale
+                       :hide-votes? hide-votes?)
                 (assoc-in [:comment :liked-comments]
                           (storage/get :liked-comments))
                 (assoc-in [:comment :drafts]

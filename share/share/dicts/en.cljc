@@ -428,4 +428,6 @@ So you can git commit a new post, and it will be automatically published on Lamb
 * I want to be the moderator of a specific group, how?
   You can contact the moderators for that specific group, or you can email me for now: tiensonqin@gmail.com.
 "
+   :ui-settings "UI Settings"
+   :dont-show-vote-numbers "Don't show vote numbers"
    })

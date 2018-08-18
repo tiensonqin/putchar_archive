@@ -47,6 +47,16 @@
      {:state (assoc state :hide-github-connect? true)
       :cookie [:set-forever "hide-github-connect" true]})
 
+   :citrus/hide-votes
+   (fn [state]
+     {:state (assoc state :hide-votes? true)
+      :cookie [:set-forever "hide-votes" true]})
+
+   :citrus/show-votes
+   (fn [state]
+     {:state (assoc state :hide-votes? false)
+      :cookie [:set-forever "hide-votes" false]})
+
    :citrus/touch-start
    (fn [state e]
      {:state {:touch {:touching? true
