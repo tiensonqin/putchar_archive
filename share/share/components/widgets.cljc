@@ -478,18 +478,19 @@
   (let [url (util/get-current-url)]
     (when-let [scroll-top (citrus/react [:last-scroll-top url])]
       (if (> scroll-top 200)
-        [:a#back-to-top {:style {:position "fixed"
-                                 :bottom 20
-                                 :right 20
-                                 :width 36
-                                 :height 36
-                                 :background "#aaa"
-                                 :z-index 9999
-                                 :border-radius 2
-                                 :padding-top 6
-                                 :text-align "center"}
-                         :on-click (fn []
-                                     (citrus/dispatch! :citrus/set-scroll-top url 0))}
+        [:a#back-to-top.fadein
+         {:style {:position "fixed"
+                  :bottom 20
+                  :right 20
+                  :width 36
+                  :height 36
+                  :background "#aaa"
+                  :z-index 9999
+                  :border-radius 2
+                  :padding-top 6
+                  :text-align "center"}
+          :on-click (fn []
+                      (citrus/dispatch! :citrus/set-scroll-top url 0))}
          (ui/icon {:type :back-to-top
                    :color "#efefef"})
          ]))))

@@ -330,7 +330,7 @@
                          (:group-name params))
           new-post? (= route :new-post)
           edit-post? (= route :post-edit)
-          text [:span.logo {:style {:max-width (if mobile?
+          text [:span.logo.fadein {:style {:max-width (if mobile?
                                                  80
                                                  300)}}
                 (util/original-name group-name)]
@@ -341,7 +341,7 @@
           logo-text [:div.row1 {:style {:align-items "center"}}
                      logo
                      text]]
-      [:div.fadein {:class "logo-area"
+      [:div {:class "logo-area"
              :key "group-logo"
              :style {:align-items "center"}}
 

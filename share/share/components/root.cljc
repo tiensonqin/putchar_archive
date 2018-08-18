@@ -580,7 +580,7 @@
         group-or-channel? (contains? #{:group :channel} route)
         hide-github-connect? (citrus/react [:hide-github-connect?])]
     [:div.column
-     [:div.main {:style {:background "#FFF"}}
+     [:div.main {:style {:background "#F6F6F6"}}
 
       (notification)
 
