@@ -48,11 +48,10 @@
   (mixins/disable-others-tabindex ".post-preview a")
   [body body-format]
   (let [width (citrus/react [:layout :current :width])]
-    [:div.editor.post-preview {:style {:padding 2}}
-     [:div.row
-      (widgets/transform-content body
-                                 {:body-format body-format
-                                  :style {:overflow "hidden"}})]]))
+    [:div.editor.post-preview.row {:style {:padding 2}}
+     (widgets/transform-content body
+                                {:body-format body-format
+                                 :style {:overflow "hidden"}})]))
 
 ;; refs k => ref
 (rum/defcs comment-box < rum/reactive
@@ -131,7 +130,7 @@
          (if preview?
            [:div.column
             [:div.divider {:style {:margin-bottom 12}}]
-            (post-preview body "asciidoc")])]))
+            (post-preview body :markdown)])]))
 
      ;; submit button
      [:div.row {:style {:align-items "center"
@@ -195,7 +194,7 @@
      (if preview?
        [:div.column {:style {:min-height 130
                              :justify-content "space-between"}}
-        (post-preview body "asciidoc")
+        (post-preview body :markdown)
         [:div.divider {:style {:margin-bottom 12}}]]
 
        (ui/textarea-autosize {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update

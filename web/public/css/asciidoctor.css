@@ -189,12 +189,10 @@ abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; borde
 abbr { text-transform: none; }
 
 /* Blockquotes */
-blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote { margin: 0 0 1.25em; }
 blockquote cite { display: block; font-size: inherit; color: #555555; }
 blockquote cite:before { content: "\2014 \0020"; }
 blockquote cite a, blockquote cite a:visited { color: #555555; }
-
-blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
 
 /* Microformats */
 .vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
@@ -236,7 +234,7 @@ table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoo
 
 *:not(pre) > code { font-size: 0.9375em; padding: 1px 3px 0; white-space: nowrap; background-color: #f2f2f2; border: 1px solid #cccccc; -webkit-border-radius: 4px; border-radius: 4px; text-shadow: none; }
 
-pre, pre > code { line-height: 1.4; color: inherit; font-family: "Droid Sans Mono","DejaVu Sans Mono","Monospace",monospace; font-weight: normal; }
+pre, pre > code { line-height: 1.4; font-family: "Droid Sans Mono","DejaVu Sans Mono","Monospace",monospace; font-weight: normal; }
 
 kbd.keyseq { color: #555555; }
 

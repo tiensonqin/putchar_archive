@@ -3,7 +3,7 @@
  * Author: Nicolas LLOBERA <nllobera@gmail.com>
  */
 
-.hljs {
+pre > code, .hljs {
   display: block;
   overflow-x: auto;
   padding: 1em 0.5em;

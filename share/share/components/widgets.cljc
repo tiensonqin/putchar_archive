@@ -70,7 +70,7 @@
       [:div (t :loading)]
       [:div.column
        (cond->
-         {:class "editor"
+         {:class (str "editor " (name body-format))
           :style (merge
                   {:word-wrap "break-word"}
                   style)
