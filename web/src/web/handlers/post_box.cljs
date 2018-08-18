@@ -125,9 +125,9 @@
                                           :else
                                           "\n\n")
                                         "!["
-                                        (:url picture)
-                                        "]("
                                         (util/get-file-base-name (gobj/get (:file picture) "name"))
+                                        "]("
+                                        (:url picture)
                                         ")"
                                         "\n")
                                        (str
