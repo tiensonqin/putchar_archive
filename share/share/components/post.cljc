@@ -45,13 +45,24 @@
                         :on-click on-click}
       (ui/icon {:type :vote
                 :width 14
-                :color (if toped? "#000" "#666")})]
+                :color (if toped? "#000" "#666")
+                :opts {:style {:margin-top -2}}})]
      [:a.control.ubuntu {:on-click on-click
                   :style {:margin-left 6
                           :color "rgb(127,127,127)"
-                          :font-weight "600"
-                          :margin-top 2}}
+                          :font-weight "600"}}
       tops]]))
+
+(rum/defcs bookmark-text < rum/reactive
+  [state post]
+  (let [ bookmarked-posts (set (citrus/react [:post :bookmarked]))
+        bookmarked? (and (set? bookmarked-posts)
+                         (bookmarked-posts (:id post)))]
+    [:a.button-text {:style {:font-size 14}
+                     :on-click (fn [e]
+                                 (citrus/dispatch! (if bookmarked? :post/unbookmark :post/bookmark)
+                                                   (:id post)))}
+     (if bookmarked? (t :unbookmark) (t :bookmark))]))
 
 (rum/defcs bookmark < rum/reactive
   (rum/local 0 ::init-bookmarks)
@@ -809,28 +820,36 @@
                    :right (if mobile? 12 0)
                    :margin-right -2
                    :margin-top -2}
-                  {:margin-left 12})
-               :on-click (fn [e]
-                           (util/stop e))}
-           (ui/icon {:type :more
-                     :color "#999"
-                     :width 20
-                     :height 20})]
-          [(when self?
-             [:a.button-text {:style {:font-size 14}
-                              :on-click (fn [e]
-                                          (util/set-href! (str config/website "/p/" (:id post) "/edit")))}
-              (t :edit)])
+                  {:margin-top 2
+                   :margin-right 12})
+         :on-click (fn [e]
+                     (util/stop e))}
+     (ui/icon {:type :more
+               :color "#999"
+               :width 20
+               :height 20})]
+    [
+     ;; edit
+     (when self?
+       [:a.button-text {:style {:font-size 14}
+                        :on-click (fn [e]
+                                    (util/set-href! (str config/website "/p/" (:id post) "/edit")))}
+        (t :edit)])
 
-           (when self?
-             [:a.button-text {:style {:font-size 14}
-                              :on-click (fn [e]
-                                          (citrus/dispatch! :post/open-delete-dialog? post))}
-              (t :delete)])
+     ;; delete
+     (when self?
+       [:a.button-text {:style {:font-size 14}
+                        :on-click (fn [e]
+                                    (citrus/dispatch! :post/open-delete-dialog? post))}
+        (t :delete)])
 
-           (when (not self?)
-             (ops-flag post))]
-          {:menu-style {:width 200}}))
+     ;; bookmark
+     (bookmark-text post)
+
+     ;; report
+     (when (not self?)
+       (ops-flag post))]
+    {:menu-style {:width 200}}))
 
 (rum/defcs post-item < {:key-fn (fn [post]
                                   (:id post))}
@@ -860,28 +879,21 @@
                       (str "/p/" (:id post) "/edit")
                       post-link)
           {:keys [last_reply_at created_at]} post
-          self? (and current-user user? self?)]
+          self? (and current-user self?)]
       [:div.post-item.col-item {:style {:position "relative"}}
        (when user?
          (ops-menu post self? mobile? true))
 
        [:div.row
         (if show-avatar?
-          (if-let [last-reply-by (:last_reply_by post)]
-            [:a {:href (str "/@" last-reply-by)
-                 :on-click util/stop
-                 :title (str (t :last-reply-by) last-reply-by)
-                 :style {:margin-right 12
-                         :padding-top 5}}
-             (ui/avatar {:src (util/cdn-image last-reply-by)
-                         :shape "circle"})]
-            [:a {:href user-link
-                 :on-click util/stop
-                 :title (str (t :posted-by) (:screen_name user))
-                 :style {:margin-right 12
-                         :padding-top 5}}
-             (ui/avatar {:src (util/cdn-image (:screen_name user))
-                         :shape "circle"})]))
+          [:a {:href user-link
+               :on-click util/stop
+               :title (str (t :posted-by) (:screen_name user))
+               :style {:margin-right 12
+                       :padding-top 5}}
+           (ui/avatar {:src (util/cdn-image (:screen_name user))
+                       :shape "circle"})]
+          )
         [:div.column
          (when user?
            [:div.row1 {:style {:margin-bottom 12
@@ -953,44 +965,63 @@
                                                :margin-top 12}}
             [:div.row1 {:style {:align-items "center"}}
              (vote post)
-
-             (bookmark post {:opts {:style {:margin-left 24
-                                            :margin-top 2}}
-                             :width 20})
-
-             (ops-menu post self? mobile? false)]
+             ]
 
 
-            [:div.row1 {:style {:align-items "center"
-                                :color "rgb(127,127,127)"
+            [:div.row1 {:style {:color "rgb(127,127,127)"
                                 :font-size 14}}
-             (when show-group?
-               [:a.control {:href (str "/" group-name)
-                            :style {:margin-right 12}
-                            :on-click (fn [e] (util/stop e))}
+             [:div.row1 {:style {:align-items "center"
+                                 :flex-wrap "wrap"
+                                 :margin-left 12}}
+              (when show-group?
+                [:a.control {:href (str "/" group-name)
+                             :style {:margin-right 12}
+                             :on-click (fn [e] (util/stop e))}
 
-                (util/original-name group-name)])
-             (when (and not-general-channel
-                        (not= :channel current-path))
-               [:a.control
-                {:style {:margin-right 12}
-                 :on-click util/stop
-                 :href (str "/" (get-in post [:group :name])
-                            "/" channel-name)}
-                (str "#" channel-name)])
+                 (util/original-name group-name)])
+              (when (and not-general-channel
+                         (not= :channel current-path))
+                [:a.control
+                 {:style {:margin-right 12}
+                  :on-click util/stop
+                  :href (str "/" (get-in post [:group :name])
+                             "/" channel-name)}
+                 (str "#" channel-name)])]
 
-             (if last_reply_at
-               [:a.no-decoration.control {:title (str
+             (ops-menu post self? mobile? false)
+
+             (when-not mobile?
+               (let [last-reply-by (:last_reply_by post)
+                     frequent_posters (-> (remove (hash-set (:screen_name user) last-reply-by)
+                                                  (:frequent_posters post))
+                                          (conj last-reply-by))
+                     frequent_posters (remove nil? frequent_posters)]
+                 (when (seq frequent_posters)
+                   [:div.row1
+                    (for [poster frequent_posters]
+                      (if poster
+                        [:a {:href (str "/@" poster)
+                             :key (str "frequent-poster-" poster)
+                             :title (str (t :frequent-poster) poster)
+                             :style {:margin-right 12}}
+                         (ui/avatar {:class "ant-avatar-sm"
+                                     :src (util/cdn-image poster)})]))])))
+             [:a.no-decoration.control {:title (if last_reply_at
+                                                 (str
                                                   (t :created-at) ": " (util/date-format created_at)
                                                   "\n"
-                                                  (t :last-reply-at) ": " (util/time-ago last_reply_at))
-                                          :style {:font-size "1em"}}
-                (util/time-ago (:last_reply_at post))]
-
-               [:a.no-decoration.control {:title (str
-                                                  (t :created-at) ": " (util/date-format created_at))
-                                          :style {:font-size "1em"}}
-                (util/time-ago created_at)])]])]]])))
+                                                  (t :last-reply-at) ": " (util/date-format last_reply_at)
+                                                  "\n"
+                                                  "By: " (:last_reply_by post))
+                                                 (str
+                                                  (t :created-at) ": " (util/date-format created_at)))
+                                        :href (if-let [last-reply-idx (:last_reply_idx post)]
+                                                (str post-link "/" last-reply-idx)
+                                                post-link)}
+              (if last_reply_at
+                (util/time-ago (:last_reply_at post))
+                (util/time-ago created_at))]]
+            ])]]])))
 
 (rum/defc posts-stream < rum/reactive
   [posts show-avatar? show-group? end? opts loading?]

@@ -3,7 +3,7 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :group :channel :title :rank :permalink :created_at :comments_count :tops :link :choices :poll_choice :poll_closed :cover :video :last_reply_at :last_reply_by :tags])
+  [:id :flake_id :user :group :channel :title :rank :permalink :created_at :comments_count :tops :link :choices :poll_choice :poll_closed :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
 
 (defn group-fields
   [post-filter]

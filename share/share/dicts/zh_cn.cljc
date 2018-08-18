@@ -373,6 +373,7 @@
    :welcome-to-lambdahackers "欢迎来到 Lambdahackers!"
    :activate-your-account "登录"
    :last-reply-by "最近回复: "
+   :frequent-poster "最多讨论: "
    :posted-by "提交: "
    :add-to-wiki "添加到 Wiki"
    :email-login-placeholder "你的邮箱地址"

@@ -368,6 +368,7 @@
    :welcome-to-lambdahackers "Welcome to Lambdahackers!"
    :activate-your-account "Sign In"
    :last-reply-by "Last reply by: "
+   :frequent-poster "Frequent poster: "
    :posted-by "Posted by: "
    :add-to-wiki "Add to Wiki"
    :email-login-placeholder "Enter your email address"

@@ -94,19 +94,26 @@
          (when-let [comment (util/create db table (assoc m
                                                          :post_permalink (:permalink post)
                                                          :mentions mentions) :flake? true)]
-          (post/inc-comments-count db (:post_id m))
-          (post/update db (:id post) {:last_reply_at (util/sql-now)
-                                      :last_reply_by (:screen_name (u/get db (:user_id m)))})
-          (let [result (-> comment
-                           (util/with :user_id #(u/get db % [:id :screen_name])))]
-            (when-let [reply-id (:reply_to m)]
-              (inc-replies-count db reply-id))
-            (new-comment db result)
-            result))))
+           (let [result (-> comment
+                            (util/with :user_id #(u/get db % [:id :screen_name])))
+                 comment-user (get-in result [:user :screen_name])
+                 posters (if-let [posters (:frequent_posters post)]
+                           (clojure.core/update (read-string posters) comment-user inc)
+                           {comment-user 1})]
+             (post/inc-comments-count db (:post_id m))
+
+             (post/update db (:id post) {:last_reply_at (util/sql-now)
+                                         :last_reply_by (:screen_name (u/get db (:user_id m)))
+                                         :last_reply_idx (:idx m)
+                                         :frequent_posters (pr-str posters)})
+             (when-let [reply-id (:reply_to m)]
+               (inc-replies-count db reply-id))
+             (new-comment db result)
+             result)
+           )))
 
      :else
-     nil))
-  )
+     nil)))
 
 (defn update
   [db id m]

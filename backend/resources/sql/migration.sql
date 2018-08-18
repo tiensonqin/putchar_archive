@@ -1,7 +1,5 @@
-alter table users drop column twitter_id;
-alter table users drop column google_id;
-alter table users drop column phone;
-alter table users drop column password;
+-- TODO: using migration tools.
+-- changelogs
 
--- file-path -> permalink
-alter table users add column github_repo_map text default null;
+-- Sat Aug 18 11:17:18 CST 2018
+alter table posts add column frequent_posters text default null;

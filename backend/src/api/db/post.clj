@@ -37,7 +37,7 @@
                                   :channel_id :channel_name
                                   :title :tops
                                   :rank :comments_count :permalink
-                                  :created_at :updated_at :last_reply_at :last_reply_by
+                                  :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
                                   :link
                                   :lang
                                   :body :body_format :tags
@@ -237,13 +237,23 @@
              (apply str (take 280 body))))
     posts))
 
+(defn flatten-frequent-posters
+  [posts]
+  (map (fn [{:keys [frequent_posters] :as post}]
+         (let [posters (if frequent_posters
+                         (keys (read-string frequent_posters))
+                         frequent_posters)]
+           (assoc post :frequent_posters
+                  posters)))
+    posts))
+
 (defn get-posts
   [db where cursor]
-  (-> base-map
-      (assoc :where where)
-      (util/wrap-cursor cursor)
-      (->> (util/query db))
-      (->> (map with-user-group-channel))))
+  (->> (-> (assoc base-map :where where)
+           (util/wrap-cursor cursor))
+       (util/query db)
+       (map with-user-group-channel)
+       (flatten-frequent-posters)))
 
 (def post-conditions
   [:and

@@ -24,7 +24,7 @@ CREATE TABLE users (
   ALTER TABLE users ADD CONSTRAINT users_oauth_id_key UNIQUE (oauth_id);
   ALTER TABLE users ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
   ALTER TABLE users ADD CONSTRAINT last_seen_at_chk CHECK (EXTRACT(TIMEZONE from last_seen_at) = '0');
-  CREATE INDEX users_created_at_index ON users(created_at DESC);
+CREATE INDEX users_created_at_index ON users(created_at DESC);
 
 -- Groups
 CREATE TABLE groups (
@@ -52,7 +52,7 @@ CREATE TABLE channels (
     flake_id bigint not null,
     name text not null default 'general',
     user_id UUID NOT NULL,
-    group_id UUID NOT NULL,
+  group_id UUID NOT NULL,
     is_private boolean default false,
     del boolean default false,
     purpose text default null,
@@ -65,8 +65,8 @@ CREATE TABLE posts (
     flake_id bigint not null,
     user_id UUID NOT NULL,
     user_screen_name text NOT NULL,
-    group_id UUID default null,
-    group_name text default null,
+  group_id UUID default null,
+  group_name text default null,
     channel_id UUID default null,
     channel_name text default null,
     is_private boolean not null default false,
@@ -90,10 +90,12 @@ CREATE TABLE posts (
     is_draft boolean default true,
     video text,
     created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'),
-            updated_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'),
-            tags text[] default null,
+    updated_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'),
+    tags text[] default null,
     last_reply_at timestamp with time zone default null,
-    last_reply_by text default null
+    last_reply_by text default null,
+    last_reply_idx integer default null,
+    frequent_posters text default null
     );
   ALTER TABLE posts ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
   ALTER TABLE posts ADD CONSTRAINT updated_at_chk CHECK (EXTRACT(TIMEZONE from updated_at) = '0');
@@ -133,14 +135,14 @@ CREATE TABLE stars (
   ALTER TABLE stars ADD CONSTRAINT user_id_object UNIQUE (user_id,object_type,object_id);
 
 CREATE TABLE bookmarks (
-  id UUID DEFAULT uuid_generate_v4() primary key,
-  flake_id bigint not null,
-  user_id UUID not null,
-  post_id UUID default null,
-  item_id UUID default null,
-  created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
-ALTER TABLE bookmarks ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
-ALTER TABLE bookmarks ADD CONSTRAINT bookmarks_user_id_post_id UNIQUE (user_id,post_id);
+    id UUID DEFAULT uuid_generate_v4() primary key,
+    flake_id bigint not null,
+    user_id UUID not null,
+    post_id UUID default null,
+    item_id UUID default null,
+    created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
+  ALTER TABLE bookmarks ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
+  ALTER TABLE bookmarks ADD CONSTRAINT bookmarks_user_id_post_id UNIQUE (user_id,post_id);
 
 CREATE TABLE reports (
     id UUID DEFAULT uuid_generate_v4() primary key,
@@ -175,18 +177,18 @@ CREATE TABLE tops (
     item_id UUID default null,
     created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
   ALTER TABLE tops ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
-          ALTER TABLE tops ADD CONSTRAINT tops_user_id_post_id UNIQUE (user_id,post_id);
+  ALTER TABLE tops ADD CONSTRAINT tops_user_id_post_id UNIQUE (user_id,post_id);
 
-        CREATE TABLE downs (
-            id UUID DEFAULT uuid_generate_v4() primary key,
-            flake_id bigint not null,
-            user_id UUID not null,
-            post_id UUID default null,
-            item_id UUID default null,
-            created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
-          ALTER TABLE downs ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
-          ALTER TABLE downs ADD CONSTRAINT downs_user_id_post_id UNIQUE (user_id,post_id);
-          ALTER TABLE downs ADD CONSTRAINT downs_user_id_item_id UNIQUE (user_id,item_id);
+CREATE TABLE downs (
+    id UUID DEFAULT uuid_generate_v4() primary key,
+    flake_id bigint not null,
+    user_id UUID not null,
+    post_id UUID default null,
+    item_id UUID default null,
+    created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
+  ALTER TABLE downs ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
+  ALTER TABLE downs ADD CONSTRAINT downs_user_id_post_id UNIQUE (user_id,post_id);
+  ALTER TABLE downs ADD CONSTRAINT downs_user_id_item_id UNIQUE (user_id,item_id);
 
 CREATE TABLE likes (
     id UUID DEFAULT uuid_generate_v4() primary key,
@@ -198,14 +200,14 @@ CREATE TABLE likes (
   ALTER TABLE likes ADD CONSTRAINT user_id_comment_id UNIQUE (user_id,comment_id);
 
 CREATE TABLE posts_notifications (
-  id UUID DEFAULT uuid_generate_v4() primary key,
-  flake_id bigint not null,
-  permalink text NOT NULL,
-  email text not null,
-  level text not null default 'default',
-  created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
-ALTER TABLE posts_notifications ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
-ALTER TABLE posts_notifications ADD CONSTRAINT email_permalink UNIQUE (email,permalink);
+    id UUID DEFAULT uuid_generate_v4() primary key,
+    flake_id bigint not null,
+    permalink text NOT NULL,
+    email text not null,
+    level text not null default 'default',
+    created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
+  ALTER TABLE posts_notifications ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
+  ALTER TABLE posts_notifications ADD CONSTRAINT email_permalink UNIQUE (email,permalink);
 
 CREATE TABLE follows (
     id UUID DEFAULT uuid_generate_v4() primary key,
