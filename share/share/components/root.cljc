@@ -272,9 +272,7 @@
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
       [:div#head {:key "head"}
-       [:div.row {:class (if preview?
-                           "bigger-wrap"
-                           "wrap")
+       [:div.row {:class "wrap"
                   :style {:justify-content "space-between"}}
         (if (and (= current-path :post)
                  (and last-scroll-top (> last-scroll-top 100))
@@ -597,9 +595,6 @@
       [:div.row {:class (cond
                           post-page?
                           ""
-
-                          preview?
-                          "bigger-wrap"
 
                           :else
                           "wrap")

@@ -114,6 +114,7 @@
           q {:q    {:post {:fields [:id
                                     :title
                                     :body
+                                    :body_format
                                     :permalink
                                     :is_draft
                                     :is_wiki

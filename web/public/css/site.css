@@ -720,6 +720,11 @@ a.active {
     color: #FFF;
 }
 
+/* markdown */
 .markdown pre {
+    margin-bottom: 1.25em;
+}
+
+.markdown ul, .markdown ol {
     margin-bottom: 1.25em;
 }

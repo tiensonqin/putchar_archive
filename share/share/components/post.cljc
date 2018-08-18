@@ -100,7 +100,9 @@
         current-path (citrus/react [:router :handler])
         post-edit? (= :post-edit current-path)
         new-post? (= :new-post current-path)
+        current-post (citrus/react [:post :current])
         body-format (or (citrus/react [:post :form-data :body_format])
+                        (:body_format current-post)
                         (citrus/react [:latest-body-format])
                         :markdown)]
     [:div {:style {:display "flex"
@@ -1045,7 +1047,9 @@
                              (citrus/dispatch! :citrus/load-more-posts
                                                opts)))})
      (when loading?
-       [:div.center.ubuntu {:style {:font-size "1.2em"}}
+       [:div.center.ubuntu {:style {:font-size "1.2em"
+                                    :font-weight "500"
+                                    :color "rgb(127,127,127)"}}
         (t :loading)])
 
      (ops-delete-dialog)]
