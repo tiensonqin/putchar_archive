@@ -182,6 +182,10 @@ code {
     margin-bottom: 24px;
 }
 
+.comment img {
+    margin: 12px 0;
+}
+
 .editor img.emoji, .post-item-content img.emoji {
     display: inline-block;
     margin: 0;
