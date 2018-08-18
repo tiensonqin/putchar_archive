@@ -366,62 +366,6 @@ label {
     content: "\f096";
 }
 
-blockquote, blockquote p {
-    color: rgba(0,0,0,0.9);
-    font-size: 1.15rem;
-    line-height: 1.75;
-    word-spacing: 0.1em;
-    letter-spacing: 0;
-    font-style: italic;
-    text-align: justify;
-}
-
-blockquote>.paragraph:last-child p {
-    margin-bottom: 0;
-}
-
-
-.quoteblock .attribution, .verseblock .attribution {
-    font-size: .9375em;
-    line-height: 1.45;
-    font-style: italic;
-}
-
-.quoteblock .attribution {
-    margin-top: 0.5em;
-    margin-right: 0.5ex;
-    text-align: right;
-}
-
-.comment-box .quoteblock, .comment .quoteblock, blockquote {
-    border-left: 5px solid #dfdfdf;
-    background-color: #efefef;
-    padding: 12px;
-}
-
-.comment-box .concate, .comment .concate {
-    margin-bottom: -1.5em;
-}
-
-.comment-box blockquote, .comment-box blockquote p, .comment blockquote, .comment blockquote p {
-    font-size: 15px;
-    font-style: normal;
-}
-
-.comment-box blockquote:before, .comment blockquote:before {
-    content: "";
-}
-
-.quoteblock {
-    padding: 1em 0;
-}
-
-.quoteblock .attribution cite, .verseblock .attribution cite {
-    display: block;
-    letter-spacing: -0.05em;
-    color: rgba(0,0,0,0.6);
-}
-
 .form h1 {
     margin-top: 0;
 }
@@ -720,11 +664,86 @@ a.active {
     color: #FFF;
 }
 
+.quoteblock blockquote, .quoteblock blockquote p {
+    color: rgba(0,0,0,0.9);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    word-spacing: 0.1em;
+    letter-spacing: 0;
+    font-style: italic;
+    text-align: justify;
+}
+
+.quoteblock blockquote>.paragraph:last-child p {
+    margin-bottom: 0;
+}
+
+.quoteblock .attribution, .verseblock .attribution {
+    font-size: .9375em;
+    line-height: 1.45;
+    font-style: italic;
+}
+
+.quoteblock .attribution {
+    margin-top: 0.5em;
+    margin-right: 0.5ex;
+    text-align: right;
+}
+
+.quoteblock blockquote:before {
+    content: "\201c";
+    float: left;
+    font-size: 2.75em;
+    font-weight: bold;
+    line-height: 0.6em;
+    margin-left: -0.5em;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.markdown blockquote, .comment-box .quoteblock, .comment .quoteblock {
+    margin: 0.5em 0;
+    border-left: 5px solid #dfdfdf;
+    background-color: #efefef;
+    padding: 12px;
+}
+
+.comment-box .concate, .comment .concate {
+    margin-bottom: -1.5em;
+}
+
+.comment-box .quoteblock blockquote, .comment-box .quoteblock blockquote p, .comment .quoteblock blockquote, .comment .quoteblock blockquote p {
+    font-size: 15px;
+    font-style: normal;
+}
+
+.comment-box .quoteblock blockquote:before, .comment .quoteblock blockquote:before {
+    content: "";
+}
+
+.quoteblock {
+    padding: 1em 1.25em 1.5em 1.7em;
+}
+
+.quoteblock .attribution cite, .verseblock .attribution cite {
+    display: block;
+    letter-spacing: -0.05em;
+    color: rgba(0,0,0,0.6);
+}
+
+.asciidoc blockquote {
+    margin: 0;
+}
+
 /* markdown */
 .markdown pre {
     margin-bottom: 1.25em;
 }
 
 .markdown ul, .markdown ol {
+    margin-bottom: 1.25em;
+}
+
+.markdown blockquote {
+    margin-top: 0;
     margin-bottom: 1.25em;
 }

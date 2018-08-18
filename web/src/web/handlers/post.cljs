@@ -442,8 +442,11 @@
 
    :citrus/save-latest-body-format
    (fn [state body-format]
-     {:state {:latest-body-format body-format}
-      :local-storage {:action :set
-                      :key :latest-body-format
-                      :value body-format}})
+     (if (= (get-in state [:router :handler])
+            :post-edit)
+       {:state {:latest-body-format body-format}
+        :local-storage {:action :set
+                        :key :latest-body-format
+                        :value body-format}}
+       {:state state}))
    })
