@@ -341,7 +341,7 @@
           logo-text [:div.row1 {:style {:align-items "center"}}
                      logo
                      text]]
-      [:div {:class "logo-area"
+      [:div.fadein {:class "logo-area"
              :key "group-logo"
              :style {:align-items "center"}}
 

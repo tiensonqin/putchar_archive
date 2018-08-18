@@ -280,22 +280,16 @@
           (let [{:keys [screen_name permalink]} params
                 permalink (util/encode-permalink (str "@" screen_name "/" permalink))
                 current-post (citrus/react [:post :by-permalink permalink])]
-            [:div.column1 {:style {:justify-content "center"}}
-             [:span {:style {:font-size 18
-                             :max-width 600
-                             :font-weight "600"
-                             :overflow "hidden"
-                             :text-overflow "ellipsis"
-                             :white-space "nowrap"
-                             :display "block"
-                             :height "32px"
-                             :line-height "32px"
-                             :margin-right 24}}
-              (:title current-post)]
-             [:a.control {:style {:font-size 13
-                                  :margin-right 24}
-                          :href (str "/" (:name current-group))}
-              (util/original-name (:name current-group))]])
+            [:div.row1 {:style {:align-items "center"}}
+             (group/group-logo join-group? current-group width true)
+             [:h3.fadein {:style {:margin-left 24
+                           :margin-right 24
+                           :margin-top 12
+                           :max-width 600
+                           :overflow "hidden"
+                           :text-overflow "ellipsis"
+                           :white-space "nowrap"}}
+              (:title current-post)]])
           [:div.row1 {:style {:align-items "center"}}
            (when (and (not= current-path :home)
                       (util/ios?))
@@ -319,7 +313,7 @@
             (and (= current-path :user)
                  (and last-scroll-top (> last-scroll-top 100))
                  (not= (:screen_name params) (:screen_name current-user)))
-            [:div.row1 {:style {:align-items "center"
+            [:div.row1.fadein {:style {:align-items "center"
                                 :cursor "pointer"}}
              (ui/avatar {:src (util/cdn-image (:screen_name params))
                          :class "ant-avatar-mm"})
