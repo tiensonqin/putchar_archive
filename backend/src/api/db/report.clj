@@ -38,7 +38,6 @@
 
 (defn get-data
   [db {:keys [object_type object_id]}]
-  (prn object_type object_id)
   (case object_type
     :post (when-let [post (post/get db object_id)]
             {:group (:group post)

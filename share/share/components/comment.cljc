@@ -61,9 +61,6 @@
         current-box-k (citrus/react [:comment :current-box-k])
         k {:table (if current-reply :replies table)
            :entity-id (if current-reply (:id current-reply) entity-id)}
-        _ (when (not= k current-box-k)
-            (citrus/dispatch! :citrus/default-update
-                              [:comment :current-box-k] k))
         body (citrus/react [:comment :drafts k])
         loading? (citrus/react [:comment :loading?])
         group-id (get-in entity [:group :id])
@@ -71,6 +68,9 @@
                                  (util/get-stared-groups current-user))) group-id)
         invite? (= "invite" (get-in entity [:group :privacy]))
         preview? (citrus/react [:comment :form-data :preview?])]
+    (when (and (not disabled?) (not= k current-box-k))
+        (citrus/dispatch! :citrus/default-update
+                          [:comment :current-box-k] k))
     [:div.comment-box#post-comment-box {:style (cond->
                                                  {:margin-bottom 48}
                                                  disabled?
@@ -119,8 +119,9 @@
                    :min-height 180}
 
            :other-attrs {:auto-focus (if current-reply true false)
-                         :ref (fn [v] (citrus/dispatch! :citrus/default-update
-                                                        [:comment :refs k] v))}
+                         :ref (fn [v]
+                                (citrus/dispatch! :citrus/default-update
+                                                  [:comment :refs k] v))}
 
 
            :value (or body "")

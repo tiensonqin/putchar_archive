@@ -99,7 +99,6 @@
 
    :user/update
    (fn [state data]
-     (prn data)
      {:state {:loading? (if (or (contains? (set (keys data))
                                            :email_notification)
                                 (contains? (set (keys data))
