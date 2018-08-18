@@ -180,3 +180,17 @@
     (doseq [{:keys [user_id id]} stars]
       (when-let [screen-name (:screen_name (u/get db user_id))]
         (util/update db :stars id {:screen_name screen-name})))))
+
+(defn compute-frequent-posters
+  [db]
+  (let [comments (j/query db ["select user_id, post_id from comments"])]
+    (doseq [{:keys [user_id post_id]} comments]
+      (when-let [screen-name (:screen_name (u/get db user_id))]
+        (let [post (post/get db post_id)
+              posters (if-let [posters (:frequent_posters post)]
+                        (let [posters (read-string posters)]
+                          (assoc posters screen-name (if-let [n (get posters screen-name)]
+                                                       (inc n)
+                                                       1)))
+                        {screen-name 1})]
+          (util/update db :posts post_id {:frequent_posters (pr-str posters)}))))))

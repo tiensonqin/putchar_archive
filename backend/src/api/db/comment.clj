@@ -98,7 +98,10 @@
                             (util/with :user_id #(u/get db % [:id :screen_name])))
                  comment-user (get-in result [:user :screen_name])
                  posters (if-let [posters (:frequent_posters post)]
-                           (clojure.core/update (read-string posters) comment-user inc)
+                           (let [posters (read-string posters)]
+                             (assoc posters comment-user (if-let [n (get posters comment-user)]
+                                                          (inc n)
+                                                          1)))
                            {comment-user 1})]
              (post/inc-comments-count db (:post_id m))
 

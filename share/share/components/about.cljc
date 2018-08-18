@@ -20,4 +20,5 @@
 
    (widgets/transform-content
     (t :about-text)
-    {:style {:padding-bottom 100}})])
+    {:body-format :asciidoc
+     :style {:padding-bottom 100}})])

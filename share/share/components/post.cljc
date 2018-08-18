@@ -1003,7 +1003,7 @@
                         [:a {:href (str "/@" poster)
                              :key (str "frequent-poster-" poster)
                              :title (str (t :frequent-poster) poster)
-                             :style {:margin-right 12}}
+                             :style {:margin-right 6}}
                          (ui/avatar {:class "ant-avatar-sm"
                                      :src (util/cdn-image poster)})]))])))
              [:a.no-decoration.control {:title (if last_reply_at
