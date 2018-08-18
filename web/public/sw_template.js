@@ -57,19 +57,11 @@ if (workbox) {
     },
     {
       "url": "/asciidoctor.min.js",
-      "revision": "3x7fxde41b6647e74c2556fadde42158"
-    },
-    {
-      "url": "/highlight.min.js",
-      "revision": "6x7fxde41b6647e74c2556fadde42157"
-    },
-    {
-      "url": "/paper-core.min.js",
       "revision": "3x7fxde41b6647e74c2556fadde42159"
     },
     {
-      "url": "error.html",
-      "revision": "207f4de41b6647e74c2556fadde42168"
+      "url": "/highlight.min.js",
+      "revision": "6x7fxde41b6647e74c2556fadde42158"
     },
     {
       "url": "favicon.png",

@@ -302,10 +302,10 @@
              (widgets/website-logo)
 
              (if (>= width 375)
-               [:span {:style {:margin-left 12
-                              :font-weight "500"
-                              :color "#666"
-                              :font-size 13}}
+               [:span.ubuntu {:style {:margin-left 12
+                                      :font-weight "600"
+                                      :color "#666"
+                                      :font-size 13}}
                (t :draft)])]
             (= current-path :groups)
             (widgets/website-logo)

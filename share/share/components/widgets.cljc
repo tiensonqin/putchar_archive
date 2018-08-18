@@ -42,21 +42,7 @@
   [:div {:dangerouslySetInnerHTML {:__html html}}])
 
 (rum/defcs transform-content < rum/reactive
-  {:init (fn [state props]
-           #?(:cljs
-              (let [ascii-loaded? (ascii/ascii-loaded?)
-                    adoc-format? (= :asciidoc (keyword (:body-format (second (:rum/args state)))))]
-                (when (and adoc-format? (not ascii-loaded?))
-                  (citrus/dispatch-sync! :citrus/default-update
-                                         [:ascii-loaded?]
-                                         false)
-                  (go
-                    (async/<! (ascii/load-ascii))
-                    (citrus/dispatch! :citrus/default-update
-                                      [:ascii-loaded?]
-                                      true)))))
-           state)
-   :after-render (fn [state]
+  {:after-render (fn [state]
                    (util/highlight!)
                    state)}
   [state body {:keys [style
@@ -65,21 +51,18 @@
                 on-mouse-up]
          :or {body-format :markdown}
                :as attrs}]
-  (let [ascii-loaded? (citrus/react [:ascii-loaded?])]
-    (if (false? ascii-loaded?)
-      [:div (t :loading)]
-      [:div.column
-       (cond->
-         {:class (str "editor " (name body-format))
-          :style (merge
-                  {:word-wrap "break-word"}
-                  style)
-          :dangerouslySetInnerHTML {:__html
-                                    (if (str/blank? body)
-                                      ""
-                                      (content/render body body-format))}}
-         on-mouse-up
-         (assoc :on-mouse-up on-mouse-up))])))
+  [:div.column
+   (cond->
+     {:class (str "editor " (name body-format))
+      :style (merge
+              {:word-wrap "break-word"}
+              style)
+      :dangerouslySetInnerHTML {:__html
+                                (if (str/blank? body)
+                                  ""
+                                  (content/render body body-format))}}
+     on-mouse-up
+     (assoc :on-mouse-up on-mouse-up))])
 
 (rum/defc user-card < rum/reactive
   [{:keys [id name screen_name bio website github_handle twitter_handle] :as user}]
@@ -603,8 +586,9 @@
                            "Asciidoc"
                            "Markdown")))
          :animation "slide-up"}
-        [:a.no-decoration.control {:style {:padding 12
-                                           :font-size 13}}
+        [:a.no-decoration.control.ubuntu {:style {:padding 12
+                                                  :font-size 13
+                                                  :font-weight "600"}}
          (if markdown?
            "Markdown"
            "Asciidoc")]))

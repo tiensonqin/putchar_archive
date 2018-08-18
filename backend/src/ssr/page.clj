@@ -233,6 +233,10 @@ if ('serviceWorker' in navigator) {
            "_dev"
            ""))]
 
+       [:script {:async true
+                 :defer true
+                 :src "/asciidoctor.min.js"}]
+
        ;; Google analytics
        (when-not zh-cn?
          [:script {:async true
