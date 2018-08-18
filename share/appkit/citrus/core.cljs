@@ -2,6 +2,8 @@
   (:require [appkit.citrus.reconciler :as r]
             [appkit.citrus.cursor :as c]))
 
+;; copied from https://github.com/roman01la/citrus
+
 (defn reconciler
   "Creates an instance of Reconciler
 

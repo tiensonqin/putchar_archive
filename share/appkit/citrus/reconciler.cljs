@@ -1,6 +1,8 @@
 (ns appkit.citrus.reconciler
   (:require-macros [appkit.citrus.macros :as m]))
 
+;; copied from https://github.com/roman01la/citrus
+
 (defn- queue-effects! [queue f]
   (vswap! queue conj f))
 
