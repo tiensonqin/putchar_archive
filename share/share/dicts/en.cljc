@@ -74,7 +74,7 @@
    :replies "replies"
    :group "Group"
    :group-name "Group name"
-   :name-warning "Name should be 1 ~ 24 characters long."
+   :name-warning "Name should be 1 ~ 18 characters long."
    :purpose-warning "Purpose should be 2 ~ 1024 characters long."
    :upload-a-logo "Upload a logo"
    :upload-a-photo "Upload a photo"

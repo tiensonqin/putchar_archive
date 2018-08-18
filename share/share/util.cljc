@@ -216,7 +216,7 @@
 
 (defn group-name? [v]
   (re-find (re-pattern
-            (format "^@?([0-9-_& %s]){1,24}$" reg/unicode)) v))
+            (format "^@?([0-9-_& %s]){1,18}$" reg/unicode)) v))
 
 (defn encrypted-name? [v]
   (re-find #"^@?([%a-zA-Z0-9]){1,192}$" v))

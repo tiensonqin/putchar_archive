@@ -74,7 +74,7 @@
    :replies "条评论"
    :group "小组"
    :group-name "小组名称"
-   :name-warning "名称长度为大于 1 且不超过 24 个字符。"
+   :name-warning "名称长度为大于 1 且不超过 18 个字符。"
    :purpose-warning "描述长度为大于 2 且不超过 1024 个字符。"
    :upload-a-logo "上传 LOGO"
    :upload-a-photo "上传照片"

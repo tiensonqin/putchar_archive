@@ -978,15 +978,18 @@
                              :style {:margin-right 12}
                              :on-click (fn [e] (util/stop e))}
 
-                 (util/original-name group-name)])
+                 (if mobile?
+                   [:img {:src (util/group-logo group-name 18 18)}]
+                   (util/original-name group-name))])
+
               (when (and not-general-channel
                          (not= :channel current-path))
                 [:a.control
                  {:style {:margin-right 12}
-                  :on-click util/stop
                   :href (str "/" (get-in post [:group :name])
                              "/" channel-name)}
-                 (str "#" channel-name)])]
+                 (str "#" channel-name)])
+              ]
 
              (ops-menu post self? mobile? false)
 
@@ -997,7 +1000,7 @@
                                           (conj last-reply-by))
                      frequent_posters (remove nil? frequent_posters)]
                  (when (seq frequent_posters)
-                   [:div.row1
+                   [:div.row1 {:style {:margin-right 6}}
                     (for [poster frequent_posters]
                       (if poster
                         [:a {:href (str "/@" poster)
