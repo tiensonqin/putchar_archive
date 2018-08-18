@@ -242,6 +242,7 @@
   (map (fn [{:keys [frequent_posters] :as post}]
          (let [posters (if frequent_posters
                          (->> frequent_posters
+                              (read-string)
                               (sort-by (fn [x] (second x)) #(< %2 %1))
                               (take 5)
                               (keys))
