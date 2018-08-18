@@ -113,20 +113,12 @@
          website])
 
       [:div.row1 {:style {:margin-top 24}}
-       (let [url (str config/website "/@" screen_name "/new.rss")]
-         [:a {:title "RSS"
-              :href url
-              :target "_blank"}
-          (ui/icon {:type :rss
-                    :color "#666"})])
-
        (if github_handle
          [:a {:href (str "https://github.com/" github_handle)
-              :target "_blank"
-              :style {:margin-left 24}}
+              :target "_blank"}
           (ui/icon {:type :github
                     :color "#666"
-                    :width 20})])
+                    :width 19})])
 
        (if twitter_handle
          [:a {:href (str "https://twitter.com/" twitter_handle)
@@ -134,7 +126,14 @@
               :style {:margin-left 24}}
           (ui/icon {:type :twitter
                     :width 26
-                    :height 26})])]]
+                    :height 26})])
+
+       (let [url (str config/website "/@" screen_name "/newest.rss")]
+         [:a.control {:href url
+                      :target "_blank"
+                      :style {:margin-left 24
+                              :font-size "1.125rem"}}
+          "RSS"])]]
      [:img {:src (util/cdn-image screen_name
                                  :height 100
                                  :width 100)
@@ -468,19 +467,12 @@
        (join-button current-user group stared-group? 80)
 
        ;; rss
-       (when-not (util/mobile?)
-         (let [url (str config/website "/hot.rss")]
-          [:a {:title "RSS"
-               :href (str config/website path (clojure.core/name (if (= post-filter :newest)
-                                                                   :newest
-                                                                   post-filter)) ".rss")
-               :target "_blank"
-               :style {:margin-left 24
-                       :margin-right -2}}
-           (ui/icon {:type :rss
-                     :color "rgb(127,127,127)"})])))
-
-     ]))
+       [:a.control {:href (str config/website path (clojure.core/name (if (= post-filter :newest)
+                                                                :newest
+                                                                post-filter)) ".rss")
+            :target "_blank"}
+        [:span {:style {:margin-left 24
+                        :font-size "1.125rem"}} "rss"]])]))
 
 (rum/defc cover-nav < rum/reactive
   [group channel]
