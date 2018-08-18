@@ -978,8 +978,8 @@
                              :style {:margin-right 12}
                              :on-click (fn [e] (util/stop e))}
 
-                 (if mobile?
-                   [:img {:src (util/group-logo group-name 18 18)}]
+                 (if (and mobile? group-name)
+                   [:img {:src (util/group-logo group-name 24 24)}]
                    (util/original-name group-name))])
 
               (when (and not-general-channel
@@ -998,7 +998,8 @@
                      frequent_posters (-> (remove (hash-set (:screen_name user) last-reply-by)
                                                   (:frequent_posters post))
                                           (conj last-reply-by))
-                     frequent_posters (remove nil? frequent_posters)]
+                     frequent_posters (->> (remove nil? frequent_posters)
+                                           (take 5))]
                  (when (seq frequent_posters)
                    [:div.row1 {:style {:margin-right 6}}
                     (for [poster frequent_posters]
