@@ -450,9 +450,6 @@
     (:permalink entity)
     (str config/website "/" (:permalink entity) "/" idx)
 
-    (:item_id entity)
-    (str config/website "/item/" (:id entity) "/" idx)
-
     :else
     nil))
 

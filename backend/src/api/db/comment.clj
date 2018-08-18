@@ -99,7 +99,7 @@
                  comment-user (get-in result [:user :screen_name])
                  posters (if-let [posters (:frequent_posters post)]
                            (let [posters (read-string posters)]
-                             (assoc posters comment-user (if-let [n (get posters comment-user)]
+                             (assoc posters comment-user (if-let [n (clojure.core/get posters comment-user)]
                                                           (inc n)
                                                           1)))
                            {comment-user 1})]

@@ -90,41 +90,47 @@
            (t :join-to-comment)])]
 
        :else
-       [:div.column
-        (post-box/post-box
-         :comment
-         k
-         {:placeholder (if current-reply
-                         (str "@" (get-in current-reply [:user :screen_name]) " ")
-                         (t :your-thoughts-here))
+       (if disabled?
+         [:div {:style {:border "1px solid rgb(169,169,169)"
+                        :border-radius 4
+                        :font-size 15
+                        :background "#fff"
+                        :width "100%"
+                        :padding 12
+                        :min-height 180}}]
+         [:div.column
+         (post-box/post-box
+          :comment
+          k
+          {:placeholder (if current-reply
+                          (str "@" (get-in current-reply [:user :screen_name]) " ")
+                          (t :your-thoughts-here))
 
-          :min-rows 5
+           :min-rows 5
 
-          :style {:border-radius 4
-                  :font-size 15
-                  :background "#fff"
-                  :resize "none"
-                  :width "100%"
-                  :padding 12
-                  :white-space "pre-wrap"
-                  :overflow-wrap "break-word"
-                  :min-height 180}
+           :style {:border-radius 4
+                   :font-size 15
+                   :background "#fff"
+                   :resize "none"
+                   :width "100%"
+                   :padding 12
+                   :white-space "pre-wrap"
+                   :overflow-wrap "break-word"
+                   :min-height 180}
 
-          :other-attrs {:class (if disabled? "disabled")
-                        :auto-focus (if current-reply true false)
-                        :ref (fn [v] (citrus/dispatch! :citrus/default-update
-                                                       [:comment :refs k] v))}
+           :other-attrs {:auto-focus (if current-reply true false)
+                         :ref (fn [v] (citrus/dispatch! :citrus/default-update
+                                                        [:comment :refs k] v))}
 
 
-          :value (or body "")
-          :on-change (fn [e]
-                       (let [v (util/ev e)]
-                         (citrus/dispatch! :comment/save-local k v)))})
-        (if preview?
-          [:div.column
-           [:div.divider {:style {:margin-bottom 12}}]
-
-           (post-preview body "asciidoc")])])
+           :value (or body "")
+           :on-change (fn [e]
+                        (let [v (util/ev e)]
+                          (citrus/dispatch! :comment/save-local k v)))})
+         (if preview?
+           [:div.column
+            [:div.divider {:style {:margin-bottom 12}}]
+            (post-preview body "asciidoc")])]))
 
      ;; submit button
      [:div.row {:style {:align-items "center"
@@ -178,7 +184,7 @@
                     :color "#999"})])]]]))
 
 (rum/defcs update-comment-box < rum/reactive
-  [state {:keys [id post_id item_id body] :as comment} show? [table fk]]
+  [state {:keys [id post_id body] :as comment} show? [table fk]]
   (let [preview? (citrus/react [:comment :form-data :preview?])
         loading? (citrus/react [:comment :loading?])
         k {:table :comments
@@ -220,8 +226,7 @@
                                                 (cond->
                                                   {:id id
                                                    :body (.trim body)}
-                                                  post_id (assoc :post_id post_id)
-                                                  item_id (assoc :item_id item_id))
+                                                  post_id (assoc :post_id post_id))
                                                 [table fk])
                               (citrus/dispatch! :comment/clear-item k)
                               (if show? (reset! show? false)))))]
@@ -257,9 +262,7 @@
 
 (rum/defc comments-cp
   [entity comments]
-  (let [[table fk] (if (:permalink entity)
-                     [:posts :post_id]
-                     [:items :item_id])]
+  (let [[table fk] [:posts :post_id]]
     (map (partial comment-item entity [table fk] nil true) comments)))
 
 (rum/defcs ops < rum/reactive
@@ -507,9 +510,7 @@
   [entity]
   (let [current-user (citrus/react [:user :current])
         entity-id (:id entity)
-        [table fk] (if (:permalink entity)
-                     [:posts :post_id]
-                     [:items :item_id])
+        [table fk] [:posts :post_id]
         {:keys [result end? count-delta]}(citrus/react [:comment table entity-id])
         comments (remove nil? (vals result))
         comments (sort-by :created_at comments)
@@ -556,21 +557,15 @@
                          :flex-direction "column"
                          :flex 1}}
            [:div.space-between
-            (if (:post_permalink comment)
-              [:a {:href (str "/" (:post_permalink comment) "/" idx)}
-               (:post_permalink comment)]
-              [:a {:href (str "/item/" (:item_id comment) "/" idx)}
-               (str "item/" (:item_id comment) "/" idx)])
-
+            [:a {:href (str "/" (:post_permalink comment) "/" idx)}
+             (:post_permalink comment)]
             [:span {:style {:color "#999"
                             :font-size "0.9em"}}
              (util/time-ago created_at)]]
 
            [:div {:style {:padding "16px 8px 8px 8px"}}
             (if @edit-mode?
-              (let [[table fk] (if (:permalink comment)
-                                 [:posts :post_id]
-                                 [:items :item_id])]
+              (let [[table fk] [:posts :post_id]]
                 (update-comment-box comment edit-mode? [table fk]))
               (widgets/transform-content body
                                          {:style {:color "rgba(0,0,0,0.84)"

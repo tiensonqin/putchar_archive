@@ -15,10 +15,6 @@
         (cache/wcar*
          (car/zadd (cache/redis-key "users" (:user_id m) "toped_posts") (:flake_id result) (:post_id m)))
 
-        (:item_id m)
-        (cache/wcar*
-         (car/zadd (cache/redis-key "users" (:user_id m) "toped_items") (:flake_id result) (:item_id m)))
-
         :else
         nil)
       result)))
@@ -30,10 +26,6 @@
       (:post_id m)
       (cache/wcar*
        (car/zrem (cache/redis-key "users" (:user_id m) "toped_posts") (:post_id m)))
-
-      (:item_id m)
-      (cache/wcar*
-       (car/zrem (cache/redis-key "users" (:user_id m) "toped_items") (:item_id m)))
 
       :else nil
       )

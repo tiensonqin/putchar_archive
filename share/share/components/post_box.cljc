@@ -151,10 +151,7 @@
                     on-select)))
 
 (rum/defc post-box < rum/reactive
-  {:will-mount (fn [state]
-                 (citrus/dispatch! :search/reset nil)
-                 state)
-   :after-render (fn [state]
+  {:after-render (fn [state]
                    #?(:cljs
                       (let [[type id {:keys [value]}] (:rum/args state)]
                         (when (= type :post)
@@ -167,9 +164,7 @@
 
                         (let [element (dommy/sel1 "#post-box")]
                           (when (and value (str/blank? (oget element "value")))
-                            (oset! element "value" value))
-                          )
-                        ))
+                            (oset! element "value" value)))))
                    state)
    :will-unmount (fn [state]
                    #?(:cljs
@@ -221,6 +216,7 @@
                                                [:post :latest-height]
                                                new-height)
                              (dommy/set-px! textarea :height new-height)))))
+
                     (on-change e))
 
        :value value}

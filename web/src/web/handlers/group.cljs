@@ -155,26 +155,8 @@
                {:state state}))
            {:state state})
 
-         ;; item
-         (contains? #{:item} current-handler)
-         (if-let [current-id (get-in state [:item :current])]
-           (let [collection-id (get-in state [:collection :current])
-                 items (get-in state [:collection :by-id collection-id :items])
-                 new-id (get-fn (mapv :id items) current-id)
-                 new-item (-> (filter #(= (:id %) current-id) items) first)]
-             (if (and new-item (not= current-id new-id))
-               {:state (-> state
-                           (assoc :switch-mode? true)
-                           (assoc-in [:item :current] new-id))
-                :redirect {:handler :item
-                           :route-params {:item-id (str new-id)}}
-                :timeout {:duration 1000
-                          :events [:citrus/leave-switch-mode]}}
-               {:state state}))
-           {:state state})
-
          :else
-         {:state :state})))
+         {:state state})))
 
    :citrus/leave-switch-mode
    (fn [state]
@@ -200,74 +182,4 @@
    (fn [state group-name data edit-mode? result]
      (if edit-mode? (reset! edit-mode? false))
      {:state {:loading? false}
-      :dispatch [:notification/add :success (t :group-cover-changed)]})
-
-   :group/add-item
-   (fn [state form-data]
-     {:state {:loading? true}
-      :http {:params [:item/new @form-data]
-             :on-load [:group/add-item-ready form-data]
-             :on-error [:group/add-item-failed form-data]}})
-
-   :group/add-item-ready
-   (fn [state form-data result]
-     (let [group-name (:group_name @form-data)]
-       (reset! form-data nil)
-       {:state (-> state
-                   (update-in [:by-name group-name :items]
-                              (fn [items]
-                                (conj items (select-keys result [:id :name]))))
-                   (assoc :loading? false))
-        :redirect {:handler :item
-                   :route-params {:item-id (str (:id result))}}
-        }))
-
-   :group/add-item-failed
-   (fn [state form-data reply]
-     {:state (cond
-               (and (= (:status reply) 400)
-                    (= (get-in reply [:body :message]) ":item-exists"))
-               {:item-exists? true}
-
-               :else
-               state)})
-
-   :group/update-item
-   (fn [state item form-data]
-     {:state {:loading? true}
-      :http {:params [:item/update (assoc @form-data :id (:id item))]
-             :on-load [:group/update-item-ready item form-data]
-             :on-error [:group/update-item-failed item form-data]}})
-
-   :group/update-item-ready
-   (fn [state item form-data result]
-     (let [group-name (get-in item [:group :name])]
-       (util/set-href! (str config/website "/item/"
-                            (:id item)))
-       {:state state}))
-
-   :group/update-item-failed
-   (fn [state form-data reply]
-     {:state (cond
-               (and (= (:status reply) 400)
-                    (= (get-in reply [:body :message]) ":item-exists"))
-               {:item-exists? true}
-
-               :else
-               state)})
-
-   :group/delete-item
-   (fn [state item]
-     {:state {:loading? true}
-      :http {:params [:item/delete {:id (:id item)}]
-             :on-load [:group/delete-item-ready item]}})
-
-   :group/delete-item-ready
-   (fn [state item result]
-     (let [group-name (get-in item [:group :name])]
-       (util/set-href! (str config/website "/"
-                            group-name))
-       {:state state}))
-
-
-   })
+      :dispatch [:notification/add :success (t :group-cover-changed)]})})

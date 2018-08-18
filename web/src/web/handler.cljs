@@ -4,7 +4,6 @@
             [web.handlers.router :as router]
             [web.handlers.user :as user]
             [web.handlers.group :as group]
-            [web.handlers.item :as item]
             [web.handlers.channel :as channel]
             [web.handlers.post :as post]
             [web.handlers.post-box :as post-box]
@@ -25,7 +24,6 @@
     router/handlers
     user/handlers
     group/handlers
-    item/handlers
     channel/handlers
     post/handlers
     post-box/handlers
