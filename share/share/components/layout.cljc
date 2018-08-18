@@ -73,6 +73,17 @@
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
                          :margin-top 16}}
+      [:a.control {:href "/lambdahackers/feature-requests"
+                   :style {:margin-right 24}}
+       (t :feature-requests)]
+
+      [:a.control {:href "https://github.com/tiensonqin/lambdahackers/issues"
+                   :style {:margin-right 24}}
+       (t :bugs)]]
+
+     [:div.row1 {:style {:align-items "center"
+                         :flex-wrap "wrap"
+                         :margin-top 16}}
       [:a {:href "https://twitter.com/lambdahackers"
            :style {:margin-right 24}}
        (ui/icon {:type :twitter})]
