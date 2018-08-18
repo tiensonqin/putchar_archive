@@ -490,7 +490,8 @@
                                                :id (:id entity)
                                                :last (last comments)})))})
      (when loading?
-       [:div.center (t :loading)])]))
+       [:div.center.ubuntu {:style {:font-size "1.2em"}}
+        (t :loading)])]))
 
 (rum/defc comment-list < rum/reactive
   {:after-render (fn [state]

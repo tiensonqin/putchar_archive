@@ -9,5 +9,5 @@
      :cljs
      (r/reconciler handler/handler config/api-host {:domain config/cookie-domain}
        (if config/development?
-         false
+         true
          false))))

@@ -135,12 +135,12 @@
        :hidden true}]]))
 
 (rum/defc new-post-title
-  [form-data init]
+  [form-data init auto-focus?]
   [:div.new-post-title
    [:input {:type "text"
             :class "header-text"
             :autoComplete "off"
-            :autoFocus true
+            :autoFocus auto-focus?
             :on-focus util/set-cursor-end
             :name "title"
             :placeholder (t :title)
@@ -161,7 +161,7 @@
 
 (rum/defcs new-post-body <
   rum/reactive
-  [state form-data init body-format]
+  [state form-data init body-format auto-focus?]
   (let [value (or (:body form-data) init "")
         latest-height (citrus/react [:post :latest-height])
         mobile? (util/mobile?)
@@ -176,7 +176,8 @@
         (post-box/post-box
          :post
          nil
-         {:placeholder (t :post-body-placeholder)
+         {:other-attrs {:autoFocus auto-focus?}
+          :placeholder (t :post-body-placeholder)
           :style {:border "none"
                   :background-color "transparent"
                   :color "rgba(0,0,0,0.85)"
@@ -657,12 +658,11 @@
                                        768)
                           :margin "0 auto"}}
      [:div.auto-padding {:style {:flex 1
-                                 :padding-top 12
                                  :overflow "hidden"}}
 
-      (new-post-title form-data nil)
+      (new-post-title form-data nil true)
 
-      (new-post-body form-data nil nil)]]))
+      (new-post-body form-data nil nil false)]]))
 
 
 (rum/defc ops-twitter
@@ -1010,7 +1010,8 @@
                              (citrus/dispatch! :citrus/load-more-posts
                                                opts)))})
      (when loading?
-       [:div.center (t :loading)])
+       [:div.center.ubuntu {:style {:font-size "1.2em"}}
+        (t :loading)])
 
      (ops-delete-dialog)]
     ))
@@ -1104,12 +1105,14 @@
                                      :group_id (get-in post [:group :id]))
                               (:channel post)
                               (assoc :channel_name (get-in post [:channel :name])
-                                     :channel_id (get-in post [:channel :id])))))
+                                     :channel_id (get-in post [:channel :id]))
+                              (:body form-data)
+                              (assoc :body (:body form-data)))))
         [:div.column.center-area.auto-padding {:class "post-edit editor"
                                                :style (if (and preview? (> width 1024))
                                                         {:max-width 1238}
                                                         {})}
-         (new-post-title form-data (:title post))
+         (new-post-title form-data (:title post) (not (str/blank? (:title post))))
 
          (if show-poll?
            [:div.divider])
@@ -1121,7 +1124,8 @@
          (if show-poll?
            [:div.divider])
 
-         (new-post-body form-data (:body post) (:body_format post))]))))
+         (new-post-body form-data (:body post) (:body_format post)
+                        (not (str/blank? (:body post))))]))))
 
 (rum/defcs toolbox < rum/reactive
   (rum/local nil ::form-data)

@@ -112,7 +112,8 @@
              :href website}
          website])
 
-      [:div.row1 {:style {:margin-top 24}}
+      [:div.row1 {:style {:margin-top 12
+                          :align-items "center"}}
        (if github_handle
          [:a {:href (str "https://github.com/" github_handle)
               :target "_blank"}
@@ -129,10 +130,10 @@
                     :height 26})])
 
        (let [url (str config/website "/@" screen_name "/newest.rss")]
-         [:a.control {:href url
-                      :target "_blank"
-                      :style {:margin-left 24
-                              :font-size "1.125rem"}}
+         [:a.control.ubuntu {:href url
+                             :target "_blank"
+                             :style {:margin-left 24
+                                     :font-size "1.125rem"}}
           "RSS"])]]
      [:img {:src (util/cdn-image screen_name
                                  :height 100
