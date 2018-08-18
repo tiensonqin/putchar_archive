@@ -349,7 +349,7 @@
             :on-click (fn []
                         (citrus/dispatch! :citrus/re-fetch :group {:group-name group-name})
                         (citrus/dispatch! :citrus/default-update [:channel :current] nil))}
-        (if (and mobile? (or new-post? edit-post?))
+        (if mobile?
           logo
 
           logo-text)]
