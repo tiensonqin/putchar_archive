@@ -111,6 +111,7 @@
      (let [body-format (or (get-in state [:post :form-data :body_format])
                            (get-in state [:latest-body-format])
                            :markdown)
+           body-format (keyword body-format)
            cursor-position (get-in state [:post-box :cursor-position] 0)
            {:keys [body cover images]} (get-in state [:post :form-data])
            new-body (let [[before after] (if (str/blank? body) nil [(subs body 0 cursor-position)
