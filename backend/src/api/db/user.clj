@@ -46,18 +46,12 @@
 ;; with channels
 (defn get-user-stared-groups
   [db id-or-user]
-  (let [{:keys [stared_channels stared_groups]} (if (map? id-or-user)
-                                                  id-or-user
-                                                  (util/get db base-map id-or-user))]
-    (when (seq stared_groups)
-      (let [channels (get-user-stared-channels db stared_channels)
-            groups (su/normalize
-                    (util/query db {:from [:groups]
-                                    :select [:id :name :purpose :privacy]
-                                    :where [:in :id stared_groups]}))]
-        (for [group_id (take 20 stared_groups)]
-          (-> (clojure.core/get groups group_id)
-              (assoc :channels (filter #(= (:group_id %) group_id) channels))))))))
+  (let [{:keys [stared_groups]} (if (map? id-or-user)
+                                  id-or-user
+                                  (util/get db base-map id-or-user))]
+    (util/query db {:from [:groups]
+                    :select [:id :name :purpose :privacy]
+                    :where [:in :id stared_groups]})))
 
 (defn db-get
   [db id]

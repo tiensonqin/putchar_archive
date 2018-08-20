@@ -49,10 +49,10 @@
   [{:keys [uid datasource]} data]
   (if uid
     (j/with-db-connection [conn datasource]
-      (if-let [user (u/get conn uid)]
-        (assoc user
-               :has-unread-notifications?
-               (notification/has-unread? uid))))))
+      (when-let [user (u/get conn uid)]
+        (-> user
+            (assoc :has-unread-notifications? (notification/has-unread? uid))
+            (dissoc :stared_channels))))))
 
 (defn get-hot-groups
   [{:keys [uid datasource]} data]
@@ -262,6 +262,22 @@
                              post))
                          result)]
         (wrap-end? result (get cursor :limit))))))
+
+(defn get-stared-groups-channels
+  [[{:keys [uid datasource]} data]]
+  (j/with-db-transaction [conn datasource]
+    (when-let [user (u/get conn uid)]
+      (let [stared-groups (:stared_groups user)
+            ids (map :id stared-groups)]
+        (if (seq ids)
+          (-> {:select [:id :name :stars]
+               :from [:channels]
+               :where [:in :group_id ids]
+               ;; TODO: [stars desc, created_at asc]
+               :order-by [:created_at :asc]
+               ;; 20 groups * 20 channels
+               :limit 400}
+              (->> (du/query conn))))))))
 
 (def resolvers
   {

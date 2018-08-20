@@ -274,6 +274,9 @@
   (j/with-db-transaction [conn datasource]
     (util/ok (u/top-group conn uid (:id data)))))
 
+(defmethod handle :user/get-stared-groups-channels [[{:keys [uid datasource redis]} data]]
+  (j/with-db-transaction [conn datasource]
+    (util/ok (channel/get-user-stared-groups-channels conn uid))))
 
 (defmethod handle :channel/new [[{:keys [uid datasource redis]} data]]
   (if (block/examine datasource uid (:group_id data))

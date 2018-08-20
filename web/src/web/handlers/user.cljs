@@ -275,6 +275,22 @@
              :on-load :citrus/poll-success
              :on-error :user/poll-failed}})
 
+   :user/get-stared-groups-channels
+   (fn [state]
+     {:state state
+      :http {:params [:user/get-stared-groups-channels]
+             :on-load :citrus/get-stared-groups-channels-success
+             :on-error :citrus/get-stared-groups-channels-failed}})
+
+   :citrus/get-stared-groups-channels-success
+   (fn [state result]
+     {:state {:stared-groups-channels result}})
+
+   :citrus/get-stared-groups-channels-failed
+   (fn [state error]
+     (prn ":citrus/get-stared-groups-channels-failed " error)
+     {:state state})
+
    :citrus/poll-success
    (fn [state result]
      (cond->

@@ -136,16 +136,17 @@
                         :margin-right 12}
                 :href (str "/" (:name current-group) "/" (:name channel))}
                (util/channel-name (:name channel))]
-              [:a {:title (if stared? (t :unstar) (t :star))
-                   :on-click #(citrus/dispatch! (if stared?
-                                                  :user/unstar-channel
-                                                  :user/star-channel)
-                                                (:name current-group)
+              ;; [:a {:title (if stared? (t :unstar) (t :star))
+              ;;      :on-click #(citrus/dispatch! (if stared?
+              ;;                                     :user/unstar-channel
+              ;;                                     :user/star-channel)
+              ;;                                   (:name current-group)
 
-                                                {:object_type :channel
-                                                 :object_id (:id channel)})}
-               (ui/icon {:type (if stared? :star :star-border)
-                         :color (if stared? colors/primary "#1a1a1a")})]]
+              ;;                                   {:object_type :channel
+              ;;                                    :object_id (:id channel)})}
+              ;;  (ui/icon {:type (if stared? :star :star-border)
+              ;;            :color (if stared? colors/primary "#1a1a1a")})]
+              ]
              (if (and admin? (not (contains? #{"general"} (:name channel))))
                [:div.row1
                 [:a.no-decoration {:title (t :edit)

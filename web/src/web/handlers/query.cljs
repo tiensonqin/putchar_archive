@@ -37,8 +37,6 @@
            just-requested? (and last-reply-at
                                 (< (- (util/get-time) last-reply-at) (* 10 60 1000)))]
        (reset! latest-qid qid)
-       (prn "just requested?: " just-requested?)
-       (prn "result: " (get-in state [:cache qid :result]))
        (cond
          (and just-requested? (get-in state [:cache qid :result]))
          {:state state

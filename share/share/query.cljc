@@ -105,22 +105,27 @@
 
 (def post-edit-query
   (fn [state args]
-    (let [id (util/uuid (:post-id args))
-          q {:q    {:post {:fields [:id
-                                    :title
-                                    :body
-                                    :body_format
-                                    :permalink
-                                    :is_draft
-                                    :is_wiki
-                                    :link
-                                    :tags
-                                    :notification_level
-                                    :poll_choice
-                                    :poll_closed
-                                    :choices
-                                    [:group {:fields [:id :name]}]
-                                    [:channel {:fields [:id :name]}]]}}
+    (let [channels-not-loaded? (nil? (:channels state))
+          id (util/uuid (:post-id args))
+          q {:q    (cond->
+                     {:post {:fields [:id
+                                     :title
+                                     :body
+                                     :body_format
+                                     :permalink
+                                     :is_draft
+                                     :is_wiki
+                                     :link
+                                     :tags
+                                     :notification_level
+                                     :poll_choice
+                                     :poll_closed
+                                     :choices
+                                     [:group {:fields [:id :name]}]
+                                      [:channel {:fields [:id :name]}]]}}
+                     channels-not-loaded?
+                     (assoc
+                      :stared-groups-channels {:fields [:id :name]}))
              :args {:post {:id id}}}]
       #?(:clj q
          :cljs (let [current (get-in state [:post :current])]

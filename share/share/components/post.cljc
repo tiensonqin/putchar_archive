@@ -224,25 +224,22 @@
                               body-format)])]))
 
 (rum/defc select-group-item < rum/static
-  [id form-data group skip?]
-  (ui/button {:class "btn-sm"
-              :style (cond->
-                       {:margin-right 12
-                        :margin-bottom 12}
-                       (= id (:group_id form-data))
-                       (assoc :background-color "#2e2e2e"
-                              :color "#FFF"))
-              :on-click (fn []
-                          (reset! skip? false)
-                          (citrus/dispatch! :citrus/set-post-form-data
-                                            (let [channel (-> group
-                                                              (:channels)
-                                                              (first))]
-                                              {:group_id id
-                                               :group_name (:name group)
-                                               :channel_id (:id channel)
-                                               :channel_name (:name channel)})))}
-    (util/original-name (:name group))))
+  [id channels form-data group]
+  (let [first-channel (first channels)]
+    (ui/button {:class "btn-sm"
+                :style (cond->
+                        {:margin-right 12
+                         :margin-bottom 12}
+                        (= id (:group_id form-data))
+                        (assoc :background-color "#2e2e2e"
+                               :color "#FFF"))
+                :on-click (fn []
+                            (citrus/dispatch! :citrus/set-post-form-data
+                                             {:group_id id
+                                              :group_name (:name group)
+                                              :channel_id (:id first-channel)
+                                              :channel_name (:name first-channel)}))}
+     (util/original-name (:name group)))))
 
 (rum/defc select-channel-item < rum/static
   [id form-data channel choices]
@@ -254,7 +251,6 @@
                         :color "#FFF"}
                        {:margin-right 12
                         :margin-bottom 12
-                        :padding 0
                         :background-color "transparent"
                         :border "none"})
               :on-click (fn []
@@ -266,7 +262,7 @@
          (util/channel-name (:name channel)))))
 
 (rum/defc select-group-and-channel < rum/reactive
-  [form-data stared-groups channels choices skip?]
+  [form-data stared-groups stared-groups-channels channels choices skip?]
   (let [images (:images form-data)
         images? (seq images)
         wiki? (citrus/react [:post :form-data :is_wiki])]
@@ -295,7 +291,7 @@
             cp (fn [groups]
                  (for [[id group] groups]
                    [:div {:key id}
-                    (select-group-item id form-data group skip?)]))]
+                    (select-group-item id (get stared-groups-channels id) form-data group)]))]
         (cond
           (<= c 12)
           [:div#select-groups {:class "row"
@@ -312,9 +308,7 @@
                                                               (filter #(= (:name %) name))
                                                               (first))]
                                            (citrus/dispatch! :citrus/set-post-form-data
-                                                             (let [channel (-> group
-                                                                               (:channels)
-                                                                               (first))]
+                                                             (let [channel (first channels)]
                                                                {:group_id (:id group)
                                                                 :group_name (:name group)
                                                                 :channel_id (:id channel)
@@ -437,7 +431,8 @@
 
         initial-group (get stared-groups group-id)
 
-        channels (:channels initial-group)
+        stared-groups-channels (citrus/react [:stared-groups-channels])
+        channels (get stared-groups-channels group-id)
 
         initial-channel (first channels)
 
@@ -522,7 +517,7 @@
             :class "btn-primary"
             :on-click submit-fn}
            (t :publish))}
-        (select-group-and-channel form-data stared-groups channels choices skip?)))]))
+        (select-group-and-channel form-data stared-groups stared-groups-channels channels choices skip?)))]))
 
 (rum/defc choices-cp < rum/static
   [{:keys [poll_choice poll_closed choices] :as post} choices-style]
@@ -1133,6 +1128,7 @@
   (let [form-data (citrus/react [:post :form-data])
         clear-interval? (citrus/react [:post :clear-interval?])
         width (citrus/react [:layout :current :width])
+        channels (citrus/react [:channels])
         preview? (:preview? form-data)]
     (when clear-interval?
       (when-let [interval (get state :post-auto-save)]

@@ -92,7 +92,10 @@
       (citrus/dispatch! :data/pull-emojis))
 
     (when current-user
-      (citrus/dispatch! :user/poll))))
+      (citrus/dispatch! :user/poll))
+
+    (when current-user
+      (citrus/dispatch! :user/get-stared-groups-channels))))
 
 (defn stop []
   ;; stop is called before any code is reloaded

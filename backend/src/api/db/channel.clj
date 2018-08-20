@@ -109,11 +109,28 @@
       (util/wrap-cursor cursor)))
 
 (defn group-hot-channels
-  [group-id cursor]
-  (-> base-map
-      (assoc :where [:and
-                     [:= :group_id group-id]
-                     [:= :is_private false]])
-      (util/wrap-cursor (merge cursor
-                               {:order-key :stars
-                                :order :desc}))))
+  [db group-id cursor]
+  (->>
+   (-> base-map
+       (assoc :where [:and
+                      [:= :group_id group-id]
+                      [:= :is_private false]])
+       (util/wrap-cursor (merge cursor
+                                {:order-key :stars
+                                 :order :desc})))
+   (util/query db)))
+
+(defn get-user-stared-groups-channels
+  [db user-id]
+  (when-let [user (u/get db user-id)]
+    (let [stared-groups (:stared_groups user)
+          ids (map :id stared-groups)]
+      (if (seq ids)
+        (->>
+         (-> {:select [:id :name :group_id]
+              :from [:channels]
+              :where [:in :group_id ids]
+              :order-by [[:stars :desc] [:created_at :asc]]
+              :limit 400})
+         (util/query db)
+         (group-by :group_id))))))

@@ -410,24 +410,7 @@
                    (util/me? current-user))
         member? (contains? (set (keys stared_groups))
                            (:id group))]
-    [:div.auto-padding.ubuntu {:style {:position "relative"}}
-     (when (not (util/mobile?))
-       [:a {:style {:position "absolute"
-                   :right 0
-                   :top 15}
-           :target "_blank"
-           :href (str config/website
-                      (cond
-                        group
-                        (str "/" (:name group) "/newest.rss")
-                        channel
-                        (str "/" (:name group) "/" (:name channel) "/newest.rss")
-                        :else
-                        "/hot.rss")
-                      )
-           }
-       (ui/icon {:type :rss
-                 :color "rgb(127,127,127)"})])
+    [:div.auto-padding.ubuntu
      (if (contains? #{:home :newest :latest-reply} current-path)
        [:div {:style {:margin-bottom 24}}
         [:h1.heading-1 {:style {:margin-top 0
@@ -440,24 +423,40 @@
         (sort-buttons current-user nil false)]
 
        [:div {:style {:padding-bottom 24}}
-        [:div.row1
+        [:div.space-between {:style {:flex-wrap "wrap"}}
          [:h1.heading-1 {:style {:margin-top 0
                                  :margin-bottom "16px"}}
           (util/original-name (:name group))]
 
-         (if channel
-           [:a.control {:style {:margin-left 6}
-                        :href (str "/" (:name group) "/" (:name channel))}
-            (str "#" (:name channel))]
-
-           (if (:stars group)
-             [:a.control {:title (t :see-all)
+         [:div.row1 {:style {:align-items "center"
+                             :margin-left 12}}
+          (if (:stars group)
+            [:a.control {:title (t :see-all)
                          :href (str "/" (:name group) "/members")}
-             [:span {:style {:margin-left 6}}
+             [:span {:style {:margin-right 12}}
               (let [stars (:stars group)]
                 (if (= stars 0) 1 stars))
               " "
-              (str/capitalize (t :members))]]))]
+              (str/capitalize (t :members))]])
+
+          (if (and channel (not (util/mobile?)))
+            [:a.control {:style {:margin-right 12}
+                         :href (str "/" (:name group) "/" (:name channel))}
+             (str "#" (:name channel))])
+
+          (when (not (util/mobile?))
+            [:a {:target "_blank"
+                 :href (str config/website
+                            (cond
+                              group
+                              (str "/" (:name group) "/newest.rss")
+                              channel
+                              (str "/" (:name group) "/" (:name channel) "/newest.rss")
+                              :else
+                              "/hot.rss"))}
+             (ui/icon {:type :rss
+                       :color "rgb(127,127,127)"})])]
+         ]
 
         [:div {:style {:font-size "1.125em"}}
          (transform-content (:purpose group) nil)]
