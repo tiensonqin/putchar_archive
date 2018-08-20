@@ -7,14 +7,9 @@
 
 (defn group-fields
   [post-filter]
-  [:id :name :purpose :rule :admins :stars :related_groups :privacy :cover_settings
-   [:channels {:fields [:id :name :stars]}]
+  [:id :name :purpose :rule :admins :stars :related_groups :privacy
    [:posts {:fields post-fields
-            :filter post-filter}]
-   [:members {:fields [:*]}]])
-
-(def photo-fields
-  [:*])
+            :filter post-filter}]])
 
 (defn- get-post-filter
   [state]
@@ -47,7 +42,7 @@
     (let [names (util/group-channel args)
           post-filter (or (keyword (:post-filter args)) :latest-reply)]
       {:q     {:channel {:fields [:id :name :purpose
-                                  [:group {:fields [:id :name :purpose :rule :admins :stars :privacy :related_groups :channels :cover_settings :members]}]
+                                  [:group {:fields [:id :name :purpose :rule :admins :stars :privacy :related_groups]}]
                                   [:posts {:fields post-fields
                                            :filter post-filter}]]}}
        :args  {:channel names}

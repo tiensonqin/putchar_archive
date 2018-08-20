@@ -104,58 +104,58 @@
        ])))
 
 (rum/defc channels < rum/reactive
-  (query/query :channels)
+  (mixins/query :channels)
   [params]
-  (let [current-group (citrus/react [:group :by-name (:group-name params)])
-        channels (:channels current-group)
-        channel-id (citrus/react [:channel :current])
-        {:keys [stared_channels]} (citrus/react [:user :current])
-        managed-groups (citrus/react [:group :managed])
-        current-user (citrus/react [:user :current])
-        me? (util/me? current-user)
-        admin? (or (and current-group (contains? managed-groups (:id current-group))) me?)]
-    [:div.column.auto-padding
-     [:h1 (str (t :all-channels) ": ")]
-
-     (if admin?
-       [:div.row1
-        [:a.control {:href (str "/" (:name current-group) "/new-channel")}
-         (t :create-new-channel)]])
-
-     [:div.divider]
-
-     (for [channel channels]
-       (let [stared? (contains? (set stared_channels) (:id channel))]
-         [:div.space-between.col-item
-          {:key (:id channel)
-           :style {:align-items "center"}}
+  [:div.column.auto-padding
+   [:h1 (str (t :all-channels) ": ")]
+   (query/query
+     (let [current-group (citrus/react [:group :by-name (:group-name params)])
+           channels (:channels current-group)
+           channel-id (citrus/react [:channel :current])
+           {:keys [stared_channels]} (citrus/react [:user :current])
+           managed-groups (citrus/react [:group :managed])
+           current-user (citrus/react [:user :current])
+           me? (util/me? current-user)
+           admin? (or (and current-group (contains? managed-groups (:id current-group))) me?)]
+       [:div.column
+        (if admin?
           [:div.row1
-           [:a.no-decoration
-            {:id (:id channel)
-             :style {:color "#1a1a1a"
-                     :font-weight "600"
-                     :margin-right 12}
-             :href (str "/" (:name current-group) "/" (:name channel))}
-            (util/channel-name (:name channel))]
-           [:a {:title (if stared? (t :unstar) (t :star))
-                :on-click #(citrus/dispatch! (if stared?
-                                               :user/unstar-channel
-                                               :user/star-channel)
-                                             (:name current-group)
+           [:a.control {:href (str "/" (:name current-group) "/new-channel")}
+            (t :create-new-channel)]])
+        [:div.divider]
+        (for [channel channels]
+          (let [stared? (contains? (set stared_channels) (:id channel))]
+            [:div.space-between.col-item
+             {:key (:id channel)
+              :style {:align-items "center"}}
+             [:div.row1
+              [:a.no-decoration
+               {:id (:id channel)
+                :style {:color "#1a1a1a"
+                        :font-weight "600"
+                        :margin-right 12}
+                :href (str "/" (:name current-group) "/" (:name channel))}
+               (util/channel-name (:name channel))]
+              [:a {:title (if stared? (t :unstar) (t :star))
+                   :on-click #(citrus/dispatch! (if stared?
+                                                  :user/unstar-channel
+                                                  :user/star-channel)
+                                                (:name current-group)
 
-                                             {:object_type :channel
-                                              :object_id (:id channel)})}
-            (ui/icon {:type (if stared? :star :star-border)
-                      :color (if stared? colors/primary "#1a1a1a")})]]
-          (if (and admin? (not (contains? #{"general"} (:name channel))))
-            [:div.row1
-             [:a.no-decoration {:title (t :edit)
-                                :style {:margin-left 24}
-                                :href (str "/" (:name current-group) "/"
-                                           (:name channel)
-                                           "/edit")}
-              (ui/icon {:type "edit"
-                        :color "rgba(0,0,0,0.6)"})]])]))]))
+                                                {:object_type :channel
+                                                 :object_id (:id channel)})}
+               (ui/icon {:type (if stared? :star :star-border)
+                         :color (if stared? colors/primary "#1a1a1a")})]]
+             (if (and admin? (not (contains? #{"general"} (:name channel))))
+               [:div.row1
+                [:a.no-decoration {:title (t :edit)
+                                   :style {:margin-left 24}
+                                   :href (str "/" (:name current-group) "/"
+                                              (:name channel)
+                                              "/edit")}
+                 (ui/icon {:type "edit"
+                           :color "rgba(0,0,0,0.6)"})]])]))]
+       ))])
 
 (defn channel-fields
   [form-data]

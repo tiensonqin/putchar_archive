@@ -95,7 +95,7 @@
    :channel "channel"
    :add-more-channels "Add more channels"
    :invite "Invite members"
-   :invite-members-placeholder "Emails should be seperated by commas, at most 20 email addresses once."
+   :invite-members-placeholder "Emails should be seperated by commas, at most 5 email addresses once."
    :send "Send"
    :promote-member "Promote a member to Moderator"
    :promote "Promote"

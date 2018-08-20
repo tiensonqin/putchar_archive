@@ -80,7 +80,7 @@
      (let [to (->> (util/split-comma @to)
                    (remove #{self-email})
                    (filter form/email?)
-                   (take 20)
+                   (take 5)
                    (vec))]
        (if (seq to)
          {:state {:loading? true}

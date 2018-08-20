@@ -462,6 +462,18 @@
      ;; admins
      [:div.h2 {:style {:margin-bottom 12}}
       (str/upper-case (t :admins))]
+
+     ;; (if member?
+     ;;   [:a {:title (t :invite)
+     ;;        :style {:margin-right 1}
+     ;;        :on-click (fn []
+     ;;                    (citrus/dispatch! :citrus/default-update
+     ;;                                      [:group :invite-modal?] true))}
+     ;;    (ui/icon {:type :person_add
+     ;;              :width 20
+     ;;              :height 20
+     ;;              :color "#666"})])
+
      [:div.row1 {:style {:flex-wrap "wrap"}}
       (members-cp admins)]
 
@@ -514,37 +526,3 @@
                :style {:padding 6}}
          (w/avatar {:screen_name screen_name} {:pro? pro?
                                                :class "ant-avatar-mm"})]))]])
-
-(rum/defc stared-channels < rum/reactive
-  [group]
-  (let [group-id (:id group)
-        channel-id (citrus/react [:channel :current])
-        {:keys [stared_channels] :as current-user} (citrus/react [:user :current])
-        stared_groups (util/get-stared-groups current-user)
-        channels (if current-user
-                   (get-in stared_groups [group-id :channels])
-                   (:channels group))
-        channels (remove nil? channels)]
-    [:div#group-stared-channels.row1.right-sub
-     [:div.space-between {:style {:align-items "center"
-                                  :margin-bottom 6}}
-      [:h5
-       (str/capitalize (t :stared-channels))]
-
-      [:a {:title (t :add-more-channels)
-           :href (str "/" (:name group) "/channels")}
-       (ui/icon {:type "add_circle_outline"
-                 :width 20
-                 :height 20
-                 :color "#666"})]]
-     [:div.column
-      (for [channel channels]
-        (if (:name channel)
-          (let [active? (= (:id channel) channel-id)]
-            [:a.no-decoration {:key (:id channel)
-                               :href (str "/" (:name group) "/" (:name channel))
-                               :style {:color (if active? "#1a1a1a" "rgb(127,127,127)")
-                                       :font-size 15
-                                       :font-weight "600"
-                                       :padding 6}}
-             (util/channel-name (:name channel))])))]]))

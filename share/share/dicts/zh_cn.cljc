@@ -95,7 +95,7 @@
    :channel "分类"
    :add-more-channels "添加更多分类"
    :invite "邀请朋友"
-   :invite-members-placeholder "请用逗号分隔邮箱地址, 一次支持最多 20 个邮箱地址"
+   :invite-members-placeholder "请用逗号分隔邮箱地址, 一次支持最多 5 个邮箱地址"
    :send "发送"
    :promote-member "提升其他用户为管理员"
    :promote "提升"

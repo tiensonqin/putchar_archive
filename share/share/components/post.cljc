@@ -982,11 +982,10 @@
                              :style {:margin-right 12}
                              :on-click (fn [e] (util/stop e))}
 
-                 (if (and mobile? group-name)
-                   [:img {:src (util/group-logo group-name 24 24)}]
-                   (util/original-name group-name))])
+                 (util/original-name group-name)])
 
-              (when (and not-general-channel
+              (when (and (not mobile?)
+                         not-general-channel
                          (not= :channel current-path))
                 [:a.control
                  {:style {:margin-right 12}
@@ -994,8 +993,6 @@
                              "/" channel-name)}
                  (str "#" channel-name)])
               ]
-
-             (ops-menu post self? mobile? false)
 
              (when-not mobile?
                (let [last-reply-by (:last_reply_by post)
@@ -1014,6 +1011,10 @@
                              :style {:margin-right 6}}
                          (ui/avatar {:class "ant-avatar-sm"
                                      :src (util/cdn-image poster)})]))])))
+
+             (when-not mobile?
+               (ops-menu post self? mobile? false))
+
              [:a.no-decoration.control {:title (if last_reply_at
                                                  (str
                                                   (t :created-at) ": " (util/date-format created_at)

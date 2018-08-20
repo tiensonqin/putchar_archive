@@ -42,7 +42,21 @@
   [:div {:dangerouslySetInnerHTML {:__html html}}])
 
 (rum/defcs transform-content < rum/reactive
-  {:after-render (fn [state]
+  {:init (fn [state props]
+           #?(:cljs
+              (let [ascii-loaded? (ascii/ascii-loaded?)
+                    adoc-format? (= :asciidoc (keyword (:body-format (second (:rum/args state)))))]
+                (when (and adoc-format? (not ascii-loaded?))
+                  (citrus/dispatch-sync! :citrus/default-update
+                                         [:ascii-loaded?]
+                                         false)
+                  (go
+                    (async/<! (ascii/load-ascii))
+                    (citrus/dispatch! :citrus/default-update
+                                      [:ascii-loaded?]
+                                      true)))))
+           state)
+   :after-render (fn [state]
                    (util/highlight!)
                    state)}
   [state body {:keys [style
@@ -51,18 +65,22 @@
                 on-mouse-up]
          :or {body-format :markdown}
                :as attrs}]
-  [:div.column
-   (cond->
-     {:class (str "editor " (name body-format))
-      :style (merge
-              {:word-wrap "break-word"}
-              style)
-      :dangerouslySetInnerHTML {:__html
-                                (if (str/blank? body)
-                                  ""
-                                  (content/render body body-format))}}
-     on-mouse-up
-     (assoc :on-mouse-up on-mouse-up))])
+  (let [ascii-loaded? (citrus/react [:ascii-loaded?])
+        body-format (keyword body-format)]
+    (if (false? ascii-loaded?)
+      [:div (t :loading)]
+      [:div.column
+       (cond->
+         {:class "editor"
+          :style (merge
+                  {:word-wrap "break-word"}
+                  style)
+          :dangerouslySetInnerHTML {:__html
+                                    (if (str/blank? body)
+                                      ""
+                                      (content/render body body-format))}}
+         on-mouse-up
+         (assoc :on-mouse-up on-mouse-up))])))
 
 (rum/defc user-card < rum/reactive
   [{:keys [id name screen_name bio website github_handle twitter_handle] :as user}]
@@ -115,9 +133,9 @@
        (let [url (str config/website "/@" screen_name "/newest.rss")]
          [:a.control.ubuntu {:href url
                              :target "_blank"
-                             :style {:margin-left 24
-                                     :font-size "1.125rem"}}
-          "RSS"])]]
+                             :style {:margin-left 24}}
+          (ui/icon {:type :rss
+                    :color "rgb(127,127,127)"})])]]
      [:img {:src (util/cdn-image screen_name
                                  :height 100
                                  :width 100)
@@ -291,75 +309,6 @@
        [:div {:class "help is-danger"}
         error])])))
 
-(rum/defcs cover < rum/reactive
-  (rum/local false ::rule-expand?)
-  (rum/local false ::promote-modal?)
-  [state group channel admin? member?]
-  (let [rule-expand? (::rule-expand? state)
-        promote? (::promote-modal? state)
-        current-path (citrus/react [:router :handler])]
-    (if (contains? #{:home :newest :latest-reply} current-path)
-      [:div.ubuntu
-       [:h1.heading-1 {:style {:margin-top 0
-                               :margin-bottom "16px"}}
-        "Lambdahackers"]
-
-       [:p {:style {:font-size "1.125em"}}
-        (t :slogan)]]
-
-      [:div.ubuntu {:style {:padding-bottom 24}}
-       [:h1.heading-1 {:style {:margin-top 0
-                               :margin-bottom "16px"}}
-        (util/original-name (:name group))]
-
-       [:div {:style {:font-size "1.125em"}}
-        (transform-content (:purpose group)
-                           {:body-format :markdown})]
-
-
-       [:div.row1 {:style {:align-items "center"}}
-        [:a.no-decoration {:key "rules"
-                           :style {:color "#1a1a1a"}
-                           :on-click (fn [] (swap! rule-expand? not))}
-         [:span.row1 {:style {:align-items "center"
-                              :font-size 14}}
-          (t :rules)
-          (ui/icon {:type (if @rule-expand?
-                            "expand_less"
-                            "expand_more")
-                    :opts {:style {:margin-top 2}}})]]
-
-        (share group)
-
-        (if admin?
-          (ui/menu
-            [:a {:on-click (fn [e])
-                 :style {:margin-left 24}}
-             (ui/icon {:type :more
-                       :color "rgb(127,127,127)"})]
-            [(if admin?
-               [:a.button-text {:href (str "/" (:name group) "/edit")
-                                :style {:font-size 14}}
-                (t :edit)])
-
-             (if admin?
-               [:a.button-text {:on-click (fn []
-                                            (reset! promote? true))
-                                :style {:font-size 14}}
-                (t :promote-member)])
-
-             (if member?
-               [:a.button-text {
-                                :on-click #(citrus/dispatch! :user/unstar-group {:object_type :group
-                                                                                 :object_id (:id group)})
-                                :style {:font-size 14}}
-                (t :leave-group)])]
-            {:menu-style {:width 200}}))]
-
-       (rule group rule-expand?)
-
-       (promote-dialog group promote?)])))
-
 (rum/defc join-button < rum/reactive
   [current-user {:keys [privacy]
                  :as group} stared? width]
@@ -425,16 +374,11 @@
         new [:a.control.no-decoration {:key "newest"
                          :class (if (= post-filter :newest) "is-active")
                          :href new-path}
-             (t :new-created)]
-        wiki [:a.control.no-decoration {:key "wiki"
-                          :class (if (= post-filter :wiki) "is-active")
-                          :href wiki-path}
-              "wiki"]]
+             (t :new-created)]]
     [:div.row1#sort-buttons.ubuntu {:style (cond->
                                       {:flex-wrap "wrap"
                                        :align-items "center"
-                                       :font-weight (if zh-cn? "500" "700")
-                                       :margin-bottom 24})}
+                                       :font-weight (if zh-cn? "500" "700")})}
 
      [:div.row1 {:style {:align-items "center"}}
       [:span {:style {:font-size "1.125rem"}}
@@ -443,24 +387,22 @@
                       :margin-left 24}} (if group hot latest-reply)]
       [:span {:style {:margin-left 24
                       :font-size "1.125rem"}} new]
-      (when (contains? #{:group :channel} handler)
-        [:span {:style {:margin-left 24
-                        :font-size "1.125rem"}} wiki])]
+      ;; (when (contains? #{:group :channel} handler)
+      ;;   [:span {:style {:margin-left 24
+      ;;                   :font-size "1.125rem"}} wiki])
+      ]
 
-     (if (and (util/mobile?) current-user group)
-       (join-button current-user group stared-group? 80)
+     (when (and (util/mobile?) current-user group)
+       (join-button current-user group stared-group? 80))]))
 
-       ;; rss
-       [:a.control {:href (str config/website path (clojure.core/name (if (= post-filter :newest)
-                                                                :newest
-                                                                post-filter)) ".rss")
-            :target "_blank"}
-        [:span {:style {:margin-left 24
-                        :font-size "1.125rem"}} "rss"]])]))
-
-(rum/defc cover-nav < rum/reactive
-  [group channel]
-  (let [{:keys [stared_channels] :as current-user} (citrus/react [:user :current])
+(rum/defcs cover-nav < rum/reactive
+  (rum/local false ::rule-expand?)
+  (rum/local false ::promote-modal?)
+  [state group channel]
+  (let [rule-expand? (::rule-expand? state)
+        promote? (::promote-modal? state)
+        current-path (citrus/react [:router :handler])
+        current-user (citrus/react [:user :current])
         stared_groups (util/get-stared-groups current-user)
         managed-groups (citrus/react [:group :managed])
         stared-group? (contains? (set (keys stared_groups)) (:id group))
@@ -468,10 +410,108 @@
                    (util/me? current-user))
         member? (contains? (set (keys stared_groups))
                            (:id group))]
-    [:div.auto-padding
-     (cover group channel admin? member?)
+    [:div.auto-padding.ubuntu {:style {:position "relative"}}
+     [:a {:style {:position "absolute"
+                  :right 0
+                  :top 15}
+          :target "_blank"
+          :href (str config/website
+                     (cond
+                       group
+                       (str "/" (:name group) "/newest.rss")
+                       channel
+                       (str "/" (:name group) "/" (:name channel) "/newest.rss")
+                       :else
+                       "/hot.rss")
+                     )
+          }
+      (ui/icon {:type :rss
+                :color "rgb(127,127,127)"})]
+     (if (contains? #{:home :newest :latest-reply} current-path)
+       [:div {:style {:margin-bottom 24}}
+        [:h1.heading-1 {:style {:margin-top 0
+                                :margin-bottom "16px"}}
+         "Lambdahackers"]
 
-     (sort-buttons current-user group stared-group?)]))
+        [:p {:style {:font-size "1.125em"}}
+         (t :slogan)]
+
+        (sort-buttons current-user nil false)]
+
+       [:div {:style {:padding-bottom 24}}
+        [:div.row1
+         [:h1.heading-1 {:style {:margin-top 0
+                                 :margin-bottom "16px"}}
+          (util/original-name (:name group))]
+
+         (if channel
+           [:a.control {:style {:margin-left 6}
+                        :href (str "/" (:name group) "/" (:name channel))}
+            (str "#" (:name channel))]
+
+           [:a.control {:title (t :see-all)
+                        :href (str "/" (:name group) "/members")}
+            [:span {:style {:margin-left 6}}
+             (:stars group)
+             " "
+             (str/capitalize (t :members))]])]
+
+        [:div {:style {:font-size "1.125em"}}
+         (transform-content (:purpose group) nil)]
+
+        [:div.space-between {:style {:flex-wrap "wrap"}}
+         (sort-buttons current-user group stared-group?)
+         [:div.row1 {:style {:align-items "center"}}
+          (when-not (util/mobile?)
+            [:a.no-decoration {:key "rules"
+                               :style {:color "#1a1a1a"}
+                               :on-click (fn [] (swap! rule-expand? not))}
+            [:span.row1 {:style {:align-items "center"
+                                 :font-size 14}}
+             (t :rules)
+             (ui/icon {:type (if @rule-expand?
+                               "expand_less"
+                               "expand_more")
+                       :opts {:style {:margin-top 2}}})]])
+
+          (ui/menu
+            [:a {:on-click (fn [e])
+                 :style {:margin-left 24}}
+             (ui/icon {:type :more
+                       :color "rgb(127,127,127)"})]
+            [(if member?
+               [:a.button-text {:href (str "/" (:name group) "/channels")
+                                :style {:font-size 14}}
+                (t :channels)])
+
+             (if member?
+               [:a.button-text {:href (str "/" (:name group) "/wiki")
+                                :style {:font-size 14}}
+                "Wiki"])
+
+             (if admin?
+               [:a.button-text {:href (str "/" (:name group) "/edit")
+                                :style {:font-size 14}}
+                (t :edit)])
+
+             (if admin?
+               [:a.button-text {:on-click (fn []
+                                            (reset! promote? true))
+                                :style {:font-size 14}}
+                (t :promote-member)])
+
+             (if member?
+               [:a.button-text {
+                                :on-click #(citrus/dispatch! :user/unstar-group {:object_type :group
+                                                                                 :object_id (:id group)})
+                                :style {:font-size 14}}
+                (t :leave-group)])]
+            {:menu-style {:width 200}})]]
+
+
+        (rule group rule-expand?)
+
+        (promote-dialog group promote?)])]))
 
 (rum/defc back-to-top < rum/reactive
   []

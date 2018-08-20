@@ -560,8 +560,6 @@ a.active {
 
     .heading-1 {
         font-size: 2.875rem;
-        letter-spacing: -.02em;
-        margin-left: -.187rem;
     }
 
     .posts-headers {
@@ -572,8 +570,6 @@ a.active {
 @media screen and (max-width: 768px) {
     .heading-1 {
         font-size: 2.125rem;
-        letter-spacing: -.02em;
-        margin-left: -.125rem;
     }
     span.logo {
         font-size: 20px;

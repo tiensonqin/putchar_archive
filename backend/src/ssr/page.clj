@@ -233,9 +233,10 @@ if ('serviceWorker' in navigator) {
            "_dev"
            ""))]
 
-       [:script {:async true
-                 :defer true
-                 :src "/asciidoctor.min.js"}]
+       (when (contains? #{:post-edit :post :new-post} handler)
+           [:script {:async true
+                     :defer true
+                     :src "/asciidoctor.min.js"}])
 
        ;; Google analytics
        (when-not zh-cn?

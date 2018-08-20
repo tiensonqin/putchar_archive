@@ -184,7 +184,7 @@
                                                  (citrus/dispatch! :layout/close-panel))))))
                    state)
    }
-  [width mobile? unread? new-report? current-user groups group group-path? member? group-or-channel?]
+  [width mobile? unread? new-report? current-user groups group group-path?]
   [:div#modal-panel {:style {:width width
                              :padding 24
                              :z-index 999
@@ -234,9 +234,6 @@
 
     (group/stared-groups false groups group)
 
-    (when group-or-channel? (group/stared-channels group))
-    (when group-or-channel? (group/group-members group member?))
-
     (layout/right-footer)
 
     (if current-user
@@ -247,7 +244,7 @@
 
 (rum/defcs head
   < rum/reactive
-  [state group-path? mobile? width current-user preview? groups group member? group-or-channel?]
+  [state group-path? mobile? width current-user preview? groups group]
   (let [show-panel? (citrus/react [:layout :show-panel?])
         last-scroll-top (citrus/react [:last-scroll-top (util/get-current-url)])
         search-mode? (citrus/react [:search-mode?])
@@ -282,13 +279,13 @@
                 current-post (citrus/react [:post :by-permalink permalink])]
             [:div.row1 {:style {:align-items "center"}}
              (group/group-logo join-group? current-group width true)
-             [:h3.fadein {:style {:margin-left 24
-                           :margin-right 24
-                           :margin-top 12
-                           :max-width 600
-                           :overflow "hidden"
-                           :text-overflow "ellipsis"
-                           :white-space "nowrap"}}
+             [:h3.fadein {:style {:margin-left 12
+                                  :margin-right 12
+                                  :margin-top 12
+                                  :max-width 600
+                                  :overflow "hidden"
+                                  :text-overflow "ellipsis"
+                                  :white-space "nowrap"}}
               (:title current-post)]])
           [:div.row1 {:style {:align-items "center"}}
            (when (and (not= current-path :home)
@@ -432,7 +429,7 @@
            (ui/dropdown
             {:trigger ["click"]
              :visible show-panel?
-             :overlay (modal-panel width mobile? unread? new-report? current-user groups group group-path? member? group-or-channel?)
+             :overlay (modal-panel width mobile? unread? new-report? current-user groups group group-path?)
              :animation "slide-up"}
             [:a.control {:style {:padding "12px 0 12px 12px"
                                  :margin-top 2}
@@ -569,23 +566,20 @@
         group (some->> (vals (citrus/react [:group :by-name]))
                        (filter #(= (:id %) current-group-id))
                        first)
-        member? (contains? (set (keys stared-groups))
-                           (:id group))
         mobile? (or (util/mobile?) (<= width 768))
         preview? (and
                   (= route :post-edit)
                   (citrus/react [:post :form-data :preview?]))
         post-page? (= route :post)
         group-path? (contains? #{:post :comment :group :group-edit :channel :channel-edit :new-channel :group-hot-posts :group-new-posts :channels :channel-new-posts :channel-hot-posts :members} route)
-        group-or-channel? (contains? #{:group :channel} route)
         hide-github-connect? (= (citrus/react [:hide-github-connect?]) "true")]
     [:div.column
-     [:div.main {:style {:background "#F6F6F6"}}
+     [:div.main {:style {:background (if mobile? "#FFFFFF" "#F6F6F6")}}
 
       (notification)
 
       (head group-path? mobile? width current-user preview?
-        groups group member? group-or-channel?)
+        groups group)
       [:div.row {:class (cond
                           post-page?
                           ""
@@ -609,8 +603,6 @@
           [:div.column
            (group/stared-groups loading? groups group)
 
-           (when group-or-channel? (group/stared-channels group))
-           (when group-or-channel? (group/group-members group member?))
            (layout/right-footer)
 
            (when (and

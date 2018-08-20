@@ -9,6 +9,14 @@
   #?(:cljs
      (:require-macros [cljs.core.async.macros :refer [go]])))
 
+(defn ascii-loaded? []
+  #?(:cljs js/window.Asciidoctor
+     :clj true))
+
+(defn load-ascii []
+  #?(:cljs
+     (loader/load (str config/website "/asciidoctor.min.js"))))
+
 (defn render [str]
   #?(:clj
      (api.asciidoc/render str)
@@ -17,5 +25,5 @@
                                        :hardbreaks true
                                        :icons "font"
                                        :source-highlighter "highlightjs"}})]
-
-       (.convert (js/window.Asciidoctor) str opts))))
+       (when (ascii-loaded?)
+         (.convert (js/window.Asciidoctor) str opts)))))
