@@ -77,7 +77,6 @@
 
         (= "/stripe_webhook" (:uri req))
         (let [params (:params req)]
-          (slack/debug params)
           ;; (cond
           ;;   (= (:type params) "source.chargeable")
           ;;   (let [{:keys [amount type status id livemode metadata]} (get-in params [:data :object])]

@@ -44,8 +44,8 @@
   [db req]
   (let [{:keys [head_commit commits repository ref pusher sender]} (get-in req [:params])
         head-id (:id head_commit)]
-    (slack/debug {:head-id head-id
-                  :exists? (commits/exists? head-id)})
+    ;; (slack/debug {:head-id head-id
+    ;;               :exists? (commits/exists? head-id)})
     ;; pass if commited using web
     (when-not (commits/exists? head-id)
       (let [[owner repo] (some-> (:full_name repository)
@@ -107,8 +107,6 @@
 
                                          permalink
                                          (assoc :permalink permalink)))]
-                       (slack/debug (merge post-data
-                                           {:status status}))
                        (cond
                          (= status "renamed")
                          (when-let [id (get repo-map previous_filename)]

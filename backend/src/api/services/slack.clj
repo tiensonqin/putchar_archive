@@ -25,8 +25,8 @@
                           :body (generate-string body)})))))
 
 (def rules {:new {:webhook (:slack-hook config)}
-            :api-exception (:slack-hook config)
-            :api-latency (:slack-hook config)})
+            :api-exception {:webhook (:slack-hook config)}
+            :api-latency {:webhook (:slack-hook config)}})
 
 (defn at-prefix
   [msg]
