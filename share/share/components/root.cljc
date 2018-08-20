@@ -590,7 +590,7 @@
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"
-                   :style {:margin-top (if mobile? 96 116)}}
+                   :style {:margin-top (if mobile? 84 100)}}
         (routes reconciler route params current-user hot-groups)]
 
 
