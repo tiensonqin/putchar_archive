@@ -47,83 +47,86 @@
     ;; (slack/debug {:head-id head-id
     ;;               :exists? (commits/exists? head-id)})
     ;; pass if commited using web
-    (when-not (commits/exists? head-id)
-      (let [[owner repo] (some-> (:full_name repository)
-                                (str/split #"/"))
-           {:keys [name email]} pusher
-           github-id (str (:id sender))
-           {:keys [github_repo_map] :as user} (and github-id (u/get-by-github-id db github-id))
-           repo-map (if github_repo_map (read-string github_repo_map) {})]
-       (doseq [{:keys [id]} commits]
-         (let [{:keys [files]} (commit/get-commit owner repo id)]
-           (doseq [{:keys [status previous_filename filename additions changes deletions] :as file} files]
-             (cond
-               (and (= status "renamed")
-                    (zero? additions)
-                    (zero? changes)
-                    (zero? deletions))                   ; do nothing
-               (u/github-rename-path db (:id user) repo-map previous_filename filename)
+    (try
+      (when-not (commits/exists? head-id)
+       (let [[owner repo] (some-> (:full_name repository)
+                                  (str/split #"/"))
+             {:keys [name email]} pusher
+             github-id (str (:id sender))
+             {:keys [github_repo_map] :as user} (and github-id (u/get-by-github-id db github-id))
+             repo-map (if github_repo_map (read-string github_repo_map) {})]
+         (doseq [{:keys [id]} commits]
+           (let [{:keys [files]} (commit/get-commit owner repo id)]
+             (doseq [{:keys [status previous_filename filename additions changes deletions] :as file} files]
+               (cond
+                 (and (= status "renamed")
+                      (zero? additions)
+                      (zero? changes)
+                      (zero? deletions))                   ; do nothing
+                 (u/github-rename-path db (:id user) repo-map previous_filename filename)
 
-               (= status "removed")
-               (when-let [id (get repo-map filename)]
-                 (post/delete db id)
-                 (u/github-delete-path db (:id user) repo-map filename))
+                 (= status "removed")
+                 (when-let [id (get repo-map filename)]
+                   (post/delete db id)
+                   (u/github-delete-path db (:id user) repo-map filename))
 
-               :else
-               (when-let [content (contents/get owner repo filename)]
-                 (let [{:keys [encoding content]} content
-                       body-format (if (contains? #{"adoc" "asciidoc"}
-                                                  (util/get-file-ext filename))
-                                     "asciidoc"
-                                     "markdown")]
-                   (if (= encoding "base64")
-                     (let [body (github/base64-decode
-                                 (str/replace content "\n" ""))
-                           {:keys [title body group channel tags is_draft is_wiki] :as spec} (extract-spec body)
-                           group (util/internal-name group)
-                           group (if group
-                                   (group/get db group))
-                           channel (if group
-                                     (channel/get db {:group-name (:name group)
-                                                      :channel-name (if channel (util/internal-name channel) "general")}))
-                           post-data (let [is_draft (if is_draft is_draft false)
-                                           permalink (when-not is_draft
-                                                       (post/permalink (:screen_name user) title))]
-                                       (cond->
-                                         {:user_id (:id user)
-                                          :user_screen_name (:screen_name user)
-                                          :title title
-                                          :body body
-                                          :body_format body-format
-                                          :tags tags
-                                          :is_draft is_draft
-                                          :is_wiki (if is_wiki is_wiki false)}
+                 :else
+                 (when-let [content (contents/get owner repo filename)]
+                   (let [{:keys [encoding content]} content
+                         body-format (if (contains? #{"adoc" "asciidoc"}
+                                                    (util/get-file-ext filename))
+                                       "asciidoc"
+                                       "markdown")]
+                     (if (= encoding "base64")
+                       (let [body (github/base64-decode
+                                   (str/replace content "\n" ""))
+                             {:keys [title body group channel tags is_draft is_wiki] :as spec} (extract-spec body)
+                             group (util/internal-name group)
+                             group (if group
+                                     (group/get db group))
+                             channel (if group
+                                       (channel/get db {:group-name (:name group)
+                                                        :channel-name (if channel (util/internal-name channel) "general")}))
+                             post-data (let [is_draft (if is_draft is_draft false)
+                                             permalink (when-not is_draft
+                                                         (post/permalink (:screen_name user) title))]
+                                         (cond->
+                                           {:user_id (:id user)
+                                            :user_screen_name (:screen_name user)
+                                            :title title
+                                            :body body
+                                            :body_format body-format
+                                            :tags tags
+                                            :is_draft is_draft
+                                            :is_wiki (if is_wiki is_wiki false)}
 
-                                         group
-                                         (assoc :group_id (:id group)
-                                                :group_name (:name group)
-                                                :channel_id (:id channel)
-                                                :channel_name (:name channel))
+                                           group
+                                           (assoc :group_id (:id group)
+                                                  :group_name (:name group)
+                                                  :channel_id (:id channel)
+                                                  :channel_name (:name channel))
 
-                                         permalink
-                                         (assoc :permalink permalink)))]
-                       (cond
-                         (= status "renamed")
-                         (when-let [id (get repo-map previous_filename)]
-                           (post/update db id (dissoc post-data :permalink))
-                           (u/github-rename-path db (:id user) repo-map previous_filename filename))
+                                           permalink
+                                           (assoc :permalink permalink)))]
+                         (cond
+                           (= status "renamed")
+                           (when-let [id (get repo-map previous_filename)]
+                             (post/update db id (dissoc post-data :permalink))
+                             (u/github-rename-path db (:id user) repo-map previous_filename filename))
 
-                         (= status "modified")
-                         (when-let [id (get repo-map filename)]
-                           (post/update db id (dissoc post-data :permalink)))
+                           (= status "modified")
+                           (when-let [id (get repo-map filename)]
+                             (post/update db id (dissoc post-data :permalink)))
 
-                         (= status "added")
-                         (when-let [post (post/create db post-data)]
-                           (u/github-add-path db (:id user) repo-map filename (:id post)))
+                           (= status "added")
+                           (when-let [post (post/create db post-data)]
+                             (u/github-add-path db (:id user) repo-map filename (:id post)))
 
-                         :else
-                         (slack/error "Don't know how to handle this commit: " file)))
+                           :else
+                           (slack/error "Don't know how to handle this commit: " file)))
 
-                     ;; error report
-                     (slack/error "wrong encoding: " encoding ".\nRequest: "
-                                  req))))))))))))
+                       ;; error report
+                       (slack/error "wrong encoding: " encoding ".\nRequest: "
+                                    req))))))))))
+      (catch Exception e
+        (slack/error "Github push error: " e)))))

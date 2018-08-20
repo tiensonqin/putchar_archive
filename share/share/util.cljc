@@ -466,7 +466,7 @@
 
 (defn internal-name
   [name]
-  (-> name
+  (some-> name
       (s/split #"\(")
       (first)
       (s/split #",")
