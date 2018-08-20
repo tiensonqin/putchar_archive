@@ -271,51 +271,59 @@
         images? (seq images)
         wiki? (citrus/react [:post :form-data :is_wiki])]
     [:div.column.ubuntu
-     [:div.space-between
+     [:div.row1 {:style {:align-items "center"}}
       [:h4 {:style {:margin-bottom "1em"}}
-       (t :select-group)]
+       (if @skip?
+         (t :skip-group-selection)
+         (t :select-group))]
       [:a {:on-click (fn []
-                       (reset! skip? true)
+                       (if @skip?
+                         (reset! skip? false)
+                         (reset! skip? true))
                        (citrus/dispatch! :post/clear-group-channel))
            :style {:margin-left 12
                    :font-weight "600"
                    :color (if @skip?
                             colors/primary
                             "rgb(127,127,127)")}}
-       (t :skip)]]
-     (let [c (count stared-groups)
-           cp (fn [groups]
-                (for [[id group] groups]
-                  [:div {:key id}
-                   (select-group-item id form-data group skip?)]))]
-       (cond
-         (<= c 12)
-         [:div#select-groups {:class "row"
-                              :style {:flex-wrap "wrap"}}
-          (cp stared-groups)]
+       (util/format "(%s)" (if @skip?
+                             (t :undo)
+                             (t :skip)))]]
 
-         :else
-         (apply ui/select {:animation "slide-up"
-                           :default-value (:group_name form-data)
-                           :placeholder "choose group"
-                           :on-select (fn [name]
-                                        (reset! skip? false)
-                                        (let [group (some->> (vals stared-groups)
-                                                             (filter #(= (:name %) name))
-                                                             (first))]
-                                          (citrus/dispatch! :citrus/set-post-form-data
-                                                            (let [channel (-> group
-                                                                              (:channels)
-                                                                              (first))]
-                                                              {:group_id (:id group)
-                                                               :group_name (:name group)
-                                                               :channel_id (:id channel)
-                                                               :channel_name (:name channel)}))))
-                           :style {:width 300}}
-           (for [[id group] stared-groups]
-             (ui/option {:key id
-                         :value (:name group)}
-                        (:name group))))))
+     (when-not @skip?
+       (let [c (count stared-groups)
+            cp (fn [groups]
+                 (for [[id group] groups]
+                   [:div {:key id}
+                    (select-group-item id form-data group skip?)]))]
+        (cond
+          (<= c 12)
+          [:div#select-groups {:class "row"
+                               :style {:flex-wrap "wrap"}}
+           (cp stared-groups)]
+
+          :else
+          (apply ui/select {:animation "slide-up"
+                            :default-value (:group_name form-data)
+                            :placeholder "choose group"
+                            :on-select (fn [name]
+                                         (reset! skip? false)
+                                         (let [group (some->> (vals stared-groups)
+                                                              (filter #(= (:name %) name))
+                                                              (first))]
+                                           (citrus/dispatch! :citrus/set-post-form-data
+                                                             (let [channel (-> group
+                                                                               (:channels)
+                                                                               (first))]
+                                                               {:group_id (:id group)
+                                                                :group_name (:name group)
+                                                                :channel_id (:id channel)
+                                                                :channel_name (:name channel)}))))
+                            :style {:width 300}}
+            (for [[id group] stared-groups]
+              (ui/option {:key id
+                          :value (:name group)}
+                         (:name group)))))))
 
 
      (when (not @skip?)
@@ -372,6 +380,8 @@
 
 
      [:div#add-tags {:style {:margin "24px 0"}}
+      [:h6 {:style {:margin-bottom "1em"}}
+       "Add tags (optional):"]
       (ui/input {:class "ant-input"
                  :type "text"
                  :autoComplete "off"
@@ -382,21 +392,7 @@
                  :on-change (fn [value]
                               #?(:cljs
                                  (citrus/dispatch! :citrus/set-post-form-data
-                                                   {:tags (util/ev value)})))})]
-
-     ;; [:div.row {:style {:margin-top 12}}
-     ;;  [:a {:on-click #(citrus/dispatch! :citrus/default-update
-     ;;                                    [:post :form-data :is_wiki]
-     ;;                                    (if wiki? false true))}
-     ;;   [:i {:class (if wiki?
-     ;;                 "fa fa-check-square"
-     ;;                 "fa fa-square-o")
-     ;;        :style {:font-size 20
-     ;;                :margin-right 12
-     ;;                :color "#666"}}]]
-
-     ;;  (t :add-to-wiki)]
-     ]))
+                                                   {:tags (util/ev value)})))})]]))
 
 (rum/defc publish-button < rum/reactive
   [form-data]
@@ -467,7 +463,14 @@
                           data (if (nil? (:body_format data))
                                  (assoc data :body_format :markdown)
                                  data)
-                          data (util/map-remove-nil? data)]
+                          data (util/map-remove-nil? data)
+                          data (if @skip?
+                                 (assoc data
+                                        :group_id nil
+                                        :group_name nil
+                                        :channel_id nil
+                                        :channel_name nil)
+                                 data)]
                       (citrus/dispatch! :post/update data)
                       (citrus/dispatch!
                        :citrus/default-update

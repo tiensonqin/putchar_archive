@@ -344,11 +344,11 @@
 
    :post/clear-group-channel
    (fn [state]
-     {:state {:form-data (dissoc (:form-data state)
-                                 :group_id
-                                 :group_name
-                                 :channel_id
-                                 :channel_name)}})
+     {:state {:form-data (assoc (:form-data state)
+                                 :group_id nil
+                                 :group_name nil
+                                 :channel_id nil
+                                 :channel_name nil)}})
 
    :citrus/set-post-form-data
    set-post-form-data

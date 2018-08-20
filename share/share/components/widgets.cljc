@@ -450,12 +450,14 @@
                         :href (str "/" (:name group) "/" (:name channel))}
             (str "#" (:name channel))]
 
-           [:a.control {:title (t :see-all)
-                        :href (str "/" (:name group) "/members")}
-            [:span {:style {:margin-left 6}}
-             (:stars group)
-             " "
-             (str/capitalize (t :members))]])]
+           (if (:stars group)
+             [:a.control {:title (t :see-all)
+                         :href (str "/" (:name group) "/members")}
+             [:span {:style {:margin-left 6}}
+              (let [stars (:stars group)]
+                (when (= stars 0) 1 stars))
+              " "
+              (str/capitalize (t :members))]]))]
 
         [:div {:style {:font-size "1.125em"}}
          (transform-content (:purpose group) nil)]
