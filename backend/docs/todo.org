@@ -613,8 +613,9 @@
 *** DONE IOS back button
     CLOSED: [2018-08-15 Wed 09:43]
 
+*** DONE open source
+    CLOSED: [2018-08-20 Mon 13:44]
 *** TODO canonical url
-*** TODO open source
 *** TODO pwa android
 
 *** TODO pwa ios

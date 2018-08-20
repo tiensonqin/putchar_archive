@@ -455,7 +455,7 @@
                          :href (str "/" (:name group) "/members")}
              [:span {:style {:margin-left 6}}
               (let [stars (:stars group)]
-                (when (= stars 0) 1 stars))
+                (if (= stars 0) 1 stars))
               " "
               (str/capitalize (t :members))]]))]
 
