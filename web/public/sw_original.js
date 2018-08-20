@@ -63,8 +63,6 @@ if (workbox) {
     }),
   );
 
-  workbox.googleAnalytics.initialize();
-
   workbox.routing.registerRoute(
     /.*(?:googleapis|gstatic)\.com.*$/,
     workbox.strategies.staleWhileRevalidate(),

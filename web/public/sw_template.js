@@ -86,8 +86,6 @@ if (workbox) {
     }),
   );
 
-  // workbox.googleAnalytics.initialize();
-
   workbox.routing.registerRoute(
     /.*(?:googleapis|gstatic|cloudflare)\.com.*$/,
     workbox.strategies.staleWhileRevalidate(),
