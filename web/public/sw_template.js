@@ -11,31 +11,6 @@ if (workbox) {
     suffix: suffix
   });
 
-  self.addEventListener('activate', (event) => {
-    // Get a list of all the current open windows/tabs under
-    // our service worker's control, and force them to reload.
-    // This can "unbreak" any open windows/tabs as soon as the new
-    // service worker activates, rather than users having to manually reload.
-
-    self.clients.matchAll({ type: 'window' }).then(windowClients => {
-      windowClients.forEach(windowClient => {
-        windowClient.navigate(windowClient.url);
-      });
-    });
-
-    event.waitUntil(
-      caches.keys().then(function (keyList) {
-        return Promise.all(keyList.map(function (key) {
-          if (key !== prefix + "-precache-" + suffix || key != prefix + "-runtime-" + suffix) {
-            console.log('[ServiceWorker] Removing old cache', key);
-            return caches.delete(key);
-          }
-        }));
-      })
-    );
-    return self.clients.claim();
-  });
-
   workbox.routing.registerRoute(
     '/',
     workbox.strategies.networkOnly(),
@@ -60,28 +35,16 @@ if (workbox) {
       "revision": "3x7fxde41b6647e74c2556fadde42159"
     },
     {
-      "url": "/highlight.min.js",
-      "revision": "6x7fxde41b6647e74c2556fadde42158"
-    },
-    {
       "url": "favicon.png",
       "revision": "c241d4024b4a177c5cc1f3c560692f25"
     },
     {
-      "url": "images/logo-1x.png",
+      "url": "logo-1x.png",
       "revision": "b88ed58a0493c5550ce4e26da5d9efab"
     },
     {
-      "url": "images/logo-2x.png",
+      "url": "logo-2x.png",
       "revision": "973ee13e14d3d93e5fd9801f543202b1"
-    },
-    {
-      "url": "images/logo-3x.png",
-      "revision": "2a2ab7d3e596400fa86b5a06c21d7c63"
-    },
-    {
-      "url": "images/logo-4x.png",
-      "revision": "6963a5022432158d8abdac152beb56f7"
     },
     {
       "url": "images/logo.png",
@@ -117,13 +80,13 @@ if (workbox) {
       plugins: [
         new workbox.expiration.Plugin({
           maxEntries: 60,
-          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+          maxAgeSeconds: 10 * 24 * 60 * 60, // 10 Days
         }),
       ],
     }),
   );
 
-  workbox.googleAnalytics.initialize();
+  // workbox.googleAnalytics.initialize();
 
   workbox.routing.registerRoute(
     /.*(?:googleapis|gstatic|cloudflare)\.com.*$/,
