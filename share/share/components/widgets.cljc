@@ -411,22 +411,23 @@
         member? (contains? (set (keys stared_groups))
                            (:id group))]
     [:div.auto-padding.ubuntu {:style {:position "relative"}}
-     [:a {:style {:position "absolute"
-                  :right 0
-                  :top 15}
-          :target "_blank"
-          :href (str config/website
-                     (cond
-                       group
-                       (str "/" (:name group) "/newest.rss")
-                       channel
-                       (str "/" (:name group) "/" (:name channel) "/newest.rss")
-                       :else
-                       "/hot.rss")
-                     )
-          }
-      (ui/icon {:type :rss
-                :color "rgb(127,127,127)"})]
+     (when (not (util/mobile?))
+       [:a {:style {:position "absolute"
+                   :right 0
+                   :top 15}
+           :target "_blank"
+           :href (str config/website
+                      (cond
+                        group
+                        (str "/" (:name group) "/newest.rss")
+                        channel
+                        (str "/" (:name group) "/" (:name channel) "/newest.rss")
+                        :else
+                        "/hot.rss")
+                      )
+           }
+       (ui/icon {:type :rss
+                 :color "rgb(127,127,127)"})])
      (if (contains? #{:home :newest :latest-reply} current-path)
        [:div {:style {:margin-bottom 24}}
         [:h1.heading-1 {:style {:margin-top 0
