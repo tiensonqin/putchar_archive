@@ -236,12 +236,13 @@
 
 (rum/defc rule
   [group rule-expand?]
-  (if @rule-expand?
+  (if (and @rule-expand? (not (util/mobile?)))
     (let [rule (:rule group)]
-      [:div {:style {:max-height 400}}
+      [:div.fadein {:style {:max-height 400}}
        [:div.divider]
        (transform-content rule {:body-format :markdown
-                                :style {:font-size 15}})])))
+                                :style {:font-size 15}})
+       [:div.divider]])))
 
 (rum/defc share < rum/reactive
   [group]
@@ -444,6 +445,12 @@
                          :href (str "/" (:name group) "/" (:name channel))}
              (str "#" (:name channel))])
 
+          ;; rules
+          (when-not (util/mobile?)
+            [:a.control {:on-click (fn [] (swap! rule-expand? not))
+                         :style {:margin-right 12}}
+             (t :rules)])
+
           (when (not (util/mobile?))
             [:a {:target "_blank"
                  :href (str config/website
@@ -458,60 +465,46 @@
                        :color "rgb(127,127,127)"})])]
          ]
 
+        (rule group rule-expand?)
+
         [:div {:style {:font-size "1.125em"}}
          (transform-content (:purpose group) nil)]
 
         [:div.space-between {:style {:flex-wrap "wrap"}}
          (sort-buttons current-user group stared-group?)
-         [:div.row1 {:style {:align-items "center"}}
-          (when-not (util/mobile?)
-            [:a.no-decoration {:key "rules"
-                               :style {:color "#1a1a1a"}
-                               :on-click (fn [] (swap! rule-expand? not))}
-            [:span.row1 {:style {:align-items "center"
-                                 :font-size 14}}
-             (t :rules)
-             (ui/icon {:type (if @rule-expand?
-                               "expand_less"
-                               "expand_more")
-                       :opts {:style {:margin-top 2}}})]])
+         (ui/menu
+           [:a {:on-click (fn [e])
+                :style {:margin-left 24}}
+            (ui/icon {:type :more
+                      :color "rgb(127,127,127)"})]
+           [(if member?
+              [:a.button-text {:href (str "/" (:name group) "/channels")
+                               :style {:font-size 14}}
+               (t :channels)])
 
-          (ui/menu
-            [:a {:on-click (fn [e])
-                 :style {:margin-left 24}}
-             (ui/icon {:type :more
-                       :color "rgb(127,127,127)"})]
-            [(if member?
-               [:a.button-text {:href (str "/" (:name group) "/channels")
-                                :style {:font-size 14}}
-                (t :channels)])
+            (if member?
+              [:a.button-text {:href (str "/" (:name group) "/wiki")
+                               :style {:font-size 14}}
+               "Wiki"])
 
-             (if member?
-               [:a.button-text {:href (str "/" (:name group) "/wiki")
-                                :style {:font-size 14}}
-                "Wiki"])
+            (if admin?
+              [:a.button-text {:href (str "/" (:name group) "/edit")
+                               :style {:font-size 14}}
+               (t :edit)])
 
-             (if admin?
-               [:a.button-text {:href (str "/" (:name group) "/edit")
-                                :style {:font-size 14}}
-                (t :edit)])
+            (if admin?
+              [:a.button-text {:on-click (fn []
+                                           (reset! promote? true))
+                               :style {:font-size 14}}
+               (t :promote-member)])
 
-             (if admin?
-               [:a.button-text {:on-click (fn []
-                                            (reset! promote? true))
-                                :style {:font-size 14}}
-                (t :promote-member)])
-
-             (if member?
-               [:a.button-text {
-                                :on-click #(citrus/dispatch! :user/unstar-group {:object_type :group
-                                                                                 :object_id (:id group)})
-                                :style {:font-size 14}}
-                (t :leave-group)])]
-            {:menu-style {:width 200}})]]
-
-
-        (rule group rule-expand?)
+            (if member?
+              [:a.button-text {
+                               :on-click #(citrus/dispatch! :user/unstar-group {:object_type :group
+                                                                                :object_id (:id group)})
+                               :style {:font-size 14}}
+               (t :leave-group)])]
+           {:menu-style {:width 200}})]
 
         (promote-dialog group promote?)])]))
 
