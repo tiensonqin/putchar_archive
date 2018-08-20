@@ -49,9 +49,11 @@
   (let [{:keys [stared_groups]} (if (map? id-or-user)
                                   id-or-user
                                   (util/get db base-map id-or-user))]
-    (util/query db {:from [:groups]
-                    :select [:id :name :purpose :privacy]
-                    :where [:in :id stared_groups]})))
+    (let [groups (util/query db {:from [:groups]
+                                 :select [:id :name :purpose :privacy]
+                                 :where [:in :id stared_groups]})]
+      (for [group-id (take 20 stared_groups)]
+        (clojure.core/get groups group-id)))))
 
 (defn db-get
   [db id]
