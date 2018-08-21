@@ -235,7 +235,8 @@ a:hover {
 
 .btn-primary .btn-contents {
     font-weight: 600;
-    font-family: Ubuntu, Arial, Helvetica, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
+    Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     letter-spacing: normal;
 }
 
@@ -377,7 +378,8 @@ a.hd:visited {
     transition: all 0.1s linear;
 }
 .button-text {
-    font-family: Ubuntu, Arial, Helvetica, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
+    Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     letter-spacing: normal;
     background: none;
     border: none;

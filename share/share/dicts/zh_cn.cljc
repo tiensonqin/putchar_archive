@@ -259,6 +259,7 @@
    :please-check-your-email "请查收你的邮箱!"
 
    :username-exists "用户名已经被占用。"
+   :pick-a-username "用户名"
    :username "用户名"
    :groups-order-saved "小组顺序已保存!"
 

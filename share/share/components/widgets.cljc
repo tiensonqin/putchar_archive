@@ -42,21 +42,7 @@
   [:div {:dangerouslySetInnerHTML {:__html html}}])
 
 (rum/defcs transform-content < rum/reactive
-  {:init (fn [state props]
-           #?(:cljs
-              (let [ascii-loaded? (ascii/ascii-loaded?)
-                    adoc-format? (= :asciidoc (keyword (:body-format (second (:rum/args state)))))]
-                (when (and adoc-format? (not ascii-loaded?))
-                  (citrus/dispatch-sync! :citrus/default-update
-                                         [:ascii-loaded?]
-                                         false)
-                  (go
-                    (async/<! (ascii/load-ascii))
-                    (citrus/dispatch! :citrus/default-update
-                                      [:ascii-loaded?]
-                                      true)))))
-           state)
-   :after-render (fn [state]
+  {:after-render (fn [state]
                    (util/highlight!)
                    state)}
   [state body {:keys [style
@@ -65,22 +51,19 @@
                 on-mouse-up]
          :or {body-format :markdown}
                :as attrs}]
-  (let [ascii-loaded? (citrus/react [:ascii-loaded?])
-        body-format (keyword body-format)]
-    (if (false? ascii-loaded?)
-      [:div (t :loading)]
-      [:div.column
-       (cond->
-         {:class "editor"
-          :style (merge
-                  {:word-wrap "break-word"}
-                  style)
-          :dangerouslySetInnerHTML {:__html
-                                    (if (str/blank? body)
-                                      ""
-                                      (content/render body body-format))}}
-         on-mouse-up
-         (assoc :on-mouse-up on-mouse-up))])))
+  (let [body-format (keyword body-format)]
+    [:div.column
+     (cond->
+       {:class "editor"
+        :style (merge
+                {:word-wrap "break-word"}
+                style)
+        :dangerouslySetInnerHTML {:__html
+                                  (if (str/blank? body)
+                                    ""
+                                    (content/render body body-format))}}
+       on-mouse-up
+       (assoc :on-mouse-up on-mouse-up))]))
 
 (rum/defc user-card < rum/reactive
   [{:keys [id name screen_name bio website github_handle twitter_handle] :as user}]
@@ -99,7 +82,10 @@
          name])
        [:a.control {:href (str "/@" screen_name)
                     :style {:margin-top (if mobile? 8 17)}}
-        [:span {:style {:margin-left (if name 12 0)}}
+        [:span {:style (if name
+                         {:margin-left 12}
+                         {:color "#000"
+                          :font-size 24})}
          (str "@" screen_name)]]]
       [:span {:style {:font-size 16
                       :margin-left 3
@@ -114,6 +100,7 @@
          website])
 
       [:div.row1 {:style {:margin-top 12
+                          :margin-left 3
                           :align-items "center"}}
        (if github_handle
          [:a {:href (str "https://github.com/" github_handle)

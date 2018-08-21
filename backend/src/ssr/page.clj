@@ -46,10 +46,6 @@
    [:meta {:http-equiv "X-UA-Compatible"
            :content "IE=edge"}]
 
-   ;; google verification
-   ;; [:meta {:name "google-site-verification"
-   ;;         :content "DdPD50TQmEAnOV2hW2GT8cSYrsC4RP9KA-YESrKDgu8"}]
-
    ;; twitter
    [:meta {:name "twitter:card"
            :content "summary"}]
@@ -233,6 +229,7 @@ if ('serviceWorker' in navigator) {
            "_dev"
            ""))]
 
+       [:script {:src (str (:website-uri config) "/asciidoctor.min.js")}]
        ;; Google analytics
        (when-not zh-cn?
          [:script {:async true

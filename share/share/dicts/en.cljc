@@ -249,6 +249,7 @@
    ;; user
    :please-check-your-email "Please check your email!"
 
+   :pick-a-username "Pick a username"
    :username "Username"
    :username-exists "Username already exists."
    :groups-order-saved "Groups order saved!"

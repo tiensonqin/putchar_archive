@@ -27,10 +27,9 @@
                         (t :email-exists)
                         (t :invalid-email))]
     {:screen_name  (cond->
-                     {:label (t :unique-username)
+                     {:label (t :username)
                       :required? true
-                      :icon "user"
-                      :placeholder (t :unique-username)
+                      :placeholder (t :pick-a-username)
                       :warning screen-name-warning
                       :validators [(fn [x]
                                      (and (util/username? x)

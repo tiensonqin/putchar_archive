@@ -3,6 +3,7 @@
             [share.kit.ui :as ui]
             [appkit.citrus :as citrus]
             [share.helpers.form :as form]
+            [share.components.widgets :as widgets]
             [share.config :as config]
             [share.util :as util]
             [share.dicts :refer [t]]
@@ -50,7 +51,12 @@
        :confirm-attrs {:style {:width 250}}
        :on-submit (fn [form-data]
                     (citrus/dispatch! :user/request-code @form-data))
-       :cancel-button? false})]])
+       :cancel-button? false})]
+
+   (widgets/transform-content "By clicking Sign In, you agree to our [Terms](https://lambdahackers.com/terms), [Privacy](https://lambdahackers.com/privacy) and [code of conduct](https://lambdahackers.com/code-of-conduct)."
+                              {:style {:font-size 14
+                                       :margin-top 12
+                                       :color "rgb(127,127,127)"}})])
 
 (rum/defc signin-modal < rum/reactive
   [mobile?]
