@@ -211,6 +211,9 @@
        [:script {:src (if util/development?
                         "/js/compiled/main.js"
                         (str "/main-" version ".js"))}]
+
+       [:script {:src (str (:website-uri config) "/asciidoctor.min.js")}]
+
        [:script
         (str "web.core.init(" (state->str state) ")")]
 
@@ -229,7 +232,6 @@ if ('serviceWorker' in navigator) {
            "_dev"
            ""))]
 
-       [:script {:src (str (:website-uri config) "/asciidoctor.min.js")}]
        ;; Google analytics
        (when-not zh-cn?
          [:script {:async true
