@@ -106,7 +106,7 @@
    :create-a-group "Create your group"
    :your "Your "
    :to " to "
-   :slogan "Where programmers discuss and share their thoughts."
+   :slogan "The repo of programmers' thoughts."
    :anyone-create-group "Anyone can create a public group"
    :unlimited "unlimited "
    :members "members"
@@ -181,7 +181,7 @@
    :reports "Reports"
    :write-new-post "New post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
-   :root-title "Lambdahackers - Where programmers discuss and share their thoughts."
+   :root-title "Lambdahackers - The repo of programmers' thoughts."
    :root-description "Lambdahackers is a community for programmers to discuss and share their thoughts. You can read news, or join your favorite groups to post, comment or vote. You can also create a community as long as it's related to programmers."
    :go-to-profile "Posts"
    :profile-updated "Profile updated!"
@@ -400,7 +400,7 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :default-text "You will be notified if someone mentions your @name or replies to you."
    :mute "Mute"
    :mute-text "You will never be notified of anything about this topic."
-   :about-description "Lambdahackers is a open source community platform built for the programmers to discuss and share their thoughts. "
+   :about-description "Lambdahackers is a open source community built for the programmers to discuss and share their thoughts. "
    :about-text "
 === Features
 

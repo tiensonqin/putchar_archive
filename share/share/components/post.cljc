@@ -1131,8 +1131,6 @@
       (let [{:keys [choices] :as post} (citrus/react [:post :current])
             show-poll? (or (seq choices)
                            (citrus/react [:post :poll?]))]
-        (prn {:form-data-title (:title form-data)
-              :title (:title post)})
         (when (and post (nil? (:title form-data)))
           (citrus/dispatch! :citrus/set-post-form-data
                             (cond->
