@@ -26,42 +26,41 @@
         email-warning (if email-taken?
                         (t :email-exists)
                         (t :invalid-email))]
-    (cond->
-      {:screen_name  (cond->
-                      {:label (t :unique-username)
-                       :icon "user"
-                       :placeholder (t :unique-username)
-                       :warning screen-name-warning
-                       :validators [util/username? (fn [] (not username-taken?))]
-                       :on-change (fn [form-data v]
-                                    (when-not (str/blank? v)
-                                      (citrus/dispatch! :citrus/default-update
-                                                        [:user :username-taken?] nil)))}
-                      (:screen_name user)
-                      (assoc :value (:screen_name user)
-                             ;; :disabled true
-                             ))
-      :name         {:label (t :full-name)
-                     :placeholder (str/capitalize (t :optional))
-                     :warning (t :full-name-warning)
-                     :validators [util/optional-non-blank?]
-                     :disabled (if (:name user) true)}}
-
-      (not (form/email? email))
-
-      (assoc :email
-             (cond->
-               {:label (t :email)
-                :icon "mail"
-                :placeholder "Email"
-                :warning email-warning
-                :validators [form/email? (fn [] (not email-taken?))]
-                :on-change (fn [form-data v]
-                             (when-not (str/blank? v)
-                               (citrus/dispatch! :citrus/default-update
-                                                 [:user :email-taken?] nil)))}
-               (:email user)
-               (assoc :value (:email user)))))))
+    {:screen_name  (cond->
+                     {:label (t :unique-username)
+                      :required? true
+                      :icon "user"
+                      :placeholder (t :unique-username)
+                      :warning screen-name-warning
+                      :validators [(fn [x]
+                                     (and (util/username? x)
+                                          (not username-taken?)))]
+                      :on-change (fn [form-data v]
+                                   (when-not (str/blank? v)
+                                     (citrus/dispatch! :citrus/default-update
+                                                       [:user :username-taken?] nil)))}
+                     (:screen_name user)
+                     (assoc :value (:screen_name user)))
+     :email        (cond->
+                     {:label (t :email)
+                      :required? true
+                      :icon "mail"
+                      :placeholder (t :required)
+                      :warning email-warning
+                      :validators [(fn [x]
+                                     (and (not email-taken?)
+                                          (form/email? x)))]
+                      :on-change (fn [form-data v]
+                                   (when-not (str/blank? v)
+                                     (citrus/dispatch! :citrus/default-update
+                                                       [:user :email-taken?] nil)))}
+                     (:email user)
+                     (assoc :value (:email user)))
+     :name         {:label (t :full-name)
+                    :placeholder (str/capitalize (t :optional))
+                    :warning (t :full-name-warning)
+                    :validators [util/optional-non-blank?]
+                    :disabled (if (:name user) true)}}))
 
 (rum/defcs add-avatar < rum/reactive
   < (rum/local false ::uploading?)
@@ -114,25 +113,30 @@
 
 (rum/defc groups-bar
   [groups signup-groups show-name?]
-  [:div.row {:style {:flex-wrap "wrap"}}
+  [:div.row {:style {:flex-wrap "wrap"
+                     :align-itmes "flex-end"}}
    (for [{:keys [id name] :as group} groups]
      (let [joined? (and (seq signup-groups)
                         (contains? (set signup-groups) name))]
        [:div.column1 {:key id
-                      :style {:margin-right 12
+                      :style {:margin-right 24
                               :margin-bottom 24
                               :justify-content "center"}}
         [:a {:on-click #(citrus/dispatch! (if joined?
                                             :user/signup-leave-group
-                                            :user/signup-join-group) name)}
-         [:img.hover-shadow {:src (util/group-logo name 100 100)
+                                            :user/signup-join-group) name)
+             :title (util/original-name name)}
+         [:img.hover-shadow {:src (util/group-logo name 120 120)
                              :class (if joined? "joined" "")}]]
         (if show-name?
-          [:span {:style {:font-size 15
-                          :font-weight "600"
-                          :width 100
-                          :margin-top 12
-                          :color "#666"}}
+          [:div.ubuntu {:style {:font-size 15
+                                :font-weight "600"
+                                :max-width 120
+                                :text-overflow "ellipsis"
+                                :overflow "hidden"
+                                :white-space "nowrap"
+                                :margin-top 12
+                                :color "#666"}}
            (util/original-name name)])]))])
 
 (rum/defc pick-groups < rum/reactive
@@ -165,7 +169,8 @@
      (if (> (count signup-groups) 0)
        (ui/button {:class "btn-primary btn-lg"
                    :on-click (fn []
-                               (citrus/dispatch! :user/signup-join-groups))}
+                               (citrus/dispatch! :user/signup-join-groups))
+                   :style {:margin-top 24}}
          (if loading?
            [:div {:style {:margin-top 2}}
             (ui/donut-white)]
@@ -198,7 +203,8 @@
            (form/render
              {:init-state user
               :loading? [:user :loading?]
-              :title (str (t :welcome) ", " (:name user))
+              :title (str (t :welcome) ", " (or (:name user)
+                                                (:screen_name user)))
               :fields (signup-fields user username-taken? email-taken? email)
               :submit-text (t :signup)
               :submit-style {:margin-top 12}

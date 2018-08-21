@@ -35,21 +35,23 @@
 
    :user/new-error
    (fn [state form-data reply]
-     {:state (cond
-               (and (= (:status reply) 400)
-                    (= (get-in reply [:body :message]) ":username-exists"))
-               (do
-                 (swap! form-data assoc-in [:validators :screen_name] false)
-                 {:username-taken? true})
+     {:state (->
+              (cond
+                (and (= (:status reply) 400)
+                     (= (get-in reply [:body :message]) ":username-exists"))
+                (do
+                  (swap! form-data assoc-in [:validators :screen_name] false)
+                  {:username-taken? true})
 
-               (and (= (:status reply) 400)
-                    (= (get-in reply [:body :message]) ":email-exists"))
-               (do
-                 (swap! form-data assoc-in [:validators :email] false)
-                 {:email-taken? true})
+                (and (= (:status reply) 400)
+                     (= (get-in reply [:body :message]) ":email-exists"))
+                (do
+                  (swap! form-data assoc-in [:validators :email] false)
+                  {:email-taken? true})
 
-               :else
-               state)})
+                :else
+                state)
+              (assoc :loading? false))})
 
    :user/login-ready
    (fn [state result]

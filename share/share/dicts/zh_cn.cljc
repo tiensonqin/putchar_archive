@@ -441,4 +441,5 @@
    :dont-show-vote-numbers "不显示顶数量"
    :undo "取消"
    :skip-group-selection "跳过选择小组"
+   :required "需要填写"
    })

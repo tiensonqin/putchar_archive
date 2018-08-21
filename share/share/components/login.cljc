@@ -15,12 +15,14 @@
                    :validators [form/email?]}})
 
 (rum/defc signin
-  [mobile? background-color]
-  [:div.column.ubuntu {:style {:background background-color
-                               :border-radius "4px"
-                               :padding 24
-                               :justify-content "center"
-                               :align-items "center"}}
+  [background-color]
+  [:div.column.ubuntu {:style (cond->
+                                {:border-radius "4px"
+                                 :padding 24
+                                :justify-content "center"
+                                 :align-items "center"}
+                                background-color
+                                (assoc :background background-color))}
 
    (ui/button {:key "github"
                :class "btn-lg"
@@ -68,5 +70,4 @@
         :wrap-class-name "center"
         :animation "zoom"
         :maskAnimation "fade"}
-       (signin mobile? "#FFF")
-       ))))
+       (signin mobile?)))))

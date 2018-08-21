@@ -40,7 +40,7 @@
     [:div {:class "field"
            :id (clojure.core/name id)}
      ;; label
-     (if label [:label {:class "label"} label])
+     (if label [:label {:class "label ubuntu"} label])
 
      ;; input
      [input-tag (cond-> {:auto-focus auto-focus

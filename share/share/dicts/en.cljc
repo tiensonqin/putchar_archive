@@ -432,4 +432,5 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :dont-show-vote-numbers "Don't show vote numbers"
    :undo "Undo"
    :skip-group-selection "Skip group selection"
+   :required "Required"
    })

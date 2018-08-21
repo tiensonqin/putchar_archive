@@ -39,6 +39,8 @@
                           (about/about params))
          :signup        (fn [params current-user hot-groups]
                           (user/signup params))
+         :login         (fn [params current-user hot-groups]
+                          (login/signin nil))
          :profile       (fn [params current-user hot-groups]
                           (user/profile (atom current-user)))
          :user          (fn [params current-user hot-groups]
@@ -586,10 +588,10 @@
 
       (head group-path? mobile? width current-user preview?
         groups group)
+
       [:div.row {:class (cond
                           post-page?
                           ""
-
                           :else
                           "wrap")
                  :style {:overflow-y "hidden"}}
@@ -600,7 +602,7 @@
         (routes reconciler route params current-user hot-groups)]
 
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :pricing :links :drafts :user-tag :tag} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :pricing :links :drafts :user-tag :tag :login} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 116

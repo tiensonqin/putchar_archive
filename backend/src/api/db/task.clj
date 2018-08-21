@@ -30,7 +30,6 @@
   (let [{:keys [email screen_name] :as user} (u/get db user-id)]
     (j/with-db-connection [conn db]
       (j/execute! conn ["delete from blocks where user_id = ?" user-id])
-      (j/execute! conn ["delete from follows where email = ?" email])
       (j/execute! conn ["delete from likes where user_id = ?" user-id])
       (j/execute! conn ["delete from refresh_tokens where user_id = ?" user-id])
       (doseq [{:keys [object_type object_id]} (j/query conn ["select * from stars where user_id = ?" user-id])]
@@ -70,7 +69,6 @@
   (let [{:keys [email screen_name] :as user} (u/get db user-id)]
     (j/with-db-connection [conn db]
       (j/execute! conn ["delete from blocks where user_id = ?" user-id])
-      (j/execute! conn ["delete from follows where email = ?" email])
       (j/execute! conn ["delete from likes where user_id = ?" user-id])
       (j/execute! conn ["delete from refresh_tokens where user_id = ?" user-id])
       (doseq [{:keys [object_type object_id]} (j/query conn ["select * from stars where user_id = ?" user-id])]
