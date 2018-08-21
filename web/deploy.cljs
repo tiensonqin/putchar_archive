@@ -62,6 +62,6 @@
   (exec-sync (str "cp public/js/compiled/main.js "  (str "public/main-" new-version ".js")))
   (exec-sync "cleancss -o public/style.css public/css/style.css")
   (exec-sync (str "mv public/style.css "  (str "public/style-" new-version ".css")))
-  (exec-sync "cd public && cp -R .well-known *.html *.png *.txt *.xml *.ico images manifest.json *.css main*.js highlight.min.js asciidoctor.min.js ../../backend/resources/public"))
+  (exec-sync "cd public && cp -R .well-known *.html *.png *.txt *.xml *.ico images manifest.json *.css main*.js ga.js asciidoctor.min.js ../../backend/resources/public"))
 
 (set! *main-cli-fn* -main)

@@ -191,7 +191,7 @@
   ([name]
    (group-logo name 64 64))
   ([name width height]
-   (let [params (cond-> {:auto "null"}
+   (let [params (cond-> {}
                   width (assoc :w width)
                   height (assoc :h height))]
      (str config/img-cdn "/" name "_logo.png" "?"

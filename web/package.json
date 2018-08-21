@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "create-react-class": "^15.6.2",
-    "fg-loadcss": "^2.0.1",
     "marked": "^0.4.0",
     "prop-types": "^15.6.0",
     "rc-dialog": "^7.1.3",

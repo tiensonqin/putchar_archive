@@ -120,10 +120,9 @@
              :href "/css/style.css"}]
      [:link {:rel "stylesheet"
              :href (str "/style-" version ".css")}])
+
    (when-not zh-cn?
-     [:link {:rel "preload"
-             :href "https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700,700italic%7CUbuntu:400,400i,600,600i"}])
-   ])
+     [:link {:href "https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700,700italic%7CUbuntu:400,400i,600,600i"}])])
 
 (defn status-template
   [text]
@@ -195,25 +194,14 @@
       (head req handler zh-cn? seo-content seo-title seo-image)
       [:body {:style {:min-height "100%"}}
        [:div#app content]
-       [:link {:rel "preload"
-               :href "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-               :as "style"
-               :onload "this.onload=null;this.rel='stylesheet'"}]
-
-       [:noscript
-        [:link {:rel "stylesheet"
-                :href "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"}]
-        (when-not zh-cn?
-          [:link {:rel "stylesheet"
-                  :href "https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700,700italic%7CUbuntu:400,400i,600,600i"}])]
-       [:script "!function(t){\"use strict\";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement(\"link\").relList.supports(\"preload\")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){function e(){t.media=a}var a=t.media||\"all\";t.addEventListener?t.addEventListener(\"load\",e):t.attachEvent&&t.attachEvent(\"onload\",e),setTimeout(function(){t.rel=\"stylesheet\",t.media=\"only x\"}),setTimeout(e,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName(\"link\"),n=0;n<a.length;n++){var o=a[n];\"preload\"!==o.rel||\"style\"!==o.getAttribute(\"as\")||o.getAttribute(\"data-loadcss\")||(o.setAttribute(\"data-loadcss\",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener(\"load\",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent(\"onload\",function(){e.poly(),t.clearInterval(a)})}\"undefined\"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}(\"undefined\"!=typeof global?global:this);"]
 
        [:script {:src (if util/development?
                         "/js/compiled/main.js"
                         (str "/main-" version ".js"))}]
 
-       [:script {:src (str (:website-uri config) "/asciidoctor.min.js")}]
+       [:script {:src "/asciidoctor.min.js"}]
 
+       ;; TODO: http2 push using json
        [:script
         (str "web.core.init(" (state->str state) ")")]
 
@@ -233,15 +221,7 @@ if ('serviceWorker' in navigator) {
            ""))]
 
        ;; Google analytics
-       (when-not zh-cn?
-         [:script {:async true
-                   :defer true
-                   :src "https://www.googletagmanager.com/gtag/js?id=UA-123974000-1"}])
-
-       (when-not zh-cn?
-         [:script "window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-123974000-1');"])
-       ]))))
+       [:script {:src "/ga.js"
+                 :defer true
+                 :async true}]
+]))))
