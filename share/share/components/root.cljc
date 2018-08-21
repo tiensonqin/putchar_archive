@@ -280,7 +280,7 @@
                 permalink (util/encode-permalink (str "@" screen_name "/" permalink))
                 current-post (citrus/react [:post :by-permalink permalink])]
             [:div.row1 {:style {:align-items "center"}}
-             (group/group-logo join-group? current-group width true)
+             (group/group-logo false current-group width true)
              [:h3.fadein {:style {:margin-left 12
                                   :margin-right 12
                                   :margin-top 12
