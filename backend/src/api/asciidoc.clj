@@ -48,6 +48,7 @@
                         {"safe" (int 1)
                          "attributes" (java.util.HashMap.
                                        {"showTitle" true
+                                        "hardbreaks" true
                                         "icons" "font"
                                         "source-highlighter" "highlightjs"})})))
 
