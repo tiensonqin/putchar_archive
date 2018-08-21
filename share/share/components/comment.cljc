@@ -2,7 +2,6 @@
   (:require [rum.core :as rum]
             [share.kit.ui :as ui]
             [appkit.citrus :as citrus]
-            [share.helpers.form :as form]
             [share.util :as util]
             [share.components.report :as report]
             [share.components.widgets :as widgets]

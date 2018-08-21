@@ -47,7 +47,8 @@
                           (:locale state))
         hide-votes?      (or
                           (= (cookie/cookie-get :hide-votes) "true")
-                          (:hid-votes? state))
+                          (:hide-votes? state))
+        setup-github-sync?      (= (cookie/cookie-get :setup-github-sync) "true")
         zh-cn? (= locale :zh-cn)
         current-user (get-in state [:user :current])
         emojis (storage/get :emojis)]
@@ -72,7 +73,8 @@
                              (if m
                                (update m :stared_groups util/normalize))))
                 (assoc :locale locale
-                       :hide-votes? hide-votes?)
+                       :hide-votes? hide-votes?
+                       :setup-github-sync? setup-github-sync?)
                 (assoc-in [:comment :liked-comments]
                           (storage/get :liked-comments))
                 (assoc-in [:comment :drafts]

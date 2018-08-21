@@ -22,7 +22,7 @@
             [api.services.slack :as slack]
             [api.services.stripe :as stripe]
             [api.services.github.webhook-push :as push]
-            [api.services.github.repo :as repo]
+            [api.db.repo :as db-repo]
             [api.services.github.user :as github-user]
             [share.components.root :as root]
             [api.db.task :as task]
@@ -125,52 +125,22 @@
 
         ;; github login
         (= "/auth/github" (:uri req))
-        (let [uid (get-in req [:context :uid])]
+        (let [uid (get-in req [:context :uid])
+              params (:params req)
+              sync? (= (:sync params) "true")]
           (cond
             ;; granted public repo permission
+            ;; extract this
             (and uid
                  (:code (:params req))
                  (:state (:params req))
                  (get-in req [:params :ask_public_repo]))
-            (j/with-db-connection [conn datasource]
-              (let [info (auth/github (:context req) (:params req))
-                    [github_id github_handle] (if (uuid? (:id info))
-                                  [(get info :github_id) (get info :github_handle)]
-                                  [(str (:id info)) (:login info)])
-                    repo-name "lambdahackers-blog"
-                    m {:name repo-name,
-                       :description "My blog."
-                       :homepage (str "https//lambdahackers.com/@" github_handle)
-                       :private false
-                       :has_issues true
-                       :has_projects true
-                       :has_wiki true}
-                   token (token/get-token conn github_id)]
-               (if token
-                 (do
-                   ;; 1. create a repo
-                   (repo/create m
-                                {:oauth-token token})
-
-                   ;; 2. setup a webhook which listens to all push events.
-                   (repo/add-hook github_handle repo-name
-                                  {:name "web"
-                                   :active true
-                                   :events ["push"]
-                                   :config {:url "https://lambdahackers.com/github/push",
-                                            :content_type "json"}}
-                                  {:oauth-token token})
-
-                   (u/update conn uid {:github_repo (str "https://github.com/" github_handle "/" repo-name)
-                                       :github_id github_id
-                                       :github_handle github_handle}))
-                 ;; FIXME: token not found, user already revoked access, should ask for permissions again.
-                 )
-               (-> {:status 302}
-                   (resp/header "Location" (or (let [url (get-in req [:params :referer])]
-                                                 (if url
-                                                   (str url "#github-repo")))
-                                               "")))))
+            (let [info (auth/github (:context req) (:params req))
+                  [github_id github_handle] (if (uuid? (:id info))
+                                              [(get info :github_id) (get info :github_handle)]
+                                              [(str (:id info)) (:login info)])]
+              (j/with-db-connection [conn datasource]
+               (db-repo/setup! req conn uid github_id github_handle false)))
 
             ;; login
             (and uid
@@ -223,16 +193,22 @@
 
             :else
             (let [{:keys [app-key app-secret]} (get-in config/config [:oauth :github])
-                  tt (social/make-social :github app-key app-secret
-                                         (str (get-in config/config
-                                                      [:oauth :github :redirect-uri])
-                                              "?referer=" (get-in req [:headers "referer"] ""))
-                                         :state (str (util/uuid))
-                                         ;; :scope "public_repo"
-                                         )
+                  tt (if sync?
+                       (social/make-social :github app-key app-secret
+                                           (str (get-in config/config
+                                                        [:oauth :github :redirect-uri])
+                                                "?referer=" (get-in req [:headers "referer"] ""))
+                                           :state (str (util/uuid))
+                                           :scope "public_repo")
+                       (social/make-social :github app-key app-secret
+                                          (str (get-in config/config
+                                                       [:oauth :github :redirect-uri])
+                                               "?referer=" (get-in req [:headers "referer"] ""))
+                                          :state (str (util/uuid))
+                                          ;; :scope "public_repo"
+                                          ))
                   url (social/getAuthorizationUrl tt)]
               (resp/redirect url))))
-
 
         (= "/email_confirmation" (:uri req))
         (if-let [code (get-in req [:params :code])]

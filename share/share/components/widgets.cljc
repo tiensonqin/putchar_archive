@@ -642,7 +642,8 @@
 
 (rum/defc github-connect
   []
-  (ui/button {:on-click (fn []
+  (ui/button {:class "btn-primary"
+              :on-click (fn []
                           (util/set-href!
                            (str config/website "/github/setup-sync")))}
     (t :connect-github)))

@@ -88,7 +88,7 @@
 (defn threshold
   "Returns the :on-load handler."
   [state]
-  (or (-> state options :threshold) 100))
+  (or (-> state options :threshold) 300))
 
 (defn bottom-reached?
   "Returns true if the scroll position is near the bottom of the page."

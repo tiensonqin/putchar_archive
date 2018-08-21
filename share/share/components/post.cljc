@@ -36,19 +36,18 @@
                    (citrus/dispatch! (if toped? :post/untop :post/top) (:id post))
                    (swap! init-tops (if toped? dec inc)))
         hide-votes? (citrus/react [:hide-votes?])]
-    [:div.row1.scale.control {:style {:align-items "center"}}
-     [:a.scale.control {:title title
-                        :on-click on-click}
-      (ui/icon {:type :vote
-                :width 14
-                :color (if toped? "#000" "#666")
-                :opts {:style {:margin-top -2}}})]
+    [:a.scale.control.row1 {:title title
+                            :on-click on-click
+                            :style {:align-items "center"}}
+     (ui/icon {:type :vote
+               :width 14
+               :color (if toped? colors/primary "rgb(127,127,127)")
+               :opts {:style {:margin-top -2}}})
      (when-not hide-votes?
-       [:a.control.ubuntu {:on-click on-click
-                          :style {:margin-left 6
-                                  :color "rgb(127,127,127)"
-                                  :font-weight "600"}}
-       tops])]))
+       [:span {:style {:margin-left 6
+                       :font-weight "600"
+                       :color (if toped? colors/primary "rgb(127,127,127)")}}
+        tops])]))
 
 (rum/defcs bookmark-text < rum/reactive
   [state post]
@@ -83,8 +82,8 @@
                         "bookmark"
                         "bookmark_border")
                 :color (if bookmarked?
-                         "#000"
-                           "#666")}
+                         colors/primary
+                         "#666")}
                icon-attrs))]))
 
 (rum/defc edit-toolbox < rum/reactive
@@ -716,10 +715,10 @@
       (case level
         "mute"
         (ui/icon {:type :notifications_off
-                  :color "#666"})
+                  :color colors/primary})
         "watch"
         (ui/icon {:type :notifications
-                  :color "#000"})
+                  :color colors/primary})
         (ui/icon {:type :notifications_none
                   :color "#666"}))]
       [[:a.button-text {:style {:font-size 14}
@@ -1043,8 +1042,7 @@
                                                opts)))})
      (when loading?
        [:div.center.ubuntu {:style {:font-size "1.2em"
-                                    :font-weight "500"
-                                    :color "rgb(127,127,127)"}}
+                                    :font-weight "500"}}
         (t :loading)])
 
      (ops-delete-dialog)]

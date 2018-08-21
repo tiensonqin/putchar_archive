@@ -52,6 +52,15 @@
                    :http-only true
                    :domain domain}}))
 
+(def setup-github-sync
+  (let [domain (if (util/production?)
+                 ".lambdahackers.com"
+                 "")]
+    {"setup-github-sync" {:value "true"
+                          :path "/"
+                          :expires "Thu, 01 Jan 1970 00:00:00 GMT"
+                          :domain domain}}))
+
 (defn get-token [req]
   (when-let [access-token (get-in req [:cookies "x" :value])]
     (unsign access-token)))

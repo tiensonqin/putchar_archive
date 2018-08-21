@@ -10,6 +10,7 @@
             [api.db.post :as post]
             [api.db.comment :as comment]
             [api.db.report :as report]
+            [api.db.repo :as repo]
             [api.db.util :as du]
             [api.db.refresh-token :as refresh-token]
             [api.db.token :as token]
@@ -22,6 +23,7 @@
             [api.services.s3 :as s3]
             [api.cookie :as cookie]
             [api.jwt :as jwt]
+            [share.helpers.form :as form]
             [clojure.java.jdbc :as j]
             [clojure.string :as str]
             [clojure.set :as set]
@@ -128,34 +130,47 @@
 
 (defmethod handle :user/new [[{:keys [datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
-    (cond
-      (and (:screen_name data)
-           (du/exists? conn :users {:screen_name (:screen_name data)}))
-      (util/bad :username-exists)
+    (let [github-sync? (:setup-github-sync? data)
+          data (dissoc data :setup-github-sync?)]
+      (cond
+       (and (:screen_name data)
+            (du/exists? conn :users {:screen_name (:screen_name data)}))
+       (util/bad :username-exists)
 
-      (and (:email data)
-           (du/exists? conn :users {:email (:email data)}))
-      (util/bad :email-exists)
+       (and (:email data)
+            (du/exists? conn :users {:email (:email data)}))
+       (util/bad :email-exists)
 
-      :else
-      (when-let [user (u/create conn (dissoc data :avatar))]
-        ;; upload social avatar to s3
-        (future
-          (let [avatar (or (let [avatar (:avatar data)]
-                             (and (not (str/blank? avatar))
-                                  avatar))
-                           (rand-nth [(str (:img-cdn config/config) "/4VuWB7D1Ht.jpg")
-                                      (str (:img-cdn config/config) "/4VuXdNeNnt.jpg")]))]
-            (s3/save-url-image (:screen_name user) avatar)))
-        (future
-          (email/aws-with-credential
-           (email/send-welcome (:email user)
-                               (u/get-code (:email user)))))
-        (future
-          (slack/new (str "New user: " user)))
-        {:status 200
-         :body {:user user}
-         :cookies (u/generate-tokens conn user)}))))
+       (not (form/email? (:email data)))
+       (util/bad :invalid-email)
+
+       :else
+       (when-let [user (u/create conn (dissoc data :avatar))]
+         ;; upload social avatar to s3
+         (future
+           (let [avatar (or (let [avatar (:avatar data)]
+                              (and (not (str/blank? avatar))
+                                   avatar))
+                            (rand-nth [(str (:img-cdn config/config) "/4VuWB7D1Ht.jpg")
+                                       (str (:img-cdn config/config) "/4VuXdNeNnt.jpg")]))]
+             (s3/save-url-image (:screen_name user) avatar)))
+         (future
+           (email/aws-with-credential
+            (email/send-welcome (:email user)
+                                (u/get-code (:email user)))))
+         (future
+           (slack/new (str "New user: " user)))
+
+         (when github-sync?
+           (future
+             (j/with-db-connection [conn datasource]
+               (repo/setup! nil conn (:id user)
+                           (:github_id data)
+                           (:github_handle data)
+                           true))))
+         {:status 200
+          :body {:user user}
+          :cookies (u/generate-tokens conn user)})))))
 
 (defmethod handle :user/update [[{:keys [uid datasource redis]} data]]
   (j/with-db-connection [conn datasource]

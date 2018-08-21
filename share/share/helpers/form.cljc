@@ -240,6 +240,7 @@
                         :on-click on-submit
                         :class "btn btn-primary"
                         :on-key-down (fn [e]
+                                       (util/stop e)
                                        (when (= 13 (.-keyCode e))
                                          ;; enter key
                                          (on-submit)))}
@@ -264,8 +265,7 @@
                                    (if on-cancel
                                      (on-cancel)
                                      (citrus/dispatch! :router/back)))}
-             (t :cancel))))
-   ])
+             (t :cancel))))])
 
 (rum/defcs render < (rum/local nil ::form-data)
   {:after-render (fn [state]
@@ -292,95 +292,99 @@
   (let [form-data (get state ::form-data)]
     (when (and init-state (map? init-state) (nil? @form-data))
       (reset! form-data init-state))
-    [:div.column.form {:style style}
-     ;; title
-     (if title [:h1 {:class "title"
-                     :style {:margin-bottom 24}} title])
+    (let [validated-on-submit
+          (fn []
+            ;; validate
+            (doseq [[name {:keys [type validators required?]}] fields]
+              (if (and required? (nil? (get @form-data name)))
+                (swap! form-data (fn [v]
+                                   (assoc-in v [:validators name] false))))
+              (when (and
+                     (or (nil? type)
+                         (contains? #{:input :textarea "input" "textarea"} type))
+                     (get @form-data name))
+                (when validators
+                  (doseq [validator validators]
+                    (if (validator (get @form-data name))
+                      (swap! form-data (fn [v]
+                                         (assoc-in v [:validators name] true)))
+                      (swap! form-data (fn [v]
+                                         (assoc-in v [:validators name] false))))))))
+            (when (every? #(or (true? %) (nil? %)) (vals (:validators @form-data)))
+              (swap! form-data dissoc :validators)
+              (when @form-data
+                (on-submit form-data))))]
+      [:div.column.form {:style style
+                         :on-key-down (fn [e]
+                                        (when (= 13 (.-keyCode e))
+                                          ;; enter key
+                                          (validated-on-submit)))}
+       ;; title
+       (if title [:h1 {:class "title"
+                       :style {:margin-bottom 24}} title])
 
-     (if header
-       (header form-data))
+       (if header
+         (header form-data))
 
-     (when-let [warning (:warning-message @form-data)]
-       [:div
-        [:p {:class "help is-danger"} warning]])
+       (when-let [warning (:warning-message @form-data)]
+         [:div
+          [:p {:class "help is-danger"} warning]])
 
-     ;; fields
-     [:div {:style {:margin-bottom 12}}
-      (for [[name attrs] fields]
-        (let [f (case (:type attrs)
-                  :checkbox checkbox
-                  :radio radio
-                  :image image
-                  input)
-              attrs (if (= (:type attrs) :textarea)
-                      (assoc attrs :textarea? true)
-                      attrs)
+       ;; fields
+       [:div {:style {:margin-bottom 12}}
+        (for [[name attrs] fields]
+          (let [f (case (:type attrs)
+                    :checkbox checkbox
+                    :radio radio
+                    :image image
+                    input)
+                attrs (if (= (:type attrs) :textarea)
+                        (assoc attrs :textarea? true)
+                        attrs)
 
-              attrs (assoc attrs :id name)
+                attrs (assoc attrs :id name)
 
-              attrs (assoc attrs :value (or (get @form-data name)
-                                            (:value attrs)))
-              attrs (if (:disabled attrs)
-                      attrs
-                      (assoc attrs :on-change (fn [e]
-                                                (let [v (if (= :checkbox (:type attrs))
-                                                          (.-checked (.-target e))
-                                                          (ev e))]
-                                                  (swap! form-data assoc name v)
-                                                  (when-let [on-change (:on-change attrs)]
-                                                    (on-change form-data v))))))
+                attrs (assoc attrs :value (or (get @form-data name)
+                                              (:value attrs)))
+                attrs (if (:disabled attrs)
+                        attrs
+                        (assoc attrs :on-change (fn [e]
+                                                  (let [v (if (= :checkbox (:type attrs))
+                                                            (.-checked (.-target e))
+                                                            (ev e))]
+                                                    (swap! form-data assoc name v)
+                                                    (when-let [on-change (:on-change attrs)]
+                                                      (on-change form-data v))))))
 
-              attrs (if (and
-                         (= :checkbox (:type attrs))
-                         (:warning attrs)
-                         (false? (get @form-data name)))
-                      (assoc attrs :warning-show? true)
-                      attrs)]
-          (rum/with-key (cond
-                          ;; TODO: not works
-                          (= (:type attrs) :select)
-                          (let [options (mapv
-                                         (fn [{:keys [label value]}]
-                                           (ui/option {:key value
-                                                       :value value}
-                                                      (str label)))
-                                         (:options attrs))]
-                            (apply ui/select attrs options))
+                attrs (if (and
+                           (= :checkbox (:type attrs))
+                           (:warning attrs)
+                           (false? (get @form-data name)))
+                        (assoc attrs :warning-show? true)
+                        attrs)]
+            (rum/with-key (cond
+                            ;; TODO: not works
+                            (= (:type attrs) :select)
+                            (let [options (mapv
+                                           (fn [{:keys [label value]}]
+                                             (ui/option {:key value
+                                                         :value value}
+                                                        (str label)))
+                                           (:options attrs))]
+                              (apply ui/select attrs options))
 
 
-                          (contains? #{input checkbox radio image} f)
-                          (f form-data name attrs)
+                            (contains? #{input checkbox radio image} f)
+                            (f form-data name attrs)
 
-                          :else
-                          (f attrs)) name)))]
+                            :else
+                            (f attrs)) name)))]
 
-     (if footer (footer form-data))
-     ;; submit
-     (submit
-      (fn []
-        ;; validate
-        (doseq [[name {:keys [type validators required?]}] fields]
-          (if (and required? (nil? (get @form-data name)))
-            (swap! form-data (fn [v]
-                               (assoc-in v [:validators name] false))))
-          (when (and
-                 (or (nil? type)
-                     (contains? #{:input :textarea "input" "textarea"} type))
-                 (get @form-data name))
-            (when validators
-              (doseq [validator validators]
-                (if (validator (get @form-data name))
-                  (swap! form-data (fn [v]
-                                     (assoc-in v [:validators name] true)))
-                  (swap! form-data (fn [v]
-                                     (assoc-in v [:validators name] false))))))))
-        (when (every? #(or (true? %) (nil? %)) (vals (:validators @form-data)))
-          (swap! form-data dissoc :validators)
-          (when @form-data
-            (on-submit form-data))))
-      {:submit-text submit-text
-       :submit-style submit-style
-       :cancel-button? cancel-button?
-       :confirm-attrs confirm-attrs
-       :loading? loading?})]
-    ))
+       (if footer (footer form-data))
+       ;; submit
+       (submit validated-on-submit
+               {:submit-text submit-text
+                :submit-style submit-style
+                :cancel-button? cancel-button?
+                :confirm-attrs confirm-attrs
+                :loading? loading?})])))

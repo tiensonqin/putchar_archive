@@ -235,7 +235,7 @@ a.scale:hover {
 }
 
 .voted {
-    color: #1a1a1a;
+    color: #228B22;
 }
 
 br {
@@ -294,7 +294,7 @@ span.logo {
     display: inline-block;
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    border-left-color: #1a1a1a;
+    border-left-color: #228B22;
     width: 30px;
     height: 30px;
     animation: donut-spin 1.2s linear infinite;
@@ -444,7 +444,7 @@ a.set-cover {
 }
 
 svg:hover {
-    fill: #1a1a1a;
+    fill: #228B22;
 }
 
 .like svg:hover {
@@ -506,7 +506,7 @@ a.active {
 }
 
 .icon-button:hover i {
-    color: #1a1a1a;
+    color: #228B22;
 }
 
 .ver_divider {

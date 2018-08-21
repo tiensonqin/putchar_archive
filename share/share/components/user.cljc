@@ -41,21 +41,20 @@
                                                        [:user :username-taken?] nil)))}
                      (:screen_name user)
                      (assoc :value (:screen_name user)))
-     :email        (cond->
-                     {:label (t :email)
-                      :required? true
-                      :icon "mail"
-                      :placeholder (t :required)
-                      :warning email-warning
-                      :validators [(fn [x]
-                                     (and (not email-taken?)
-                                          (form/email? x)))]
-                      :on-change (fn [form-data v]
-                                   (when-not (str/blank? v)
-                                     (citrus/dispatch! :citrus/default-update
-                                                       [:user :email-taken?] nil)))}
-                     (:email user)
-                     (assoc :value (:email user)))
+     :email        (let [email (or email (:email user) "")]
+                     (cond->
+                      {:label (t :email)
+                       :required? true
+                       :placeholder (t :required)
+                       :warning email-warning
+                       :validators [(fn [x]
+                                      (and (not email-taken?)
+                                           (form/email? x)))]
+                       :on-change (fn [form-data v]
+                                    (when-not (str/blank? v)
+                                      (citrus/dispatch! :citrus/default-update
+                                                        [:user :email-taken?] nil)))
+                       :value email}))
      :name         {:label (t :full-name)
                     :placeholder (str/capitalize (t :optional))
                     :warning (t :full-name-warning)
@@ -180,7 +179,8 @@
 (rum/defc signup < rum/reactive
   [{:keys [email] :as params}]
   (let [signup-step (citrus/react [:user :signup-step])
-        temp-user (citrus/react [:user :temp])]
+        temp-user (citrus/react [:user :temp])
+        setup-github-sync? (citrus/react [:setup-github-sync?])]
     [:div.signup.row
      (case signup-step
       :add-avatar
@@ -213,15 +213,17 @@
                                        @form-data
                                        {:avatar github-avatar}
                                        {:github_id (str (:id user))
-                                        :github_handle (:login temp-user)})]
+                                        :github_handle (:login temp-user)
+                                        :setup-github-sync? setup-github-sync?})]
                              (citrus/dispatch! :user/new data form-data)))})
            (form/render
              {:title (t :welcome)
+              :init-state {:email email}
               :loading? [:user :loading?]
               :fields (signup-fields user username-taken? email-taken? email)
               :submit-text (t :signup)
               :on-submit (fn [form-data]
-                           (citrus/dispatch! :user/new (assoc @form-data :email email) form-data))}))]))]))
+                           (citrus/dispatch! :user/new @form-data form-data))}))]))]))
 
 (defn profile-fields
   [form-data]

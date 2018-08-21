@@ -12,7 +12,7 @@
                               :success ["check_circle" "#52c41a"]
                               :error ["error" "#f5222d"]
                               :warning ["warning" "#faad14"])]
-      [:div.ant-message
+      [:div.ant-message.ubuntu
        [:span
         [:div.ant-message-notice
          [:div.ant-message-notice-content
