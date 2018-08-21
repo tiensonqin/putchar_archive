@@ -629,7 +629,6 @@
 *** TODO [#A] posts and comments, remember last visit
 *** TODO [#A] browser extension
     Reasonml or Cljs
-*** TODO [#A] first 1000 users
 *** TODO [#A] spam users, contents detect
 *** TODO [#A] Sponsors && backers
 *** TODO [#B] night mode

@@ -48,7 +48,7 @@
                                     ;; by-screen-name
                                     (let [screen-name (:screen_name route-params)
                                           user (get-in state [:user :by-screen-name screen-name])]
-                                      [(:name user) (:bio user) (util/cdn-image screen-name :width 300 :height 300)])
+                                      [(or (:name user) screen-name) (:bio user) (util/cdn-image screen-name :width 300 :height 300)])
 
                                     :groups
                                     [(t :groups) (t :lambdahackers-hot-groups) website-logo]
