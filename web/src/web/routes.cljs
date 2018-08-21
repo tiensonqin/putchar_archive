@@ -17,7 +17,6 @@
   (let [history (pushy/pushy
                  #(citrus/dispatch! reconciler :router/push % false)
                  (fn [uri]
-                   (citrus/dispatch! reconciler :user/close-signin-modal?)
                    (if (re-find #"/auth" uri)
                      nil
                      (routes/match-route-with-query-params uri))))]

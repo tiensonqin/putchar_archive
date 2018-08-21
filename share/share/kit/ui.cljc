@@ -109,15 +109,6 @@
    (do
      (defonce Dialog (r/adapt-class rc-dialog))
      (rum/defc dialog
-       < {:did-remount (fn [old-state new-state]
-                         (let [visible (:visible (first (:rum/args new-state)))]
-                           (citrus/dispatch-sync! :citrus/default-update
-                                             :show-modal? visible))
-                         new-state)
-          :will-unmount (fn [state]
-                          (citrus/dispatch! :citrus/default-update
-                                            :show-modal? false)
-                          state)}
        [opts & children]
        (apply Dialog opts children)))
    :clj

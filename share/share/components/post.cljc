@@ -5,12 +5,7 @@
             [share.content :as content]
             [clojure.string :as str]
             [bidi.bidi :as bidi]
-            [share.routes :refer [routes]]
-            #?(:cljs [goog.object :as gobj])
             #?(:cljs [goog.dom :as gdom])
-            [share.helpers.image :as image]
-            [share.helpers.form :as form]
-            [appkit.rum :as r]
             [share.kit.mixins :as mixins]
             [share.kit.ui :as ui]
             [share.kit.query :as query]
@@ -168,7 +163,7 @@
             :on-change (fn [e]
                          (citrus/dispatch! :citrus/set-post-form-data
                                            {:title-validated? true
-                                            :title (form/ev e)}))
+                                            :title (util/ev e)}))
             :value (or (:title form-data) init "")}]
 
    (if (false? (get form-data :title-validated?))
@@ -211,7 +206,7 @@
           :on-change (fn [e]
                        ;; Here we need to sync firstly
                        (citrus/dispatch-sync! :citrus/set-post-form-data
-                                              {:body (form/ev e)}))
+                                              {:body (util/ev e)}))
           :value value})])
 
      (when (and (not mobile?) (:preview? form-data))
@@ -600,7 +595,7 @@
                      :default-value (or v "")
                      :on-change (fn [e]
                                   (when-not locked?
-                                    (let [v (form/ev e)]
+                                    (let [v (util/ev e)]
                                       (when-not (str/blank? v)
                                         (citrus/dispatch! :post/add-or-update-choice choices id v)))))}))
         (if (and (not locked?)
@@ -659,7 +654,6 @@
                  #?(:cljs (citrus/dispatch! :citrus/set-default-body-format))
                  state)
    :will-unmount (fn [state]
-                   #?(:cljs (citrus/dispatch! :post/reset-form-data))
                    state)}
   []
   (let [form-data (citrus/react [:post :form-data])
@@ -1137,6 +1131,8 @@
       (let [{:keys [choices] :as post} (citrus/react [:post :current])
             show-poll? (or (seq choices)
                            (citrus/react [:post :poll?]))]
+        (prn {:form-data-title (:title form-data)
+              :title (:title post)})
         (when (and post (nil? (:title form-data)))
           (citrus/dispatch! :citrus/set-post-form-data
                             (cond->
@@ -1153,7 +1149,9 @@
                                                :style (if (and preview? (> width 1024))
                                                         {:max-width 1238}
                                                         {})}
-         (new-post-title form-data (:title post) (not (str/blank? (:title post))))
+         (new-post-title form-data (or
+                                    (:title form-data)
+                                    (:title post)) (not (str/blank? (:title post))))
 
          (if show-poll?
            [:div.divider])

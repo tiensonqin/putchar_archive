@@ -252,7 +252,6 @@
         current-path handler
         params (citrus/react [:router :route-params])
         group-name (:group-name params)
-        show-modal? (citrus/react [:show-modal?])
         new-post? (= :new-post current-path)
         post-edit? (= :post-edit current-path)
         post? (or new-post? post-edit?)

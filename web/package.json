@@ -24,6 +24,6 @@
     "acorn": "^5.5.3",
     "clean-css": "^4.1.9",
     "purify-css": "^1.2.5",
-    "shadow-cljs": "2.4.26"
+    "shadow-cljs": "^2.6.2"
   }
 }

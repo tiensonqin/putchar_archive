@@ -18,3 +18,4 @@ backend/src/api/config.clj
 share/share/config.cljc
 backend/.lein-env
 fabfile.py
+web/report.html
