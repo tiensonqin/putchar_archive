@@ -43,8 +43,13 @@
            mention (and body current-user pos
                         (content/get-mention (subs body 0 pos)))
            emoji (and body current-user pos
-                      (content/get-emoji (subs body 0 pos)))]
+                      (content/get-emoji (subs body 0 pos)))
+           last-char-blank? (str/blank? (str (last body)))]
        (cond
+         last-char-blank?
+         {:state {:search {:emojis-result nil
+                           :result nil}}}
+
          mention
          {:state state
           :dispatch [:search/search :user/search {:q {:screen_name mention}}]}

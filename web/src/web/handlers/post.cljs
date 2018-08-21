@@ -91,7 +91,8 @@
                  save-draft?
                  (assoc-in [:post :saving?] true))}
 
-       (and body (not completed?))
+       (and body
+            (not completed?))
        (assoc :dispatch [:citrus/auto-complete body])
 
        save-draft?

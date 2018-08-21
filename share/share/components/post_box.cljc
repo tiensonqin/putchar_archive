@@ -186,41 +186,40 @@
                    :flex-direction "row"
                    :flex 1
                    :position "relative"}}
-
-    (ui/textarea
-     (merge
-      {:id "post-box"
-       :style style
-       :placeholder placeholder
-       :on-key-down (fn [e]
-                      #?(:cljs
-                         (let [code (oget e "keyCode")]
-                           (when (contains? #{37 38 39 40} code)
-                             (citrus/dispatch! :post-box/set-cursor-position
-                                               (oget (oget e "target") "selectionEnd"))))))
-       :on-click (fn [e]
-                   #?(:cljs
-                      (citrus/dispatch! :post-box/set-cursor-position
-                                        (oget (oget e "target") "selectionEnd"))))
-
-       :on-change (fn [e]
+     (ui/textarea
+      (merge
+       {:id "post-box"
+        :style style
+        :placeholder placeholder
+        :on-key-down (fn [e]
+                       #?(:cljs
+                          (let [code (oget e "keyCode")]
+                            (when (contains? #{37 38 39 40} code)
+                              (citrus/dispatch! :post-box/set-cursor-position
+                                                (oget (oget e "target") "selectionEnd"))))))
+        :on-click (fn [e]
                     #?(:cljs
-                       (let [textarea (.-target e)]
-                         (citrus/dispatch-sync! :post-box/set-cursor-position
-                                                (oget textarea "selectionEnd"))
-                         (when (< (.-clientHeight textarea) (.-scrollHeight textarea))
-                           (let [new-height (+ (.-scrollHeight textarea) (if (= type :post)
-                                                                           400
-                                                                           28))]
-                             (citrus/dispatch! :citrus/default-update
-                                               [:post :latest-height]
-                                               new-height)
-                             (dommy/set-px! textarea :height new-height)))))
+                       (citrus/dispatch! :post-box/set-cursor-position
+                                         (oget (oget e "target") "selectionEnd"))))
 
-                    (on-change e))
+        :on-change (fn [e]
+                     #?(:cljs
+                        (let [textarea (.-target e)]
+                          (citrus/dispatch-sync! :post-box/set-cursor-position
+                                                 (oget textarea "selectionEnd"))
+                          (when (< (.-clientHeight textarea) (.-scrollHeight textarea))
+                            (let [new-height (+ (.-scrollHeight textarea) (if (= type :post)
+                                                                            400
+                                                                            28))]
+                              (citrus/dispatch! :citrus/default-update
+                                                [:post :latest-height]
+                                                new-height)
+                              (dommy/set-px! textarea :height new-height)))))
 
-       :value value}
-      other-attrs))
+                     (on-change e))
+
+        :value value}
+       other-attrs))
 
      (when (seq mentions)
        (mentions-cp type id mentions))
