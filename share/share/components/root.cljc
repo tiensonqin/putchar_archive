@@ -503,9 +503,16 @@
 
        (mixins/listen state js/window :mousedown
                       (fn [e]
-                        (when (and (string? (oget (oget e "target") "className"))
-                                   (not (re-find #"quote-selection-area" (oget (oget e "target") "className"))))
-                          (citrus/dispatch-sync! :comment/clear-selection))))
+                        (let [target (oget e "target")
+                              client-x (oget e "clientX")
+                              client-y (oget e "clientY")]
+
+                          (when (and (string? (oget target "className"))
+                                     ;; not quote button
+                                     (not (re-find #"quote-selection-area" (oget target "className")))
+                                     ;; not inside selection range
+                                     (not (util/inside-selection? [client-x client-y])))
+                           (citrus/dispatch-sync! :comment/clear-selection)))))
 
        (.addEventListener js/window "scroll"
                           (fn []

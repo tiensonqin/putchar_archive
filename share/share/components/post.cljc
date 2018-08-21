@@ -1197,8 +1197,33 @@
                   :color "#999"})]
        [(ops-flag post)
         (ops-delete post current-user-id)]
-       {:menu-style {:width 200}})]
-    ))
+       {:menu-style {:width 200}})]))
+
+(rum/defc quote-selection < rum/reactive
+  [current-user]
+  (let [selection-mode? (citrus/react [:comment :selection :mode?])]
+    (when (and current-user selection-mode?)
+      (let [selection (util/get-selection)]
+        (when-let [text (:text selection)]
+          [:a#quote-selection.no-decoration.quote-selection-area
+           {:style {:padding "6px 12px"
+                    :border-radius 4
+                    :background "#bbb"
+                    :color "#FFF"
+                    :position "fixed"
+                    :top (+ (get-in selection [:boundary :bottom]) 12)
+                    :left (+ (get-in selection [:boundary :left]))}
+            :on-click (fn [e]
+                        (citrus/dispatch! :comment/quote text)
+                        #?(:cljs
+                           (when-let [element (gdom/getElement "post-comment-box")]
+                             (scroll/into-view element)
+                             ;; focus input
+                             (.focus element.firstChild))))}
+           [:div.row1.quote-selection-area {:style {:align-items "center"}}
+            [:i.quote-selection-area {:class "fa fa-quote-left"}]
+            [:span.quote-selection-area {:style {:margin-left 12}}
+             "Quote"]]])))))
 
 (rum/defc tags
   [tags]
@@ -1209,8 +1234,7 @@
                                :algin-items "center"
                                :margin-bottom 24}}
      (ui/icon {:type :label_outline
-               :color "rgb(127,127,127)"
-               :opts {:margin-right 12}})
+               :color "rgb(127,127,127)"})
 
      (for [tag tags]
        [:div {:style {:padding "0 12px 12px 12px"}
@@ -1241,16 +1265,14 @@
                        [:post :current] nil)
      state)}
   [state {:keys [screen_name permalink] :as params}]
-  (let [selection-mode? (citrus/react [:comment :selection :mode?])
-        permalink (util/encode-permalink (str "@" screen_name "/" permalink))
+  (let [permalink (util/encode-permalink (str "@" screen_name "/" permalink))
         current-user (citrus/react [:user :current])]
     (query/query
       (let [post (citrus/react [:post :by-permalink permalink])]
         (if post
           (let [{:keys [group channel user choices]} post
                 current-reply (citrus/react [:comment :reply])
-                avatar (util/cdn-image (:screen_name user))
-                {:keys [width]} (citrus/react [:layout :current])]
+                avatar (util/cdn-image (:screen_name user))]
 
             [:div.column.auto-padding {:key "post"}
              [:div {:style {:padding "12px 0"}}
@@ -1314,7 +1336,9 @@
                                                           (let [text (util/get-selection-text)]
                                                             (when-not (str/blank? text)
                                                               (citrus/dispatch! :comment/set-selection
-                                                                                {:screen_name (:screen_name user)}))))})]
+                                                                                {:screen_name (:screen_name user)})))
+
+                                                          )})]
 
               [:div.center-area
                [:div {:style {:margin "24px 0"}}
@@ -1328,29 +1352,7 @@
 
                (toolbox post)
 
-               (when (and current-user selection-mode?)
-                 (let [selection (util/get-selection)]
-                   (when-let [text (:text selection)]
-                     [:a#quote-selection.no-decoration.quote-selection-area
-                      {:style {:padding "6px 12px"
-                               :border-radius 4
-                               :background "#bbb"
-                               :color "#FFF"
-                               :position "fixed"
-                               :z-index 9
-                               :top (+ (get-in selection [:boundary :bottom]) 12)
-                               :left (+ (get-in selection [:boundary :left]))}
-                       :on-click (fn [e]
-                                   (citrus/dispatch! :comment/quote text)
-                                   #?(:cljs
-                                      (when-let [element (gdom/getElement "post-comment-box")]
-                                        (scroll/into-view element)
-                                        ;; focus input
-                                        (.focus element.firstChild))))}
-                      [:div.row1.quote-selection-area {:style {:align-items "center"}}
-                       [:i.quote-selection-area {:class "fa fa-quote-left"}]
-                       [:span.quote-selection-area {:style {:margin-left 12}}
-                        "Quote"]]])))]
+               (quote-selection current-user)]
 
               [:div {:style {:margin-top 24}}
                (comment/comment-list post)]]

@@ -678,6 +678,13 @@
                       :right (oget b "right")}
                      )}))))
 
+(defn inside-selection?
+  [[x y]]
+  #?(:cljs
+     (let [{:keys [top bottom left right]} (:boundary (get-selection))]
+       (and (<= left x right)
+            (<= top y bottom)))))
+
 (defn get-selection-text
   []
   #?(:cljs
