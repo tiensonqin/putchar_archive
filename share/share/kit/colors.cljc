@@ -1,6 +1,6 @@
 (ns share.kit.colors)
 
-(def primary "#228B22")
+(def primary "#000000")
 
 (def shadow "#ddd")
 

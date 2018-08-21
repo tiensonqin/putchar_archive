@@ -215,7 +215,7 @@ a:hover {
 }
 
 .btn-primary {
-    background-color: #228B22;
+    background-color: #000000;
     color: #FFF;
 }
 
@@ -258,10 +258,6 @@ h2 { font-size: 1.6875em; }
 .system-font-stack {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
     Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-a:visited {
-    color: #666;
 }
 
 a.control {
@@ -435,9 +431,9 @@ a.hd:visited {
 }
 
 .is-active .item {
-    box-shadow: 0 3px 12px #228B22;
-    -webkit-box-shadow: 0 3px 12px #228B22;
-    -moz-box-shadow: 0 3px 12px #228B22;
+    box-shadow: 0 3px 12px #000000;
+    -webkit-box-shadow: 0 3px 12px #000000;
+    -moz-box-shadow: 0 3px 12px #000000;
 }
 
 #joined_groups button:hover {
@@ -446,7 +442,7 @@ a.hd:visited {
 
 input#search:focus, input#search:active, input#search_groups, input#search_groups:active{
     outline:none;
-    color: #228B22;
+    color: #000000;
 }
 
 input#search_groups:-ms-input-placeholder {
