@@ -121,7 +121,7 @@
      [:link {:rel "stylesheet"
              :href (str "/style-" version ".css")}])
    (when-not zh-cn?
-     [:link {:rel "stylesheet"
+     [:link {:rel "preload"
              :href "https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700,700italic%7CUbuntu:400,400i,600,600i"}])
    ])
 
