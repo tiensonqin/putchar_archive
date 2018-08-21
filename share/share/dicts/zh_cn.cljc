@@ -442,4 +442,5 @@
    :undo "取消"
    :skip-group-selection "跳过选择小组"
    :required "需要填写"
+   :agree-text "点击登录代表您同意我们的 [条款](https://lambdahackers.com/terms)， [隐私政策](https://lambdahackers.com/privacy) 还有 [code of conduct](https://lambdahackers.com/code-of-conduct)."
    })

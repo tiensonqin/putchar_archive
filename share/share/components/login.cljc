@@ -53,10 +53,11 @@
                     (citrus/dispatch! :user/request-code @form-data))
        :cancel-button? false})]
 
-   (widgets/transform-content "By clicking Sign In, you agree to our [Terms](https://lambdahackers.com/terms), [Privacy](https://lambdahackers.com/privacy) and [code of conduct](https://lambdahackers.com/code-of-conduct)."
+   (widgets/transform-content (t :agree-text)
                               {:style {:font-size 14
                                        :margin-top 12
-                                       :color "rgb(127,127,127)"}})])
+                                       :color "rgb(127,127,127)"
+                                       :width 250}})])
 
 (rum/defc signin-modal < rum/reactive
   [mobile?]

@@ -433,4 +433,5 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :undo "Undo"
    :skip-group-selection "Skip group selection"
    :required "Required"
+   :agree-text "By clicking Sign In, you agree to our [Terms](https://lambdahackers.com/terms), [Privacy](https://lambdahackers.com/privacy) and [code of conduct](https://lambdahackers.com/code-of-conduct)."
    })
