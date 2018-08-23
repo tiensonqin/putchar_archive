@@ -170,7 +170,7 @@
 
 (rum/defcs new-post-body <
   rum/reactive
-  {:init (fn [state]
+  {:init (fn [state props]
            #?(:cljs (when-let [post-box (dommy/sel1 "#post-box")]
                       (prn "after render")
                       (let [height (oget post-box "scrollHeight")]
@@ -1103,7 +1103,9 @@
          (if show-poll?
            [:div.divider])
 
-         (new-post-body form-data (:body post) (:body_format post)
+         (new-post-body form-data
+                        (:body post)
+                        (:body_format post)
                         (not (str/blank? (:body post))))]))))
 
 (rum/defcs toolbox < rum/reactive
