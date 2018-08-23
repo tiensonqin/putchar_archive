@@ -623,7 +623,8 @@
        (for [[tag count] tags]
          (let [this? (= current-tag (name tag))]
            [:div.row1 {:key tag
-                       :style {:padding "12px 12px 12px 0"}}
+                       :style {:padding "12px 12px 12px 0"
+                               :align-items "center"}}
             [:a.tag {:class (if this?
                                   "active")
                      :href (str "/@" screen-name "/tag/" (name tag))}
