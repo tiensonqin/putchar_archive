@@ -7,7 +7,6 @@
             [api.db.user :as u]
             [api.db.post :as post]
             [api.db.group :as group]
-            [api.db.channel :as channel]
             [clojure.string :as str]
             [share.util :as util]))
 
@@ -80,13 +79,10 @@
                      (if (= encoding "base64")
                        (let [body (github/base64-decode
                                    (str/replace content "\n" ""))
-                             {:keys [title body group channel tags is_draft is_wiki] :as spec} (extract-spec body)
+                             {:keys [title body group tags is_draft is_wiki] :as spec} (extract-spec body)
                              group (util/internal-name group)
                              group (if group
                                      (group/get db group))
-                             channel (if group
-                                       (channel/get db {:group-name (:name group)
-                                                        :channel-name (if channel (util/internal-name channel) "general")}))
                              post-data (let [is_draft (if is_draft is_draft false)
                                              permalink (when-not is_draft
                                                          (post/permalink (:screen_name user) title))]
@@ -102,9 +98,7 @@
 
                                            group
                                            (assoc :group_id (:id group)
-                                                  :group_name (:name group)
-                                                  :channel_id (:id channel)
-                                                  :channel_name (:name channel))
+                                                  :group_name (:name group))
 
                                            permalink
                                            (assoc :permalink permalink)))]

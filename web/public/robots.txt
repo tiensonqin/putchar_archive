@@ -3,7 +3,6 @@ User-agent: *
 Disallow: /new-post
 Disallow: /new-group
 Disallow: /new-item
-Disallow: /new-channel
 Disallow: /*/*/edit
 Disallow: /*/edit
 Disallow: /logout

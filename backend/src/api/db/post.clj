@@ -5,7 +5,6 @@
             [api.db.cache :as cache]
             [api.db.user :as u]
             [api.db.group :as group]
-            [api.db.channel :as channel]
             [api.db.top :as top]
             [api.db.search :as search]
             [api.db.choice :as choice]
@@ -34,7 +33,6 @@
 (defonce ^:private fields [:*])
 (def ^:private base-map {:select [:id :flake_id :user_id :user_screen_name
                                   :group_id :group_name
-                                  :channel_id :channel_name
                                   :title :tops
                                   :rank :comments_count :permalink
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
@@ -47,15 +45,12 @@
 ;; user-screen-name => (map of tag * post-count)
 (def tags-k "post-user-tags")
 
-(defn with-group-channel
+(defn with-group
   [post]
   (some-> post
           (util/with :group_id (fn [_]
                                  {:id (:group_id post)
-                                  :name (:group_name post)}))
-          (util/with :channel_id (fn [_]
-                                   {:id (:channel_id post)
-                                    :name (:channel_name post)}))))
+                                  :name (:group_name post)}))))
 
 (defn normalize
   [db post]
@@ -63,23 +58,20 @@
           (clojure.core/update :choices su/read-string)
           (util/with :user_id #(u/get db % [:id :screen_name :name :bio :website]))
           (util/with :group_id (fn [_]
-                                 (let [group (group/get db (:group_id post) [:stars :channels :admins :purpose :type :created_at :privacy :related_groups])]
+                                 (let [group (group/get db (:group_id post) [:stars :admins :purpose :type :created_at :related_groups])]
                                    (merge
                                     group
                                     {:id (:group_id post)
-                                     :name (:group_name post)}))))
-          (util/with :channel_id (fn [_]
-                                   {:id (:channel_id post)
-                                    :name (:channel_name post)}))))
+                                     :name (:group_name post)}))))))
 
-(defn with-user-group-channel
+(defn with-user-group
   [post]
   (some-> post
           (util/with :user_id (fn [_]
                                 {:id (:user_id post)
                                  :screen_name (:user_screen_name post)}))
-          (with-group-channel)
-          (dissoc :user_screen_name :group_name :channel_name)))
+          (with-group)
+          (dissoc :user_screen_name :group_name)))
 
 (defn get
   ([db id-or-permalink]
@@ -126,7 +118,7 @@
            (su/split-tags)
            (distinct)
            (map su/tag-encode)
-           (take 5)))
+           (take 3)))
 
 (defn update-tags
   [screen-name add-tags remove-tags]
@@ -221,7 +213,7 @@
 (defn delete
   [db id-or-permalink]
   (when-let [post (get db id-or-permalink)]
-    (let [{:keys [id flake_id group_id channel_id tags user_screen_name]} post]
+    (let [{:keys [id flake_id group_id tags user_screen_name]} post]
       (util/delete db table id)
       (search/delete-post id)
 
@@ -256,7 +248,7 @@
   (->> (-> (assoc base-map :where where)
            (util/wrap-cursor cursor))
        (util/query db)
-       (map with-user-group-channel)
+       (map with-user-group)
        (flatten-frequent-posters)))
 
 (def post-conditions
@@ -350,7 +342,7 @@
                   cursor)
          ids (cache/cursor key cursor)]
      (->> (util/get-by-ids db table ids {:where where})
-          (map with-user-group-channel)))))
+          (map with-user-group)))))
 
 (defn get-bookmarked
   ([db user-id cursor]
@@ -364,7 +356,7 @@
                   cursor)
          ids (cache/cursor key cursor)]
      (->> (util/get-by-ids db table ids {:where where})
-          (map with-user-group-channel)))))
+          (map with-user-group)))))
 
 (defn get-top
   ([db cursor]
@@ -467,35 +459,6 @@
   [db id cursor]
   (get-wiki db [:and
                 [:= :group_id id]
-                [:= :is_wiki true]
-                [:= :is_draft false]] cursor))
-
-(defn- channel-post-conditions
-  [id]
-  [:and
-   [:= :channel_id id]
-   [:= :is_draft false]])
-
-(defn get-channel-new
-  [db id cursor]
-  (get-new db (channel-post-conditions id) cursor))
-
-(defn get-channel-hot
-  [db id cursor]
-  (get-hot db (channel-post-conditions id) cursor))
-
-(defn get-channel-latest-reply
-  [db id cursor]
-  (get-latest-reply db (channel-post-conditions id) cursor))
-
-(defn get-channel-top
-  [db id cursor]
-  (get-top db (channel-post-conditions id) cursor))
-
-(defn get-channel-wiki
-  [db id cursor]
-  (get-wiki db [:and
-                [:= :channel_id id]
                 [:= :is_wiki true]
                 [:= :is_draft false]] cursor))
 

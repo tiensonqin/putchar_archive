@@ -33,17 +33,6 @@
                                           group (get-in state [:group :by-name name])]
                                       [(util/original-name name) (get-description (:purpose group)) (util/group-logo name 300 300)])
 
-                                    :channel
-                                    ;; by-id
-                                    (let [channel-id (get-in state [:channel :current])
-                                          channel (get-in state [:channel :by-id channel-id])
-                                          group-name (get-in channel [:group :name])]
-                                      [(str group-name
-                                            " - "
-                                            (:name channel))
-                                       (:purpose channel)
-                                       (util/group-logo group-name 300 300)])
-
                                     :user
                                     ;; by-screen-name
                                     (let [screen-name (:screen_name route-params)

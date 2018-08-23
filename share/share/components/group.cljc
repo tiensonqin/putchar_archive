@@ -5,7 +5,6 @@
             [clojure.string :as str]
             [appkit.citrus :as citrus]
             [share.helpers.form :as form]
-            [share.components.channel :as channel]
             [share.components.post :as post]
             [share.components.widgets :as w]
             [share.kit.mixins :as mixins]
@@ -27,21 +26,7 @@
                    :validators [(util/length? {:min 2
                                                :max 1024})]
                    :style {:resize "none"
-                           :height "120px"}}
-   ;; :privacy       {:side (t :privacy)
-   ;;                 :type :radio
-   ;;                 :options [{:label (t :public)
-   ;;                            :value "public"
-   ;;                            :default true}
-   ;;                           {:label (t :invite-only)
-   ;;                            :value "invite"}
-   ;;                           {:label (t :private)
-   ;;                            :value "private"}]}
-   ;; :rule          {:type :textarea
-   ;;                 :placeholder (str (t :rules) ", " (t :optional))
-   ;;                 :style {:resize "none"
-   ;;                         :height "120px"}}
-   })
+                           :height "120px"}}})
 
 (rum/defcs logo-uploader <
   (rum/local false ::uploading?)
@@ -154,11 +139,11 @@
 (rum/defc group-common < rum/reactive
   [group-name post-filter]
   (let [group-name (if group-name (str/lower-case group-name))
-        {:keys [id name purpose channels posts] :as group} (citrus/react [:group :by-name group-name])
+        {:keys [id name purpose posts] :as group} (citrus/react [:group :by-name group-name])
         path [:posts :by-group group-name post-filter]
         posts (citrus/react path)]
     [:div.column {:style {:padding-bottom 24}}
-     (w/cover-nav group nil)
+     (w/cover-nav group)
 
      (if group
        (query/query
@@ -322,7 +307,7 @@
 
 (rum/defcs group-logo
   < rum/reactive
-  [state stared-group? current-group width mobile?]
+  [state stared-group? current-group width mobile? show-group-name?]
   (if current-group
     (let [current-user (citrus/react [:user :current])
           {route :handler params :route-params} (citrus/react :router)
@@ -347,8 +332,7 @@
 
        [:a {:href (str "/" group-name)
             :on-click (fn []
-                        (citrus/dispatch! :citrus/re-fetch :group {:group-name group-name})
-                        (citrus/dispatch! :citrus/default-update [:channel :current] nil))}
+                        (citrus/dispatch! :citrus/re-fetch :group {:group-name group-name}))}
         (if mobile?
           logo
 
@@ -375,10 +359,7 @@
           :on-click (fn []
                       (citrus/dispatch-sync! :citrus/default-update
                                              [:group :current]
-                                             group-id)
-                      (citrus/dispatch-sync! :citrus/default-update
-                                             [:channel :current]
-                                             nil))
+                                             group-id))
           :class (if (and group-id (= group-id current-group))
                    "is-active")}
       (ui/avatar {:src (util/group-logo (:name group))})]]))

@@ -32,13 +32,12 @@
                   analyzer))
 
 (defn add-group [group]
-  (when-not (= (:privacy group) "private")
-    (let [group {:group_id (:id group)
-                 :group_name (util/original-name (:name group))}]
-      (lucene/add! @index-store
-                   [group]
-                   [:group_id :group_name]
-                   analyzer))))
+  (let [group {:group_id (:id group)
+               :group_name (util/original-name (:name group))}]
+    (lucene/add! @index-store
+                 [group]
+                 [:group_id :group_name]
+                 analyzer)))
 
 (defn delete-group [id]
   (lucene/delete! @index-store

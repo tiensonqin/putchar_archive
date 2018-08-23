@@ -55,13 +55,13 @@ div.editor i {
     font-size: 12px;
 }
 
-.channel-list .ant-input:focus, .channel-list .ant-input:hover, .group-list .ant-input:focus, .group-list .ant-input:hover, .new-post-title .ant-input:focus, .new-post-title .ant-input:hover, .message-box .ant-input:focus, .message-box .ant-input:hover, .editor .ant-input:hover, .editor .ant-input:focus {
+.group-list .ant-input:focus, .group-list .ant-input:hover, .new-post-title .ant-input:focus, .new-post-title .ant-input:hover, .message-box .ant-input:focus, .message-box .ant-input:hover, .editor .ant-input:hover, .editor .ant-input:focus {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
 }
 
-.groups, .channels {
+.groups {
     display: flex;
     flex-direction: row;
     justify-content: space-between;

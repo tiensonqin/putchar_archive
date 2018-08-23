@@ -17,7 +17,6 @@ CREATE TABLE users (
     karma integer not null default 1,
     block boolean DEFAULT false,
     stared_groups uuid[] default null,
-    stared_channels uuid[] default null,
     last_seen_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'),
     created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
 
@@ -39,26 +38,12 @@ CREATE TABLE groups (
     rule text default null,
     stars integer not null default 0,
     type text not null default 'unknown',
-    channels uuid[] default null,
     admins text[] not null,
     related_groups text[] not null,
     cover_settings text default null,
     logo text default null,
     created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
   ALTER TABLE groups ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
-
-CREATE TABLE channels (
-    id UUID DEFAULT uuid_generate_v4() primary key,
-    flake_id bigint not null,
-    name text not null default 'general',
-    user_id UUID NOT NULL,
-  group_id UUID NOT NULL,
-    is_private boolean default false,
-    del boolean default false,
-    purpose text default null,
-    stars integer not null default 0,
-    created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'));
-  ALTER TABLE channels ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
 
 CREATE TABLE posts (
     id UUID DEFAULT uuid_generate_v4() primary key,
@@ -67,9 +52,7 @@ CREATE TABLE posts (
     user_screen_name text NOT NULL,
   group_id UUID default null,
   group_name text default null,
-    channel_id UUID default null,
-    channel_name text default null,
-    is_private boolean not null default false,
+        is_private boolean not null default false,
     is_wiki boolean not null default false,
     title text not null,
     body text not null,

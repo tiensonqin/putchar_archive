@@ -17,15 +17,15 @@
 
 (rum/defc home < rum/reactive
   {:will-mount (fn [state]
-                 (citrus/dispatch! :citrus/reset-current-group-channel nil)
+                 (citrus/dispatch! :citrus/reset-current-group nil)
                  state)
    :did-remount (fn [old-state state]
-                   (citrus/dispatch! :citrus/reset-current-group-channel nil)
+                  (citrus/dispatch! :citrus/reset-current-group nil)
                    state)}
   (mixins/query :home)
   [params]
   [:div.column {:style {:padding-bottom 48}}
-   (widgets/cover-nav nil nil)
+   (widgets/cover-nav nil)
 
    (let [posts (citrus/react [:posts :hot])]
      (query/query

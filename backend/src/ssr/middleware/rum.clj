@@ -7,7 +7,6 @@
             [api.db.util :as du]
             [api.db.post :as post]
             [api.db.group :as group]
-            [api.db.channel :as channel]
             [api.db.token :as token]
             [ring.util.response :as resp]
             [api.config :as config]
@@ -315,48 +314,6 @@
                          :description (:purpose group)}
                         (j/with-db-connection [conn datasource]
                           (post/->rss (post/get-group-latest-reply conn (:id group) {:limit 20}))))
-              util/not-found-resp)))
-
-        (= :channel-latest-rss (:handler route))
-        (j/with-db-connection [conn datasource]
-          (let [{:keys [group-name channel-name] :as params} (get-in route [:route-params])
-                channel (channel/get conn params)]
-            (if channel
-              (util/rss {:title (str group-name " - " channel-name)
-                         :link (website-path (str group-name "/" channel-name))
-                         :description (if-let [purpose (:purpose channel)]
-                                        purpose
-                                        (str group-name " - " channel-name))}
-                        (j/with-db-connection [conn datasource]
-                          (post/->rss (post/get-channel-new conn (:id channel) {:limit 20}))))
-              util/not-found-resp)))
-
-        (= :channel-hot-rss (:handler route))
-        (j/with-db-connection [conn datasource]
-          (let [{:keys [group-name channel-name] :as params} (get-in route [:route-params])
-                channel (channel/get conn params)]
-            (if channel
-              (util/rss {:title (str group-name " - " channel-name)
-                         :link (website-path (str group-name "/" channel-name))
-                         :description (if-let [purpose (:purpose channel)]
-                                        purpose
-                                        (str group-name " - " channel-name))}
-                        (j/with-db-connection [conn datasource]
-                          (post/->rss (post/get-channel-hot conn (:id channel) {:limit 20}))))
-              util/not-found-resp)))
-
-        (= :channel-latest-reply-rss (:handler route))
-        (j/with-db-connection [conn datasource]
-          (let [{:keys [group-name channel-name] :as params} (get-in route [:route-params])
-                channel (channel/get conn params)]
-            (if channel
-              (util/rss {:title (str group-name " - " channel-name)
-                         :link (website-path (str group-name "/" channel-name))
-                         :description (if-let [purpose (:purpose channel)]
-                                        purpose
-                                        (str group-name " - " channel-name))}
-                        (j/with-db-connection [conn datasource]
-                          (post/->rss (post/get-channel-latest-reply conn (:id channel) {:limit 20}))))
               util/not-found-resp)))
 
         (= "/sitemap.xml" (:uri req))

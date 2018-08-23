@@ -4,7 +4,6 @@
             [api.util :as util]
             [api.db.user :as u]
             [api.db.group :as group]
-            [api.db.channel :as channel]
             [api.db.post :as post]
             [api.db.top :as top]
             [api.db.comment :as comment]
@@ -51,8 +50,7 @@
     (j/with-db-connection [conn datasource]
       (when-let [user (u/get conn uid)]
         (-> user
-            (assoc :has-unread-notifications? (notification/has-unread? uid))
-            (dissoc :stared_channels))))))
+            (assoc :has-unread-notifications? (notification/has-unread? uid)))))))
 
 (defn get-hot-groups
   [{:keys [uid datasource]} data]
@@ -111,16 +109,6 @@
               group/new-groups
               group/hot-groups)]
       (f conn (:cursor data)))))
-
-(defn get-channel
-  [{:keys [uid datasource]} data]
-  (->
-   (j/with-db-connection [conn datasource]
-     (channel/get conn
-                  (or (:id data)
-                      {:group-name (str/lower-case (:group-name data))
-                       :channel-name (str/lower-case (:channel-name data))})))
-   set-not-found!))
 
 (defn get-post
   [{:keys [uid datasource]} data]
@@ -203,19 +191,6 @@
                      (:user-tag data)
                      (get-user-tag-posts conn data)
 
-                     (and (:channel_id data) (= :hot (:filter data)))
-                     (post/get-channel-hot conn (:channel_id data) cursor)
-
-                     (and (:channel_id data) (= :wiki (:filter data)))
-                     (post/get-channel-wiki conn (:channel_id data) cursor)
-
-                     (and (:channel_id data) (= :newest (:filter data)))
-                     (post/get-channel-new conn (:channel_id data) cursor)
-
-                     (and (:channel_id data) (= :latest-reply (:filter data)))
-                     (post/get-channel-latest-reply conn (:channel_id data) cursor)
-
-
                      (and (:group_id data) (= :hot (:filter data)))
                      (post/get-group-hot conn (:group_id data) cursor)
 
@@ -263,22 +238,6 @@
                          result)]
         (wrap-end? result (get cursor :limit))))))
 
-(defn get-stared-groups-channels
-  [[{:keys [uid datasource]} data]]
-  (j/with-db-transaction [conn datasource]
-    (when-let [user (u/get conn uid)]
-      (let [stared-groups (:stared_groups user)
-            ids (map :id stared-groups)]
-        (if (seq ids)
-          (-> {:select [:id :name :stars]
-               :from [:channels]
-               :where [:in :group_id ids]
-               ;; TODO: [stars desc, created_at asc]
-               :order-by [:created_at :asc]
-               ;; 20 groups * 20 channels
-               :limit 400}
-              (->> (du/query conn))))))))
-
 (def resolvers
   {
    ;; get current user
@@ -302,13 +261,6 @@
    :groups get-groups
 
    :members get-members
-
-   ;; get specific channel
-   :channel get-channel
-
-   ;; get group channels
-   ;; {:filter (enum :hot :new) :group_id ID}
-   ;; :channels get-channels
 
    ;; args {:user_id ID}
    :notifications get-notifications
@@ -424,12 +376,6 @@
   (def args {:group {:name "云南"}})
   (query context q args)
 
-  ;; channel
-  (def q {:channel {:fields [:id :name]}})
-  (def args {:channel {:group-name "云南"
-                       :channel-name "general"}})
-  (query context q args)
-
   ;; relationship
   (def q {:post {:fields [:id :title :permalink [:user {:fields [:id :screen_name]}]]}})
   (def args {:post {:permalink "hello-1fa889ca716a49a48a30df2f522c9ddd"}})
@@ -439,13 +385,6 @@
   (def q {:group {:fields [:id :name
                            [:user {:fields [:id :screen_name]}]]}})
   (def args {:group {:name "Great"}})
-  (query context q args)
-
-  (def q {:channel {:fields [:id :name
-                             [:user {:fields [:id :screen_name]}]
-                             [:group {:fields [:id :name]}]]}})
-  (def args {:channel {:group-name "Great"
-                       :channel-name "general"}})
   (query context q args)
 
   (def q {:post {:fields [:id :title :permalink [:comments {:fields [:id :body :created_at], :cursor {:limit 100}}]]}})
@@ -466,12 +405,6 @@
   (def q {:groups {:fields [:id :name]}})
   (def args {:groups {:cursor {:limit 5}
                       :filter :hot}})
-  (query context q args)
-
-  (def q {:channels {:fields [:id :name]}})
-  (def args {:channels {:cursor {:limit 5}
-                        :filter :hot
-                        :group_id #uuid "7b135650-0155-414d-a187-93d6ecc06f6b"}})
   (query context q args)
 
   ;; get user
@@ -496,7 +429,6 @@
             :permalink
             :created_at
             [:group {:fields [:id :name]}]
-            [:channel {:fields [:id :name]}]
             [:comments
              {:fields [:id :body :created_at]
               :cursor {:limit 100}}]]}})

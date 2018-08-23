@@ -6,7 +6,6 @@
             [api.db.cache :as cache]
             [honeysql.core :as sql]
             [api.db.star :as star]
-            [api.db.channel :as channel]
             [api.db.user :as u]
             [api.db.search :as search]
             [api.db.notification :as notification]
@@ -16,18 +15,14 @@
             [taoensso.carmine :as car]))
 
 (defonce ^:private table :groups)
-(def ^:private fields [:id :flake_id :name :user_id :privacy :purpose :rule :related_groups :type :stars :channels :admins :created_at :week_posts_count :cover_settings])
+(def ^:private fields [:id :flake_id :name :user_id :purpose :rule :related_groups :type :stars :admins :created_at :week_posts_count :cover_settings])
 
 (def ^:private base-map {:select fields
                          :from [table]})
 
 (defn db-get
   [db id]
-  (when-let [group (util/get db base-map id)]
-    (let [channels (util/get-by-ids db :channels (:channels group)
-                                    {:fields [:id :name]
-                                     :order :asc})]
-      (assoc group :channels channels))))
+  (util/get db base-map id))
 
 (defn cache-reload
   [db id]
@@ -77,13 +72,6 @@
            :object_type "group"
            :object_id group-id}]
     (when (util/exists? db :stars m)
-
-      ;; unstar channels
-      ;; FIX:
-      (let [channels (get-in (u/get db user-id) [:stared_groups group-id])]
-        (doseq [channel channels]
-          (channel/unstar db (:id channel) user-id)))
-
       (star/unstar db m)
       (j/execute! db ["update groups set stars = stars - 1 where id = ?" group-id])
 
@@ -110,16 +98,9 @@
             (assoc :related_groups (remove-invalid-names db (:related_groups m))))
         group (get db id)
         group-name (:name group)
-        result (util/update db table id (dissoc m :del :flake_id :privacy))]
+        result (util/update db table id (dissoc m :del :flake_id))]
     (cache-reload db id)
     result))
-
-(defn update-channels
-  [db {:keys [group_id] :as channel}]
-  (let [channels (map :id (:channels (db-get db group_id)))]
-    (util/update db table group_id
-                 {:channels (set (conj channels (:id channel)))})
-    (cache-reload db group_id)))
 
 (defn create
   [db m]
@@ -127,10 +108,7 @@
         screen_name (:screen_name (u/get db user_id))
         m (assoc m :admins [screen_name])
         m (clojure.core/update m :name str/lower-case)
-        group (util/create db table m :flake? true)
-        ;; create default channel
-        general-channel (channel/create db {:user_id user_id
-                                            :group_id (:id group)})]
+        group (util/create db table m :flake? true)]
 
     (cache/wcar*
      (car/zadd (cache/redis-key "user" screen_name "managed_groups") (:flake_id group) (:id group)))
@@ -139,17 +117,13 @@
 
     (search/add-group group)
 
-    (update db (:id group) {:channels #{(:id general-channel)}})
-
     (assoc group
-           :stars 1
-           :channels [(select-keys general-channel [:id :user_id :name :purpose :stars :created_at])])))
+           :stars 1)))
 
 (defn new-groups
   [db cursor]
   (->>
    (-> base-map
-       (assoc :where [:<> :privacy "private"])
        (util/wrap-cursor cursor))
    (util/query db)))
 
@@ -157,7 +131,6 @@
   [db cursor]
   (->>
    (-> base-map
-       (assoc :where [:<> :privacy "private"])
        (util/wrap-cursor (merge cursor
                                 {:order-key :stars
                                  :order :desc})))
@@ -217,15 +190,11 @@
 
 (defn delete
   [db id]
-  ;; delete group, delete channel, delete from search, cache, stars and associated posts
+  ;; delete group, delete from search, cache, stars and associated posts
 
-  (let [users (j/query db ["select user_id from stars where object_type = 'group' and object_id = ?" id])
-        channels (j/query db ["select id from channels where group_id = ?" id])]
+  (let [users (j/query db ["select user_id from stars where object_type = 'group' and object_id = ?" id])]
     (doseq [{:keys [user_id]} users]
-      (unstar db id user_id)
-      (doseq [{:keys [id]} channels]
-        (channel/unstar db id user_id))))
-  (j/execute! db ["delete from channels where group_id = ?" id])
+      (unstar db id user_id)))
   (j/execute! db ["delete from stars where object_type = 'group' and object_id = ?" id])
   (j/execute! db ["delete from posts where group_id = ?" id])
   (cache/wcar* (car/del (cache/redis-key "group" id)))

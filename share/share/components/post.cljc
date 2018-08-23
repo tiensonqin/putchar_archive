@@ -218,45 +218,22 @@
                               body-format)])]))
 
 (rum/defc select-group-item < rum/static
-  [id channels form-data group]
-  (let [first-channel (first channels)]
-    (ui/button {:class "btn-sm"
-                :style (cond->
-                        {:margin-right 12
-                         :margin-bottom 12}
-                        (= id (:group_id form-data))
-                        (assoc :background-color "#2e2e2e"
-                               :color "#FFF"))
-                :on-click (fn []
-                            (citrus/dispatch! :citrus/set-post-form-data
-                                             {:group_id id
-                                              :group_name (:name group)
-                                              :channel_id (:id first-channel)
-                                              :channel_name (:name first-channel)}))}
-     (util/original-name (:name group)))))
-
-(rum/defc select-channel-item < rum/static
-  [id form-data channel choices]
+  [id form-data group]
   (ui/button {:class "btn-sm"
-              :style (if (= id (:channel_id form-data))
+              :style (cond->
                        {:margin-right 12
-                        :margin-bottom 12
-                        :background-color "#2e2e2e"
-                        :color "#FFF"}
-                       {:margin-right 12
-                        :margin-bottom 12
-                        :background-color "transparent"
-                        :border "none"})
+                        :margin-bottom 12}
+                       (= id (:group_id form-data))
+                       (assoc :background-color "#2e2e2e"
+                              :color "#FFF"))
               :on-click (fn []
                           (citrus/dispatch! :citrus/set-post-form-data
-                                            {:channel_id id
-                                             :channel_name (:name channel)})
-                          )}
-    (str "#"
-         (util/channel-name (:name channel)))))
+                                            {:group_id id
+                                             :group_name (:name group)}))}
+    (util/original-name (:name group))))
 
-(rum/defc select-group-and-channel < rum/reactive
-  [form-data stared-groups stared-groups-channels channels choices skip?]
+(rum/defc select-group < rum/reactive
+  [form-data stared-groups choices skip?]
   (let [images (:images form-data)
         images? (seq images)
         wiki? (citrus/react [:post :form-data :is_wiki])]
@@ -270,7 +247,7 @@
                        (if @skip?
                          (reset! skip? false)
                          (reset! skip? true))
-                       (citrus/dispatch! :post/clear-group-channel))
+                       (citrus/dispatch! :post/clear-group))
            :style {:margin-left 12
                    :font-weight "600"
                    :color (if @skip?
@@ -285,7 +262,7 @@
             cp (fn [groups]
                  (for [[id group] groups]
                    [:div {:key id}
-                    (select-group-item id (get stared-groups-channels id) form-data group)]))]
+                    (select-group-item id form-data group)]))]
         (cond
           (<= c 12)
           [:div#select-groups {:class "row"
@@ -302,54 +279,20 @@
                                                               (filter #(= (:name %) name))
                                                               (first))]
                                            (citrus/dispatch! :citrus/set-post-form-data
-                                                             (let [channel (first channels)]
-                                                               {:group_id (:id group)
-                                                                :group_name (:name group)
-                                                                :channel_id (:id channel)
-                                                                :channel_name (:name channel)}))))
+                                                             {:group_id (:id group)
+                                                              :group_name (:name group)})))
                             :style {:width 300}}
             (for [[id group] stared-groups]
               (ui/option {:key id
                           :value (:name group)}
                          (:name group)))))))
 
-
-     (when (not @skip?)
-       [:div {:style {:margin-top 24}}
-        (let [c (count channels)
-              cp (fn [channels choices]
-                   (for [channel channels]
-                     [:div {:key (:id channel)}
-                      (select-channel-item (:id channel) form-data channel choices)]))]
-          (cond
-            (<= c 12)
-            [:div#select-groups {:class "row"
-                                 :style {:flex-wrap "wrap"}}
-             (cp channels choices)]
-
-            :else
-            (apply ui/select {:animation "slide-up"
-                              :default-value (:channel_name form-data)
-                              :on-select (fn [name]
-                                           (let [channel (some->>
-                                                          channels
-                                                          (filter #(= (:name %) name))
-                                                          first)]
-                                             (citrus/dispatch! :citrus/set-post-form-data
-                                                               {:channel_id (:id channel)
-                                                                :channel_name (:name channel)})))
-                              :style {:width 300}}
-              (for [{:keys [id name]} channels]
-                (ui/option {:key id
-                            :value name}
-                           name))))
-
-          )])
-
      (if images? [:div.divider])
 
      (if images?
        [:div#set-cover
+        [:h6 {:style {:margin-bottom "1em"}}
+         (str (t :cover) ":")]
         (for [[id image] (:images form-data)]
           [:a.hover-opacity {:key id
                              :title (t :set-as-cover)
@@ -364,12 +307,11 @@
                             :object-fit "cover"
                             :margin-right 12}
                            (= (:url image) (:cover form-data))
-                           (assoc :border (str "6px solid " colors/primary)))}]])])
+                           (assoc :border "4px solid #999"))}]])])
 
-
-     [:div#add-tags {:style {:margin "24px 0"}}
+     [:div#add-tags {:style {:margin "12px 0"}}
       [:h6 {:style {:margin-bottom "1em"}}
-       "Add tags (optional):"]
+       (t :add-tags-label)]
       (ui/input {:class "ant-input"
                  :type "text"
                  :autoComplete "off"
@@ -415,7 +357,6 @@
         modal? (citrus/react [:post :publish-modal?])
         current-user (citrus/react [:user :current])
         current-group (citrus/react [:group :current])
-        current-channel  (citrus/react [:channel :current])
         current-post (citrus/react [:post :current])
         choices (citrus/react [:post :form-data :choices])
         stared-groups (util/get-stared-groups current-user)
@@ -425,15 +366,6 @@
 
         initial-group (get stared-groups group-id)
 
-        stared-groups-channels (citrus/react [:stared-groups-channels])
-        channels (get stared-groups-channels group-id)
-
-        initial-channel (first channels)
-
-        channel-id (or (:channel_id form-data)
-                       current-channel
-                       (:id initial-channel))
-        channel-name (:name (first (filter #(= (:id %) channel-id) channels)))
         submit-fn (fn []
                     (let [data (cond->
                                  (merge {:id (:id current-post)
@@ -442,7 +374,7 @@
                                                      [:title :body :choices :body_format :is_wiki]))
 
                                  (:group_id form-data)
-                                 (merge (select-keys form-data [:group_id :group_name :channel_id :channel_name]))
+                                 (merge (select-keys form-data [:group_id :group_name]))
 
                                  (:cover form-data)
                                  (assoc :cover (:cover form-data))
@@ -456,9 +388,7 @@
                           data (if @skip?
                                  (assoc data
                                         :group_id nil
-                                        :group_name nil
-                                        :channel_id nil
-                                        :channel_name nil)
+                                        :group_name nil)
                                  data)]
                       (citrus/dispatch! :post/update data)
                       (citrus/dispatch!
@@ -474,14 +404,10 @@
     (when (and
            (false? @skip?)
            (or (nil? (:group_id form-data))
-               (nil? (:group_name form-data))
-               (nil? (:channel_id form-data))
-               (nil? (:channel_name form-data))))
+               (nil? (:group_name form-data))))
       (citrus/dispatch! :citrus/set-post-form-data
                         {:group_id group-id
-                         :group_name (:name initial-group)
-                         :channel_id channel-id
-                         :channel_name channel-name}))
+                         :group_name (:name initial-group)}))
     [:div {:style {:display "flex"
                    :flex-direction "row"
                    :flex "0 1 1"
@@ -511,7 +437,7 @@
             :class "btn-primary"
             :on-click submit-fn}
            (t :publish))}
-        (select-group-and-channel form-data stared-groups stared-groups-channels channels choices skip?)))]))
+        (select-group form-data stared-groups choices skip?)))]))
 
 (rum/defc choices-cp < rum/static
   [{:keys [poll_choice poll_closed choices] :as post} choices-style]
@@ -846,6 +772,17 @@
        (ops-flag post))]
     {:menu-style {:width 200}}))
 
+(rum/defc tags
+  [tags opts tag-style]
+  (if (seq tags)
+    [:div.ubuntu.row1 opts
+     (for [tag tags]
+       [:a.tag {:key (util/random-uuid)
+                :href (str "/tag/" (name tag))
+                :style (merge {:margin-right 12}
+                              tag-style)}
+        (util/tag-decode (name tag))])]))
+
 (rum/defcs post-item < {:key-fn (fn [post]
                                   (:id post))}
   rum/static
@@ -864,10 +801,7 @@
           user-link (str "/@" (:screen_name user))
 
           link (:link post)
-          channel-name (get-in post [:channel :name])
           group-name (get-in post [:group :name])
-          not-general-channel (and channel-name
-                                   (not (contains? #{"general"} channel-name)))
           user? (contains? #{:user :links :drafts :user-tag} current-path)
           drafts-path? (= current-path :drafts)
           post-link (if drafts-path?
@@ -907,23 +841,32 @@
             ])
 
          [:div.column {:style {:justify-content "center"}}
-          [:div.space-between {:style {:align-items "center"}}
-           [:span
-            [:a.no-decoration {:href post-link}
-             [:span.post-title.system-font-stack
+          [:div.space-between
+           [:div.ubuntu
+            [:a.no-decoration {:href post-link
+                               :style {:margin-right 6}}
+             [:span.post-title
               (if (:choices post)
-                [:span
-                 (str "[" (str/lower-case (t :poll)) "] "
-                      (:title post))]
+                (str "[" (str/lower-case (t :poll)) "] "
+                     (:title post))
                 (:title post))]]
+
+            (tags (:tags post)
+                  {:style {:display "inline"
+                           :vertical-align "middle"}}
+                  {:font-size "8pt"
+                   :height "16px"
+                   :margin-right 6})
+
             (if link
-              [:a {:on-click (fn []
+              [:a.control {:on-click (fn []
                                (util/set-href! link))
-                   :href link
-                   :style {:margin-left 4
-                           :color "#999"
-                           :font-size 11}}
-               (str "(" (util/get-domain link) ")")])]
+                           :href link
+                           :style {:text-decoration "none"
+                                   :font-style "italic"
+                                   :vertical-align "text-top"
+                                   :font-size 11}}
+               (util/get-domain link)])]
 
            [:a.comments_count {:href post-link
                                :title (str (:comments_count post)
@@ -973,17 +916,7 @@
                              :style {:margin-right 12}
                              :on-click (fn [e] (util/stop e))}
 
-                 (util/original-name group-name)])
-
-              (when (and (not mobile?)
-                         not-general-channel
-                         (not= :channel current-path))
-                [:a.control
-                 {:style {:margin-right 12}
-                  :href (str "/" (get-in post [:group :name])
-                             "/" channel-name)}
-                 (str "#" channel-name)])
-              ]
+                 (util/original-name group-name)])]
 
              (when-not mobile?
                (let [last-reply-by (:last_reply_by post)
@@ -1080,15 +1013,16 @@
       [:div.empty-posts
        (if empty-widget
          empty-widget
-         [:a.row1.auto-padding.control {:href "/new-post"
-                                        :style {:font-size 20
-                                                :margin-top 24
-                                                :align-items "center"}}
+         [:a.row1.auto-padding {:href "/new-post"
+                                :style {:font-size 20
+                                        :margin-top 24
+                                        :align-items "center"}}
           (ui/icon {:type :edit
                     :width 22
                     :height 22
                     :opts {:style {:margin-right 12}}})
-          [:span.ubuntu {:style {:margin-top 3}}
+          [:span.ubuntu {:style {:margin-top 3
+                                 :color "#000000"}}
            (t :be-the-first)]])])))
 
 (rum/defc user-post-list <
@@ -1120,7 +1054,6 @@
   (let [form-data (citrus/react [:post :form-data])
         clear-interval? (citrus/react [:post :clear-interval?])
         width (citrus/react [:layout :current :width])
-        channels (citrus/react [:channels])
         preview? (:preview? form-data)]
     (when clear-interval?
       (when-let [interval (get state :post-auto-save)]
@@ -1136,9 +1069,6 @@
                               (:group post)
                               (assoc :group_name (get-in post [:group :name])
                                      :group_id (get-in post [:group :id]))
-                              (:channel post)
-                              (assoc :channel_name (get-in post [:channel :name])
-                                     :channel_id (get-in post [:channel :id]))
                               (:body form-data)
                               (assoc :body (:body form-data)))))
         [:div.column.center-area.auto-padding {:class "post-edit editor"
@@ -1223,27 +1153,6 @@
             [:span.quote-selection-area {:style {:margin-left 12}}
              "Quote"]]])))))
 
-(rum/defc tags
-  [tags]
-  (if (seq tags)
-    [:div#tags.ubuntu {:class "row"
-                       :style {:flex-wrap "wrap"
-                               :margin-top 12
-                               :algin-items "center"
-                               :margin-bottom 24}}
-     (ui/icon {:type :label_outline
-               :color "rgb(127,127,127)"})
-
-     (for [tag tags]
-       [:div {:style {:padding "0 12px 12px 12px"}
-              :key tag}
-        [:a.control {:href (str "/tag/" (name tag))
-                     :style {:border "1px solid #666"
-                             :border-radius 6
-                             :padding "2px 6px"
-                             :font-size 14}}
-         (util/tag-decode (name tag))]])]))
-
 (rum/defcs post <
   rum/reactive
   (mixins/query :post)
@@ -1268,10 +1177,9 @@
     (query/query
       (let [post (citrus/react [:post :by-permalink permalink])]
         (if post
-          (let [{:keys [group channel user choices]} post
+          (let [{:keys [group user choices]} post
                 current-reply (citrus/react [:comment :reply])
                 avatar (util/cdn-image (:screen_name user))]
-
             [:div.column.auto-padding {:key "post"}
              [:div {:style {:padding "12px 0"}}
               [:div.center-area
@@ -1342,7 +1250,11 @@
                [:div {:style {:margin "24px 0"}}
                 (choices-cp post {:align-items "center"})]
 
-               (tags (:tags post))
+               (tags (:tags post)
+                     {:style {:flex-wrap "wrap"
+                              :margin "24px 0"
+                              :align-items "center"}}
+                     nil)
 
                ;; [:p.number {:style {:font-size 14}}
                ;;  [:span (t :updated-at) ": "]
@@ -1365,7 +1277,7 @@
   []
   [:div.column {:style {:padding-bottom 48}}
 
-   (widgets/cover-nav nil nil)
+   (widgets/cover-nav nil)
 
    (let [posts (citrus/react [:posts :latest])]
      (query/query
@@ -1377,7 +1289,7 @@
   (mixins/query :latest-reply)
   []
   [:div.column {:style {:padding-bottom 48}}
-   (widgets/cover-nav nil nil)
+   (widgets/cover-nav nil)
    (let [posts (citrus/react [:posts :latest-reply])]
      (query/query
        (post-list posts

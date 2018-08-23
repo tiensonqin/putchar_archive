@@ -22,20 +22,6 @@
 (defmethod mergef :group-edit [state route-handler q {:keys [group] :as result} _k]
   (mergef state :group-edit q result :group))
 
-(defmethod mergef :channel [state route-handler q {:keys [channel]} _k]
-  (let [id (:id channel)
-        group (:group channel)]
-    (-> state
-        (assoc-in [:group :current] (:id group))
-        (update-merge [:group :by-name (:name group)] group)
-        (assoc-in [:channel :current] id)
-        (assoc-in [:channel :by-id id] channel))))
-
-(defmethod mergef :channels [state route-handler q {:keys [group] :as result} _k]
-  (-> state
-      (assoc-in [:group :current] (:id group))
-      (update-merge [:group :by-name (:name group)] group)))
-
 (defmethod mergef :members [state route-handler q {:keys [group] :as result} _k]
   (-> state
       (assoc-in [:group :current] (:id group))
@@ -47,14 +33,12 @@
 
 (defmethod mergef :post [state route-handler q {:keys [post] :as result} _k]
   (let [group-id (get-in post [:group :id])
-        channel-id (get-in post [:channel :id])
         permalink (:permalink post)
         post-id (:id post)]
     (-> state
         (update-merge [:post :by-permalink permalink] (dissoc post :comments))
         (update-merge [:post :current] (dissoc post :comments))
         (assoc-in [:group :current] group-id)
-        (assoc-in [:channel :current] channel-id)
         (assoc-in [:comment :posts post-id] (if (:comments post)
                                               (update (:comments post) :result util/normalize)
                                               (:comments post)))
@@ -78,17 +62,6 @@
         (assoc-in [:post :filter] (last m))
         (mergef :group q {:group (dissoc group :posts)} :group)
         (mergef :posts q {:posts (:posts group)} :posts))))
-
-(defmethod mergef :channel-posts [state route-handler q {:keys [channel] :as result} _k]
-  (let [m (get-in q [:merge :channel-posts])
-        q (-> q
-              (util/dissoc-in [:merge :channel-posts])
-              (assoc-in [:merge :posts] m))]
-    (-> state
-        (assoc-in [:post :filter] (last m))
-        (mergef :channel q {:channel (dissoc channel :posts)} :channel)
-        (mergef :posts q {:posts (:posts channel)} :posts))))
-
 
 (defmethod mergef :me [state route-handler q {:keys [current-user] :as result} _k]
   (update-merge state [:user :current] current-user))

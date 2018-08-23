@@ -83,8 +83,7 @@
           :as data}]
   (when (seq to)
     (when-let [group (group/get db group-name)]
-      (let [invite? (= (:privacy group) "invite")
-            stared-groups (du/query db {:select [:email :stared_groups]
+      (let [stared-groups (du/query db {:select [:email :stared_groups]
                                         :from [:users]
                                         :where [:and
                                                 [:= :block false]
@@ -96,7 +95,7 @@
                 to)]
         (when (seq to)
           (let [name (util/original-name group-name)
-                token (if invite? (:token (invite/create db group-name)))
+                token (:token (invite/create db group-name))
                 group-link (str "https://lambdahackers.com/" group-name
                                 (if token (str "?token=" token)))
                 title (format "Invite to group %s on lambdahackers.com!" name)]

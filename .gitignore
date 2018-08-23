@@ -13,6 +13,8 @@ web/.shadow-cljs/
 /web/public/main*.js
 /web/public/style*.css
 /web/public/sw.js
+/web/public/highlight.min.js
+/web/public/asciidoctor.min.js
 backend/resources/public/
 backend/src/api/config.clj
 share/share/config.cljc

@@ -9,7 +9,6 @@
             [share.components.about :as about]
             [share.components.user :as user]
             [share.components.group :as group]
-            [share.components.channel :as channel]
             [share.components.post :as post]
             [share.components.comment :as comment]
             [share.components.login :as login]
@@ -18,7 +17,6 @@
             [share.components.report :as report]
             [share.components.docs :as docs]
             [share.components.widgets :as widgets]
-            [share.components.pricing :as pricing]
             [share.components.layout :as layout]
             [share.helpers.image :as image]
             [share.util :as util]
@@ -58,22 +56,12 @@
                           (group/new))
          :group         (fn [params current-user hot-groups]
                           (group/group params))
-         :pricing       (fn [params current-user hot-groups]
-                          (pricing/pricing params))
          :members       (fn [params current-user hot-groups]
                           (group/members params))
          :group-edit    (fn [params current-user hot-groups]
                           (group/edit params))
          :groups        (fn [params current-user hot-groups]
                           (group/group-list params))
-         :new-channel   (fn [params current-user hot-groups]
-                          (channel/new params))
-         :channels   (fn [params current-user hot-groups]
-                       (channel/channels params))
-         :channel       (fn [params current-user hot-groups]
-                          (channel/channel params))
-         :channel-edit (fn [params current-user hot-groups]
-                         (channel/edit params))
          :new-post      (fn [params current-user hot-groups]
                           (post/new))
          :post          (fn [params current-user hot-groups]
@@ -117,14 +105,13 @@
         groups? (= current-path :groups)
         search-fn (fn [q current-path]
                     (when (and (not (str/blank? q)) (>= (count q) 1))
-                      (when (not= current-path :channels)
-                        (if groups?
-                          (citrus/dispatch-sync! :search/search :group/search {:q {:group_name q}
-                                                                               :limit 20})
-                          (do
-                            (citrus/dispatch-sync! :search/search :post/search {:q {:post_title q}
-                                                                         :limit 20})
-                            (citrus/dispatch! :router/push {:handler :search} true))))))
+                      (if groups?
+                        (citrus/dispatch-sync! :search/search :group/search {:q {:group_name q}
+                                                                             :limit 20})
+                        (do
+                          (citrus/dispatch-sync! :search/search :post/search {:q {:post_title q}
+                                                                              :limit 20})
+                          (citrus/dispatch! :router/push {:handler :search} true)))))
         close-fn (fn []
                    (citrus/dispatch! :citrus/toggle-search-mode?)
                    (citrus/dispatch-sync! :search/reset)
@@ -146,8 +133,6 @@
                    :placeholder (case current-path
                                   :groups
                                   (t :search-groups)
-                                  :channels
-                                  (t :search-channels)
                                   (t :search-posts))
                    :value (or q "")
                    :on-change (fn [e]
@@ -280,7 +265,7 @@
                 permalink (util/encode-permalink (str "@" screen_name "/" permalink))
                 current-post (citrus/react [:post :by-permalink permalink])]
             [:div.row1 {:style {:align-items "center"}}
-             (group/group-logo false current-group width true)
+             (group/group-logo join-group? current-group width true false)
              [:h3.fadein {:style {:margin-left 12
                                   :margin-right 12
                                   :margin-top 12
@@ -321,7 +306,7 @@
               (str "@" (:screen_name params))]]
 
             group-path?
-            (group/group-logo join-group? current-group width mobile?)
+            (group/group-logo join-group? current-group width mobile? true)
 
             :else
             (widgets/website-logo))]
@@ -580,7 +565,7 @@
                   (= route :post-edit)
                   (citrus/react [:post :form-data :preview?]))
         post-page? (= route :post)
-        group-path? (contains? #{:post :comment :group :group-edit :channel :channel-edit :new-channel :group-hot-posts :group-new-posts :channels :channel-new-posts :channel-hot-posts :members} route)
+        group-path? (contains? #{:post :comment :group :group-edit    :group-hot-posts :group-new-posts :members} route)
         hide-github-connect? (contains? #{true "true"} (citrus/react [:hide-github-connect?]))
         ]
 
@@ -604,7 +589,7 @@
                    :style {:margin-top (if mobile? 84 100)}}
         (routes reconciler route params current-user hot-groups)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :pricing :links :drafts :user-tag :tag :login} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :links :drafts :user-tag :tag :login} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 108

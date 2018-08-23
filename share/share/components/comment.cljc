@@ -64,7 +64,6 @@
         group-id (get-in entity [:group :id])
         stared? (contains? (set (keys
                                  (util/get-stared-groups current-user))) group-id)
-        invite? (= "invite" (get-in entity [:group :privacy]))
         preview? (citrus/react [:comment :form-data :preview?])]
     (when (and (not disabled?) (not= k current-box-k))
         (citrus/dispatch! :citrus/default-update
@@ -74,18 +73,15 @@
                                                  disabled?
                                                  (assoc :opacity 0.5))}
      (cond
-       (and group-id (not stared?))
+       (nil? current-user)
        [:div.column1 {:style {:height 120
                               :border "1px solid #ddd"
                               :border-radius 4
                               :align-items "center"
                               :justify-content "center"}}
-        (if invite?
-          [:p {:style {:color "#666"}}
-           (t :join-to-comment)]
-          [:a.control {:on-click #(citrus/dispatch! :user/star-group {:object_type :group
-                                                                      :object_id group-id})}
-           (t :join-to-comment)])]
+        [:a.control {:on-click #(citrus/dispatch! :user/star-group {:object_type :group
+                                                                    :object_id group-id})}
+         (t :login-to-comment)]]
 
        :else
        (if disabled?

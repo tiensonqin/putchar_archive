@@ -23,7 +23,7 @@
 
 (defonce ^:private table :users)
 (def ^:private fields [:id :name :screen_name :email :language :website :bio :karma :type
-                       :github_id :stared_groups :stared_channels :created_at :github_handle :github_repo :twitter_handle :last_seen_at :email_notification])
+                       :github_id :stared_groups :created_at :github_handle :github_repo :twitter_handle :last_seen_at :email_notification])
 
 (def ^:private base-map {:select fields
                          :from [table]})
@@ -36,14 +36,6 @@
           (let [users (j/query db ["select screen_name from users where block is false and type = ? order by created_at desc" "pro"])]
             (set (map :screen_name users)))))
 
-(defn get-user-stared-channels
-  [db ids]
-  (if (seq ids)
-    (util/query db {:from [:channels]
-                    :select [:id :name :group_id :purpose :is_private]
-                    :where [:in :id ids]})))
-
-;; with channels
 (defn get-user-stared-groups
   [db id-or-user]
   (let [{:keys [stared_groups]} (if (map? id-or-user)
@@ -51,7 +43,7 @@
                                   (util/get db base-map id-or-user))]
     (when (seq stared_groups)
       (let [groups (-> (util/query db {:from [:groups]
-                                       :select [:id :name :purpose :privacy]
+                                       :select [:id :name :purpose]
                                        :where [:in :id stared_groups]})
                        (su/normalize))]
         (for [group-id (take 20 stared_groups)]

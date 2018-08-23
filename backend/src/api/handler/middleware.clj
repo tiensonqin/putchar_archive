@@ -36,7 +36,7 @@
     :auth/request-code})
 
 (def query-whitelist
-  #{:user :group :groups :channel :channels :post :login :posts})
+  #{:user :group :groups :post :login :posts})
 
 (defn- auth-whitelist?
   [request]

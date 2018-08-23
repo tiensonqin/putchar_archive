@@ -23,9 +23,6 @@
 (defn post-params
   [state params specific-user-id]
   (let [current-path (get-in state [:router :handler])
-        current-channel-id (or
-                            (:channel_id params)
-                            (get-in state [:channel :current]))
         current-group-id (or (:group_id params)
                              (get-in state [:group :current]))
         post-filter (cond
@@ -53,10 +50,6 @@
         [params path] (cond
                         specific-user-id
                         [{:user_id specific-user-id}
-                         (:merge-path params)]
-
-                        current-channel-id
-                        [{:channel_id current-channel-id}
                          (:merge-path params)]
 
                         current-group-id
@@ -343,13 +336,11 @@
                   (get-in state [:router :handler]))]
        {:state (update-in state [(if post? :post :comment) :form-data :preview?] not)}))
 
-   :post/clear-group-channel
+   :post/clear-group
    (fn [state]
      {:state {:form-data (assoc (:form-data state)
                                  :group_id nil
-                                 :group_name nil
-                                 :channel_id nil
-                                 :channel_name nil)}})
+                                 :group_name nil)}})
 
    :citrus/set-post-form-data
    set-post-form-data

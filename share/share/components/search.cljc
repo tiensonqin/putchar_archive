@@ -5,7 +5,6 @@
             [appkit.citrus :as citrus]
             [share.components.post :as post]
             [share.components.group :as group]
-            [share.components.channel :as channel]
             [share.dicts :refer [t] :as dicts]))
 
 (rum/defc search < rum/reactive

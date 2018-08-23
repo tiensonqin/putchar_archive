@@ -236,9 +236,6 @@
   ((length? {:min 2
              :max 256}) v))
 
-(def channel-name? group-name?)
-(def encrypted-channel-name? encrypted-group-name?)
-
 (defn remove-duplicates
   ([entities] (remove-duplicates nil entities))
   ([f entities]
@@ -398,11 +395,6 @@
    {}
    m))
 
-(defn group-channel
-  [params]
-  {:group-name (s/lower-case (:group-name params))
-   :channel-name (s/lower-case (:channel-name params))})
-
 (defn get-file-base-name
   [s]
   (->> (s/split s #"\.")
@@ -425,7 +417,9 @@
         parts (s/split d #"\.")
         parts (if (= (count parts) 2)
                 parts
-                (drop 1 parts))]
+                (if (= "www" (first parts))
+                  (drop 1 parts)
+                  parts))]
     (s/join "." parts)))
 
 (defn capitalize
@@ -495,7 +489,7 @@
   [tag-name]
   (if tag-name
     (some->> (s/split tag-name #"-")
-             (map s/capitalize)
+             (map s/lower-case)
              (interpose " ")
              (apply str)
              (bidi/url-decode))))
@@ -734,14 +728,6 @@
   (some-> s
       strip-tags
       delete-spaces))
-
-(defn channel-name [s]
-  (if s
-    (cond (= "general" s)
-          (t :general)
-
-          :else
-          s)))
 
 (defn get-group-by-id
   [groups current-group-id]

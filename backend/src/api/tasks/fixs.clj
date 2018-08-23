@@ -4,7 +4,6 @@
             [api.db.cache :as cache]
             [api.db.user :as u]
             [api.db.group :as group]
-            [api.db.channel :as channel]
             [api.db.post :as post]
             [api.db.comment :as comment]
             [api.db.search :as search]
@@ -24,12 +23,6 @@
       (doseq [screen_name admins]
         (cache/wcar*
          (car/zadd (cache/redis-key "user" screen_name "managed_groups") flake_id id))))))
-
-(defn rebuild-channels
-  [db]
-  (let [channels (j/query db ["select * from channels where del is false"])]
-    (doseq [{:keys [id group_id] :as channel} channels]
-      )))
 
 (defn post-links
   [db]
@@ -65,28 +58,6 @@
     (doseq [{:keys [id permalink user_screen_name]} posts]
       (post/update db id {:id id
                           :permalink (str "@" user_screen_name "/" permalink)}))))
-
-(defn creator-add-missed-general-channels
-  [db]
-  (let [users (j/query db ["select id, screen_name, stared_groups from users"])]
-    (doseq [{:keys [id screen_name stared_groups]} users]
-      ;; (doseq [group-id stared_groups]
-      ;;   (let [general-id (util/select-one-field db :channels
-      ;;                                           {:group_id group-id
-      ;;                                            :name "general"}
-      ;;                                           :id)]
-      ;;     (if (nil? general-id)
-      ;;       (prn "Wrong: " general-id)
-      ;;       (channel/star db general-id id))))
-
-      (let [stared-channels (j/query db ["select object_id from stars where object_type = 'channel' and user_id = ?" id])]
-        (prn {:stared-channels (vec (map :object_id stared-channels))})
-        (u/update db id {:stared_channels stared-channels})
-        )))
-  ;; rebuild cache
-  (c/rebuild db)
-
-  )
 
 (defn comment-post_permalink
   [db]
@@ -128,13 +99,6 @@
                           "_logo.png")
                 })))))
 
-  ;; (let [channels (j/query db ["select id, name from channels"])]
-  ;;   (doseq [{:keys [id name]} channels]
-  ;;     (let [new-name (-> name
-  ;;                        (str/replace " " "-")
-  ;;                        (str/replace "_" "-"))]
-  ;;       (channel/update db id {:name new-name}))))
-
   (c/rebuild db))
 
 (defn dash-name
@@ -149,14 +113,6 @@
                                  ".png")
                             "png"
                             "image/png")))))
-
-  ;; (let [channels (j/query db ["select id, name from channels"])]
-  ;;   (doseq [{:keys [id name]} channels]
-  ;;     (let [new-name (-> name
-  ;;                        (str/replace " " "-")
-  ;;                        (str/replace "_" "-"))]
-  ;;       (when (not= new-name name)
-  ;;           (channel/update db id {:name new-name})))))
 
   (c/rebuild db))
 

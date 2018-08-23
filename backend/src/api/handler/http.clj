@@ -6,7 +6,6 @@
             [api.util :as util]
             [api.db.user :as u]
             [api.db.group :as group]
-            [api.db.channel :as channel]
             [api.db.post :as post]
             [api.db.comment :as comment]
             [api.db.report :as report]
@@ -181,9 +180,7 @@
     (doseq [group (:groups data)]
       (try
         (let [group-name (su/internal-name group)
-              group-id (group/star conn group-name uid)
-              general-channel-id (channel/get-group-general-channel-id conn uid group-id)]
-          (channel/star conn general-channel-id uid))
+              group-id (group/star conn group-name uid)])
         (catch Exception e
           (slack/error e)))))
   (j/with-db-connection [conn datasource]
@@ -196,10 +193,7 @@
       :post (post/star conn (:object_id data) uid)
       :group (do
                ;; star group
-               (group/star conn (:object_id data) uid)
-               ;; star general channel
-               (channel/star conn (channel/get-group-general-channel-id conn uid (:object_id data)) uid))
-      :channel (channel/star conn (:object_id data) uid)))
+               (group/star conn (:object_id data) uid))))
   (j/with-db-connection [conn datasource]
     (let [user (u/get conn uid)]
       (util/ok {:current user}))))
@@ -208,8 +202,7 @@
   (j/with-db-transaction [conn datasource]
     (let [result (case (:object_type data)
                    :post (post/unstar conn (:object_id data) uid)
-                   :group (group/unstar conn (:object_id data) uid)
-                   :channel (channel/unstar conn (:object_id data) uid))]
+                   :group (group/unstar conn (:object_id data) uid))]
       (util/ok {:current (u/get conn uid)}))))
 
 (defmethod handle :user/subscribe-pro [[{:keys [uid datasource redis]} data]]
@@ -289,40 +282,6 @@
   (j/with-db-transaction [conn datasource]
     (util/ok (u/top-group conn uid (:id data)))))
 
-(defmethod handle :user/get-stared-groups-channels [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (util/ok (channel/get-user-stared-groups-channels conn uid))))
-
-(defmethod handle :channel/new [[{:keys [uid datasource redis]} data]]
-  (if (block/examine datasource uid (:group_id data))
-    (when-let [channel
-               (j/with-db-transaction [conn datasource]
-                 (channel/create conn (assoc data :user_id uid)))]
-      (group/update-channels datasource channel)
-      (util/ok channel))
-    (util/bad "Sorry your account is disabled for now.")))
-
-(defmethod handle :channel/delete [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (reject-not-owner-or-admin? conn uid :channels (:id data)
-                                (do
-                                  (task/delete-channel conn (:id data))
-                                  (util/ok data)))))
-
-(defmethod handle :channel/update [[{:keys [uid datasource redis]} data]]
-  (j/with-db-connection [conn datasource]
-    (reject-not-owner-or-admin? conn uid :channels (:id data)
-                                (do
-                                  (channel/update conn (:id data) (dissoc data :id))
-                                  (let [group-id (:group_id (channel/get conn (:id data)))]
-                                    (group/cache-reload conn group-id))
-                                  ;; invalid users
-                                  (let [users (j/query conn ["select user_id from stars where object_type = 'channel' and object_id = ?" (:id data)])]
-                                    (doseq [{:keys [user_id]} users]
-                                      (cache/del "users" user_id)))
-                                  (util/ok data)))))
-
-;; posts
 (defmethod handle :post/new-draft [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (if (block/examine conn uid (:group_id data))

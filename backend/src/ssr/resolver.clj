@@ -57,8 +57,6 @@
                                 :managed admin-groups}
                                valid-invite?
                                (assoc :invited-group (:group-name route-params)))
-               :channel      {:loading? false
-                              :current nil}
                :post         {:loading? false
                               :current nil
                               :filter (if (= handler :home)

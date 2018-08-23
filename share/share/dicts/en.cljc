@@ -25,7 +25,6 @@
    :bengali "Bengali"
    :punjabi "Punjabi"
    :switch-to "Switch to "
-   :all-channels "All channels"
    :hot "popular"
    :latest "latest"
    :latest-posts "Posts"
@@ -54,11 +53,9 @@
    :no-more-reports "No more reports."
    :no-more-notifications "No more notifications."
    :general "general"
-   :channel-name "Channel name"
    :purpose "Purpose"
    :rules "Rules"
    :optional "optional"
-   :create-new-channel "Create new channel"
    :new-message "New message"
    :create "Create"
    :your-thoughts-here "Your thoughts here"
@@ -91,9 +88,6 @@
    :commas-seperated "Groups names should be seperated by commas"
    :hot-posts "Hot posts"
    :admin "Moderator"
-   :channels "Channels"
-   :channel "channel"
-   :add-more-channels "Add more channels"
    :invite "Invite members"
    :invite-members-placeholder "Emails should be seperated by commas, at most 5 email addresses once."
    :send "Send"
@@ -113,9 +107,6 @@
    :admins "Moderators"
    :group-members "Members"
    :vote-share "Group members can post, vote, comment or share links."
-   :admin-add-channel "There are "
-
-   :only-subscribe "So you only subscribe to your interested content."
    :writing "Writing"
    :support "support"
    :translation-links "Translation links"
@@ -175,7 +166,6 @@
    ;; root
    :search "Search"
    :search-groups "Search groups..."
-   :search-channels "Search channels..."
    :search-posts "Search posts..."
    :reports "Reports"
    :write-new-post "New post"
@@ -276,9 +266,6 @@
    :your-github-repo "Github repo: "
 
    :public "Public"
-   :invite-only "Invite Only"
-   :join-to-comment "Join this group to comment"
-
    :description "Description"
    :upload-a-cover "Upload a cover"
    :cover "Cover"
@@ -288,20 +275,16 @@
    :safety "Safety"
    :social "Social"
    :team-support "Team Support"
-   :stared-channels "Stared channels"
    :notifications "Notifications"
    :star "Star"
    :unstar "Unstar"
    :about "About"
    :back-to-top "BACK TO TOP"
-   :edit-channel "Edit channel"
    :all-members "All members"
    :see-all "See all"
    :free-features "Free features"
    :public-groups "Public groups."
    :unlimited-members "Unlimited members."
-   :up-to-10-moderators "Up to 10 moderators."
-   :unlimited-channels "Unlimited channels."
    :search-indexed "Search indexed."
    :private-group "Private group"
    :each-costs "Each costs "
@@ -390,7 +373,8 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :report-this-comment "Report this comment"
    :delete-this-comment "Delete this comment"
 
-   :add-tags "Add tags (up to 5)..."
+   :add-tags-label "Add tags (optional):"
+   :add-tags "Up to 3 tags, seperated by commas..."
    :email-notification-settings "Email notification settings"
    :email-notification-settings-text "Email me when someone replies to my post or mentions my @username."
    :my-data "My Data"
@@ -405,7 +389,6 @@ So you can git commit a new post, and it will be automatically published on Lamb
 === Features
 
 * Anyone can *create any group* as long as it's programmers related.
-  Group supports channels.
 * *Git commit to publish* your posts. :tada:
   You can commit a new post (support both Markdown and Asciidoctor) to Github, the post will be automatically published on Lambdahackers, and vice versa.
 * A simple *blog* for everyone.
@@ -434,4 +417,5 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :skip-group-selection "Skip group selection"
    :required "Required"
    :agree-text "By clicking Sign In, you agree to our [Terms](https://lambdahackers.com/terms), [Privacy](https://lambdahackers.com/privacy) and [code of conduct](https://lambdahackers.com/code-of-conduct)."
+   :login-to-comment "You must be logged in to comment"
    })

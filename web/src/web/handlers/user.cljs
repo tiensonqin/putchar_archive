@@ -143,20 +143,6 @@
                            (update (:current result) :stared_groups util/normalize))
                  (assoc-in [:group :current] (:object_id data)))})
 
-   :user/star-channel
-   (fn [state group-name data]
-     {:state {:loading? true}
-      :http {:params [:user/star data]
-             :on-load [:citrus/star-channel-success data]}})
-
-   :citrus/star-channel-success
-   (fn [state data result]
-     {:state (-> state
-                 (assoc-in [:user :loading?] false)
-                 (assoc-in [:user :current]
-                           (update (:current result) :stared_groups util/normalize))
-                 (assoc-in [:channel :current] (str (:object_id data))))})
-
    :user/unstar-group
    (fn [state data]
      {:state {:loading? true}
@@ -170,19 +156,6 @@
                  (assoc-in [:user :current]
                            (update (:current result) :stared_groups util/normalize)))
       :redirect {:handler :home}})
-
-   :user/unstar-channel
-   (fn [state group-name data]
-     {:state {:loading? true}
-      :http {:params [:user/unstar data]
-             :on-load [:citrus/unstar-channel-success group-name data]}})
-
-   :citrus/unstar-channel-success
-   (fn [state group-name data result]
-     {:state (-> state
-                 (assoc-in [:user :loading?] false)
-                 (assoc-in [:user :current]
-                           (update (:current result) :stared_groups util/normalize)))})
 
    :user/logout
    (fn [state]
@@ -276,22 +249,6 @@
       :http {:params [:user/poll]
              :on-load :citrus/poll-success
              :on-error :user/poll-failed}})
-
-   :user/get-stared-groups-channels
-   (fn [state]
-     {:state state
-      :http {:params [:user/get-stared-groups-channels]
-             :on-load :citrus/get-stared-groups-channels-success
-             :on-error :citrus/get-stared-groups-channels-failed}})
-
-   :citrus/get-stared-groups-channels-success
-   (fn [state result]
-     {:state {:stared-groups-channels result}})
-
-   :citrus/get-stared-groups-channels-failed
-   (fn [state error]
-     (prn ":citrus/get-stared-groups-channels-failed " error)
-     {:state state})
 
    :citrus/poll-success
    (fn [state result]

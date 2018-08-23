@@ -4,7 +4,6 @@
             [api.db.comment :as comment]
             [clojure.java.jdbc :as j]
             [api.db.group :as group]
-            [api.db.channel :as channel]
             [api.db.star :as star]
             [api.db.search :as search]
             [api.util :as util]
@@ -13,7 +12,7 @@
 (defn export
   [db user-id]
   (some-> (u/get db user-id)
-          (assoc :posts (j/query db ["select group_name, channel_name, title, body, tops, tags, comments_count, permalink, created_at, link from posts where user_id = ?" user-id])
+          (assoc :posts (j/query db ["select group_name, title, body, tops, tags, comments_count, permalink, created_at, link from posts where user_id = ?" user-id])
                  :comments (j/query db ["select post_permalink, body, likes, created_at from comments where del = false and user_id = ?" user-id]))))
 
 (defn create-identity-user
@@ -37,9 +36,6 @@
           "group"
           (group/unstar conn object_id user-id)
 
-          "channel"
-          (channel/unstar conn object_id user-id)
-
           nil))
       (j/execute! conn ["delete from stars where user_id = ?" user-id])
 
@@ -54,7 +50,6 @@
             new-screen-name (:screen_name user)]
         (j/execute! conn ["update posts set user_id = ?, user_screen_name = ? where user_id = ?" new-id new-screen-name user-id])
         (j/execute! conn ["update comments set user_id = ? where user_id = ?" new-id user-id])
-        (j/execute! conn ["update channels set user_id = ? where user_id = ?" new-id user-id])
         ;; TODO: admins
         (j/execute! conn ["update groups set user_id = ? where user_id = ?" new-id user-id])
         (j/execute! conn ["update reports set user_id = ? where user_id = ?" new-id user-id])
@@ -76,9 +71,6 @@
           "group"
           (group/unstar conn object_id user-id)
 
-          "channel"
-          (channel/unstar conn object_id user-id)
-
           nil))
       (j/execute! conn ["delete from stars where user_id = ?" user-id])
 
@@ -86,20 +78,3 @@
         (post/untop conn user-id post_id))
 
       (j/execute! conn ["delete from users where id = ?" user-id]))))
-
-;; 1. not= general
-;; 2. all posts marked del
-;; 3. group update channels
-;; 4. user who stared this channel
-(defn delete-channel
-  [db id]
-  (when-let [{:keys [group_id name]} (channel/get db id)]
-    (when (not= "general" name)
-      (let [{:keys [channels] :as group} (group/get db group_id)
-            channels-ids (filter #(not= id %) (map :id channels))]
-        (group/update db group_id {:channels channels-ids})
-        (j/execute! db ["update posts set del = true where channel_id = ?" id])
-        (let [users (j/query db ["select user_id from stars where object_type = 'channel' and object_id = ?" id])]
-          (doseq [{:keys [user_id]} users]
-            (channel/unstar db id user_id)))
-        (du/delete db :channels id)))))

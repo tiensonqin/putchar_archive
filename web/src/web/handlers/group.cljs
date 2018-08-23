@@ -10,15 +10,10 @@
    :citrus/group-new
    (fn [state data]
      (let [current-user (get-in state [:user :current])
-           type (:type current-user)
-           non-pro-private? (and
-                             (= "private"(:privacy data))
-                             (not= "pro" type))]
-       (if non-pro-private?
-         {:state (assoc-in state [:user :pro-modal?] true)}
-         {:state (assoc-in state [:group :loading?] true)
-          :http {:params [:group/new data]
-                 :on-load :citrus/group-new-ready}})))
+           type (:type current-user)]
+       {:state (assoc-in state [:group :loading?] true)
+        :http {:params [:group/new data]
+               :on-load :citrus/group-new-ready}}))
 
    :citrus/group-new-ready
    (fn [state result]
@@ -44,17 +39,15 @@
    (fn [state result]
      {:state state})
 
-   :citrus/reset-current-group-channel
+   :citrus/reset-current-group
    (fn [state]
      {:state (-> state
-                 (assoc-in [:group :current] nil)
-                 (assoc-in [:channel :current] nil))})
+                 (assoc-in [:group :current] nil))})
 
    :citrus/reset-first-group
    (fn [state]
      {:state (-> state
-                 (assoc-in [:group :current] (ffirst (get-in state [:user :current :stared_groups])))
-                 (assoc-in [:channel :current] nil))})
+                 (assoc-in [:group :current] (ffirst (get-in state [:user :current :stared_groups]))))})
 
 
    :group/update
@@ -138,7 +131,7 @@
                     util/get-next)]
        (cond
          ;; group
-         (contains? #{:home :group :channel} current-handler)
+         (contains? #{:home :group} current-handler)
          (if-let [user (get-in state [:user :current])]
            (let [groups (:stared_groups user)
                  current-id (get-in state [:group :current])

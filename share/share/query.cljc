@@ -3,11 +3,11 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :group :channel :title :rank :permalink :created_at :comments_count :tops :link :choices :poll_choice :poll_closed :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
+  [:id :flake_id :user :group :title :rank :permalink :created_at :comments_count :tops :link :choices :poll_choice :poll_closed :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
 
 (defn group-fields
   [post-filter]
-  [:id :name :purpose :rule :admins :stars :related_groups :privacy
+  [:id :name :purpose :rule :admins :stars :related_groups
    [:posts {:fields post-fields
             :filter post-filter}]])
 
@@ -37,32 +37,10 @@
      :args  nil
      :merge {:posts [:posts :latest-reply]}}))
 
-(def channel-query
-  (fn [state args]
-    (let [names (util/group-channel args)
-          post-filter (or (keyword (:post-filter args)) :latest-reply)]
-      {:q     {:channel {:fields [:id :name :purpose
-                                  [:group {:fields [:id :name :purpose :rule :admins :stars :privacy :related_groups]}]
-                                  [:posts {:fields post-fields
-                                           :filter post-filter}]]}}
-       :args  {:channel names}
-       :merge {:channel-posts [:posts :by-channel names post-filter]}})))
-
-(def channels-query
-  (fn [state args]
-    {:q    {:group {:fields [:id :name :purpose :admins :stars :privacy :related_groups
-                             [:channels {:fields [:id :name :purpose :stars]
-                                         :filter :hot
-                                         :cursor {:limit 100}}]]}}
-     :args {:group {:name (str/lower-case (:group-name args))}}}))
-
 (def members-query
   (fn [state args]
     (let [group-name (str/lower-case (:group-name args))]
-      {:q    {:group {:fields [:id :name :purpose :admins :stars :privacy :related_groups
-                               [:channels {:fields [:id :name :purpose :stars]
-                                           :filter :hot
-                                           :cursor {:limit 100}}]
+      {:q    {:group {:fields [:id :name :purpose :admins :stars :related_groups
                                [:members {:fields [:*]
                                           :cursor {:limit 100}}]]}}
        :args {:group {:name group-name}}})))
@@ -94,8 +72,7 @@
                             :poll_closed
                             :choices
                             [:user {:fields [:id :screen_name :name :bio :website]}]
-                            [:group {:fields [:id :name :purpose :rule :admins :stars :related_groups :created_at :privacy]}]
-                            [:channel {:fields [:id :name]}]
+                            [:group {:fields [:id :name :purpose :rule :admins :stars :related_groups :created_at]}]
                             [:comments {:fields [:*]
                                         :cursor {:limit 100}}]]}}
      :args {:post {:permalink (str "@"
@@ -120,7 +97,7 @@
                                     :poll_closed
                                     :choices
                                     [:group {:fields [:id :name]}]
-                                    [:channel {:fields [:id :name]}]]}}
+                                    ]}}
              :args {:post {:id id}}}]
       #?(:clj q
          :cljs (let [current (get-in state [:post :current])]
@@ -130,7 +107,7 @@
 
 (def groups-query
   (fn [state args]
-    {:q {:groups {:fields [:id :name :purpose :stars :privacy]
+    {:q {:groups {:fields [:id :name :purpose :stars]
                   :filter :hot
                   :cursor {:limit 20}}}}))
 
@@ -217,12 +194,6 @@
    :newest newest-posts-query
 
    :latest-reply latest-reply-posts-query
-
-   :channel channel-query
-
-   :channel-edit channel-query
-
-   :channels channels-query
 
    :group group-query
 

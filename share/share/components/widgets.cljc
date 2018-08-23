@@ -298,49 +298,33 @@
         error])])))
 
 (rum/defc join-button < rum/reactive
-  [current-user {:keys [privacy]
-                 :as group} stared? width]
-  (let [invited-group (citrus/react [:group :invited-group])
-        invited? (and invited-group (= invited-group (:name group)))
-        invite? (= (:privacy group) "invite")]
-    (cond
-      (and current-user stared?)
-      nil
+  [current-user group stared? width]
+  (prn {:stared? stared?})
+  (prn (and current-user stared?))
+  (cond
+    (and current-user stared?)
+    nil
 
-      (or (= (:privacy group) "public")
-          (and invite? invited?))
-      (ui/button {:style {:width width}
-                  :href (str "/" (:name group))
-                  :on-click #(citrus/dispatch! :user/star-group {:object_type :group
-                                                                 :object_id (:id group)})}
-        (t :join))
-
-      invite?
-      (ui/button {:style {:width width}
-                  :class "disabled"}
-        (t :invite-only))
-
-      :else
-      nil
-      )))
+    :else
+    (ui/button {:style {:width width}
+                :href (str "/" (:name group))
+                :on-click #(citrus/dispatch! :user/star-group {:object_type :group
+                                                               :object_id (:id group)})}
+      (t :join))
+    ))
 
 (rum/defc sort-buttons < rum/reactive
   [current-user group stared-group?]
-  (let [current-channel (citrus/react [:channel :current])
-        post-filter (citrus/react [:post :filter])
+  (let [post-filter (citrus/react [:post :filter])
         {:keys [handler route-params]} (citrus/react [:router])
         zh-cn? (= (citrus/react [:locale]) :zh-cn)
-        [path new-path hot-path latest-reply-path wiki-path] (case handler
-                              :channel
-                              (let [{:keys [group-name channel-name]} route-params
-                                    path (str "/" group-name "/" channel-name "/")]
-                                [path (str path "newest") (str path "hot") (str path "latest-reply") (str path "wiki")])
+        [path new-path hot-path latest-reply-path wiki-path]
+        (case handler
+          :group
+          (let [path (str "/" (:name group) "/")]
+            [path (str path "newest") (str path "hot") (str path "latest-reply") (str path "wiki")])
 
-                              :group
-                              (let [path (str "/" (:name group) "/")]
-                                [path (str path "newest") (str path "hot") (str path "latest-reply") (str path "wiki")])
-
-                              ["/" "/newest" "/" "/latest-reply" nil])
+          ["/" "/newest" "/" "/latest-reply" nil])
         post-filter (cond
                       (= handler :newest)
                       :newest
@@ -374,11 +358,7 @@
       [:span {:style {:font-size "1.125rem"
                       :margin-left 24}} (if group hot latest-reply)]
       [:span {:style {:margin-left 24
-                      :font-size "1.125rem"}} new]
-      ;; (when (contains? #{:group :channel} handler)
-      ;;   [:span {:style {:margin-left 24
-      ;;                   :font-size "1.125rem"}} wiki])
-      ]
+                      :font-size "1.125rem"}} new]]
 
      (when (and (util/mobile?) current-user group)
        (join-button current-user group stared-group? 80))]))
@@ -386,7 +366,7 @@
 (rum/defcs cover-nav < rum/reactive
   (rum/local false ::rule-expand?)
   (rum/local false ::promote-modal?)
-  [state group channel]
+  [state group]
   (let [rule-expand? (::rule-expand? state)
         promote? (::promote-modal? state)
         current-path (citrus/react [:router :handler])
@@ -410,7 +390,7 @@
 
         (sort-buttons current-user nil false)]
 
-       [:div {:style {:padding-bottom 24}}
+       [:div {:style {:padding-bottom 20}}
         [:div.space-between {:style {:flex-wrap "wrap"}}
          [:h1.heading-1 {:style {:margin-top 0
                                  :margin-bottom "16px"}}
@@ -427,11 +407,6 @@
               " "
               (str/capitalize (t :members))]])
 
-          (if (and channel (not (util/mobile?)))
-            [:a.control {:style {:margin-right 12}
-                         :href (str "/" (:name group) "/" (:name channel))}
-             (str "#" (:name channel))])
-
           ;; rules
           (when-not (util/mobile?)
             [:a.control {:on-click (fn [] (swap! rule-expand? not))
@@ -444,8 +419,6 @@
                             (cond
                               group
                               (str "/" (:name group) "/newest.rss")
-                              channel
-                              (str "/" (:name group) "/" (:name channel) "/newest.rss")
                               :else
                               "/hot.rss"))}
              (ui/icon {:type :rss
@@ -465,11 +438,6 @@
             (ui/icon {:type :more
                       :color "rgb(127,127,127)"})]
            [(if member?
-              [:a.button-text {:href (str "/" (:name group) "/channels")
-                               :style {:font-size 14}}
-               (t :channels)])
-
-            (if member?
               [:a.button-text {:href (str "/" (:name group) "/wiki")
                                :style {:font-size 14}}
                "Wiki"])
@@ -651,24 +619,17 @@
                                       :style {:flex-wrap "wrap"
                                               :margin-bottom 12
                                               :align-items "center"}}
-       (ui/icon {:type :label_outline
-                 :color "rgb(127,127,127)"
-                 :opts {:style {:margin-right 12}}})
 
        (for [[tag count] tags]
          (let [this? (= current-tag (name tag))]
            [:div.row1 {:key tag
                        :style {:padding "12px 12px 12px 0"}}
-            [:a.control {:class (if this?
+            [:a.tag {:class (if this?
                                   "active")
-                         :href (str "/@" screen-name "/tag/" (name tag))
-                         :style {:border "1px solid #666"
-                                 :border-radius 6
-                                 :padding "2px 6px"
-                                 :font-size 14}}
+                     :href (str "/@" screen-name "/tag/" (name tag))}
              (util/tag-decode (name tag))]
             [:span {:style {:margin-left 6
-                           :color "#999"}}
+                            :color "#999"}}
             count]]))
 
        (cond

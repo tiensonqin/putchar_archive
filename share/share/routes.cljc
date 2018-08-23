@@ -51,16 +51,7 @@
         [[[#"[^\/]+" :group-name]]                                             :group]
         [[[#"[^\/]+" :group-name] "/" [#"(newest|hot|latest-reply|wiki)" :post-filter]]           :group]
         [[[#"[^\/]+" :group-name] "/members"]                                  :members]
-        [[[#"[^\/]+" :group-name] "/edit"]                                     :group-edit]
-        [[[#"[^\/]+" :group-name] "/new-channel"]                              :new-channel]
-        [[[#"[^\/]+" :group-name] "/channels"]                                 :channels]
-        [[[#"[^\/]+" :group-name] "/" [#"[^\/]+" :channel-name]]               :channel]
-        [[[#"[^\/]+" :group-name] "/" [#"[^\/]+" :channel-name] "/newest.rss"] :channel-latest-rss]
-        [[[#"[^\/]+" :group-name] "/" [#"[^\/]+" :channel-name] "/hot.rss"]    :channel-hot-rss]
-        [[[#"[^\/]+" :group-name] "/" [#"[^\/]+" :channel-name] "/latest-reply.rss"]    :channel-latest-reply-rss]
-        [[[#"[^\/]+" :group-name] "/" [#"[^\/]+" :channel-name] "/" [#"(newest|hot|latest-reply|wiki)" :post-filter]]               :channel]
-        [[[#"[^\/]+" :group-name] "/" [#"[^\/]+" :channel-name] "/edit"]       :channel-edit]
-        ]])
+        [[[#"[^\/]+" :group-name] "/edit"]                                     :group-edit]]])
 
 (defn match-route-with-query-params
   [path & {:as options}]
@@ -71,8 +62,6 @@
               (cond-> params
                 (:group-name params)
                 (update :group-name bidi/url-decode)
-                (:channel-name params)
-                (update :channel-name bidi/url-decode)
                 (:tag params)
                 (update :tag bidi/url-decode)
 
