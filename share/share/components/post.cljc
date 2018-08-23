@@ -775,12 +775,14 @@
 (rum/defc tags
   [tags opts tag-style]
   (if (seq tags)
-    [:div.ubuntu.row1 opts
+    [:span.ubuntu opts
      (for [tag tags]
-       [:a.tag {:key (util/random-uuid)
-                :href (str "/tag/" (name tag))
-                :style (merge {:margin-right 12}
-                              tag-style)}
+       [:a.tag.control
+        {:key (util/random-uuid)
+         :href (str "/tag/" (name tag))
+         :style (merge {:margin-right 12
+                        :white-space "nowrap"}
+                       tag-style)}
         (util/tag-decode (name tag))])]))
 
 (rum/defcs post-item < {:key-fn (fn [post]
@@ -842,18 +844,16 @@
 
          [:div.column {:style {:justify-content "center"}}
           [:div.space-between
-           [:div.ubuntu
-            [:a.no-decoration {:href post-link
+           [:div.ubuntu.row1 {:style {:flex-wrap "wrap"}}
+            [:a.no-decoration.post-title {:href post-link
                                :style {:margin-right 6}}
-             [:span.post-title
-              (if (:choices post)
-                (str "[" (str/lower-case (t :poll)) "] "
-                     (:title post))
-                (:title post))]]
+             (if (:choices post)
+               (str "[" (str/lower-case (t :poll)) "] "
+                    (:title post))
+               (:title post))]
 
             (tags (:tags post)
-                  {:style {:display "inline"
-                           :vertical-align "middle"}}
+                  {:style {:vertical-align "middle"}}
                   {:font-size "8pt"
                    :height "16px"
                    :margin-right 6})

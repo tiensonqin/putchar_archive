@@ -299,8 +299,6 @@
 
 (rum/defc join-button < rum/reactive
   [current-user group stared? width]
-  (prn {:stared? stared?})
-  (prn (and current-user stared?))
   (cond
     (and current-user stared?)
     nil
