@@ -103,6 +103,7 @@
            :min-rows 5
 
            :style {:border-radius 4
+                   :border "1px solid rgb(169,169,169)"
                    :font-size 15
                    :background "#fff"
                    :resize "none"
