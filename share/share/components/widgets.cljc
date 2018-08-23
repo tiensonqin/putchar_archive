@@ -67,7 +67,6 @@
 
 (rum/defc user-card < rum/reactive
   [{:keys [id name screen_name bio website github_handle twitter_handle] :as user}]
-
   (let [mobile? (util/mobile?)
         current-user (citrus/react [:user :current])]
     [:div.space-between.auto-padding

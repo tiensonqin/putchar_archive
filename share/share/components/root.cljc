@@ -506,7 +506,8 @@
                           (fn []
                             (when @scroll/on-scroll-switch
                               (let [scroll-top (util/scroll-top)]
-                                (citrus/dispatch-sync! :citrus/set-scroll-top (util/get-current-url) scroll-top))))))
+                                (citrus/dispatch-sync! :citrus/set-scroll-top (util/get-current-url) scroll-top)))))
+       )
      :clj nil))
 
 (def rendered? (atom false))
