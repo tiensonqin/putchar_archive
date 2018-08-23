@@ -342,7 +342,8 @@
                   cursor)
          ids (cache/cursor key cursor)]
      (->> (util/get-by-ids db table ids {:where where})
-          (map with-user-group)))))
+          (map with-user-group)
+          (flatten-frequent-posters)))))
 
 (defn get-bookmarked
   ([db user-id cursor]
@@ -356,7 +357,8 @@
                   cursor)
          ids (cache/cursor key cursor)]
      (->> (util/get-by-ids db table ids {:where where})
-          (map with-user-group)))))
+          (map with-user-group)
+          (flatten-frequent-posters)))))
 
 (defn get-top
   ([db cursor]
