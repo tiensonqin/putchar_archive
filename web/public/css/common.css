@@ -428,7 +428,7 @@ a.hd:visited {
     box-shadow: 0 1px 8px #ddd;
     background: #FFF;
     width: 100%;
-    -webkit-transform: translateZ(0);
+    -webkit-transform: translate3d(0,0,0);
 }
 
 .is-active .item {

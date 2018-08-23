@@ -203,3 +203,10 @@
      visible
      (assoc :visible visible))
    element))
+
+(rum/defc bouncing-loader
+  []
+  [:div.bouncing-loader
+   [:div]
+   [:div]
+   [:div]])

@@ -986,9 +986,7 @@
                              (citrus/dispatch! :citrus/load-more-posts
                                                opts)))})
      (when loading?
-       [:div.center.ubuntu {:style {:font-size "1.2em"
-                                    :font-weight "500"}}
-        (t :loading)])
+       (ui/bouncing-loader))
 
      (ops-delete-dialog)]
     ))
