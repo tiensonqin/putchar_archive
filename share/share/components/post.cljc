@@ -1224,7 +1224,8 @@
                 [:p.number {:style {:font-size 14
                                     :margin-bottom 6}}
                  (util/date-format (:created_at post))]
-                (if (= (:id current-user) (:id user))
+                (if false
+                    ;; (= (:id current-user) (:id user))
                   [:a.control {:on-click (fn [e]
                                            (util/set-href! (str config/website "/p/" (:id post) "/edit")))
                                :style {:font-size 14}}
@@ -1251,8 +1252,12 @@
 
               [:div.post
                (if @raw?
-                 [:div {:style {:margin-bottom 24}}
-                  (:body post)]
+                 [:div.fadein
+                  (widgets/transform-content (str "....\n"
+                                                  (:body post)
+                                                  "\n....")
+                                             {:body-format :asciidoc
+                                              :style {:margin "24px 0"}})]
                  (widgets/transform-content (:body post)
                                            {:body-format (:body_format post)
                                             :style {:overflow "hidden"}
