@@ -73,7 +73,7 @@
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
                          :margin-top 16}}
-      [:a.control {:href "/lambdahackers/feature-requests"
+      [:a.control {:href "/tag/feature-requests"
                    :style {:margin-right 24}}
        (t :feature-requests)]
 
