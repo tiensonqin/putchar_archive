@@ -170,6 +170,15 @@
 
 (rum/defcs new-post-body <
   rum/reactive
+  {:init (fn [state]
+           #?(:cljs (when-let [post-box (dommy/sel1 "#post-box")]
+                      (prn "after render")
+                      (let [height (oget post-box "scrollHeight")]
+                        (citrus/dispatch! :citrus/default-update
+                                          [:post :latest-height]
+                                          height)
+                        (dommy/set-px! post-box :height height))))
+           state)}
   [state form-data init body-format auto-focus?]
   (let [value (or (:body form-data) init "")
         latest-height (citrus/react [:post :latest-height])
@@ -196,12 +205,13 @@
                   :white-space "pre-wrap"
                   :overflow-wrap "break-word"
                   :overflow-y "hidden"
-                  :min-height (min 1024
-                                   #?(:clj 1024
-                                      :cljs (let [min-height (- (:height (util/get-layout)) 140)]
-                                              (if latest-height
-                                                (max latest-height min-height)
-                                                min-height))))}
+                  :padding-bottom 48
+                  :min-height #?(:clj 1024
+                                 :cljs (let [min-height (:height (util/get-layout))]
+                                         ;; get scrollHeight
+                                         (if latest-height
+                                           (max latest-height min-height)
+                                           min-height)))}
           :on-change (fn [e]
                        ;; Here we need to sync firstly
                        (citrus/dispatch-sync! :citrus/set-post-form-data
@@ -1224,8 +1234,7 @@
                 [:p.number {:style {:font-size 14
                                     :margin-bottom 6}}
                  (util/date-format (:created_at post))]
-                (if false
-                    ;; (= (:id current-user) (:id user))
+                (if (= (:id current-user) (:id user))
                   [:a.control {:on-click (fn [e]
                                            (util/set-href! (str config/website "/p/" (:id post) "/edit")))
                                :style {:font-size 14}}
