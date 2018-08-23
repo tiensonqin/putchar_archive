@@ -125,7 +125,7 @@
          (if preview?
            [:div.column
             [:div.divider {:style {:margin-bottom 12}}]
-            (post-preview body :markdown)])]))
+            (post-preview body :asciidoc)])]))
 
      ;; submit button
      [:div.row {:style {:align-items "center"
@@ -189,7 +189,7 @@
      (if preview?
        [:div.column {:style {:min-height 130
                              :justify-content "space-between"}}
-        (post-preview body :markdown)
+        (post-preview body :asciidoc)
         [:div.divider {:style {:margin-bottom 12}}]]
 
        (ui/textarea-autosize {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
@@ -455,7 +455,7 @@
            (if @edit-mode?
              (update-comment-box comment edit-mode? [table fk])
              (widgets/transform-content body
-                                        {:body-format :markdown
+                                        {:body-format :asciidoc
                                          :style {:color "rgba(0,0,0,0.84)"
                                                 :font-size "16px"}
                                          :on-mouse-up (fn [e]
@@ -566,7 +566,7 @@
               (let [[table fk] [:posts :post_id]]
                 (update-comment-box comment edit-mode? [table fk]))
               (widgets/transform-content body
-                                         {:body-format :markdown
+                                         {:body-format :asciidoc
                                           :style {:color "rgba(0,0,0,0.84)"
                                                  :font-size "1.2em"}}))
             ]]]]]])))

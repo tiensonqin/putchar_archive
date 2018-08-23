@@ -111,7 +111,7 @@
 (defn quotes
   [body body-format]
   (let [replace-fn (fn [[_ screen_name idx]]
-                     (str "> "
+                     (str "[role=\"concate\"]\n[quote]\n"
                           (-> (quote-header screen_name idx)
                               (wrap-render body-format))))]
     (-> body

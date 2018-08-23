@@ -702,7 +702,7 @@ a.active {
 
 .markdown blockquote, .comment-box .quoteblock, .comment .quoteblock {
     margin: 0.5em 0;
-    border-left: 5px solid #dfdfdf;
+    border-left: 5px solid #cfcfcf;
     background-color: #efefef;
     padding: 12px;
 }

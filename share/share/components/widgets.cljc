@@ -54,7 +54,7 @@
   (let [body-format (keyword body-format)]
     [:div.column
      (cond->
-       {:class "editor"
+       {:class (str "editor " (name body-format))
         :style (merge
                 {:word-wrap "break-word"}
                 style)
@@ -623,7 +623,7 @@
            [:div.row1 {:key tag
                        :style {:padding "12px 12px 12px 0"
                                :align-items "center"}}
-            [:a.tag {:class (if this?
+            [:a.tag.control {:class (if this?
                                   "active")
                      :href (str "/@" screen-name "/tag/" (name tag))}
              (util/tag-decode (name tag))]

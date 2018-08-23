@@ -1255,9 +1255,8 @@
                 (choices-cp post {:align-items "center"})]
 
                (tags (:tags post)
-                     {:style {:flex-wrap "wrap"
-                              :margin "24px 0"
-                              :align-items "center"}}
+                     {:style {:display "block"
+                              :margin "24px 0"}}
                      nil)
 
                ;; [:p.number {:style {:font-size 14}}
