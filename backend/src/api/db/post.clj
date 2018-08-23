@@ -36,7 +36,7 @@
                                   :title :tops
                                   :rank :comments_count :permalink
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
-                                  :link
+                                  :link :canonical_url
                                   :lang
                                   :body :body_format :tags
                                   :is_private :choices :cover :video]

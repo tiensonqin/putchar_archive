@@ -75,12 +75,11 @@
            new-state (mergef q new-state route-handler result)]
 
        ;; set title
-       (let [[title description picture] (seo/seo-title-content route-handler
+       (let [[title description canonical-url picture] (seo/seo-title-content route-handler
                                                                 (get-in state [:router :route-params])
                                                                 new-state)]
          (util/set-title! title))
-       {:state new-state}
-       ))
+       {:state new-state}))
 
    :citrus/query-failed
    (fn [state route-handler reply]

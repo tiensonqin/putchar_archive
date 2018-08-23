@@ -34,95 +34,101 @@
 (defonce debug-state (atom nil))
 
 (defn head
-  [req handler zh-cn? seo-content seo-title seo-image]
-  [:head
-   [:meta {:charset "utf-8"}]
-   [:meta {:name "viewport"
-           :content "width=device-width, initial-scale=1"}]
-   [:meta {:name "apple-mobile-web-app-capable"
-           :content "yes"}]
-   [:meta {:name "mobile-web-app-capable"
-           :content "yes"}]
-   [:meta {:http-equiv "X-UA-Compatible"
-           :content "IE=edge"}]
+  [req handler zh-cn? seo-content seo-title seo-image canonical-url]
+  (let [post? (= handler :post)]
+    [:head
+     [:meta {:charset "utf-8"}]
+     [:meta {:name "viewport"
+             :content "width=device-width, initial-scale=1"}]
+     [:meta {:name "apple-mobile-web-app-capable"
+             :content "yes"}]
+     [:meta {:name "mobile-web-app-capable"
+             :content "yes"}]
+     [:meta {:http-equiv "X-UA-Compatible"
+             :content "IE=edge"}]
 
-   ;; twitter
-   [:meta {:name "twitter:card"
-           :content "summary"}]
+     ;; twitter
+     [:meta {:name "twitter:card"
+             :content "summary"}]
 
-   [:meta {:name "twitter:description"
-           :content seo-content}]
+     [:meta {:name "twitter:description"
+             :content seo-content}]
 
-   [:meta {:name "twitter:site"
-           :content "@lambdahackers"}]
+     [:meta {:name "twitter:site"
+             :content "@lambdahackers"}]
 
-   [:meta {:name "twitter:title"
-           :content seo-title}]
+     [:meta {:name "twitter:title"
+             :content seo-title}]
 
-   [:meta {:name "twitter:image:src"
-           :content seo-image}]
+     [:meta {:name "twitter:image:src"
+             :content seo-image}]
 
-   [:meta {:name "twitter:image:alt"
-           :content seo-title}]
+     [:meta {:name "twitter:image:alt"
+             :content seo-title}]
 
-   ;; open graph
-   [:meta {:property "og:title"
-           :content seo-title}]
+     ;; open graph
+     [:meta {:property "og:title"
+             :content seo-title}]
 
-   [:meta {:property "og:type"
-           :content (if (= handler :post)
-                      "article"
-                      "site")}]
-   [:meta {:property "og:url"
-           :content (str (:website-uri config) (:uri req))}]
-   [:meta {:property "og:image"
-           :content seo-image}]
-   [:meta {:property "og:description"
-           :content seo-content}]
-   [:meta {:property "og:site_name"
-           :content "lambdahackers"}]
+     [:meta {:property "og:type"
+             :content (if (= handler :post)
+                        "article"
+                        "site")}]
+     [:meta {:property "og:url"
+             :content (str (:website-uri config) (:uri req))}]
+     [:meta {:property "og:image"
+             :content seo-image}]
+     [:meta {:property "og:description"
+             :content seo-content}]
+     [:meta {:property "og:site_name"
+             :content "lambdahackers"}]
 
-   [:title seo-title]
-   [:meta {:name "description"
-           :content seo-content}]
-   [:meta {:name "theme-color"
-           :content "#FFFFFF"}]
+     [:title seo-title]
+     [:meta {:name "description"
+             :content seo-content}]
+     (when (and post? canonical-url)
+       [:link {:rel "canonical"
+               :href canonical-url}])
 
-   [:link
-    {:href "/apple-touch-icon.png",
-     :sizes "180x180",
-     :rel "apple-touch-icon"}]
+     [:meta {:name "theme-color"
+             :content "#FFFFFF"}]
 
-   [:link
-    {:href "/favicon-32x32.png?v=3",
-     :sizes "32x32",
-     :type "image/png",
-     :rel "icon"}]
+     [:link
+      {:href "/apple-touch-icon.png",
+       :sizes "180x180",
+       :rel "apple-touch-icon"}]
 
-   [:link
-    {:href "/favicon-16x16.png?v=3",
-     :sizes "16x16",
-     :type "image/png",
-     :rel "icon"}]
+     [:link
+      {:href "/favicon-32x32.png?v=3",
+       :sizes "32x32",
+       :type "image/png",
+       :rel "icon"}]
 
-   [:link
-    {:color "#5bbad5",
-     :href "/safari-pinned-tab.svg",
-     :rel "mask-icon"}]
+     [:link
+      {:href "/favicon-16x16.png?v=3",
+       :sizes "16x16",
+       :type "image/png",
+       :rel "icon"}]
 
-   [:meta {:content "#1a1a1a", :name "msapplication-TileColor"}]
-   [:meta {:content "#ffffff", :name "theme-color"}]
+     [:link
+      {:color "#5bbad5",
+       :href "/safari-pinned-tab.svg",
+       :rel "mask-icon"}]
 
-   [:link {:rel "manifest"
-           :href "/manifest.json"}]
-   (if util/development?
-     [:link {:rel "stylesheet"
-             :href "/css/style.css"}]
-     [:link {:rel "stylesheet"
-             :href (str "/style-" version ".css")}])
+     [:meta {:content "#1a1a1a", :name "msapplication-TileColor"}]
+     [:meta {:content "#ffffff", :name "theme-color"}]
 
-   (when-not zh-cn?
-     [:link {:href "https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700,700italic%7CUbuntu:400,400i,600,600i"}])])
+     [:link {:rel "manifest"
+             :href "/manifest.json"}]
+
+     (if util/development?
+       [:link {:rel "stylesheet"
+               :href "/css/style.css"}]
+       [:link {:rel "stylesheet"
+               :href (str "/style-" version ".css")}])
+
+     (when-not zh-cn?
+       [:link {:href "https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700,700italic%7CUbuntu:400,400i,600,600i"}])]))
 
 (defn status-template
   [text]
@@ -188,10 +194,10 @@
     (let [locale (:locale state)
          {:keys [handler route-params]} (:ui/route req)
          current-user (get-in state [:user :current])
-         [seo-title seo-content seo-image] (seo/seo-title-content handler route-params state)
+         [seo-title seo-content canonical-url seo-image] (seo/seo-title-content handler route-params state)
          zh-cn? (= locale :zh-cn)]
      (h/html5
-      (head req handler zh-cn? seo-content seo-title seo-image)
+      (head req handler zh-cn? seo-content seo-title seo-image canonical-url)
       [:body {:style {:min-height "100%"}}
        [:div#app content]
 

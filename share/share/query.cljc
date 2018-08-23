@@ -67,6 +67,7 @@
                             :tops
                             :comments_count
                             :link
+                            :canonical_url
                             :notification_level
                             :poll_choice
                             :poll_closed
@@ -91,6 +92,7 @@
                                     :is_draft
                                     :is_wiki
                                     :link
+                                    :canonical_url
                                     :tags
                                     :notification_level
                                     :poll_choice

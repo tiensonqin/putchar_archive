@@ -417,4 +417,7 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :skip-group-selection "Skip group selection"
    :required "Required"
    :agree-text "By clicking Sign In, you agree to our [Terms](https://lambdahackers.com/terms), [Privacy](https://lambdahackers.com/privacy) and [code of conduct](https://lambdahackers.com/code-of-conduct)."
-   :login-to-comment "You must be logged in to comment"})
+   :login-to-comment "You must be logged in to comment"
+   :add-canonical-url "Set Canonical Url (Optional)"
+   :add-canonical-url-placeholder "Please only add content that you own."
+   })

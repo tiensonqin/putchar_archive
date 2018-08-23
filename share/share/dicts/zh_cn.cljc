@@ -429,4 +429,6 @@
    :required "需要填写"
    :agree-text "点击登录代表您同意我们的 [条款](https://lambdahackers.com/terms)， [隐私政策](https://lambdahackers.com/privacy) 还有 [code of conduct](https://lambdahackers.com/code-of-conduct)."
    :login-to-comment "登录以后才可以评论。"
+   :add-canonical-url "设置 Canonical 链接(可选)"
+   :add-canonical-url-placeholder "请确认该链接指向的是你的原创内容。"
    })

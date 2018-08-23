@@ -79,13 +79,15 @@
                      (if (= encoding "base64")
                        (let [body (github/base64-decode
                                    (str/replace content "\n" ""))
-                             {:keys [title body group tags is_draft is_wiki] :as spec} (extract-spec body)
+                             {:keys [title body group tags is_draft is_wiki canonical_url] :as spec} (extract-spec body)
                              group (util/internal-name group)
                              group (if group
                                      (group/get db group))
                              post-data (let [is_draft (if is_draft is_draft false)
                                              permalink (when-not is_draft
-                                                         (post/permalink (:screen_name user) title))]
+                                                         (post/permalink (:screen_name user) title))
+                                             canonical_url (if canonical_url
+                                                             (re-find (re-pattern util/link-re) canonical_url))]
                                          (cond->
                                            {:user_id (:id user)
                                             :user_screen_name (:screen_name user)
@@ -101,7 +103,10 @@
                                                   :group_name (:name group))
 
                                            permalink
-                                           (assoc :permalink permalink)))]
+                                           (assoc :permalink permalink)
+
+                                           canonical_url
+                                           (assoc :canonical_url canonical_url)))]
                          (cond
                            (= status "renamed")
                            (when-let [id (get repo-map previous_filename)]

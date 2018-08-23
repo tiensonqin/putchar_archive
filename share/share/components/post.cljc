@@ -44,9 +44,9 @@
                :color (if toped? colors/primary "rgb(127,127,127)")
                :opts {:style {:margin-top -2}}})
      (when-not hide-votes?
-       [:span {:style {:margin-left 6
-                       :font-weight "600"
-                       :color (if toped? colors/primary "rgb(127,127,127)")}}
+       [:span.number {:style {:margin-left 6
+                              :font-weight "600"
+                              :color (if toped? colors/primary "rgb(127,127,127)")}}
         tops])]))
 
 (rum/defcs bookmark-text < rum/reactive
@@ -241,6 +241,49 @@
                                              :group_name (:name group)}))}
     (util/original-name (:name group))))
 
+(rum/defc add-tags
+  [form-data]
+  [:div#add-tags {:style {:margin "12px 0"}}
+   [:h6 {:style {:margin-bottom "1em"}}
+    (t :add-tags-label)]
+   (ui/input {:class "ant-input"
+              :type "text"
+              :autoComplete "off"
+              :name "tags"
+              :style {:max-width 300}
+              :placeholder (t :add-tags)
+              :default-value (or (:tags form-data) "")
+              :on-change (fn [value]
+                           #?(:cljs
+                              (citrus/dispatch! :citrus/set-post-form-data
+                                                {:tags (util/ev value)})))})])
+
+(rum/defcs add-canonical-url < (rum/local false ::expand?)
+  [state form-data]
+  (prn form-data)
+  (let [expand? (get state ::expand?)
+        show? (or (:canonical_url form-data) @expand?)]
+    [:div#add-canonical-url.column1 {:style {:margin "12px 0"}}
+     (if show?
+       [:h6 {:style {:margin-bottom "1em"}}
+        (t :add-canonical-url)]
+       [:a.control {:style {:font-size 14}
+                   :on-click (fn [] (reset! expand? true))}
+       (t :add-canonical-url)])
+     (when show?
+       (ui/input {:class "ant-input"
+                  :type "text"
+                  :autoComplete "off"
+                  :auto-focus true
+                  :name "canonical_url"
+                  :style {:max-width 300}
+                  :placeholder (t :add-canonical-url-placeholder)
+                  :default-value (or (:canonical_url form-data) "")
+                  :on-change (fn [value]
+                               #?(:cljs
+                                  (citrus/dispatch! :citrus/set-post-form-data
+                                                    {:canonical_url (util/ev value)})))}))]))
+
 (rum/defc select-group < rum/reactive
   [form-data stared-groups choices skip?]
   (let [images (:images form-data)
@@ -318,20 +361,9 @@
                            (= (:url image) (:cover form-data))
                            (assoc :border "4px solid #999"))}]])])
 
-     [:div#add-tags {:style {:margin "12px 0"}}
-      [:h6 {:style {:margin-bottom "1em"}}
-       (t :add-tags-label)]
-      (ui/input {:class "ant-input"
-                 :type "text"
-                 :autoComplete "off"
-                 :name "tags"
-                 :style {:max-width 300}
-                 :placeholder (t :add-tags)
-                 :default-value (or (:tags form-data) "")
-                 :on-change (fn [value]
-                              #?(:cljs
-                                 (citrus/dispatch! :citrus/set-post-form-data
-                                                   {:tags (util/ev value)})))})]]))
+     (add-tags form-data)
+
+     (add-canonical-url form-data)]))
 
 (rum/defc publish-button < rum/reactive
   [form-data]
@@ -380,7 +412,7 @@
                                  (merge {:id (:id current-post)
                                          :is_draft false}
                                         (select-keys form-data
-                                                     [:title :body :choices :body_format :is_wiki]))
+                                                     [:title :body :choices :body_format]))
 
                                  (:group_id form-data)
                                  (merge (select-keys form-data [:group_id :group_name]))
@@ -389,7 +421,11 @@
                                  (assoc :cover (:cover form-data))
 
                                  (:tags form-data)
-                                 (assoc :tags (:tags form-data)))
+                                 (assoc :tags (:tags form-data))
+
+                                 (and (:canonical_url form-data)
+                                      (re-find (re-pattern util/link-re) (:canonical_url form-data)))
+                                 (assoc :canonical_url (:canonical_url form-data)))
                           data (if (nil? (:body_format data))
                                  (assoc data :body_format :markdown)
                                  data)
@@ -1075,7 +1111,7 @@
         (when (and post (nil? (:title form-data)))
           (citrus/dispatch! :citrus/set-post-form-data
                             (cond->
-                              (select-keys post [:title :body :choices :body_format])
+                              (select-keys post [:title :body :choices :body_format :canonical_url])
                               (:group post)
                               (assoc :group_name (get-in post [:group :name])
                                      :group_id (get-in post [:group :id]))

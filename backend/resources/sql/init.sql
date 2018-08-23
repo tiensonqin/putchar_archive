@@ -78,8 +78,9 @@ CREATE TABLE posts (
     last_reply_at timestamp with time zone default null,
     last_reply_by text default null,
     last_reply_idx integer default null,
-    frequent_posters text default null
-    );
+    frequent_posters text default null,
+    canonical_url text unique default null
+);
   ALTER TABLE posts ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
   ALTER TABLE posts ADD CONSTRAINT updated_at_chk CHECK (EXTRACT(TIMEZONE from updated_at) = '0');
   ALTER TABLE posts ADD CONSTRAINT last_reply_at_chk CHECK (EXTRACT(TIMEZONE from last_reply_at) = '0');

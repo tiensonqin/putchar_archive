@@ -11,3 +11,5 @@ drop table downs;
 delete from stars where object_type = 'channel';
 alter table users drop column stared_channels;
 alter table groups drop column privacy;
+
+alter table posts add column canonical_url text unique default null;
