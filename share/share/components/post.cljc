@@ -172,7 +172,6 @@
   rum/reactive
   {:init (fn [state props]
            #?(:cljs (when-let [post-box (dommy/sel1 "#post-box")]
-                      (prn "after render")
                       (let [height (oget post-box "scrollHeight")]
                         (citrus/dispatch! :citrus/default-update
                                           [:post :latest-height]
@@ -833,8 +832,7 @@
                :style {:margin-right 12
                        :padding-top 5}}
            (ui/avatar {:src (util/cdn-image (:screen_name user))
-                       :shape "circle"})]
-          )
+                       :shape "circle"})])
         [:div.column
          (when user?
            [:div.row1 {:style {:margin-bottom 12
@@ -849,8 +847,7 @@
             (when group-name
               [:a.control {:href (str "/" group-name)
                            :on-click (fn [e] (util/stop e))}
-               (util/original-name group-name)])
-            ])
+               (util/original-name group-name)])])
 
          [:div.column {:style {:justify-content "center"}}
           [:div.space-between
@@ -862,15 +859,16 @@
                     (:title post))
                (:title post))]
 
-            (tags (:tags post)
-                  {:style (cond-> {:vertical-align "middle"}
-                            mobile?
-                            (assoc :display "flex"
-                                   :flex-directon "row"
-                                   :flex-wrap "wrap"))}
-                  {:font-size "8pt"
-                   :height "16px"
-                   :margin "6px 6px 6px 0"})
+            (when-not mobile?
+              (tags (:tags post)
+                   {:style (cond-> {:vertical-align "middle"}
+                             mobile?
+                             (assoc :display "flex"
+                                    :flex-directon "row"
+                                    :flex-wrap "wrap"))}
+                   {:font-size "8pt"
+                    :height "16px"
+                    :margin "6px 6px 6px 0"}))
 
             (if link
               [:a.control {:on-click (fn []
