@@ -39,6 +39,7 @@
 (defonce current-idx (atom nil))
 (defonce tab-pressed? (atom false))
 (defonce enter-pressed? (atom false))
+(defonce show-autocomplete? (atom true))
 
 (defn attach-listeners
   [state]
@@ -47,24 +48,25 @@
        (mixins/listen state js/window :keydown
                       (fn [e]
                         (let [code (.-keyCode e)]
-                          ;; 38 up, 40 down
-                          (when (contains? #{9 38 40 13} code)
+                          (when (contains? #{9 38 40 13 27} code)
                             (util/stop e)
                             (case code
                               9         ; confirmation
                               (reset! tab-pressed? true)
                               13
                               (reset! enter-pressed? true)
-                              38
+                              38        ; up
                               (if (>= @current-idx 1)
                                 (swap! current-idx dec))
-                              40
+                              40        ; down
                               (if (nil? @current-idx)
                                 (reset! current-idx 1)
-                                (swap! current-idx inc))))))))))
+                                (swap! current-idx inc))
+                              27        ; esc
+                              (reset! show-autocomplete? false)))))))))
 
 ;; tab or enter for confirmation, up/down to navigate
-(rum/defc autocomplete-cp < rum/reactive
+(rum/defcs autocomplete-cp < rum/reactive
   (mixins/event-mixin attach-listeners)
   (mixins/disable-others-tabindex "a:not(.complete-item)")
   {:will-mount (fn [state]
@@ -76,36 +78,39 @@
                    (reset! current-idx 0)
                    (reset! tab-pressed? false)
                    (reset! enter-pressed? false)
+                   (reset! show-autocomplete? true)
                    state)}
-  [col item-cp on-select]
+  [state col item-cp on-select]
   #?(:cljs
-     (let [width (citrus/react [:layout :current :width])
-           tab-pressed? (rum/react tab-pressed?)
-           enter-pressed? (rum/react enter-pressed?)
-           current-idx (or (rum/react current-idx) 0)
-           cursor-position (citrus/react [:post-box :cursor-position])]
-       (when (seq col)
-         (when tab-pressed?
-           (on-select (first col)))
-         (when enter-pressed?
-           (on-select (nth col current-idx)))
-         (let [c-idx (if current-idx (min current-idx (dec (count col))))
-               textarea (dommy/sel1 "#post-box")
-               coordinates (ui/get-caret-coordinates textarea cursor-position)
-               top (+ (oget coordinates "top")
-                     12)
-               left (if (> width 768)
-                      (+ 180 (oget coordinates "left"))
-                      (oget coordinates "left"))]
-          (ui/menu [:span {:style
-                           {:position "absolute"
-                            :top top
-                            :left left}}]
-            (for [[idx item] (util/indexed col)]
-              (item-cp item (= idx c-idx)))
-            {:visible true
-             :placement "bottomRight"
-             :menu-style {:width 180}}))))))
+     (let [show? (rum/react show-autocomplete?)]
+       (when show?
+        (let [width (citrus/react [:layout :current :width])
+              tab-pressed? (rum/react tab-pressed?)
+              enter-pressed? (rum/react enter-pressed?)
+              current-idx (or (rum/react current-idx) 0)
+              cursor-position (citrus/react [:post-box :cursor-position])]
+          (when (seq col)
+            (when tab-pressed?
+              (on-select (first col)))
+            (when enter-pressed?
+              (on-select (nth col current-idx)))
+            (let [c-idx (if current-idx (min current-idx (dec (count col))))
+                  textarea (dommy/sel1 "#post-box")
+                  coordinates (ui/get-caret-coordinates textarea cursor-position)
+                  top (+ (oget coordinates "top")
+                         12)
+                  left (if (> width 768)
+                         (+ 180 (oget coordinates "left"))
+                         (oget coordinates "left"))]
+              (ui/menu [:span {:style
+                               {:position "absolute"
+                                :top top
+                                :left left}}]
+                (for [[idx item] (util/indexed col)]
+                  (item-cp item (= idx c-idx)))
+                {:visible true
+                 :placement "bottomRight"
+                 :menu-style {:width 180}}))))))))
 
 (rum/defc mentions-cp < rum/reactive
   [type id mentions]
