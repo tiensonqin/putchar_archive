@@ -844,7 +844,7 @@
 
          [:div.column {:style {:justify-content "center"}}
           [:div.space-between
-           [:div.ubuntu.row1 {:style {:flex-wrap "wrap"}}
+           [:div.ubuntu
             [:a.no-decoration.post-title {:href post-link
                                :style {:margin-right 6}}
              (if (:choices post)
@@ -853,10 +853,14 @@
                (:title post))]
 
             (tags (:tags post)
-                  {:style {:vertical-align "middle"}}
+                  {:style (cond-> {:vertical-align "middle"}
+                            mobile?
+                            (assoc :display "flex"
+                                   :flex-directon "row"
+                                   :flex-wrap "wrap"))}
                   {:font-size "8pt"
                    :height "16px"
-                   :margin-right 6})
+                   :margin "6px 6px 6px 0"})
 
             (if link
               [:a.control {:on-click (fn []
