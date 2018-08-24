@@ -487,13 +487,9 @@
 "
                     fill width height))
    :thumb_up (fn [{:keys [width height fill]}]
-                   (util/format
-                    "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z\"/>
-</svg>
-"
-                    fill width height))
+               (util/format
+                "<svg fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\"><path d=\"M21.4 8.9c-.6-.7-1.5-1.2-2.5-1.2h-5.8V3.3c0-1.8-1.5-3.3-3.3-3.3-.3 0-.6.2-.7.5l-2.4 9H2.5c-.4 0-.7.3-.7.7v9.5c0 .4.3.7.7.7H18c1.6 0 3-1.2 3.3-2.8l.9-6c.1-1-.1-2-.8-2.7zm-18.2 2h3.3V19H3.2v-8.1zm17.6.4l-.9 6c-.2 1-1 1.7-1.9 1.7H8v-8.7l2.4-8.8c.8.2 1.3.9 1.3 1.8v5.2c0 .4.3.7.7.7h6.5c.5 0 1.1.2 1.4.7.4.4.5.9.5 1.4z\"></path><path d=\"M299 201h24v23.9h-24z\"></path></svg>"
+                fill width height))
 
    :thumb_down (fn [{:keys [width height fill]}]
                    (util/format

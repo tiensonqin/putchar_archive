@@ -36,17 +36,18 @@
                    (citrus/dispatch! (if toped? :post/untop :post/top) (:id post))
                    (swap! init-tops (if toped? dec inc)))
         hide-votes? (citrus/react [:hide-votes?])]
-    [:a.scale.control.row1 {:title title
-                            :on-click on-click
-                            :style {:align-items "center"}}
-     (ui/icon {:type :vote
-               :width 14
-               :color (if toped? colors/primary "rgb(127,127,127)")
-               :opts {:style {:margin-top -2}}})
+    [:div.row1
+     [:a.scale.control.row1 {:title title
+                             :on-click on-click
+                             :style {:align-items "center"}}
+      (ui/icon {:width (if post? 24 18)
+                :type :thumb_up
+                :color (if toped? colors/primary "rgb(127,127,127)")
+                :opts {:style {:margin-top -2}}})]
      (when-not hide-votes?
        [:span.number {:style {:margin-left 6
                               :font-weight "600"
-                              :color (if toped? colors/primary "rgb(127,127,127)")}}
+                              :color "rgb(127,127,127)"}}
         tops])]))
 
 (rum/defcs bookmark-text < rum/reactive
