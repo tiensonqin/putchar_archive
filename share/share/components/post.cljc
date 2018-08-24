@@ -889,8 +889,12 @@
          [:div.column {:style {:justify-content "center"}}
           [:div.space-between
            [:div.ubuntu
-            [:a.no-decoration.post-title {:href post-link
-                               :style {:margin-right 6}}
+            [:a.no-decoration.post-title (merge {:style {:margin-right 6}}
+                                                (if (and link (zero? (:comments_count post)))
+                                                  {:on-click (fn []
+                                                               (util/set-href! link))
+                                                   :href link}
+                                                  {:href post-link}))
              (if (:choices post)
                (str "[" (str/lower-case (t :poll)) "] "
                     (:title post))
