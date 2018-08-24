@@ -35,7 +35,9 @@
 
 (defn head
   [req handler zh-cn? seo-content seo-title seo-image canonical-url]
-  (let [post? (= handler :post)]
+  (let [post? (= handler :post)
+        group-name (and (= handler :group)
+                        (get-in req [:ui/route :route-params :group-name]))]
     [:head
      [:meta {:charset "utf-8"}]
      [:meta {:name "viewport"
@@ -89,6 +91,41 @@
      (when (and post? canonical-url)
        [:link {:rel "canonical"
                :href canonical-url}])
+
+     ;; rss
+     ;; group
+     (when group-name
+       [:link {:rel "alternate"
+               :type "application/rss+xml"
+               :title (str "Hot posts on " (util/original-name group-name))
+               :href (str (:website-uri config) "/" group-name "/hot.rss")}])
+
+     (when group-name
+       [:link {:rel "alternate"
+               :type "application/rss+xml"
+               :title (str "Latest posts on " (util/original-name group-name))
+               :href (str (:website-uri config) "/" group-name "/latest-reply.rss")}])
+
+     (when group-name
+       [:link {:rel "alternate"
+               :type "application/rss+xml"
+               :title (str "Newest posts on " (util/original-name group-name))
+               :href (str (:website-uri config) "/" group-name "/newest.rss")}])
+
+     [:link {:rel "alternate"
+             :type "application/rss+xml"
+             :title "Hot posts"
+             :href (str (:website-uri config) "/hot.rss")}]
+
+     [:link {:rel "alternate"
+             :type "application/rss+xml"
+             :title "Latest posts"
+             :href (str (:website-uri config) "/latest-reply.rss")}]
+
+     [:link {:rel "alternate"
+             :type "application/rss+xml"
+             :title "Newest posts"
+             :href (str (:website-uri config) "/newest.rss")}]
 
      [:meta {:name "theme-color"
              :content "#FFFFFF"}]
