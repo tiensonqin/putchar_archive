@@ -119,7 +119,6 @@ div.editor i {
 
 .editor .ant-input {
     padding: 0;
-    font-family: Georgia,Cambria,"Times New Roman",Times,serif;
     font-size: 16px;
     line-height: 1.2em;
 }
@@ -258,7 +257,6 @@ span.logo {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden !important;
-    font-family: "Helvetica Neue For Number", ubuntu, -apple-system,BlinkMacSystemFont, "Segoe UI","Microsoft YaHei", "Roboto", Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
 
 #head div{
@@ -619,7 +617,7 @@ a.active {
 }
 
 .ubuntu {
-    font-family: ubuntu, -apple-system,BlinkMacSystemFont, "Segoe UI","Microsoft YaHei", "Roboto", Helvetica, Arial, sans-serif;
+    font-family: ubuntu, "Roboto", Helvetica, -apple-system,BlinkMacSystemFont, "Segoe UI","Microsoft YaHei", Arial, sans-serif;
 }
 
 
