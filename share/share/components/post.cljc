@@ -202,7 +202,7 @@
                   :resize "none"
                   :width "100%"
                   :line-height "1.8"
-                  :font-size "1.127em"
+                  :font-size "1em"
                   :white-space "pre-wrap"
                   :overflow-wrap "break-word"
                   :overflow-y "hidden"
@@ -227,7 +227,7 @@
        [:div.row {:style {:margin-top 12}}
         (comment/post-preview (or (:body form-data) init)
                               body-format
-                              {:font-size "1.127em"})])]))
+                              {:font-size "1em"})])]))
 
 (rum/defc select-group-item < rum/static
   [id form-data group]
@@ -1197,7 +1197,7 @@
                         (:title post))]
                   (:title post))]]
 
-              [:div.post {:style {:font-size "1.127em"}}
+              [:div.post {:style {:font-size "1em"}}
                (if @raw?
                  [:div.fadein
                   (widgets/transform-content (str "....\n"
