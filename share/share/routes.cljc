@@ -13,9 +13,8 @@
         ["notifications"                                          :notifications]
         ["settings"                                               :profile]
         [["@" :screen_name]                                       :user]
-        [["@" :screen_name "/links"]                             :links]
         ["votes"                                                  :votes]
-        ["bookmarks"                                                  :bookmarks]
+        ["bookmarks"                                              :bookmarks]
         ["newest"                                                 :newest]
         ["latest-reply"                                           :latest-reply]
         ;; rss

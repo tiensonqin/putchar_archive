@@ -363,17 +363,6 @@
                         (assoc attrs :warning-show? true)
                         attrs)]
             (rum/with-key (cond
-                            ;; TODO: not works
-                            (= (:type attrs) :select)
-                            (let [options (mapv
-                                           (fn [{:keys [label value]}]
-                                             (ui/option {:key value
-                                                         :value value}
-                                                        (str label)))
-                                           (:options attrs))]
-                              (apply ui/select attrs options))
-
-
                             (contains? #{input checkbox radio image} f)
                             (f form-data name attrs)
 

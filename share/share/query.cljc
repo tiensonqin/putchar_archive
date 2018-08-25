@@ -3,7 +3,7 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :group :title :rank :permalink :created_at :comments_count :tops :link :choices :poll_choice :poll_closed :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
+  [:id :flake_id :user :group :title :rank :permalink :created_at :comments_count :tops :choices :poll_choice :poll_closed :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
 
 (defn group-fields
   [post-filter]
@@ -66,9 +66,7 @@
                             :last_reply_at
                             :tops
                             :comments_count
-                            :link
                             :canonical_url
-                            :notification_level
                             :poll_choice
                             :poll_closed
                             :choices
@@ -91,16 +89,15 @@
                                     :permalink
                                     :is_draft
                                     :is_wiki
-                                    :link
                                     :canonical_url
                                     :tags
-                                    :notification_level
                                     :poll_choice
                                     :poll_closed
                                     :choices
                                     [:group {:fields [:id :name]}]
                                     ]}}
-             :args {:post {:id id}}}]
+             :args {:post {:id id
+                           :raw_body? true}}}]
       #?(:clj q
          :cljs (let [current (get-in state [:post :current])]
                  (when (or (not current)
@@ -136,15 +133,6 @@
     {:q {:current-user {:fields [:id :screen_name :name :bio :website :github_handle :twitter_handle
                          [:drafts {:fields [:*]}]]}}
      :args nil}))
-
-(def links-query
-  (fn [state args]
-    (let [post-filter :links]
-      {:q {:user {:fields [:id :screen_name :name :bio :website :github_handle :twitter_handle
-                           [:posts {:fields post-fields
-                                    :filter post-filter}]]}}
-       :args {:user {:screen_name (:screen_name args)}}
-       :merge {:user-posts [:posts :by-screen-name (:screen_name args) post-filter]}})))
 
 (def comments-query
   (fn [state args]
@@ -218,8 +206,6 @@
    :drafts drafts-query
 
    :comments comments-query
-
-   :links links-query
 
    :votes votes-query
 

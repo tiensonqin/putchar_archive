@@ -198,7 +198,7 @@
         (if (:purpose group)
           (w/transform-content (:purpose group) {:body-format :markdown
                                                  :style {:margin-top 12
-                                                        :font-size 14}}))
+                                                         :font-size 14}}))
 
         [:div.row1 {:style {:justify-content "flex-end"}}
          (w/join-button current-user group stared? 120)]]])))
@@ -444,17 +444,6 @@
      [:div.h2 {:style {:margin-bottom 12}}
       (str/upper-case (t :admins))]
 
-     ;; (if member?
-     ;;   [:a {:title (t :invite)
-     ;;        :style {:margin-right 1}
-     ;;        :on-click (fn []
-     ;;                    (citrus/dispatch! :citrus/default-update
-     ;;                                      [:group :invite-modal?] true))}
-     ;;    (ui/icon {:type :person_add
-     ;;              :width 20
-     ;;              :height 20
-     ;;              :color "#666"})])
-
      [:div.row1 {:style {:flex-wrap "wrap"}}
       (members-cp admins)]
 
@@ -465,45 +454,3 @@
      [:div.h2 {:style {:margin-bottom 12}}
       (str/upper-case (t :members))]
      (members-cp members)]))
-
-(rum/defc group-members
-  [group member?]
-  [:div#group-members.row1.right-sub
-   [:div.space-between {:style {:align-items "center"
-                                :margin-bottom 6}}
-    [:div.row1 {:style {:align-items "center"}}
-     [:h5
-      (str/capitalize (t :members))]
-
-     [:a.control {:href (str "/" (:name group) "/members")
-                  :style {:margin-left 6
-                          :font-size 13}}
-      (util/format "(%s)" (t :see-all))]]
-
-    (if member?
-      [:a {:title (t :invite)
-           :style {:margin-right 1}
-           :on-click (fn []
-                       (citrus/dispatch! :citrus/default-update
-                                         [:group :invite-modal?] true))}
-       (ui/icon {:type :person_add
-                 :width 20
-                 :height 20
-                 :color "#666"})])]
-   [:div.row {:style {:flex-wrap "wrap"}}
-    (for [{:keys [screen_name pro?]} (:admins group)]
-      [:div {:key (str "admin-" screen_name)
-             :class "is-active"
-             :style {:padding 6}}
-       (w/avatar {:screen_name screen_name} {:pro? pro?
-                                             :title (str (t :admin) ": " screen_name)
-                                             :class "ant-avatar-mm"})])
-    (let [admins (set (map :screen_name (:admins group)))]
-      (for [{:keys [screen_name pro?]} (take 20 (filter
-                                                 (fn [{:keys [screen_name]}]
-                                                   (not (contains? admins screen_name)))
-                                                 (:members group)))]
-        [:div {:key (str "member-" screen_name)
-               :style {:padding 6}}
-         (w/avatar {:screen_name screen_name} {:pro? pro?
-                                               :class "ant-avatar-mm"})]))]])

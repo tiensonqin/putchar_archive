@@ -46,8 +46,6 @@
                           (user/user params))
          :comments      (fn [params current-user hot-groups]
                           (user/comments params))
-         :links      (fn [params current-user hot-groups]
-                       (user/links params))
          :tag           (fn [params current-user hot-groups]
                           (post/tag-posts params))
          :user-tag      (fn [params current-user hot-groups]
@@ -388,18 +386,6 @@
                                :style {:font-size 14}}
                (t :go-to-profile)]
 
-              [:a.button-text {:href (str "/drafts")
-                               :style {:font-size 14}}
-               (t :my-drafts)]
-
-              [:a.button-text {:href "/bookmarks"
-                               :style {:font-size 14}}
-               (t :bookmarks)]
-
-              [:a.button-text {:href (str "/@" (:screen_name current-user) "/links")
-                               :style {:font-size 14}}
-               (t :links)]
-
               [:a.button-text {:href "/settings"
                                :style {:font-size 14}}
                (t :settings)]
@@ -590,7 +576,7 @@
                    :style {:margin-top (if mobile? 84 100)}}
         (routes reconciler route params current-user hot-groups)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :links :drafts :user-tag :tag :login} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 108
@@ -632,8 +618,6 @@
 
            (layout/right-footer)]])]]
 
-     (widgets/invite-modal group)
-     ;; (widgets/pro-modal)
      (login/signin-modal mobile?)
      ;; report modal
      (report/report)

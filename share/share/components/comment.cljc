@@ -46,11 +46,10 @@
 (rum/defc post-preview < rum/reactive
   (mixins/disable-others-tabindex ".post-preview a")
   [body body-format]
-  (let [width (citrus/react [:layout :current :width])]
-    [:div.editor.post-preview.row {:style {:padding 2}}
-     (widgets/transform-content body
-                                {:body-format body-format
-                                 :style {:overflow "hidden"}})]))
+  [:div.editor.post-preview.row {:style {:padding 2}}
+   (widgets/transform-content body
+                              {:body-format body-format
+                               :style {:overflow "hidden"}})])
 
 ;; refs k => ref
 (rum/defcs comment-box < rum/reactive
@@ -193,24 +192,22 @@
         (post-preview body :asciidoc)
         [:div.divider {:style {:margin-bottom 12}}]]
 
-       (ui/textarea-autosize {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
-                                                                   [:comment :refs k] v))
-                              :min-rows 5
-                              :auto-focus true
-                              :style {
-                                      :overflow "hidden"
-                                      :border-radius 4
-                                      :font-size 15
-                                      :background "#fff"
-                                      :resize "none"
-                                      :width "100%"
-                                      :padding 12
-                                      :white-space "pre-wrap"
-                                      :overflow-wrap "break-word"}
-                              :default-value body
-                              :on-change (fn [e]
-                                           (let [v (util/ev e)]
-                                             (citrus/dispatch! :comment/save-local k v)))}))
+       (ui/textarea {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
+                                                          [:comment :refs k] v))
+                     :auto-focus true
+                     :style {:border-radius 4
+                             :font-size 15
+                             :background "#fff"
+                             :resize "none"
+                             :width "100%"
+                             :padding 12
+                             :white-space "pre-wrap"
+                             :overflow-wrap "break-word"
+                             :min-height 180}
+                     :default-value body
+                     :on-change (fn [e]
+                                  (let [v (util/ev e)]
+                                    (citrus/dispatch! :comment/save-local k v)))}))
 
      ;; submit button
      [:div.space-between

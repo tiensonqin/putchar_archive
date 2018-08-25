@@ -7,7 +7,6 @@
             [api.db.post :as post]
             [api.db.top :as top]
             [api.db.comment :as comment]
-            [api.db.posts-notification :as posts-notification]
             [api.db.report :as report]
             [api.db.util :as du]
             [api.db.refresh-token :as refresh-token]
@@ -22,6 +21,7 @@
             [clojure.string :as str]
             [clojure.set :as set]
             [share.util :as su]
+            [share.content :as content]
             [api.services.slack :as slack]))
 
 (defonce not-found (atom false))
@@ -110,6 +110,7 @@
               group/hot-groups)]
       (f conn (:cursor data)))))
 
+;; cache
 (defn get-post
   [{:keys [uid datasource]} data]
   (->
@@ -119,11 +120,13 @@
      (j/with-db-connection [conn datasource]
        (let [post (post/get conn where)]
          (if (and post uid)
-           (assoc post
-                  :notification_level (if (:permalink data)
-                                        (posts-notification/get-level conn (:permalink data) (:email (u/get conn uid))))
-                  :poll_choice (choice/get-choice-id conn uid
-                                                     (:id post)))
+           (let [post (assoc post
+                             :poll_choice (choice/get-choice-id conn uid
+                                                                (:id post)))]
+             (assoc post :body (if (:raw_body? data)
+                                 (:body post)
+                                 (content/render (:body post)
+                                  (:body_format post)))))
            post))))
    set-not-found!))
 
@@ -210,12 +213,6 @@
 
                      (and (:user_id data) (= :newest (:filter data)))
                      (post/get-user-new conn uid (:user_id data) cursor)
-
-                     (and (:user_id data) (= :links (:filter data)))
-                     (post/get-user-links conn uid (:user_id data) cursor)
-
-                     (= :voted (:filter data))
-                     (post/get-toped conn uid cursor)
 
                      (= :bookmarked (:filter data))
                      (post/get-bookmarked conn uid cursor)

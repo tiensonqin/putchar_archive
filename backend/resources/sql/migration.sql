@@ -13,3 +13,4 @@ alter table users drop column stared_channels;
 alter table groups drop column privacy;
 
 alter table posts add column canonical_url text unique default null;
+alter table posts drop column link;

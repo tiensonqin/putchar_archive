@@ -38,8 +38,9 @@
         "PRO"])]]])
 
 (rum/defc raw-html
-  [html]
-  [:div {:dangerouslySetInnerHTML {:__html html}}])
+  [opts html]
+  [:div (merge {:dangerouslySetInnerHTML {:__html html}}
+               opts)])
 
 (rum/defcs transform-content < rum/reactive
   {:after-render (fn [state]
@@ -129,65 +130,6 @@
                     :width "6rem"
                     :height "6rem"}}]]))
 
-(rum/defc pro < rum/reactive
-  [user]
-  [:div
-   [:h1 "PRO"]
-
-   [:hr.gradient]
-
-   [:div.editor {:style {:margin-bottom 24
-                         :height 336}}
-    [:p (t :we-are-working-hard)]
-    [:p (t :here-is-what)]
-
-    [:ol.show-style {:style {:margin-bottom 48}}
-     [:li
-      (t :no-ads)]
-     [:li {:style {:margin-top 12}}
-      (t :a-pro-badge)]
-     [:li {:style {:margin-top 12}}
-      (t :more-to-come)]]
-    [:p {:style {:margin-top 12}}
-     (t :pro-costs)
-     [:span {:style {:background colors/primary
-                     :color "#FFF"
-                     :border-radius 6
-                     :padding "0 6px"
-                     :font-size "15px"}}
-      (t :nine-nine-per-month)]
-     (t :you-can-cancel)]]
-   (if user
-     (ui/button {:class "btn-primary"
-                 :on-click (fn []
-                             #?(:cljs
-                                (citrus/dispatch! :user/upgrade-to-pro
-                                                  (fn [token]
-                                                    (when-let [id (oget token "id")]
-                                                      (citrus/dispatch! :user/subscribe-pro
-                                                                        {:plan "pro-member"
-                                                                         :source id
-                                                                         :email (:email user)}))))))}
-       (t :upgrade-to-pro))
-     (ui/button {:class "btn-primary"
-                 :on-click #(citrus/dispatch! :user/show-signin-modal?)}
-       (t :login-to-upgrade-to-pro)))])
-
-(rum/defc pro-modal < rum/reactive
-  []
-  (let [modal? (citrus/react [:user :pro-modal?])
-        user (citrus/react [:user :current])]
-    [:div#pro-modal
-     (ui/dialog
-      {:title "Upgrade to Pro"
-       :on-close #(citrus/dispatch! :user/close-pro-modal?)
-       :visible modal?
-       :wrap-class-name "center"
-       :style {:max-width 600}
-       :animation "zoom"
-       :maskAnimation "fade"}
-      (pro user))]))
-
 (rum/defc posts-comments-header < rum/reactive
   [screen_name]
   (let [current-path (citrus/react [:router :handler])
@@ -195,7 +137,6 @@
         posts? (= current-path :user)
         drafts? (= current-path :drafts)
         comments? (= current-path :comments)
-        links? (= current-path :links)
         zh-cn? (= :zh-cn (citrus/react [:locale]))]
     [:div.auto-padding.posts-headers {:style {:margin-top 12
                                 :margin-bottom 24}}
@@ -209,11 +150,6 @@
                      :href "/drafts"
                      :style {:margin-left 24}}
          (t :drafts)])
-
-      [:a.control {:class (if links? "active" "")
-                   :style {:margin-left 24}
-                   :href (str "/@" screen_name "/links")}
-       (t :links)]
 
       [:a.control {:class (if comments? "active" "")
                    :style {:margin-left 24}
@@ -265,36 +201,37 @@
         current-user (citrus/react [:user :current])
         error (citrus/react [:group :error])]
     (ui/dialog
-    {:title (t :promote-member)
-     :on-close #(reset! promote? false)
-     :visible @promote?
-     :wrap-class-name "center"
-     :style {:width (min 600 (- (:width (util/get-layout)) 48))}
-     :animation "zoom"
-     :maskAnimation "fade"
-     :footer (ui/button
-               {:class "btn-primary"
-                :on-click (fn []
-                            (when (and (not (str/blank? @promote-user))
-                                       (not= @promote-user (:screen_name current-user)))
-                              (citrus/dispatch! :group/promote-user (:name group)
-                                                {:id (:id group)
-                                                 :screen_name @promote-user}
-                                                promote?)))}
-               (t :promote))}
-    [:div {:key "input"
-           :style {:background "#FFF"}}
-     [:input
-      {:class "ant-input"
-       :autoFocus true
-       :placeholder (str (t :username) "...")
-       :on-change (fn [e]
-                    (if error (citrus/dispatch! :group/clear-error))
-                    (reset! promote-user (util/ev e)))}]
+     {:on-close #(reset! promote? false)
+      :visible @promote?}
+     [:div {:key "input"
+            :style {:background "#FFF"
+                    :min-width 300}}
+      [:h3 {:style {:margin "0 0 1em 0"}}
+       (t :promote-member)]
 
-     (if error
-       [:div {:class "help is-danger"}
-        error])])))
+      [:input
+       {:class "ant-input"
+        :autoFocus true
+        :placeholder (str (t :username) "...")
+        :on-change (fn [e]
+                     (if error (citrus/dispatch! :group/clear-error))
+                     (reset! promote-user (util/ev e)))}]
+
+      (if error
+        [:div {:class "help is-danger"}
+         error])
+
+      (ui/button
+        {:class "btn-primary"
+         :style {:margin-top 24}
+         :on-click (fn []
+                     (when (and (not (str/blank? @promote-user))
+                                (not= @promote-user (:screen_name current-user)))
+                       (citrus/dispatch! :group/promote-user (:name group)
+                                         {:id (:id group)
+                                          :screen_name @promote-user}
+                                         promote?)))}
+        (t :promote))])))
 
 (rum/defc join-button < rum/reactive
   [current-user group stared? width]
@@ -343,19 +280,39 @@
         new [:a.control.no-decoration {:key "newest"
                          :class (if (= post-filter :newest) "is-active")
                          :href new-path}
-             (t :new-created)]]
+             (t :new-created)]
+        drafts (and current-user
+                    [:a.control.no-decoration {:key "drafts"
+                                               :href "/drafts"}
+                     (str/lower-case (t :drafts))])
+        bookmarks (and current-user
+                       [:a.control.no-decoration {:key "bookmarks"
+                                                  :href "/bookmarks"}
+                        (str/lower-case (t :bookmarks))])]
     [:div.row1#sort-buttons.ubuntu {:style (cond->
                                       {:flex-wrap "wrap"
                                        :align-items "center"
                                        :font-weight (if zh-cn? "500" "700")})}
 
-     [:div.row1 {:style {:align-items "center"}}
-      [:span {:style {:font-size "1.125rem"}}
-       (if group latest-reply hot)]
-      [:span {:style {:font-size "1.125rem"
-                      :margin-left 24}} (if group hot latest-reply)]
-      [:span {:style {:margin-left 24
-                      :font-size "1.125rem"}} new]]
+     (if group
+       [:div.row1 {:style {:align-items "center"}}
+        [:span {:style {:font-size "1.125rem"}}
+         latest-reply]
+        [:span {:style {:font-size "1.125rem"
+                        :margin-left 24}} hot]
+        [:span {:style {:margin-left 24
+                        :font-size "1.125rem"}} new]]
+       [:div.row1 {:style {:align-items "center"}}
+        [:span {:style {:font-size "1.125rem"}}
+         hot]
+        [:span {:style {:margin-left 24
+                        :font-size "1.125rem"}} new]
+        (if drafts
+          [:span {:style {:margin-left 24
+                          :font-size "1.125rem"}} drafts])
+        (if bookmarks
+          [:span {:style {:margin-left 24
+                          :font-size "1.125rem"}} bookmarks])])
 
      (when (and (util/mobile?) current-user group)
        (join-button current-user group stared-group? 80))]))
@@ -482,56 +439,6 @@
                    :color "#efefef"})
          ]))))
 
-(rum/defcs invite-modal < rum/reactive
-  (rum/local false ::invite-emails)
-  [state group]
-  (let [current-user (citrus/react [:user :current])
-        invite? (citrus/react [:group :invite-modal?])
-        error (citrus/react [:group :error])
-        invite-emails (::invite-emails state)]
-    (ui/dialog
-     {:title (t :invite)
-      :on-close #(citrus/dispatch! :citrus/default-update
-                                   [:group :invite-modal?] false)
-      :visible invite?
-      :wrap-class-name "center"
-      :style {:width (min 600 (- (:width (util/get-layout)) 48))}
-      :animation "zoom"
-      :maskAnimation "fade"
-      :footer (ui/button
-                {:class "btn-primary"
-                 :on-click (fn []
-                             (when (not (str/blank? @invite-emails))
-                               (citrus/dispatch! :group/send-invites {:to invite-emails
-                                                                      :self-email (:email current-user)
-                                                                      :who (:screen_name current-user)
-                                                                      :group-name (:name group)}
-                                                 invite?)))}
-                (t :send))}
-     [:div {:key "input"
-            :style {:background "#FFF"}}
-      (ui/textarea-autosize {:class "shadow"
-                             :min-rows 3
-                             :max-rows 12
-                             :auto-focus true
-                             :placeholder (str (t :invite-members-placeholder) "...")
-                             :style {:border "none"
-                                     :font-size 15
-                                     :background "#fff"
-                                     :resize "none"
-                                     :width "100%"
-                                     :padding 12
-                                     :white-space "pre-wrap"
-                                     :overflow-wrap "break-word"}
-                             :default-value ""
-                             :on-change (fn [e]
-                                          (if error (citrus/dispatch! :group/clear-error))
-                                          (reset! invite-emails (util/ev e)))})
-
-      (if error
-        [:div {:class "help is-danger"}
-         error])])))
-
 (rum/defc website-logo < rum/reactive
   []
   (let [current-handler (citrus/react [:router :handler])]
@@ -556,7 +463,7 @@
                                :letter-spacing "0.03em"}}
          "HACKERS"])]]))
 
-(rum/defc preview
+(rum/defc preview < rum/reactive
   [body-format form-data]
   (let [markdown? (= :markdown (keyword body-format))]
     [:div.row1 {:style {:align-items "center"}}

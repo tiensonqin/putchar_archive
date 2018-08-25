@@ -62,7 +62,10 @@
                        fill width height))
    :flag (fn [{:keys [width height fill]}]
            (util/format
-            "<svg fill=\"%s\" xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\"><path d=\"M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z\"/></svg>"
+            "<svg fill=\"%s\" xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
+<path d=\"M12.36,6l0.4,2H18v6h-3.36l-0.4-2H7V6H12.36 M14,4H5v17h2v-7h5.6l0.4,2h7V6h-5.6L14,4L14,4z\"/>
+</svg>
+"
             fill width height))
    :reply (fn [{:keys [width height fill]}]
             (util/format

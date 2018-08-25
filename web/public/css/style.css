@@ -1,10 +1,7 @@
 @charset "utf-8";
 @import "./common.css";
 @import "./antd.css";
-@import "./dialog.css";
-@import "./select.css";
 @import "./dropdown.css";
 @import "./asciidoctor.css";
 @import "./font-awesome.min.css";
-@import "./highlight.css";
 @import "./site.css";

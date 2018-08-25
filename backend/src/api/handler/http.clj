@@ -16,7 +16,6 @@
             [api.db.search :as search]
             [api.db.cache :as cache]
             [api.db.notification :as notification]
-            [api.db.posts-notification :as posts-notification]
             [api.db.bookmark :as bookmark]
             [api.handler.query :as query]
             [api.services.s3 :as s3]
@@ -485,14 +484,6 @@
                result
                {}))))
 
-(defmethod handle :post/set-notification-level [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (util/ok (posts-notification/set-notification conn
-                                           {:permalink (:permalink data)
-                                            :email (:email (u/get conn uid))
-                                            :level (:level data)}
-                                           ))))
-
 (defmethod handle :post/view [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (post/view conn uid (:id data))
@@ -533,23 +524,14 @@
                                                              (seq))]
                                         (swap! exclude-emails concat emails)
                                         emails))
-                     followers-emails  (when-let [emails (->> (posts-notification/get-watched-emails (:permalink post))
-                                                              (remove (set @exclude-emails))
-                                                              (seq))]
-                                         emails)
-                     offline-emails (u/filter-offline-emails conn (->> (concat [(:email parent)] mention-emails followers-emails)
-                                                                       (remove nil?)))
-                     muted-emails (posts-notification/get-muted-emails (:permalink post))
-                     offline-emails (set/difference offline-emails muted-emails)]
+                     offline-emails (u/filter-offline-emails conn (->> (concat [(:email parent)] mention-emails)
+                                                                       (remove nil?)))]
                  (when (seq offline-emails)
                    (when (contains? offline-emails (:email parent))
                      (email/send-comment [(:email parent)] (assoc data :title (format "%s replied to you on Lambdahackers." (:screen_name user)))))
 
                    (when-let [mention-emails (seq (set/intersection offline-emails (set mention-emails)))]
-                     (email/send-comment (vec mention-emails) (assoc data :title (format "%s mentions you on Lambdahackers." (:screen_name user)))))
-
-                   (when-let [followers-emails (seq (set/intersection offline-emails (set followers-emails)))]
-                     (email/send-comment (vec followers-emails) (assoc data :title (str "New comment on " (:title post))))))
+                     (email/send-comment (vec mention-emails) (assoc data :title (format "%s mentions you on Lambdahackers." (:screen_name user))))))
                  (reset! exclude-emails nil))))
             (util/ok comment)))
         (util/bad "Sorry your account is disabled for now.")))))

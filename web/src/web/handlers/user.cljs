@@ -17,15 +17,6 @@
      {:state {:loading? false}
       :dispatch [:notification/add :success (t :please-check-your-email)]})
 
-   :user/upgrade-to-pro
-   (fn [state token-callback]
-     (let [{:keys [email]} (:current state)]
-       (stripe/open-checkout email
-                             token-callback
-                             (fn []
-                               (prn "closed")))
-       {:state {:pro-modal? false}}))
-
    :user/new
    (fn [state data form-data]
      {:state {:loading? true}
@@ -197,14 +188,6 @@
    (fn [state]
      (caches/clear nil)
      {:state state})
-
-   :user/close-pro-modal?
-   (fn [state]
-     {:state {:pro-modal? false}})
-
-   :user/show-pro-modal?
-   (fn [state]
-     {:state {:pro-modal? true}})
 
    :user/show-signin-modal?
    (fn [state]

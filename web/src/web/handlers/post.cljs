@@ -29,18 +29,8 @@
                       (contains? #{:user} current-path)
                       :newest
 
-                      (= :votes current-path)
-                      :voted
-
                       (= :bookmarks current-path)
                       :bookmarked
-
-                      (= :links current-path)
-                      :links
-
-
-                      (= :followed-conversations current-path)
-                      :followed
 
                       :else
                       (or
@@ -123,16 +113,7 @@
                                     {:after (:flake_id last-post)
                                      :where [[:< :flake_id (:flake_id last-post)]]})
 
-                                  :voted
-                                  {:after (:id last-post)}
-
                                   :bookmarked
-                                  {:after (:id last-post)}
-
-                                  :links
-                                  {:after (:flake_id last-post)}
-
-                                  :followed
                                   {:after (:id last-post)})}
                        (merge params))]
        {:state (-> state
@@ -168,8 +149,6 @@
              path (case handler
                     :drafts
                     "drafts"
-                    :links
-                    "links"
                     (str "@" (or (get-in post [:user :screen_name])
                                  (:screen_name current-user))))]
          (util/set-href! (str config/website "/" path))
@@ -218,18 +197,6 @@
 
    :post/unbookmark-ready
    (fn [state id result]
-     {:state state})
-
-
-   :post/set-notification-level
-   (fn [state {:keys [email permalink level] :as data}]
-     {:state (assoc-in state [:by-permalink permalink :notification_level]
-                       level)
-      :http {:params [:post/set-notification-level data]
-             :on-load [:post/set-notification-level-ready data]}})
-
-   :post/set-notification-level-ready
-   (fn [state data result]
      {:state state})
 
    :post/open-delete-dialog?

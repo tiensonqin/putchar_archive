@@ -316,29 +316,9 @@
                  (for [[id group] groups]
                    [:div {:key id}
                     (select-group-item id form-data group)]))]
-        (cond
-          (<= c 12)
-          [:div#select-groups {:class "row"
-                               :style {:flex-wrap "wrap"}}
-           (cp stared-groups)]
-
-          :else
-          (apply ui/select {:animation "slide-up"
-                            :default-value (:group_name form-data)
-                            :placeholder "choose group"
-                            :on-select (fn [name]
-                                         (reset! skip? false)
-                                         (let [group (some->> (vals stared-groups)
-                                                              (filter #(= (:name %) name))
-                                                              (first))]
-                                           (citrus/dispatch! :citrus/set-post-form-data
-                                                             {:group_id (:id group)
-                                                              :group_name (:name group)})))
-                            :style {:width 300}}
-            (for [[id group] stared-groups]
-              (ui/option {:key id
-                          :value (:name group)}
-                         (:name group)))))))
+         [:div#select-groups {:class "row"
+                              :style {:flex-wrap "wrap"}}
+          (cp stared-groups)]))
 
      (if images? [:div.divider])
 
@@ -678,67 +658,6 @@
              :width 18
              :color "#666"})])
 
-(rum/defcs ops-notification
-  [state post email]
-  (let [level (:notification_level post)]
-    (ui/menu
-      [:a {:style {:margin-right 24}
-           :on-click (fn [])}
-      (case level
-        "mute"
-        (ui/icon {:type :notifications_off
-                  :color colors/primary})
-        "watch"
-        (ui/icon {:type :notifications
-                  :color colors/primary})
-        (ui/icon {:type :notifications_none
-                  :color "#666"}))]
-      [[:a.button-text {:style {:font-size 14}
-                        :on-click (fn []
-                                    (citrus/dispatch! :post/set-notification-level
-                                                      {:permalink (:permalink post)
-                                                       :email email
-                                                       :level "watch"}))}
-        [:div.row1
-         (ui/icon {:type :notifications})
-         [:div.column1 {:style {:margin-left 12}}
-          [:span {:style {:font-weight "600"
-                          :font-size "1.3em"
-                          :margin-bottom 4}}
-           (t :watch)]
-          (t :watch-text)]]]
-
-       [:a.button-text {:style {:font-size 14}
-                        :on-click (fn []
-                                    (citrus/dispatch! :post/set-notification-level
-                                                      {:permalink (:permalink post)
-                                                       :email email
-                                                       :level "default"}))}
-        [:div.row1
-         (ui/icon {:type :notifications_none})
-         [:div.column1 {:style {:margin-left 12}}
-          [:span {:style {:font-weight "600"
-                          :font-size "1.3em"
-                          :margin-bottom 4}}
-           (t :default)]
-          (t :default-text)]]]
-
-       [:a.button-text {:style {:font-size 14}
-                        :on-click (fn []
-                                    (citrus/dispatch! :post/set-notification-level
-                                                      {:permalink (:permalink post)
-                                                       :email email
-                                                       :level "mute"}))}
-        [:div.row1
-         (ui/icon {:type :notifications_off})
-         [:div.column1 {:style {:margin-left 12}}
-          [:span {:style {:font-weight "600"
-                          :font-size "1.3em"
-                          :margin-bottom 4}}
-           (t :mute)]
-          (t :mute-text)]]]]
-      {})))
-
 (rum/defc ops-delete
   [post current-user-id]
   (if (= current-user-id (get-in post [:user :id]))
@@ -848,9 +767,8 @@
           self? (and current-user-id (= user-id current-user-id))
           user-link (str "/@" (:screen_name user))
 
-          link (:link post)
           group-name (get-in post [:group :name])
-          user? (contains? #{:user :links :drafts :user-tag} current-path)
+          user? (contains? #{:user :drafts :user-tag} current-path)
           drafts-path? (= current-path :drafts)
           post-link (if drafts-path?
                       (str "/p/" (:id post) "/edit")
@@ -889,12 +807,8 @@
          [:div.column {:style {:justify-content "center"}}
           [:div.space-between
            [:div.ubuntu
-            [:a.no-decoration.post-title (merge {:style {:margin-right 6}}
-                                                (if (and link (zero? (:comments_count post)))
-                                                  {:on-click (fn []
-                                                               (util/set-href! link))
-                                                   :href link}
-                                                  {:href post-link}))
+            [:a.no-decoration.post-title {:style {:margin-right 6}
+                                          :href post-link}
              (if (:choices post)
                (str "[" (str/lower-case (t :poll)) "] "
                     (:title post))
@@ -909,17 +823,7 @@
                                     :flex-wrap "wrap"))}
                    {:font-size "8pt"
                     :height "16px"
-                    :margin "6px 6px 6px 0"}))
-
-            (if link
-              [:a.control {:on-click (fn []
-                               (util/set-href! link))
-                           :href link
-                           :style {:text-decoration "none"
-                                   :font-style "italic"
-                                   :vertical-align "text-top"
-                                   :font-size 11}}
-               (util/get-domain link)])]
+                    :margin "6px 6px 6px 0"}))]
 
            [:a.comments_count {:href post-link
                                :title (str (:comments_count post)
@@ -1092,7 +996,6 @@
                                               :font-size "24"}}
                                (case current-handler
                                  :drafts (t :no-drafts-yet)
-                                 :links (t :no-links-yet)
                                  :bookmarks (t :no-bookmarks-yet)
                                  (t :no-posts-yet))]])))
 
@@ -1167,8 +1070,6 @@
      (if (util/mobile?)
        (ops-link post)
        (ops-twitter post zh-cn?))
-
-     (ops-notification post email)
 
      (bookmark post nil)
 
@@ -1306,16 +1207,15 @@
                                                   "\n....")
                                              {:body-format :asciidoc
                                               :style {:margin "24px 0"}})]
-                 (widgets/transform-content (:body post)
-                                           {:body-format (:body_format post)
-                                            :style {:overflow "hidden"}
-                                            :on-mouse-up (fn [e]
-                                                           (let [text (util/get-selection-text)]
-                                                             (when-not (str/blank? text)
-                                                               (citrus/dispatch! :comment/set-selection
-                                                                                 {:screen_name (:screen_name user)})))
-
-                                                           )}))]
+                 ;; TODO: content cache
+                 (widgets/raw-html {:on-mouse-up (fn [e]
+                                                   (let [text (util/get-selection-text)]
+                                                     (when-not (str/blank? text)
+                                                       (citrus/dispatch! :comment/set-selection
+                                                                         {:screen_name (:screen_name user)}))))
+                                    :class (str "editor " (name (:body_format post)))
+                                    :style {:word-wrap "break-word"}}
+                                   (:body post)))]
 
               [:div.center-area
                [:div {:style {:margin "24px 0"}}

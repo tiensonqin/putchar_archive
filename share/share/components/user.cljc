@@ -493,28 +493,6 @@ The posts and comments that you have posted will not be deleted, in order to pre
     [:h1 "Signin first"]
     ))
 
-(rum/defc links < rum/reactive
-  (mixins/query :links)
-  [params]
-  (let [screen-name (:screen_name params)
-        posts-path [:posts :by-screen-name screen-name :links]
-        user (citrus/react [:user :by-screen-name screen-name])
-        posts(citrus/react posts-path)]
-    (if user
-      (let [{:keys [id name screen_name bio website]} user
-            avatar (util/cdn-image screen_name)]
-        [:div.column.center-area {:class "user-posts"
-                                  :style {:margin-bottom 48}}
-         (widgets/user-card user)
-
-         (widgets/posts-comments-header screen_name)
-
-         [:div
-          (query/query
-            (post/user-post-list id posts posts-path))]])
-      [:div.row {:style {:justify-content "center"}}
-       (ui/donut)])))
-
 (rum/defc comments < rum/reactive
   (mixins/query :comments)
   [params]

@@ -36,7 +36,7 @@
                                   :title :tops
                                   :rank :comments_count :permalink
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
-                                  :link :canonical_url
+                                  :canonical_url
                                   :lang
                                   :body :body_format :tags
                                   :is_private :choices :cover :video]
@@ -144,18 +144,13 @@
               (clojure.core/update :title safe-trim)
               (clojure.core/update :title su/capitalize-first-char)
               (clojure.core/update :choices choices->text))
-        link? (and (:body m) (su/link? (:body m)))
-        m (if link?
-            (assoc m
-                   :link (:body m))
-            m)
         tags (->tags (:tags m))
         m (assoc m :tags tags)
         screen-name (or
                      (:screen_name data)
                      (:screen_name (u/get db (:user_id m) [:screen_name])))
         result (util/create db table (assoc m :user_screen_name screen-name) :flake? true)]
-    (when (and (not link?) (seq tags))
+    (when (seq tags)
       (update-tags screen-name tags #{}))
     result))
 
@@ -183,10 +178,6 @@
 
                   (:title m)
                   (clojure.core/update :title (comp su/capitalize-first-char safe-trim)))
-              link (and (:body m)
-                        (su/link? (:body m))
-                        (:body m))
-              m (if link (assoc m :link link) m)
               m (if (and (:choices m) (coll? (:choices m)))
                   (assoc m :choices
                          (-> (:choices m)
@@ -199,7 +190,7 @@
                   m)]
           (util/update db table id (assoc m
                                           :updated_at (util/sql-now)))
-          (if (and (not link) (seq tags))
+          (if (seq tags)
             (let [s1 (set tags)
                   s2 (if (seq old-tags)
                        (set old-tags)
@@ -469,21 +460,11 @@
   (if self?
     [:and
      [:= :user_id id]
-     [:= :is_draft false]
-     [:is :link nil]]
+     [:= :is_draft false]]
     [:and
      [:= :user_id id]
      [:= :is_draft false]
-     [:= :is_private false]
-     [:is :link nil]]))
-
-(defn- user-links-conditions
-  [id self?]
-  [:and
-   [:= :user_id id]
-   [:= :is_draft false]
-   [:= :is_private false]
-   [:<> :link nil]])
+     [:= :is_private false]]))
 
 (defn get-drafts
   [db uid cursor]
@@ -502,10 +483,6 @@
 (defn get-user-hot
   [db uid id cursor]
   (get-hot db (user-post-conditions id (= uid id)) cursor))
-
-(defn get-user-links
-  [db uid id cursor]
-  (get-new db (user-links-conditions id (= uid id)) cursor))
 
 (defn search
   [db q & {:keys [limit where]

@@ -5,19 +5,17 @@
             [appkit.rum :as r]
             [appkit.citrus :as citrus]
             [share.kit.icons :as icons]
+            [share.kit.modal :as modal]
             [clojure.string :as str]
             [share.dicts :refer [t]]
             #?(:cljs [goog.object :as gobj])
             #?(:cljs ["react" :as react])
             #?(:cljs ["rc-dialog" :as rc-dialog])
-            #?(:cljs ["rc-select" :as rc-select])
             #?(:cljs ["rc-dropdown" :as rc-dropdown])
-            #?(:cljs ["react-textarea-autosize" :as textarea])
             ;; cdn
             #?(:cljs ["sortablejs" :as sortable])
             #?(:cljs ["/web/caret_coordinates" :as caret-coordinates])
-            [appkit.macros :refer [oget]]
-            ))
+            [appkit.macros :refer [oget]]))
 
 
 #?(:cljs
@@ -115,12 +113,6 @@
    (rum/defc dialog [& opts]
      [:div]))
 
-#?(:cljs
-   (def select (r/adapt-class (gobj/get rc-select "default")))
-   :clj
-   (rum/defc select [& opts]
-     [:div {:style {:min-width 120}}]))
-
 (defn- force-update-input
   [comp opts]
   (assoc (-> opts (dissoc :on-change))
@@ -131,25 +123,6 @@
                           (.forceUpdate comp))
                         (.forceUpdate comp)))))
 
-(rum/defcc textarea-autosize
-  [comp opts]
-  #?(:clj
-     ;; too-lazy
-     [:textarea (merge
-                 opts
-                 {:placeholder "Your thoughts here"
-                  :style {:border "none"
-                          :font-size 15
-                          :background-color "#FFF"
-                          :resize "none"
-                          :width "100%"
-                          :padding 12
-                          :height 134}}
-                 )]
-     :cljs
-     (let [autosize (r/adapt-class (gobj/get textarea "default"))]
-       (autosize opts))))
-
 (rum/defcc textarea
   "Notice: update should use `dispatch-sync!`"
   [comp opts]
@@ -158,12 +131,6 @@
 (rum/defcc input
   [comp opts]
   [:input (force-update-input comp opts)])
-
-#?(:cljs
-   (def option (r/adapt-class (gobj/get rc-select "Option")))
-   :clj
-   (rum/defc option [& opts]
-     [:div]))
 
 #?(:cljs (def Dropdown (r/adapt-class rc-dropdown)))
 (rum/defc dropdown
@@ -210,3 +177,5 @@
    [:div]
    [:div]
    [:div]])
+
+(def modal modal/modal)
