@@ -156,7 +156,7 @@
             :placeholder (t :title)
             :style {:border "none"
                     :background-color "transparent"
-                    :font-size 24
+                    :font-size "2em"
                     :font-weight "600"
                     :padding-left 0
                     :width "100%"}
@@ -198,10 +198,11 @@
           :placeholder (t :post-body-placeholder)
           :style {:border "none"
                   :background-color "transparent"
-                  :color "rgba(0,0,0,0.85)"
+                  :color "#000"
                   :resize "none"
                   :width "100%"
                   :line-height "1.8"
+                  :font-size "1.127em"
                   :white-space "pre-wrap"
                   :overflow-wrap "break-word"
                   :overflow-y "hidden"
@@ -225,7 +226,8 @@
                (and mobile? (:preview? form-data)))
        [:div.row {:style {:margin-top 12}}
         (comment/post-preview (or (:body form-data) init)
-                              body-format)])]))
+                              body-format
+                              {:font-size "1.127em"})])]))
 
 (rum/defc select-group-item < rum/static
   [id form-data group]
@@ -1195,7 +1197,7 @@
                         (:title post))]
                   (:title post))]]
 
-              [:div.post
+              [:div.post {:style {:font-size "1.127em"}}
                (if @raw?
                  [:div.fadein
                   (widgets/transform-content (str "....\n"

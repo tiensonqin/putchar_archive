@@ -583,7 +583,8 @@ code.hljs .column { color: #222 !important; background-color: #FFF;}
 .conum:not([data-value]):empty { display: none; }
 
 h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 {
-    font-family: "Ubuntu", Georgia, "URW Bookman L", Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
+    Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 600;
     font-style: normal;
     color: #1a1a1a;

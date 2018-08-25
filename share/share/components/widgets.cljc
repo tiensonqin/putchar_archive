@@ -334,7 +334,7 @@
                            (:id group))]
     [:div.auto-padding.ubuntu
      (if (contains? #{:home :newest :latest-reply} current-path)
-       [:div {:style {:margin-bottom 24}}
+       [:div {:style {:margin-bottom 12}}
         [:h1.heading-1 {:style {:margin-top 0
                                 :margin-bottom "16px"}}
          "Lambdahackers"]
@@ -344,7 +344,7 @@
 
         (sort-buttons current-user nil false)]
 
-       [:div {:style {:padding-bottom 20}}
+       [:div {:style {:padding-bottom 8}}
         [:div.space-between {:style {:flex-wrap "wrap"}}
          [:h1.heading-1 {:style {:margin-top 0
                                  :margin-bottom "16px"}}

@@ -45,11 +45,12 @@
 
 (rum/defc post-preview < rum/reactive
   (mixins/disable-others-tabindex ".post-preview a")
-  [body body-format]
+  [body body-format style]
   [:div.editor.post-preview.row {:style {:padding 2}}
    (widgets/transform-content body
                               {:body-format body-format
-                               :style {:overflow "hidden"}})])
+                               :style (merge {:overflow "hidden"}
+                                             style)})])
 
 ;; refs k => ref
 (rum/defcs comment-box < rum/reactive
@@ -86,7 +87,7 @@
        (if disabled?
          [:div {:style {:border "1px solid rgb(169,169,169)"
                         :border-radius 4
-                        :font-size 15
+                        :font-size 16
                         :background "#fff"
                         :width "100%"
                         :padding 12
@@ -103,7 +104,8 @@
 
            :style {:border-radius 4
                    :border "1px solid rgb(169,169,169)"
-                   :font-size 15
+                   :font-size 16
+                   :line-height "1.7"
                    :background "#fff"
                    :resize "none"
                    :width "100%"
@@ -125,7 +127,7 @@
          (if preview?
            [:div.column
             [:div.divider {:style {:margin-bottom 12}}]
-            (post-preview body :asciidoc)])]))
+            (post-preview body :asciidoc {:font-size "1em"})])]))
 
      ;; submit button
      [:div.row {:style {:align-items "center"
@@ -189,14 +191,15 @@
      (if preview?
        [:div.column {:style {:min-height 130
                              :justify-content "space-between"}}
-        (post-preview body :asciidoc)
+        (post-preview body :asciidoc {:font-size "1em"})
         [:div.divider {:style {:margin-bottom 12}}]]
 
        (ui/textarea {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
                                                           [:comment :refs k] v))
                      :auto-focus true
                      :style {:border-radius 4
-                             :font-size 15
+                             :font-size 16
+                             :line-height "1.7"
                              :background "#fff"
                              :resize "none"
                              :width "100%"

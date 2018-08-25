@@ -119,10 +119,12 @@
                  {:permalink (su/encode-permalink (:permalink data))})]
      (j/with-db-connection [conn datasource]
        (let [post (post/get conn where)]
-         (if (and post uid)
-           (let [post (assoc post
-                             :poll_choice (choice/get-choice-id conn uid
-                                                                (:id post)))]
+         (if post
+           (let [post (if uid
+                        (assoc post
+                              :poll_choice (choice/get-choice-id conn uid
+                                                                 (:id post)))
+                        post)]
              (assoc post :body (if (:raw_body? data)
                                  (:body post)
                                  (content/render (:body post)
