@@ -290,7 +290,7 @@
   (letfn [(switch [e] (if-let [fk-id (fk e)]
                         (-> e
                             (dissoc fk)
-                            (assoc (strip-id fk) (f fk-id)))
+                            (assoc (strip-id fk) (if fk-id (f fk-id))))
                         e))]
     (if (sequential? entity)
       (let [ids (set (map fk entity))

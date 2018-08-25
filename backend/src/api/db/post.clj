@@ -493,6 +493,8 @@
                    (when (seq result)
                      (let [ids (->> (filter :post_id result)
                                     (mapv (comp au/->uuid :post_id)))
+                           results (util/get-by-ids db :posts ids {:where where
+                                                                   :order? false})
                            results (-> (util/get-by-ids db :posts ids {:where where
                                                                        :order? false})
                                        (util/with :user_id #(u/get db % [:id :screen_name]))

@@ -150,3 +150,14 @@
                                                        1)))
                         {screen-name 1})]
           (util/update db :posts post_id {:frequent_posters (pr-str posters)}))))))
+
+(defn delete-my-links
+  [db]
+  (let [posts (j/query db ["select * from posts where user_screen_name = ?" "tiensonqin"])]
+    (doseq [post posts]
+      (when (and
+             (:body post)
+             (su/link? (str/trim (:body post))))
+        ;; delete
+        (post/delete db (:id post))))
+    ))

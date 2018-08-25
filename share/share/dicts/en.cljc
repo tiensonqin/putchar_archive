@@ -135,7 +135,7 @@
    :dismiss-all "Dismiss all"
    :photo-upload "Add photos, support at most 9 pictures once."
    :post-title-warning "Title should be 4 ~ 64 characters long."
-   :post-body-placeholder "Share your thoughts or just a link..."
+   :post-body-placeholder "Write your thoughts..."
    :publish "Publish"
    :settings "Settings"
    :publish-to "Publish to: "

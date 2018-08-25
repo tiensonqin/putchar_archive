@@ -12,7 +12,7 @@
 (defn export
   [db user-id]
   (some-> (u/get db user-id)
-          (assoc :posts (j/query db ["select group_name, title, body, tops, tags, comments_count, permalink, created_at, link from posts where user_id = ?" user-id])
+          (assoc :posts (j/query db ["select group_name, title, body, tops, tags, comments_count, permalink, created_at from posts where user_id = ?" user-id])
                  :comments (j/query db ["select post_permalink, body, likes, created_at from comments where del = false and user_id = ?" user-id]))))
 
 (defn create-identity-user

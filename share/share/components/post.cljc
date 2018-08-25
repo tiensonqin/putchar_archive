@@ -465,50 +465,51 @@
            (t :publish))}
         (select-group form-data stared-groups choices skip?)))]))
 
-(rum/defc choices-cp < rum/static
-  [{:keys [poll_choice poll_closed choices] :as post} choices-style]
+(rum/defc choices-cp < rum/reactive
+  [{:keys [poll_choice poll_closed choices permalink] :as post} choices-style]
   (when (seq choices)
-    [:div.column1 {:style (assoc choices-style :position "relative")}
-     (if poll_closed
-       [:a {:title (t :locked)}
-        (ui/icon {:type :lock
-                  :color "#999"
-                  :width 20
-                  :height 20
-                  :opts {:style {:position "absolute"
-                                 :right 0
-                                 :top 12}}})])
+    (let [poll_choice (or poll_choice (citrus/react [:post :choices permalink]))]
+      [:div.column1 {:style (assoc choices-style :position "relative")}
+      (if poll_closed
+        [:a {:title (t :locked)}
+         (ui/icon {:type :lock
+                   :color "#999"
+                   :width 20
+                   :height 20
+                   :opts {:style {:position "absolute"
+                                  :right 0
+                                  :top 12}}})])
 
-     [:div.column
-      (for [{:keys [id v votes]} choices]
-        (let [chosen? (= id poll_choice)]
-          [:a.control.row1.no-decoration.scale
-           {:style {:margin-bottom 24
-                    :align-items "center"
-                    :color (if (nil? poll_choice)
-                             "#1a1a1a"
-                             "#666")}
-            :key id
-            :on-click (fn [e]
-                        (when-not (or poll_closed poll_choice)
-                          (util/stop e))
-                        (if (nil? poll_choice)
-                          (citrus/dispatch! :post/vote-choice
-                                            (:permalink post)
-                                            {:post_id (:id post)
-                                             :choice_id id})))}
-           (if chosen?
-             [:i {:class "fa fa-check-square-o"
-                  :style {:font-size 20
-                          :margin-right 12}}]
-             [:span.radio-button {:style {:border-radius 10}}])
-           v
-           (let [votes (if votes votes 0)]
-             [:span.number {:style {:font-weight "600"
-                                    :margin-left 12
-                                    :color "#999"
-                                    :padding-top 4}}
-              votes])]))]]))
+      [:div.column
+       (for [{:keys [id v votes]} choices]
+         (let [chosen? (= id poll_choice)]
+           [:a.control.row1.no-decoration.scale
+            {:style {:margin-bottom 24
+                     :align-items "center"
+                     :color (if (nil? poll_choice)
+                              "#1a1a1a"
+                              "#666")}
+             :key id
+             :on-click (fn [e]
+                         (when-not (or poll_closed poll_choice)
+                           (util/stop e))
+                         (if (nil? poll_choice)
+                           (citrus/dispatch! :post/vote-choice
+                                             (:permalink post)
+                                             {:post_id (:id post)
+                                              :choice_id id})))}
+            (if chosen?
+              [:i {:class "fa fa-check-square-o"
+                   :style {:font-size 20
+                           :margin-right 12}}]
+              [:span.radio-button {:style {:border-radius 10}}])
+            v
+            (let [votes (if votes votes 0)]
+              [:span.number {:style {:font-weight "600"
+                                     :margin-left 12
+                                     :color "#999"
+                                     :padding-top 4}}
+               votes])]))]])))
 
 (rum/defcs edit-choices < rum/reactive
   (rum/local false ::expand?)

@@ -253,7 +253,10 @@
                          old-choices)
            delta {:choices choices
                   :poll_choice (:choice_id m)}]
-       {:state (update-in state [:by-permalink permalink] merge delta)
+       {:state (-> state
+                   (update-in [:by-permalink permalink] merge delta)
+                   (assoc-in [:choices permalink]
+                             (:choice_id m)))
         :http {:params [:post/vote-choice m]
                :on-load :post/vote-choice-ready}
         :dispatch [:citrus/update-cache :post (util/decode-permalink permalink)

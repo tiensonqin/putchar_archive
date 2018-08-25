@@ -6,18 +6,19 @@
             [rum.core :as rum]
             [share.util :as util]))
 
-(defn on-scroll
-  [on-load]
-  (let [cont js/document.body
-        full-height (oget cont "scrollHeight")
-        viewport-height js/window.innerHeight
-        scrolled (or js/window.pageYOffset
-                     js/document.documentElement.scrollTop
-                     js/document.body.scrollTop)
-        scrolled-bottom (+ scrolled viewport-height)
-        bottom-reached? (>= scrolled-bottom (- full-height 200))]
-    (when bottom-reached?
-      (on-load))))
+#?(:cljs
+   (defn on-scroll
+     [on-load]
+     (let [cont js/document.body
+           full-height (oget cont "scrollHeight")
+           viewport-height js/window.innerHeight
+           scrolled (or js/window.pageYOffset
+                        js/document.documentElement.scrollTop
+                        js/document.body.scrollTop)
+           scrolled-bottom (+ scrolled viewport-height)
+           bottom-reached? (>= scrolled-bottom (- full-height 200))]
+       (when bottom-reached?
+         (on-load)))))
 
 (defn attach-listeners
   "Attach scroll and resize listeners."
