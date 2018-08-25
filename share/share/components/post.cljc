@@ -850,11 +850,6 @@
                           :margin-bottom -12}}
             (choices-cp (update post :choices util/read-string) {:align-items "flex-start"})])
 
-         (when-let [video (:video post)]
-           (when-let [id (last (str/split video #"/"))]
-             [:div {:style {:margin-top 12}}
-              (widgets/raw-html (content/build-youtube-frame id nil false))]))
-
          (when-not user?
            [:div.space-between.ubuntu {:style {:align-items "center"
                                                :margin-top 12}}
@@ -1207,7 +1202,6 @@
                                                   "\n....")
                                              {:body-format :asciidoc
                                               :style {:margin "24px 0"}})]
-                 ;; TODO: content cache
                  (widgets/raw-html {:on-mouse-up (fn [e]
                                                    (let [text (util/get-selection-text)]
                                                      (when-not (str/blank? text)
