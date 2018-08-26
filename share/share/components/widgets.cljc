@@ -78,7 +78,8 @@
       [:div.row1 {:style {:flex-wrap "wrap"}}
        (if name
          [:span {:style {:font-size (if mobile? 24 33)
-                        :color "rgba(0,0,0,0.84)"}}
+                         :color "rgba(0,0,0,0.84)"
+                         :font-weight "500"}}
          name])
        [:a.control {:href (str "/@" screen_name)
                     :style {:margin-top (if mobile? 8 17)}}

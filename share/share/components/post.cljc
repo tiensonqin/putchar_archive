@@ -158,6 +158,7 @@
                     :background-color "transparent"
                     :font-size "2em"
                     :font-weight "600"
+                    :font-family ""
                     :padding-left 0
                     :width "100%"}
             :on-change (fn [e]

@@ -617,7 +617,7 @@ a.active {
 }
 
 .ubuntu {
-    font-family: ubuntu, "Roboto", Helvetica, -apple-system,BlinkMacSystemFont, "Segoe UI","Microsoft YaHei", Arial, sans-serif;
+    font-family: "Roboto", Helvetica, ubuntu, -apple-system,BlinkMacSystemFont, "Segoe UI","Microsoft YaHei", Arial, sans-serif;
 }
 
 
@@ -775,4 +775,8 @@ a.active {
 }
 .bouncing-loader > div:nth-child(3) {
     animation-delay: 0.4s;
+}
+
+.post-title:visited {
+    color: #666;
 }

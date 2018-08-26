@@ -33,7 +33,7 @@ html {
 }
 
 body {
-    font-family: "Helvetica Neue For Number", Helvetica, -apple-system, "Noto Serif", "DejaVu Serif", Serif, BlinkMacSystemFont,"Segoe UI", "Microsoft YaHei",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-family: "Helvetica Neue For Number", Roboto, Helvetica, -apple-system, "Noto Serif", "DejaVu Serif", Serif, BlinkMacSystemFont,"Segoe UI", "Microsoft YaHei",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
     font-size: 14px;
     line-height: 1.5;
     color: #24292e;
@@ -254,7 +254,7 @@ li {
 h2 { font-size: 1.6875em; }
 
 .system-font-stack {
-    font-family: Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
+    font-family: Roboto, Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen-Sans, Ubuntu,
     Cantarell, 'Helvetica Neue', Arial, sans-serif;
 }
 
@@ -471,10 +471,6 @@ input#search_groups {
     word-break: break-word;
 }
 
-a:visited .post-title {
-    color: #666;
-}
-
 .fadein {
     animation: fadein 2s;
     -moz-animation: fadein 2s; /* Firefox */
@@ -515,11 +511,12 @@ a:visited .post-title {
     }
 }
 
-
+/* copy from lobste.rs */
 a.tag {
-    border: 1px solid #999;
+    border: 1px solid #d5d458;
+    background: #fffcd7;
     border-radius: 4px;
-    color: #666;
+    color: #333;
     font-size: 10pt;
     padding: 0px 0.4em 1px 0.4em;
     text-decoration: none;
