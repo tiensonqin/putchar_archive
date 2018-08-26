@@ -173,7 +173,7 @@
        [:p {:class "help is-danger"} (t :post-title-warning)])
 
      (when-not (util/mobile?)
-       [:a {:title (if fullscreen?
+       [:a {:title (if @fullscreen?
                      (t :back)
                      (t :go-to-fullscreen))
             :style {:position "absolute"
