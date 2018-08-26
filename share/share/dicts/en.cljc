@@ -420,4 +420,5 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :login-to-comment "You must be logged in to comment"
    :add-canonical-url "Set Canonical Url (Optional)"
    :add-canonical-url-placeholder "Please only add content that you own."
+   :go-to-fullscreen "Go to fullscreen"
    })

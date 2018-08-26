@@ -144,31 +144,56 @@
                        (post-box/upload-images (.-files (.-target e)))))
        :hidden true}]]))
 
-(rum/defc new-post-title
-  [form-data init auto-focus?]
-  [:div.new-post-title
-   [:input {:type "text"
-            :class "header-text"
-            :autoComplete "off"
-            :autoFocus auto-focus?
-            :on-focus util/set-cursor-end
-            :name "title"
-            :placeholder (t :title)
-            :style {:border "none"
-                    :background-color "transparent"
-                    :font-size "2em"
-                    :font-weight "600"
-                    :font-family ""
-                    :padding-left 0
-                    :width "100%"}
-            :on-change (fn [e]
-                         (citrus/dispatch! :citrus/set-post-form-data
-                                           {:title-validated? true
-                                            :title (util/ev e)}))
-            :value (or (:title form-data) init "")}]
+(rum/defcs new-post-title <
+  (rum/local false ::fullscreen?)
+  [state form-data init auto-focus?]
+  (let [fullscreen? (get state ::fullscreen?)]
+    [:div.new-post-title {:style {:position "relative"}}
+     [:input.ubuntu {:type "text"
+                     :class "header-text"
+                     :autoComplete "off"
+                     :autoFocus auto-focus?
+                     :on-focus util/set-cursor-end
+                     :name "title"
+                     :placeholder (t :title)
+                     :style {:border "none"
+                             :background-color "transparent"
+                             :font-size "2em"
+                             :font-weight "600"
+                             :padding-left 0
+                             :width "100%"
+                             :padding-right 36}
+                     :on-change (fn [e]
+                                  (citrus/dispatch! :citrus/set-post-form-data
+                                                    {:title-validated? true
+                                                     :title (util/ev e)}))
+                     :value (or (:title form-data) init "")}]
 
-   (if (false? (get form-data :title-validated?))
-     [:p {:class "help is-danger"} (t :post-title-warning)])])
+     (if (false? (get form-data :title-validated?))
+       [:p {:class "help is-danger"} (t :post-title-warning)])
+
+     (when-not (util/mobile?)
+       [:a {:title (if fullscreen?
+                     (t :back)
+                     (t :go-to-fullscreen))
+            :style {:position "absolute"
+                    :right 0}
+            :on-click (fn []
+                        #?(:cljs
+                           (if @fullscreen?
+                             (let [head (dommy/sel1 "#head")]
+                               (dommy/remove-class! head "hidden")
+                               (dommy/add-class! head "box")
+                               (reset! fullscreen? false))
+                             (let [head (dommy/sel1 "#head")]
+                               (dommy/remove-class! head "box")
+                               (dommy/add-class! head "hidden")
+                               (reset! fullscreen? true))
+                             )))}
+        (ui/icon {:type "fullscreen"
+                  :color (if @fullscreen?
+                           colors/primary
+                           "#666")})])]))
 
 (rum/defcs new-post-body <
   rum/reactive

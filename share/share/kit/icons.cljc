@@ -7,15 +7,6 @@
 </svg>"
                         fill width height))
 
-   :trending_up (fn [{:keys [fill width height]}]
-           (util/format
-            "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-            fill width height))
-
    :bookmark (fn [{:keys [fill width height]}]
                   (util/format
                    "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
@@ -34,13 +25,6 @@
 "
                 fill width height))
 
-   :explore (fn [{:keys [width height fill]}]
-              (util/format "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M12 10.9c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1c.61 0 1.1-.49 1.1-1.1s-.49-1.1-1.1-1.1zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-                           fill width height))
    :search (fn [{:keys [width height fill]}]
              (util/format "<svg fill=\"%s\" height=\"%d\" viewBox=\"0 0 24 24\" width=\"%d\" xmlns=\"http://www.w3.org/2000/svg\">
     <path d=\"M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z\"/>
@@ -75,22 +59,6 @@
 </svg>
 "
              fill width height))
-   :keyboard_arrow_up (fn [{:keys [width height fill]}]
-                        (util/format
-                         "<svg fill=\"%s\" xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path fill=\"none\" d=\"M0 0h24v24H0V0z\"/>
-    <path d=\"M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z\"/>
-</svg>
-"
-                         fill width height))
-   :whatshot (fn [{:keys [class width height fill]}]
-               (util/format
-                "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"%s\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-                class fill width height))
    :expand_less (fn [{:keys [width height fill]}]
                   (util/format
                    "<svg fill=\"%s\" xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
@@ -220,14 +188,6 @@
 </svg>
 "
             fill width height))
-   :chat_bubble_outline (fn [{:keys [width height fill]}]
-                          (util/format
-                           "<svg fill=\"%s\" xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path fill=\"none\" d=\"M0 0h24v24H0V0z\"/>
-    <path d=\"M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z\"/>
-</svg>
-"
-                           fill width height))
    :settings (fn [{:keys [width height fill]}]
                (util/format
                 "<svg fill=\"%s\" xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
@@ -536,4 +496,12 @@
 </g>
 </svg>"
              fill width height))
+   :fullscreen (fn [{:keys [width height fill]}]
+                 (util/format
+                  "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
+    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
+    <path d=\"M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z\"/>
+</svg>
+"
+                  fill width height))
    })

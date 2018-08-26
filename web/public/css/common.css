@@ -215,7 +215,7 @@ a:hover {
 }
 
 .btn-primary {
-    background-color: #000000;
+    background-color: #191970;
     color: #FFF;
 }
 
@@ -528,4 +528,15 @@ a.tag.active {
 
 .display-flex {
     display: flex;
+}
+
+.box {
+    transition: opacity 2s linear;
+    transform:translate(0);
+    opacity: 1;
+}
+.hidden {
+    transition: opacity 1s linear;
+    transform:translate(9999px);
+    opacity: 0;
 }

@@ -431,4 +431,5 @@
    :login-to-comment "登录以后才可以评论。"
    :add-canonical-url "设置 Canonical 链接(可选)"
    :add-canonical-url-placeholder "请确认该链接指向的是你的原创内容。"
+   :go-to-fullscreen "进入全屏"
    })
