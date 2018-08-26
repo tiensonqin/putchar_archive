@@ -203,7 +203,7 @@
                   :resize "none"
                   :width "100%"
                   :line-height "1.8"
-                  :font-size "1em"
+                  :font-size "1.127em"
                   :white-space "pre-wrap"
                   :overflow-wrap "break-word"
                   :overflow-y "hidden"
@@ -228,7 +228,7 @@
        [:div.row {:style {:margin-top 12}}
         (comment/post-preview (or (:body form-data) init)
                               body-format
-                              {:font-size "1em"})])]))
+                              {:font-size "1.127em"})])]))
 
 (rum/defc select-group-item < rum/static
   [id form-data group]
@@ -810,7 +810,7 @@
 
          [:div.column {:style {:justify-content "center"}}
           [:div.space-between
-           [:div.ubuntu
+           [:div
             [:a.no-decoration.post-title {:style {:margin-right 6}
                                           :href post-link}
              (if (:choices post)
@@ -1189,8 +1189,8 @@
                                  :style {:font-size 14}}
                      "raw"]))]
 
-               [:h1.system-font-stack {:style {:font-weight "600"
-                                               :margin-top "0.5em"}}
+               [:h1 {:style {:font-weight "600"
+                             :margin-top "0.5em"}}
 
                 (if (:choices post)
                   [:span
@@ -1198,7 +1198,7 @@
                         (:title post))]
                   (:title post))]]
 
-              [:div.post {:style {:font-size "1em"}}
+              [:div.post {:style {:font-size "1.127em"}}
                (if @raw?
                  [:div.fadein
                   (widgets/transform-content (str "....\n"

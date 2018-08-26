@@ -76,7 +76,7 @@
               icon-attrs)))
 
      (if (string? text)
-       [:span.btn-contents.system-font-stack {:style font-style}
+       [:span.btn-contents {:style font-style}
         text]
        text)]]))
 
