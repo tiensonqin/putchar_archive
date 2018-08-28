@@ -846,7 +846,7 @@
 
             (when-not mobile?
               (tags (:tags post)
-                   {:style (cond-> {:vertical-align "middle"}
+                   {:style (cond-> {}
                              mobile?
                              (assoc :display "flex"
                                     :flex-directon "row"
@@ -1245,10 +1245,15 @@
                [:div {:style {:margin "24px 0"}}
                 (choices-cp post {:align-items "center"})]
 
-               (tags (:tags post)
-                     {:style {:display "block"
-                              :margin "24px 0"}}
-                     nil)
+               (when (seq (:tags post))
+                 [:div.row1 {:style {:margin "24px 0"}}
+                  (ui/icon {:type :label_outline
+                            :color "rgb(127,127,127)"
+                            :opts {:style {:margin-right 12
+                                           :margin-left -3}}})
+                  (tags (:tags post)
+                        nil
+                        nil)])
 
                ;; [:p.number {:style {:font-size 14}}
                ;;  [:span (t :updated-at) ": "]

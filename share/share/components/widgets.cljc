@@ -535,18 +535,21 @@
                                               :margin-top 6
                                               :margin-bottom 6}}
 
+       (ui/icon {:type :label_outline
+                 :color "rgb(127,127,127)"
+                 :opts {:style {:margin-right 12}}})
+
        (for [[tag count] tags]
          (let [this? (= current-tag (name tag))]
            [:div.row1 {:key tag
                        :style {:padding "6px 12px 6px 0"
                                :align-items "center"}}
-            [:a.tag.control {:class (if this?
-                                  "active")
+            [:a.tag {:class (if this? "active")
                      :href (str "/@" screen-name "/tag/" (name tag))}
              (util/tag-decode (name tag))]
-            [:span {:style {:margin-left 6
-                            :color "#999"}}
-            count]]))
+            [:span {:style {:margin-left 6}
+                    :class (if this? "active")}
+             count]]))
 
        (cond
          show-expand?
