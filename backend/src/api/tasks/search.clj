@@ -16,6 +16,6 @@
     (doseq [group groups]
       (search/add-group group)))
 
-  (let [posts (j/query db ["select id, group_id, title from posts where is_draft = false and is_private = false"])]
+  (let [posts (j/query db ["select id, group_id, title from posts where is_draft = false"])]
     (doseq [post posts]
       (search/add-post post))))

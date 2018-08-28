@@ -52,7 +52,7 @@ limit 100
 
 (defn recompute-tags
   [db]
-  (let [posts (j/query db ["select user_screen_name, tags from posts where is_private is false and link is null and tags is not null"])
+  (let [posts (j/query db ["select user_screen_name, tags from posts where tags is not null"])
         tags (reduce
               (fn [acc {:keys [user_screen_name tags]}]
                 (if-let [old-tags (get acc user_screen_name)]

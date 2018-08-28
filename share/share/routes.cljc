@@ -48,7 +48,7 @@
         ["new-group"                                                       :new-group]
         ;; ["pricing"                                                             :pricing]
         [[[#"[^\/]+" :group-name]]                                             :group]
-        [[[#"[^\/]+" :group-name] "/" [#"(newest|hot|latest-reply|wiki)" :post-filter]]           :group]
+        [[[#"[^\/]+" :group-name] "/" [#"(newest|hot|latest-reply)" :post-filter]]           :group]
         [[[#"[^\/]+" :group-name] "/members"]                                  :members]
         [[[#"[^\/]+" :group-name] "/edit"]                                     :group-edit]]])
 

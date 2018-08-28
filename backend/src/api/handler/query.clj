@@ -22,7 +22,8 @@
             [clojure.set :as set]
             [share.util :as su]
             [share.content :as content]
-            [api.services.slack :as slack]))
+            [api.services.slack :as slack]
+            [share.dicts :as dicts]))
 
 (defonce not-found (atom false))
 
@@ -185,11 +186,16 @@
 (defn get-posts
   [{:keys [uid datasource]} data]
   (let [cursor (update (:cursor data) :limit (fn [v] (if v v 10)))]
+    ;; get locale and current user's languages
     (j/with-db-transaction [conn datasource]
-      (let [result (cond
-                     (and uid (true? (:feed? data)))
-                     (post/get-user-feed conn uid cursor)
-
+      (let [languages (if uid
+                        (let [langs (:languages (u/get conn uid))]
+                          (if (seq langs)
+                            langs
+                            ["en"]))
+                        (let [locale @dicts/locale]
+                          (vec (set "en" (name locale)))))
+            result (cond
                      (:tag data)
                      (get-tag-posts conn data)
 
@@ -197,36 +203,59 @@
                      (get-user-tag-posts conn data)
 
                      (and (:group_id data) (= :hot (:filter data)))
-                     (post/get-group-hot conn (:group_id data) cursor)
-
-                     (and (:group_id data) (= :wiki (:filter data)))
-                     (post/get-group-wiki conn (:group_id data) cursor)
+                     (post/get-hot conn
+                                   [:and
+                                    [:= :group_id (:group_id data)]
+                                    [:= :is_draft false]
+                                    [:in :lang languages]]
+                                   cursor)
 
                      (and (:group_id data) (= :newest (:filter data)))
-                     (post/get-group-new conn (:group_id data) cursor)
+                     (post/get-new conn
+                                   [:and
+                                    [:= :group_id (:group_id data)]
+                                    [:= :is_draft false]
+                                    [:in :lang languages]]
+                                   cursor)
 
                      (and (:group_id data) (or (= :latest-reply (:filter data))
                                                (nil? (:filter data))))
-                     (post/get-group-latest-reply conn (:group_id data) cursor)
-
-
-                     (and (:user_id data) (= :hot (:filter data)))
-                     (post/get-user-hot conn uid (:user_id data) cursor)
+                     (post/get-latest-reply conn
+                                   [:and
+                                    [:= :group_id (:group_id data)]
+                                    [:= :is_draft false]
+                                    [:in :lang languages]]
+                                   cursor)
 
                      (and (:user_id data) (= :newest (:filter data)))
-                     (post/get-user-new conn uid (:user_id data) cursor)
+                     (let [self? (= (:user_id data) uid)]
+                       (post/get-user-new conn (:user_id data)
+                                          (if self?
+                                            [:and
+                                             [:= :user_id (:user_id data)]
+                                             [:= :is_draft false]]
+                                            [:and
+                                             [:= :user_id (:user_id data)]
+                                             [:= :is_draft false]
+                                             [:in :lang languages]])
+                                         cursor))
 
                      (= :bookmarked (:filter data))
                      (post/get-bookmarked conn uid cursor)
 
                      (= :hot (:filter data))
-                     (post/get-hot conn cursor)
-
-                     (= :latest-reply (:filter data))
-                     (post/get-latest-reply conn cursor)
+                     (post/get-hot conn
+                                   [:and
+                                    [:= :is_draft false]
+                                    [:in :lang languages]]
+                                   cursor)
 
                      :else
-                     (post/get-new conn cursor))
+                     (post/get-new conn
+                                   [:and
+                                    [:= :is_draft false]
+                                    [:in :lang languages]]
+                                   cursor))
             result result
             choices-ids (when-let [post-ids (seq (map :id result))]
                           (su/normalize :post_id (choice/get-choices-ids conn uid post-ids)))

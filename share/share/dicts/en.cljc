@@ -353,7 +353,6 @@
    :last-reply-by "Last reply by: "
    :frequent-poster "Frequent poster: "
    :posted-by "Posted by: "
-   :add-to-wiki "Add to Wiki"
    :email-login-placeholder "Enter your email address"
    :github-connect-text "[NOTE]
 ====
@@ -411,7 +410,7 @@ So you can git commit a new post, and it will be automatically published on Lamb
 * I want to be the moderator of a specific group, how?
   You can contact the moderators for that specific group, or you can email me for now: tiensonqin@gmail.com.
 "
-   :ui-settings "UI Settings"
+   :misc "Misc"
    :dont-show-vote-numbers "Don't show vote numbers"
    :undo "Undo"
    :skip-group-selection "Skip group selection"
@@ -421,4 +420,7 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :add-canonical-url "Set Canonical Url (Optional)"
    :add-canonical-url-placeholder "Please only add content that you own."
    :go-to-fullscreen "Go to fullscreen"
+   :select-primary-language "Select primary language"
+   :select-primary-language-explain "User who doesn't follow this language won't see this post."
+   :select-which-languages "Select which languages of posts you'd like to see."
    })

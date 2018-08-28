@@ -136,7 +136,7 @@
    :dismiss-all "清空"
 
    ;; post
-   :photo-upload "上传图片， 一次最多可以上传 9 张图片， 支持拖拽"
+   :photo-upload "上传图片， 一次最多可以上传 9 张图片"
    :post-title-warning "标题长度大于 4 且不超过 64 个字符。"
    :post-body-placeholder "开工..."
    :publish "发布"
@@ -359,7 +359,6 @@
    :last-reply-by "最近回复: "
    :frequent-poster "最多讨论: "
    :posted-by "提交: "
-   :add-to-wiki "添加到 Wiki"
    :email-login-placeholder "你的邮箱地址"
    :github-connect-text "[NOTE]
 ====
@@ -422,7 +421,7 @@
 * 我想成为某个小组的管理员，该怎么做？
   你可以联系该组管理员，或者发邮件到: tiensonqin@gmail.com。
 "
-   :ui-settings "UI 设置"
+   :misc "其他设置"
    :dont-show-vote-numbers "不显示顶数量"
    :undo "取消"
    :skip-group-selection "跳过选择小组"
@@ -432,4 +431,7 @@
    :add-canonical-url "设置 Canonical 链接(可选)"
    :add-canonical-url-placeholder "请确认该链接指向的是你的原创内容。"
    :go-to-fullscreen "进入全屏"
+   :select-primary-language "选择文章语言"
+   :select-primary-language-explain "不关注该语言的用户就不会看到这篇文章"
+   :select-which-languages "设置你关注的语言。"
    })

@@ -254,7 +254,8 @@
 (rum/defc email-notification-settings
   [user]
   [:div#email-notification-settings {:style {:padding "24px 12px"}}
-   [:h3 (t :email-notification-settings)]
+   [:h3 {:style {:margin-bottom 24}}
+    (t :email-notification-settings)]
    [:div.row1
     [:a {:on-click (fn []
                      (citrus/dispatch! :user/update {:email_notification (not (:email_notification @user))}))}
@@ -275,7 +276,8 @@
   [state user]
   (let [expand? (get state ::expand?)]
     [:div#github-repo {:style {:padding "24px 12px"}}
-     [:h3 (t :github-sync)]
+     [:h3 {:style {:margin-bottom 24}}
+      (t :github-sync)]
 
      (cond
        (and (:github_repo @user)
@@ -315,13 +317,51 @@
            :style {:padding 0}
            :loading? [:user :loading?]})])]))
 
+(rum/defcs languages-settings <
+  (rum/local nil ::languages)
+  [state {:keys [languages] :as user}]
+  (let [languages-atom (get state ::languages)
+        _ (when (nil? @languages-atom)
+            (reset! languages-atom languages))
+        button-cp (fn [lang value]
+                    (let [followed? (contains? (set @languages-atom) value)]
+                      (ui/button {:class "btn-sm"
+                                 :style (cond->
+                                            {:margin-right 12
+                                             :margin-bottom 12}
+                                          followed?
+                                          (assoc :background-color "#2e2e2e"
+                                                 :color "#FFF"))
+                                  :on-click (fn []
+                                              (let [value (if followed?
+                                                            (vec (distinct (remove #{value} @languages-atom)))
+                                                            (vec (distinct (conj @languages-atom value))))]
+                                                (reset! languages-atom value)
+                                                (citrus/dispatch! :user/update {:languages value})))}
+                       lang)))]
+    [:div {:style {:padding "24px 12px"}}
+    [:h3 (t :languages)]
+     [:p {:style {:margin-bottom "24px"
+                  :font-size 16}}
+      (t :select-which-languages)]
 
-(rum/defc ui-settings < rum/reactive
+     [:div.row1 {:style {:flex-wrap "wrap"}}
+      (button-cp "en" "en")
+      (button-cp "简" "zh-cn")
+      (button-cp "繁" "zh-tw")
+      (button-cp "Japanese" "japanese")
+      (button-cp "German" "german")
+      (button-cp "French" "french")
+      (button-cp "Spanish" "spanish")
+      (button-cp "Russian" "russian")
+      (button-cp "Italian" "italian")]]))
+
+(rum/defc misc-settings < rum/reactive
   []
   (let [hide-votes? (citrus/react [:hide-votes?])]
     [:div {:style {:padding "24px 12px"}}
     [:h3 {:style {:margin-bottom 24}}
-     (t :ui-settings)]
+     (t :misc)]
 
     [:div.row1
      [:a {:on-click (fn []
@@ -400,7 +440,9 @@
      ;; connect with github
      (github-repo user)
 
-     (ui-settings)
+     (languages-settings @user)
+
+     (misc-settings)
 
      [:div {:style {:padding "24px 12px"}}
       [:h3 {:style {:margin-bottom 24}}

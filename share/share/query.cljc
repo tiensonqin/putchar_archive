@@ -86,9 +86,9 @@
                                     :title
                                     :body
                                     :body_format
+                                    :lang
                                     :permalink
                                     :is_draft
-                                    :is_wiki
                                     :canonical_url
                                     :tags
                                     :poll_choice

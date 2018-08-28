@@ -122,7 +122,7 @@
     (doseq [group groups]
       (search/add-group group)))
 
-  (let [posts (j/query db ["select id, group_id, title from posts where del is false and is_private is false"])]
+  (let [posts (j/query db ["select id, group_id, title from posts where is_draft is false"])]
     (doseq [post posts]
       (search/add-post post)))
 

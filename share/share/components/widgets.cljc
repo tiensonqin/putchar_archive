@@ -72,8 +72,7 @@
         current-user (citrus/react [:user :current])]
     [:div.space-between.auto-padding
      {:style {:padding-top "24px"
-              :padding-bottom "24px"
-              :align-items "center"}}
+              :padding-bottom "24px"}}
      [:div.column
       [:div.row1 {:style {:flex-wrap "wrap"}}
        (if name
@@ -88,21 +87,14 @@
                          {:color "#000"
                           :font-size 24})}
          (str "@" screen_name)]]]
-      [:span {:style {:margin-left 3
-                      :margin-top 12
-                      :font-size "18px"}}
-       bio]
+      (if bio
+        [:span {:style {:margin-left 3
+                       :margin-top 12
+                       :font-size "18px"}}
+         (transform-content bio nil)])
 
-      (if website
-        [:a {:style {:margin-left 3
-                     :margin-top 12
-                     :font-size "18px"}
-             :href website}
-         website])
-
-      [:div.row1 {:style {:margin-top 8
-                          :margin-left 3
-                          :align-items "center"}}
+      [:div.row1 {:style {:margin-left 3
+                          :flex-wrap "wrap"}}
        (if github_handle
          [:a {:href (str "https://github.com/" github_handle)
               :target "_blank"}
@@ -123,7 +115,13 @@
                              :target "_blank"
                              :style {:margin-left 24}}
           (ui/icon {:type :rss
-                    :color "rgb(127,127,127)"})])]]
+                    :color "rgb(127,127,127)"})])
+
+       (if website
+         [:a {:style {:margin-left 24
+                      :font-size "18px"}
+              :href website}
+          website])]]
      [:img {:src (util/cdn-image screen_name
                                  :height 100
                                  :width 100)
@@ -139,7 +137,7 @@
         drafts? (= current-path :drafts)
         comments? (= current-path :comments)
         zh-cn? (= :zh-cn (citrus/react [:locale]))]
-    [:div.auto-padding.posts-headers {:style {:margin-top 12
+    [:div.auto-padding.posts-headers {:style {:margin-top 24
                                               :margin-bottom 12}}
      [:div.row1.ubuntu {:style {:font-weight (if zh-cn? "500" "600")}}
       [:a.control {:class (if posts? "active" "")
@@ -253,13 +251,13 @@
   (let [post-filter (citrus/react [:post :filter])
         {:keys [handler route-params]} (citrus/react [:router])
         zh-cn? (= (citrus/react [:locale]) :zh-cn)
-        [path new-path hot-path latest-reply-path wiki-path]
+        [path new-path hot-path latest-reply-path]
         (case handler
           :group
           (let [path (str "/" (:name group) "/")]
-            [path (str path "newest") (str path "hot") (str path "latest-reply") (str path "wiki")])
+            [path (str path "newest") (str path "hot") (str path "latest-reply")])
 
-          ["/" "/newest" "/" "/latest-reply" nil])
+          ["/" "/newest" "/" "/latest-reply"])
         post-filter (cond
                       (= handler :newest)
                       :newest
@@ -401,12 +399,7 @@
                 :style {:margin-left 24}}
             (ui/icon {:type :more
                       :color "rgb(127,127,127)"})]
-           [(if member?
-              [:a.button-text {:href (str "/" (:name group) "/wiki")
-                               :style {:font-size 14}}
-               "Wiki"])
-
-            (if admin?
+           [(if admin?
               [:a.button-text {:href (str "/" (:name group) "/edit")
                                :style {:font-size 14}}
                (t :edit)])

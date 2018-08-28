@@ -14,3 +14,12 @@ alter table groups drop column privacy;
 
 alter table posts add column canonical_url text unique default null;
 alter table posts drop column link;
+
+alter table users add column languages text[] default '{en}'::text[];
+alter table posts drop column is_wiki;
+
+alter table posts drop column is_private;
+
+alter table posts alter column lang set default 'en';
+
+update posts set lang = 'en' where lang is null;

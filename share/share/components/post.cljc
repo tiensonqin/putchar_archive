@@ -18,7 +18,6 @@
             [share.components.widgets :as widgets]
             [share.components.post-box :as post-box]
             [share.kit.infinite-list :as inf]
-            #?(:cljs [cljs-drag-n-drop.core :as dnd])
             #?(:cljs [web.scroll :as scroll])))
 
 (rum/defcs vote < rum/reactive
@@ -271,9 +270,49 @@
                                              :group_name (:name group)}))}
     (util/original-name (:name group))))
 
+(rum/defc select-language
+  [form-data]
+  (let [button-cp (fn [lang value]
+                    (ui/button {:class "btn-sm"
+                                :style (cond->
+                                           {:margin-right 12
+                                            :margin-bottom 12}
+                                         (= value (:lang form-data))
+                                         (assoc :background-color "#2e2e2e"
+                                                :color "#FFF"))
+                                :on-click (fn []
+                                            (citrus/dispatch! :citrus/set-post-form-data
+                                                              {:lang value}))}
+                      lang))]
+    [:div#select-language {:style {:margin "12px 0"}}
+    [:h6
+     (t :select-primary-language)]
+
+    [:p {:style {:margin-bottom "1em"
+                 :font-size 14
+                 :color "rgb(127,127,127)"}}
+     (t :select-primary-language-explain)]
+
+     (when (and (contains? (set (keys form-data)) :lang)
+                (nil? (:lang form-data)))
+       [:p.help "Language must be choosed!"])
+
+    [:div.row1 {:style {:flex-wrap "wrap"}}
+     (button-cp "en" "en")
+     (button-cp "简" "zh-cn")
+     (button-cp "繁" "zh-tw")
+     (button-cp "Japanese" "japanese")
+     (button-cp "German" "german")
+     (button-cp "French" "french")
+     (button-cp "Spanish" "spanish")
+     (button-cp "Russian" "russian")
+     (button-cp "Italian" "italian")]
+
+     ]))
+
 (rum/defc add-tags
   [form-data]
-  [:div#add-tags {:style {:margin "12px 0"}}
+  [:div#add-tags {:style {:margin-bottom 12}}
    [:h6 {:style {:margin-bottom "1em"}}
     (t :add-tags-label)]
    (ui/input {:class "ant-input"
@@ -317,8 +356,7 @@
 (rum/defc select-group < rum/reactive
   [form-data stared-groups choices skip?]
   (let [images (:images form-data)
-        images? (seq images)
-        wiki? (citrus/react [:post :form-data :is_wiki])]
+        images? (seq images)]
     [:div.column.ubuntu
      [:div.row1 {:style {:align-items "center"}}
       [:h4 {:style {:margin-bottom "1em"}}
@@ -371,6 +409,8 @@
                            (= (:url image) (:cover form-data))
                            (assoc :border "4px solid #999"))}]])])
 
+     (select-language form-data)
+
      (add-tags form-data)
 
      (add-canonical-url form-data)]))
@@ -418,11 +458,15 @@
         initial-group (get stared-groups group-id)
 
         submit-fn (fn []
-                    (let [data (cond->
+                    (if (nil? (:lang form-data))
+                      (citrus/dispatch! :citrus/default-update
+                                        [:post :form-data :lang]
+                                        nil)
+                      (let [data (cond->
                                  (merge {:id (:id current-post)
                                          :is_draft false}
                                         (select-keys form-data
-                                                     [:title :body :choices :body_format]))
+                                                     [:title :body :choices :body_format :lang]))
 
                                  (:group_id form-data)
                                  (merge (select-keys form-data [:group_id :group_name]))
@@ -449,7 +493,8 @@
                       (citrus/dispatch!
                        :citrus/default-update
                        [:post :publish-modal?]
-                       false)))]
+                       false)))
+                    )]
 
     (when-let [tags (:tags current-post)]
       (when (nil? (:tags form-data))
@@ -1042,7 +1087,7 @@
         (when (and post (nil? (:title form-data)))
           (citrus/dispatch! :citrus/set-post-form-data
                             (cond->
-                              (select-keys post [:title :body :choices :body_format :canonical_url])
+                              (select-keys post [:title :body :choices :body_format :canonical_url :lang])
                               (:group post)
                               (assoc :group_name (get-in post [:group :name])
                                      :group_id (get-in post [:group :id]))

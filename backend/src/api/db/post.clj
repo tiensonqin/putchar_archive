@@ -39,7 +39,7 @@
                                   :canonical_url
                                   :lang
                                   :body :body_format :tags
-                                  :is_private :choices :cover :video]
+                                  :choices :cover :video]
                          :from [table]})
 
 ;; user-screen-name => (map of tag * post-count)
@@ -170,7 +170,7 @@
   [db id m]
   (when-let [post (get db id)]
     (let [old-tags (:tags post)
-          m (dissoc m :flake_id :is_private)]
+          m (dissoc m :flake_id)]
       (when (seq m)
         (let [m (cond-> m
                   (:body m)
@@ -265,7 +265,6 @@
    (get-tag db
             tag
             [:and
-             [:= :is_private false]
              [:any (su/encode tag) "tags"]]
             cursor))
   ([db tag where cursor]
@@ -276,7 +275,6 @@
    (get-tag db
             tag
             [:and
-             [:= :is_private false]
              [:= :user_screen_name user_screen_name]
              [:any tag "tags"]]
             cursor))
@@ -292,12 +290,6 @@
     (su/keywordize))
    (filter (fn [[_ v]]
              (> v 0)))))
-
-(defn get-wiki
-  ([db cursor]
-   (get-hot db post-conditions cursor))
-  ([db where cursor]
-   (get-posts db where cursor)))
 
 (defn get-latest-reply
   ([db cursor]
@@ -448,23 +440,11 @@
   [db id cursor]
   (get-latest-reply db (group-post-conditions id) cursor))
 
-(defn get-group-wiki
-  [db id cursor]
-  (get-wiki db [:and
-                [:= :group_id id]
-                [:= :is_wiki true]
-                [:= :is_draft false]] cursor))
-
 (defn- user-post-conditions
-  [id self?]
-  (if self?
-    [:and
-     [:= :user_id id]
-     [:= :is_draft false]]
-    [:and
-     [:= :user_id id]
-     [:= :is_draft false]
-     [:= :is_private false]]))
+  [id]
+  [:and
+   [:= :user_id id]
+   [:= :is_draft false]])
 
 (defn get-drafts
   [db uid cursor]
@@ -477,12 +457,10 @@
       (->> (util/query db))))
 
 (defn get-user-new
-  [db uid id cursor]
-  (get-new db (user-post-conditions id (= uid id)) cursor))
-
-(defn get-user-hot
-  [db uid id cursor]
-  (get-hot db (user-post-conditions id (= uid id)) cursor))
+  ([db id cursor]
+   (get-user-new db id (user-post-conditions id) cursor))
+  ([db id post-conditions cursor]
+   (get-new db post-conditions cursor)))
 
 (defn search
   [db q & {:keys [limit where]

@@ -763,22 +763,23 @@
   (if-let [locale (get-in req [:cookies "locale" :value])]
     (keyword locale)
     (if-let [accept-language (get-in req [:headers "accept-language"])]
-      (if-let [v (first (s/split accept-language #","))]
-        (cond (s/starts-with? v "en-")
-              :en
+      (let [v (first (s/split accept-language #","))]
+        (if v
+          (let [v (-> v
+                      (s/replace "_" "-")
+                      (s/lower-case))]
+            (cond (s/starts-with? v "en-")
+                 :en
 
-              (let [v (-> v
-                          (s/replace "_" "-")
-                          (s/lower-case))]
-                (re-find #"zh-cn" v))
-              :zh-cn
+                 (re-find #"zh-cn" v)
+                 :zh-cn
 
-              :else
-              (-> v
-                  (s/replace "_" "-")
-                  (s/lower-case)
-                  (keyword v)))
-        :en)
+                 (re-find #"zh-tw" v)
+                 :zh-tw
+
+                 :else
+                 (keyword v)))
+         :en))
       :en)))
 
 #?(:cljs

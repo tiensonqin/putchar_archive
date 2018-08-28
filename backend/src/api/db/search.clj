@@ -46,8 +46,7 @@
                   analyzer))
 
 (defn add-post [post]
-  (when (and (not (:is_draft post))
-             (not (:is_private post)))
+  (when (not (:is_draft post))
     (let [post {:post_id (:id post)
                 :post_title (:title post)}]
       (lucene/add! @index-store

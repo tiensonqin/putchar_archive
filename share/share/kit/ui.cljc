@@ -150,29 +150,30 @@
 (rum/defc menu
   [element items {:keys [menu-style item-style visible placement]
                   :or {placement "bottomRight"}}]
-  (dropdown
-   (cond->
-     {:placement placement
-      :overlay [:ul.menu.shadow
-               {:style (merge
-                        {:margin-top 12
-                         :background "#FFF"
-                         :border-radius 4
-                         :width 276
-                         :font-weight 600
-                         :z-index 9}
-                        menu-style)}
-               (for [item items]
-                 [:li.menu-item.row {:key (or (:id item)
-                                              (util/random-uuid))
-                                     :style (merge
-                                             {:justify-content "flex-end"}
-                                             item-style)}
-                  item])]
-      :animation "slide-up"}
-     visible
-     (assoc :visible visible))
-   element))
+  (when (seq items)
+    (dropdown
+     (cond->
+         {:placement placement
+          :overlay [:ul.menu.shadow
+                    {:style (merge
+                             {:margin-top 12
+                              :background "#FFF"
+                              :border-radius 4
+                              :width 276
+                              :font-weight 600
+                              :z-index 9}
+                             menu-style)}
+                    (for [item items]
+                      [:li.menu-item.row {:key (or (:id item)
+                                                   (util/random-uuid))
+                                          :style (merge
+                                                  {:justify-content "flex-end"}
+                                                  item-style)}
+                       item])]
+          :animation "slide-up"}
+       visible
+       (assoc :visible visible))
+     element)))
 
 (rum/defc bouncing-loader
   []

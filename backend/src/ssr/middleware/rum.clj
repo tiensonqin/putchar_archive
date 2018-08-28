@@ -274,7 +274,7 @@
                          :link (website-path (str "@" screen-name))
                          :description (:bio u)}
                         (j/with-db-connection [conn datasource]
-                          (post/->rss (post/get-user-new conn nil (:id u) {:limit 20}))))
+                          (post/->rss (post/get-user-new conn (:id u) {:limit 20}))))
               util/not-found-resp)))
 
         ;; group rss

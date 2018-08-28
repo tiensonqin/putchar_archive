@@ -102,10 +102,6 @@
                                   :newest
                                   {:after (:flake_id last-post)}
 
-                                  :wiki
-                                  {:after (:flake_id last-post)}
-
-
                                   :latest-reply
                                   (if-let [last-reply-at (:last_reply_at last-post)]
                                     {:after last-reply-at

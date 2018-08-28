@@ -11,8 +11,7 @@
             [share.dommy :as dommy]
             [share.util :as util]
             [share.dicts :refer [t] :as dicts]
-            [appkit.macros :refer [oget oset!]]
-            #?(:cljs [cljs-drag-n-drop.core :as dnd])))
+            [appkit.macros :refer [oget oset!]]))
 
 ;; don't support image uploading on comment
 (defn upload-images
@@ -159,26 +158,11 @@
   {:after-render (fn [state]
                    #?(:cljs
                       (let [[type id {:keys [value]}] (:rum/args state)]
-                        (when (= type :post)
-                          (if (dommy/sel1 "#post-box")
-                           (dnd/subscribe!
-                            (dommy/sel1 "#post-box")
-                            :upload-images
-                            {:drop (fn [e files]
-                                     (upload-images files))})))
-
                         (let [element (dommy/sel1 "#post-box")]
                           (when (and value (str/blank? (oget element "value")))
                             (oset! element "value" value)))))
                    state)
    :will-unmount (fn [state]
-                   #?(:cljs
-                      (let [[type id _] (:rum/args state)]
-                        (when (= type :post)
-                          (if (dommy/sel1 "#post-box")
-                            (dnd/unsubscribe!
-                             (dommy/sel1 "#post-box")
-                             :upload-images)))))
                    (citrus/dispatch! :search/reset nil)
                    state)
    }

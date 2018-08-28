@@ -79,7 +79,7 @@
                      (if (= encoding "base64")
                        (let [body (github/base64-decode
                                    (str/replace content "\n" ""))
-                             {:keys [title body group tags is_draft is_wiki canonical_url] :as spec} (extract-spec body)
+                             {:keys [title body group tags is_draft lang canonical_url] :as spec} (extract-spec body)
                              group (util/internal-name group)
                              group (if group
                                      (group/get db group))
@@ -96,7 +96,7 @@
                                             :body_format body-format
                                             :tags tags
                                             :is_draft is_draft
-                                            :is_wiki (if is_wiki is_wiki false)}
+                                            :lang (or lang "en")}
 
                                            group
                                            (assoc :group_id (:id group)
