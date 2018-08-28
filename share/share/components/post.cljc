@@ -994,15 +994,13 @@
        (if empty-widget
          empty-widget
          [:a.row1.auto-padding {:href "/new-post"
-                                :style {:font-size 20
-                                        :margin-top 24
+                                :style {:margin-top 24
                                         :align-items "center"}}
           (ui/icon {:type :edit
-                    :width 22
-                    :height 22
+                    :width 20
+                    :height 20
                     :opts {:style {:margin-right 12}}})
-          [:span.ubuntu {:style {:margin-top 3
-                                 :color "#000000"}}
+          [:span.ubuntu {:style {:margin-top 3}}
            (t :be-the-first)]])])))
 
 (rum/defc user-post-list <

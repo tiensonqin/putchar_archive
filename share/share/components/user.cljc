@@ -172,8 +172,7 @@
          (if loading?
            [:div {:style {:margin-top 2}}
             (ui/donut-white)]
-           (t :done))))
-     ]))
+           (t :done))))]))
 
 (rum/defc signup < rum/reactive
   [{:keys [email] :as params}]

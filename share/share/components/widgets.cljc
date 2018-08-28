@@ -89,13 +89,14 @@
                           :font-size 24})}
          (str "@" screen_name)]]]
       [:span {:style {:margin-left 3
-                      :margin-top 8
-                      :color "rgba(0,0,0,0.7)"}}
+                      :margin-top 12
+                      :font-size "18px"}}
        bio]
 
       (if website
         [:a {:style {:margin-left 3
-                     :margin-top 6}
+                     :margin-top 12
+                     :font-size "18px"}
              :href website}
          website])
 
@@ -335,9 +336,16 @@
     [:div.auto-padding.ubuntu
      (if (contains? #{:home :newest :latest-reply} current-path)
        [:div {:style {:margin-bottom 12}}
-        [:h1.heading-1 {:style {:margin-top 0
-                                :margin-bottom "16px"}}
-         "Lambdahackers"]
+        [:div.space-between {:style {:align-items "center"}}
+         [:h1.heading-1 {:style {:margin-top 0
+                                 :margin-bottom "16px"}}
+          "Lambdahackers"]
+
+         (when (not (util/mobile?))
+           [:a {:target "_blank"
+                :href (str config/website "/hot.rss")}
+            (ui/icon {:type :rss
+                      :color "rgb(127,127,127)"})])]
 
         [:p {:style {:font-size "1.25em"}}
          (t :slogan)]
@@ -384,7 +392,7 @@
         (rule group rule-expand?)
 
         [:div
-         (transform-content (:purpose group) {:style {:font-size "18px"}})]
+         (transform-content (:purpose group) {:style {:font-size "16px"}})]
 
         [:div.space-between {:style {:flex-wrap "wrap"}}
          (sort-buttons current-user group stared-group?)

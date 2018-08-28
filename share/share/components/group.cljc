@@ -198,7 +198,7 @@
         (if (:purpose group)
           (w/transform-content (:purpose group) {:body-format :markdown
                                                  :style {:margin-top 12
-                                                         :font-size 14}}))
+                                                         :font-size 17}}))
 
         [:div.row1 {:style {:justify-content "flex-end"}}
          (w/join-button current-user group stared? 120)]]])))

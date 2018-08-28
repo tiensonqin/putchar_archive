@@ -108,7 +108,7 @@
   (fn [state args]
     {:q {:groups {:fields [:id :name :purpose :stars]
                   :filter :hot
-                  :cursor {:limit 20}}}}))
+                  :cursor {:limit 100}}}}))
 
 (def notifications-query
   (fn [state args]
