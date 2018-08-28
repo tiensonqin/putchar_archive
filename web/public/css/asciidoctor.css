@@ -585,7 +585,6 @@ code.hljs .column { color: #222 !important; background-color: #FFF;}
 h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 {
     font-weight: 600;
     font-style: normal;
-    color: #1a1a1a;
     text-rendering: optimizeLegibility;
     margin-top: 1em;
     margin-bottom: 0.5em;

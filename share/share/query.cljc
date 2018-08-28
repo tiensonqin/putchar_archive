@@ -73,7 +73,7 @@
                             [:user {:fields [:id :screen_name :name :bio :website]}]
                             [:group {:fields [:id :name :purpose :rule :admins :stars :related_groups :created_at]}]
                             [:comments {:fields [:*]
-                                        :cursor {:limit 2}}]]}}
+                                        :cursor {:limit 10}}]]}}
      :args {:post {:permalink (str "@"
                                    (:screen_name args)
                                    "/"
