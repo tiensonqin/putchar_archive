@@ -268,5 +268,4 @@ if ('serviceWorker' in navigator) {
        ;; Google analytics
        [:script {:src "/ga.js"
                  :defer true
-                 :async true}]
-]))))
+                 :async true}]]))))

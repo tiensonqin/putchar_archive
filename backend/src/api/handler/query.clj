@@ -194,7 +194,7 @@
                             langs
                             ["en"]))
                         (let [locale @dicts/locale]
-                          (vec (set "en" (name locale)))))
+                          (vec (set ["en" (name locale)]))))
             result (cond
                      (:tag data)
                      (get-tag-posts conn data)

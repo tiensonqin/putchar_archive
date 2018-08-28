@@ -38,16 +38,20 @@
     ""))
 (defn- render
   [req resolver ui-root render-page res after-resolver]
-  (let [state (resolver req)
-        state (if after-resolver (after-resolver state) state)]
-    (reset! (:state r/reconciler) state)
-    (assoc res
-           :body
-           (-> (if (:not-found state)
-                 nil
-                 (ui-root state))
-               (rum/render-html)
-               (render-page req state)))))
+  (try
+    (let [state (resolver req)
+          state (if after-resolver (after-resolver state) state)]
+      (reset! (:state r/reconciler) state)
+      (assoc res
+             :body
+             (-> (if (:not-found state)
+                   nil
+                   (ui-root state))
+                 (rum/render-html)
+                 (render-page req state))))
+    (catch Exception e
+      (slack/error e)
+      (resp/redirect "/error.html"))))
 
 ;; render web app
 (defn wrap-rum [handler ui-root resolver render-page]
@@ -233,8 +237,7 @@
                 (if-let [user (u/get-by-email conn email)]
                   (-> (resp/redirect (:website-uri config/config))
                       (assoc :cookies
-                             (u/generate-tokens conn user)
-                             :status 302))
+                             cookie/delete-token))
                   (resp/redirect (str (:website-uri config/config) "/not-found"))))))
           (resp/redirect (str (:website-uri config/config) "/not-found")))
 
