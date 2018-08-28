@@ -896,7 +896,7 @@
                              (assoc :display "flex"
                                     :flex-directon "row"
                                     :flex-wrap "wrap"))}
-                   {:font-size "8pt"
+                   {:font-size "10pt"
                     :height "16px"
                     :margin "6px 6px 6px 0"}))]
 
@@ -1234,7 +1234,7 @@
                                     :max-height 60
                                     :overflow "hidden"
                                     :font-size 15}}
-                  (:bio user)]]]
+                  (first (str/split (:bio user) #"!\["))]]]
 
                [:div.space-between.ubuntu {:style {:padding "0 3px"}}
                 [:p.number {:style {:font-size 14
