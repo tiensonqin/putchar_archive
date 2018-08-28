@@ -51,5 +51,4 @@
              (if loading
                loading
                [:div.row {:style {:justify-content "center"}}
-                (ui/donut)]))))))
-  )
+                [:div.spinner {:margin-top 64}]])))))))

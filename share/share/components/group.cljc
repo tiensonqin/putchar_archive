@@ -307,7 +307,7 @@
 
 (rum/defcs group-logo
   < rum/reactive
-  [state stared-group? current-group width mobile? show-group-name?]
+  [state stared-group? current-group width mobile? show-group-name? show-join-button?]
   (if current-group
     (let [current-user (citrus/react [:user :current])
           {route :handler params :route-params} (citrus/react :router)
@@ -341,8 +341,9 @@
        (when (and current-group
                   (not stared-group?)
                   (not new-post?)
-                  (not (util/mobile?)))
-         [:div {:style {:margin-left 24}}
+                  (not (util/mobile?))
+                  show-join-button?)
+         [:div {:style {:margin-left 12}}
           (w/join-button current-user current-group stared-group? 80)])])
 
     (w/website-logo)))
@@ -353,15 +354,15 @@
     [:div {:key group-id
            :data-id (str group-id)
            :style {:padding 6
-                   :display "block"}}
+                   :display "block"}
+           :class (if (and group-id (= group-id current-group))
+                    "is-active")}
      [:a {:href (str "/" (:name group))
           :title (util/original-name (:name group))
           :on-click (fn []
                       (citrus/dispatch-sync! :citrus/default-update
                                              [:group :current]
-                                             group-id))
-          :class (if (and group-id (= group-id current-group))
-                   "is-active")}
+                                             group-id))}
       (ui/avatar {:src (util/group-logo (:name group))})]]))
 
 (rum/defc stared-groups < rum/reactive

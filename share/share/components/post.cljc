@@ -1131,7 +1131,6 @@
              "Quote"]]])))))
 
 (rum/defcs post < rum/reactive
-  (rum/local false ::raw?)
   (mixins/query :post)
   {:after-render
    (fn [state]
@@ -1150,8 +1149,7 @@
      state)}
   [state {:keys [screen_name permalink] :as params}]
   (let [permalink (util/encode-permalink (str "@" screen_name "/" permalink))
-        current-user (citrus/react [:user :current])
-        raw? (get state ::raw?)]
+        current-user (citrus/react [:user :current])]
     (query/query
       (let [post (citrus/react [:post :by-permalink permalink])]
         (if post
@@ -1201,17 +1199,7 @@
                   [:a.control {:on-click (fn [e]
                                            (util/set-href! (str config/website "/p/" (:id post) "/edit")))
                                :style {:font-size 14}}
-                   (t :edit)]
-                  (if @raw?
-                    [:a.control {:on-click (fn [e]
-                                             (reset! raw? false))
-                                 :style {:font-size 14
-                                         :color "#000"}}
-                     (t :back)]
-                    [:a.control {:on-click (fn [e]
-                                             (reset! raw? true))
-                                 :style {:font-size 14}}
-                     "raw"]))]
+                   (t :edit)])]
 
                [:h1 {:style {:font-weight "600"
                              :margin-top "0.5em"}}
@@ -1223,23 +1211,15 @@
                   (:title post))]]
 
               [:div.post
-               (if @raw?
-                 [:div.fadein
-                  (widgets/transform-content (str "....\n"
-                                                  (:body post)
-                                                  "\n....")
-                                             {:body-format :asciidoc
-                                              :style {:margin "24px 0"
-                                                      :font-size "1.25em"}})]
-                 (widgets/raw-html {:on-mouse-up (fn [e]
-                                                   (let [text (util/get-selection-text)]
-                                                     (when-not (str/blank? text)
-                                                       (citrus/dispatch! :comment/set-selection
-                                                                         {:screen_name (:screen_name user)}))))
-                                    :class (str "editor " (name (:body_format post)))
-                                    :style {:word-wrap "break-word"
-                                            :font-size "1.25em"}}
-                                   (:body post)))]
+               (widgets/raw-html {:on-mouse-up (fn [e]
+                                                 (let [text (util/get-selection-text)]
+                                                   (when-not (str/blank? text)
+                                                     (citrus/dispatch! :comment/set-selection
+                                                                       {:screen_name (:screen_name user)}))))
+                                  :class (str "editor " (name (:body_format post)))
+                                  :style {:word-wrap "break-word"
+                                          :font-size "1.25em"}}
+                                 (:body post))]
 
               [:div.center-area
                [:div {:style {:margin "24px 0"}}

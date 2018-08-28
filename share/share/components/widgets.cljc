@@ -100,7 +100,7 @@
              :href website}
          website])
 
-      [:div.row1 {:style {:margin-top 24
+      [:div.row1 {:style {:margin-top 8
                           :margin-left 3
                           :align-items "center"}}
        (if github_handle

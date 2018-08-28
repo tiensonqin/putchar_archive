@@ -23,7 +23,7 @@
         (t :search-result)]
        (if loading?
          [:div.row {:style {:justify-content "center"}}
-          (ui/donut)]
+          [:div.spinner]]
          (post/post-list {:result result
                           :end? true}
                          {}

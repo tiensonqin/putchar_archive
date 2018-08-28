@@ -97,11 +97,14 @@
 ;; copy from https://atomiks.github.io/30-seconds-of-css
 (rum/defc donut
   []
-  [:div.donut])
+  [:div.spinner])
 
 (rum/defc donut-white
   []
-  [:div.donut-white])
+  [:div.spinner {:style {:width 24
+                         :height 20
+                         :border "3px solid #FFF"
+                         :margin-top 5}}])
 
 #?(:cljs
    (do

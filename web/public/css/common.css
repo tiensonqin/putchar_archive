@@ -416,10 +416,9 @@ a.hd:visited {
     -webkit-transform: translate3d(0,0,0);
 }
 
-.is-active .item {
-    box-shadow: 0 3px 12px #000000;
-    -webkit-box-shadow: 0 3px 12px #000000;
-    -moz-box-shadow: 0 3px 12px #000000;
+#joined_groups .is-active {
+    border: 1px solid #2156a5;
+    border-radius: 4px;
 }
 
 #joined_groups button:hover {
@@ -530,4 +529,18 @@ span.active, a.tag.active {
 
 .editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .editor h6 a {
     color: #383838;
+}
+
+.spinner {
+    height: 40px;
+    width: 40px;
+    animation: rotate 0.8s infinite linear;
+    border: 4px solid #ccc;
+    border-right-color: transparent;
+    border-radius: 50%;
+}
+
+@keyframes rotate {
+    0%    { transform: rotate(0deg); }
+    100%  { transform: rotate(360deg); }
 }
