@@ -78,8 +78,8 @@
       [:div.row1 {:style {:flex-wrap "wrap"}}
        (if name
          [:span {:style {:font-size (if mobile? 24 33)
-                         :color "rgba(0,0,0,0.84)"
-                         :font-weight "500"}}
+                         :color "rgba(0,0,0,0.64)"
+                         :font-weight "600"}}
          name])
        [:a.control {:href (str "/@" screen_name)
                     :style {:margin-top (if mobile? 8 17)}}
@@ -88,8 +88,7 @@
                          {:color "#000"
                           :font-size 24})}
          (str "@" screen_name)]]]
-      [:span {:style {:font-size 16
-                      :margin-left 3
+      [:span {:style {:margin-left 3
                       :margin-top 8
                       :color "rgba(0,0,0,0.7)"}}
        bio]
@@ -100,7 +99,7 @@
              :href website}
          website])
 
-      [:div.row1 {:style {:margin-top 12
+      [:div.row1 {:style {:margin-top 24
                           :margin-left 3
                           :align-items "center"}}
        (if github_handle
@@ -140,7 +139,7 @@
         comments? (= current-path :comments)
         zh-cn? (= :zh-cn (citrus/react [:locale]))]
     [:div.auto-padding.posts-headers {:style {:margin-top 12
-                                :margin-bottom 24}}
+                                              :margin-bottom 12}}
      [:div.row1.ubuntu {:style {:font-weight (if zh-cn? "500" "600")}}
       [:a.control {:class (if posts? "active" "")
                    :href (str "/@" screen_name)}
@@ -340,7 +339,7 @@
                                 :margin-bottom "16px"}}
          "Lambdahackers"]
 
-        [:p {:style {:font-size "1.125em"}}
+        [:p {:style {:font-size "1.25em"}}
          (t :slogan)]
 
         (sort-buttons current-user nil false)]
@@ -356,7 +355,8 @@
           (if (:stars group)
             [:a.control {:title (t :see-all)
                          :href (str "/" (:name group) "/members")}
-             [:span {:style {:margin-right 12}}
+             [:span {:style {:margin-right 12
+                             :font-size "16px"}}
               (let [stars (:stars group)]
                 (if (= stars 0) 1 stars))
               " "
@@ -365,7 +365,8 @@
           ;; rules
           (when-not (util/mobile?)
             [:a.control {:on-click (fn [] (swap! rule-expand? not))
-                         :style {:margin-right 12}}
+                         :style {:margin-right 12
+                                 :font-size "16px"}}
              (t :rules)])
 
           (when (not (util/mobile?))
@@ -382,8 +383,8 @@
 
         (rule group rule-expand?)
 
-        [:div {:style {:font-size "1.125em"}}
-         (transform-content (:purpose group) nil)]
+        [:div
+         (transform-content (:purpose group) {:style {:font-size "18px"}})]
 
         [:div.space-between {:style {:flex-wrap "wrap"}}
          (sort-buttons current-user group stared-group?)
@@ -522,13 +523,14 @@
                  tags)]
       [:div#tags.auto-padding.ubuntu {:class "row1"
                                       :style {:flex-wrap "wrap"
-                                              :margin-bottom 12
-                                              :align-items "center"}}
+                                              :align-items "center"
+                                              :margin-top 6
+                                              :margin-bottom 6}}
 
        (for [[tag count] tags]
          (let [this? (= current-tag (name tag))]
            [:div.row1 {:key tag
-                       :style {:padding "12px 12px 12px 0"
+                       :style {:padding "6px 12px 6px 0"
                                :align-items "center"}}
             [:a.tag.control {:class (if this?
                                   "active")

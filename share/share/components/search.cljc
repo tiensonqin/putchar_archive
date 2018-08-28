@@ -16,10 +16,10 @@
       [:div.column]
 
       :else
-      [:div.column.auto-padding
-       [:h1 {:style {:font-size 36
-                     :margin-top 12
-                     :margin-bottom 24}}
+      [:div.column
+       [:h1.auto-padding {:style {:font-size 36
+                                  :margin-top 12
+                                  :margin-bottom 24}}
         (t :search-result)]
        (if loading?
          [:div.row {:style {:justify-content "center"}}

@@ -104,7 +104,8 @@
 
            :style {:border-radius 4
                    :border "1px solid rgb(169,169,169)"
-                   :font-size 16
+                   :font-size "16px"
+                   :color "#383838"
                    :line-height "1.7"
                    :background "#fff"
                    :resize "none"
@@ -127,7 +128,7 @@
          (if preview?
            [:div.column
             [:div.divider {:style {:margin-bottom 12}}]
-            (post-preview body :asciidoc {:font-size "1em"})])]))
+            (post-preview body :asciidoc {:font-size 18})])]))
 
      ;; submit button
      [:div.row {:style {:align-items "center"
@@ -191,14 +192,15 @@
      (if preview?
        [:div.column {:style {:min-height 130
                              :justify-content "space-between"}}
-        (post-preview body :asciidoc {:font-size "1em"})
+        (post-preview body :asciidoc nil)
         [:div.divider {:style {:margin-bottom 12}}]]
 
        (ui/textarea {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
                                                           [:comment :refs k] v))
                      :auto-focus true
                      :style {:border-radius 4
-                             :font-size 16
+                             :color "#383838"
+                             :font-size "16px"
                              :line-height "1.7"
                              :background "#fff"
                              :resize "none"
@@ -314,6 +316,7 @@
 
 
         [:span.number {:style {:margin-left 6
+                               :font-size "15px"
                                :color "rgb(127,127,127)"
                                :font-weight "600"}}
          likes]]
@@ -423,7 +426,8 @@
 
             (if owner?
               [:span
-               [:a {:style {:margin-left 8}
+               [:a {:style {:margin-left 8
+                            :font-size 13}
                     :on-click (fn []
                                 (reset! edit-mode? true)
                                 (citrus/dispatch! :citrus/default-update
@@ -457,8 +461,6 @@
              (update-comment-box comment edit-mode? [table fk])
              (widgets/transform-content body
                                         {:body-format :asciidoc
-                                         :style {:color "rgba(0,0,0,0.84)"
-                                                :font-size "16px"}
                                          :on-mouse-up (fn [e]
                                                        (let [text (util/get-selection-text)]
                                                          (when-not (str/blank? text)
@@ -477,7 +479,7 @@
   [entity [table fk] comments end?]
   (let [current-path (citrus/react [:router :handler])
         loading? (citrus/react [:query :scroll-loading? current-path])]
-    [:div.column.comments
+    [:div.column.comments {:style {:font-size "18px"}}
     (inf/infinite-list (map (fn [comment]
                               (comment-item entity [table fk] comments false comment)) comments)
                        {:on-load
@@ -564,10 +566,7 @@
               (let [[table fk] [:posts :post_id]]
                 (update-comment-box comment edit-mode? [table fk]))
               (widgets/transform-content body
-                                         {:body-format :asciidoc
-                                          :style {:color "rgba(0,0,0,0.84)"
-                                                 :font-size "1.2em"}}))
-            ]]]]]])))
+                                         {:body-format :asciidoc}))]]]]]])))
 
 (rum/defc user-comments-list
   [user-id {:keys [result end?]}]

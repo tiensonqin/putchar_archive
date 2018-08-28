@@ -71,7 +71,8 @@
         bookmarks (-> (if (:bookmarks post) (:bookmarks post) 0)
                       (+ @init-bookmarks))]
     [:a.row1.no-decoration
-     {:style {:margin-right 18}
+     {:style {:margin-right 18
+              :margin-left -6}
       :title (if bookmarked? (t :unbookmark) (t :bookmark))
       :on-click  (fn [e]
                    (util/stop e)
@@ -224,11 +225,11 @@
           :placeholder (t :post-body-placeholder)
           :style {:border "none"
                   :background-color "transparent"
-                  :color "#000"
+                  :color "#383838"
+                  :font-size "18px"
                   :resize "none"
                   :width "100%"
                   :line-height "1.8"
-                  :font-size "1.127em"
                   :white-space "pre-wrap"
                   :overflow-wrap "break-word"
                   :overflow-y "hidden"
@@ -253,7 +254,7 @@
        [:div.row {:style {:margin-top 12}}
         (comment/post-preview (or (:body form-data) init)
                               body-format
-                              {:font-size "1.127em"})])]))
+                              {:font-size "18px"})])]))
 
 (rum/defc select-group-item < rum/static
   [id form-data group]
@@ -1223,21 +1224,23 @@
                         (:title post))]
                   (:title post))]]
 
-              [:div.post {:style {:font-size "1.127em"}}
+              [:div.post
                (if @raw?
                  [:div.fadein
                   (widgets/transform-content (str "....\n"
                                                   (:body post)
                                                   "\n....")
                                              {:body-format :asciidoc
-                                              :style {:margin "24px 0"}})]
+                                              :style {:margin "24px 0"
+                                                      :font-size "1.25em"}})]
                  (widgets/raw-html {:on-mouse-up (fn [e]
                                                    (let [text (util/get-selection-text)]
                                                      (when-not (str/blank? text)
                                                        (citrus/dispatch! :comment/set-selection
                                                                          {:screen_name (:screen_name user)}))))
                                     :class (str "editor " (name (:body_format post)))
-                                    :style {:word-wrap "break-word"}}
+                                    :style {:word-wrap "break-word"
+                                            :font-size "1.25em"}}
                                    (:body post)))]
 
               [:div.center-area
@@ -1295,9 +1298,9 @@
     :as params}]
   (let [path [:posts :by-tag tag]
         posts (citrus/react path)]
-    [:div.column.auto-padding.center-area {:style {:margin-bottom 48}}
+    [:div.column.center-area {:style {:margin-bottom 48}}
 
-     [:h1 (str "Tag: " (util/tag-decode tag))]
+     [:h1.auto-padding (str "Tag: " (util/tag-decode tag))]
 
      (query/query
        (post-list posts {:tag tag
@@ -1314,8 +1317,8 @@
         user (citrus/react [:user :by-screen-name screen_name])
         posts (citrus/react path)]
     (if user
-      [:div.column.auto-padding.center-area {:class "user-posts"
-                                             :style {:margin-bottom 48}}
+      [:div.column.center-area {:class "user-posts"
+                                :style {:margin-bottom 48}}
 
        (widgets/user-card user)
 

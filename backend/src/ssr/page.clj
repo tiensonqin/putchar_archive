@@ -92,6 +92,11 @@
        [:link {:rel "canonical"
                :href canonical-url}])
 
+     ;; <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,700italic,400italic" rel="stylesheet" type="text/css">
+     [:link {:ref "stylesheet"
+             :type "text/css"
+             :href "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,700italic,400italic"}]
+
      ;; rss
      ;; group
      (when group-name

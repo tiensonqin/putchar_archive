@@ -16,7 +16,6 @@
 }
 
 div.editor {
-    font-size: 16px;
     word-wrap: break-word;
 }
 
@@ -25,7 +24,7 @@ div.editor i {
 }
 
 .editor p, .editor-content p {
-    line-height: 1.8;
+    line-height: 1.5;
 }
 
 .editor-content pre, .editor pre, .posts pre {
@@ -119,7 +118,6 @@ div.editor i {
 
 .editor .ant-input {
     padding: 0;
-    font-size: 16px;
     line-height: 1.2em;
 }
 
@@ -230,7 +228,7 @@ a.scale:hover {
 
 .number {
     font-family: sans-serif;
-    color: #666;
+    color: rgb(127,127,127);
 }
 
 .voted {
@@ -264,7 +262,7 @@ span.logo {
 }
 
 .user-posts .post-title {
-    font-size: 24px;
+    font-size: 1.5em;
 }
 
 @-webkit-keyframes donut-spin {
@@ -343,7 +341,6 @@ span.logo {
 }
 
 .comment h1, .comment h2, .comment h3, .comment h4, .comment h1, .comment h5, .comment h6 {
-    font-size: 16px;
     margin: 6px 0;
     font-weight: 600;
 }
@@ -538,10 +535,6 @@ a.active {
     margin: 24px;
 }
 
-.comment {
-    font-size: 14px;
-}
-
 .post {
     max-width: 768px;
     margin: 0 auto;
@@ -614,10 +607,11 @@ a.active {
     margin-top: 0;
     margin-bottom: 0;
     color: rgb(127,127,127);
+    font-size: 1em;
 }
 
 .ubuntu {
-    font-family: ubuntu, "Roboto", Helvetica, -apple-system,BlinkMacSystemFont, "Segoe UI","Microsoft YaHei", Arial, sans-serif;
+    font-family: ubuntu, "Source Sans Pro", "Roboto", Helvetica, -apple-system,BlinkMacSystemFont, "Segoe UI","Microsoft YaHei", Arial, sans-serif;
 }
 
 .hr-divider {
@@ -664,7 +658,7 @@ a.active {
 .quoteblock blockquote, .quoteblock blockquote p {
     color: rgba(0,0,0,0.9);
     font-size: 1.15rem;
-    line-height: 1.75;
+    line-height: 1.5;
     word-spacing: 0.1em;
     letter-spacing: 0;
     font-style: italic;

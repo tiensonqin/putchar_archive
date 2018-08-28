@@ -386,6 +386,14 @@
                                :style {:font-size 14}}
                (t :go-to-profile)]
 
+              [:a.button-text {:href "/drafts"
+                               :style {:font-size 14}}
+               (t :drafts)]
+
+              [:a.button-text {:href "/bookmarks"
+                               :style {:font-size 14}}
+               (t :bookmarks)]
+
               [:a.button-text {:href "/settings"
                                :style {:font-size 14}}
                (t :settings)]
