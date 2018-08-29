@@ -145,7 +145,7 @@
          (util/bad :invalid-email)
 
          :else
-         (let [languages (vec (set "en" locale))]
+         (let [languages (vec (set ["en" locale]))]
            (when-let [user (u/create conn (-> data
                                               (assoc :languages languages)
                                               (dissoc :avatar)))]
