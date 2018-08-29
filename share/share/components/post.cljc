@@ -1229,12 +1229,13 @@
                                      :color "rgba(0,0,0,0.64)"
                                      :font-size 18})}
                     (if (:name user) " @" "@") (:screen_name user)]]]
-                 [:div.row {:style {:color "#666"
-                                    :margin-top 6
-                                    :max-height 60
-                                    :overflow "hidden"
-                                    :font-size 15}}
-                  (first (str/split (:bio user) #"!\["))]]]
+                 (when-let [bio (:bio user)]
+                   [:div.row {:style {:color "#666"
+                                      :margin-top 6
+                                      :max-height 60
+                                      :overflow "hidden"
+                                      :font-size 15}}
+                    (first (str/split (:bio user) #"!\["))])]]
 
                [:div.space-between.ubuntu {:style {:padding "0 3px"}}
                 [:p.number {:style {:font-size 14

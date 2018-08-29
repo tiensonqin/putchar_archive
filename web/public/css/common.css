@@ -456,6 +456,7 @@ input#search_groups {
     font-size: 1.25em;
     font-weight: 500;
     word-break: break-word;
+    color: #222;
 }
 
 .fadein {

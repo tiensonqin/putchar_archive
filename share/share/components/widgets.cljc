@@ -87,14 +87,16 @@
                          {:color "#000"
                           :font-size 24})}
          (str "@" screen_name)]]]
+
       (if bio
         [:span {:style {:margin-left 3
-                       :margin-top 12
+                        :margin-top 12
                        :font-size "18px"}}
          (transform-content bio nil)])
 
       [:div.row1 {:style {:margin-left 3
-                          :flex-wrap "wrap"}}
+                          :flex-wrap "wrap"
+                          :margin-top 12}}
        (if github_handle
          [:a {:href (str "https://github.com/" github_handle)
               :target "_blank"}

@@ -50,7 +50,7 @@
                  (rum/render-html)
                  (render-page req state))))
     (catch Exception e
-      (slack/error e)
+      (slack/error e req)
       (resp/redirect "/error.html"))))
 
 ;; render web app
@@ -278,7 +278,8 @@
                          :description (:bio u)}
                         (j/with-db-connection [conn datasource]
                           (post/->rss (post/get-user-new conn (:id u) {:limit 20}))))
-              util/not-found-resp)))
+              {:status 404
+               :body (page/status-template 404)})))
 
         ;; group rss
         (= :group-latest-rss (:handler route))
@@ -291,7 +292,8 @@
                          :description (:purpose group)}
                         (j/with-db-connection [conn datasource]
                           (post/->rss (post/get-group-new conn (:id group) {:limit 20}))))
-              util/not-found-resp)))
+              {:status 404
+               :body (page/status-template 404)})))
 
         ;; group rss
         (= :group-hot-rss (:handler route))
@@ -304,7 +306,8 @@
                          :description (:purpose group)}
                         (j/with-db-connection [conn datasource]
                           (post/->rss (post/get-group-hot conn (:id group) {:limit 20}))))
-              util/not-found-resp)))
+              {:status 404
+               :body (page/status-template 404)})))
 
         ;; group rss
         (= :group-latest-reply-rss (:handler route))
@@ -317,16 +320,17 @@
                          :description (:purpose group)}
                         (j/with-db-connection [conn datasource]
                           (post/->rss (post/get-group-latest-reply conn (:id group) {:limit 20}))))
-              util/not-found-resp)))
+              {:status 404
+               :body (page/status-template 404)})))
 
         (= "/sitemap.xml" (:uri req))
         {:status 200
          :headers { "Content-type" "text/xml; charset=utf-8" }
          :body (sitemap/sitemap datasource) }
 
-        (not (:ui/route req))
-        ;; not found
-        util/not-found-resp
+        (or (not (:ui/route req)) (nil? (get-in req [:ui/route :handler])))
+        {:status 404
+         :body (page/status-template 404)}
 
         :else
         (render req resolver ui-root render-page (handler req) nil)))))

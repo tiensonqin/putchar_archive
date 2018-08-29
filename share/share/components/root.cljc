@@ -93,8 +93,10 @@
 
 (rum/defc routes
   [reconciler route params current-user hot-groups]
-  (let [f (get @routes-map route)]
-    (f params current-user hot-groups)))
+  (if-let [f (get @routes-map route)]
+    (f params current-user hot-groups)
+    ;; TODO: 404
+    ))
 
 (rum/defc search-box < rum/reactive
   [search-mode?]

@@ -92,7 +92,7 @@
   (fn [request]
     (try (handler request)
          (catch Exception e
-           (slack/error e)
+           (slack/error e request)
            (util/bad (.getCause e))))))
 
 ;; TODO: Access-Control-Max-Age
