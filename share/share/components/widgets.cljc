@@ -542,8 +542,8 @@
             [:a.tag {:class (if this? "active")
                      :href (str "/@" screen-name "/tag/" (name tag))}
              (util/tag-decode (name tag))]
-            [:span {:style {:margin-left 6}
-                    :class (if this? "active")}
+            [:span {:style {:margin-left 6
+                            :color (if this? "#2156a5" "rgb(127,127,127)")}}
              count]]))
 
        (cond

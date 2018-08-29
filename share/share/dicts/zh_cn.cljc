@@ -434,4 +434,5 @@
    :select-primary-language "选择文章语言"
    :select-primary-language-explain "不关注该语言的用户就不会看到这篇文章"
    :select-which-languages "设置你关注的语言。"
+   :go-to-home "首页"
    })

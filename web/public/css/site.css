@@ -503,6 +503,20 @@ a.active {
     background: #efefef;
 }
 
+
+.right-sub {
+    margin-bottom: 12px;
+    padding: 12px;
+    display: block;
+}
+
+.right-sub h5 {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: rgb(127,127,127);
+    font-size: 1em;
+}
+
 @media screen and (min-width: 768px) {
     .col-item {
         padding: 15px 0;
@@ -525,6 +539,14 @@ a.active {
         font-size: 20px;
     }
 
+    .right-sub {
+        padding: 12px 0;
+    }
+
+    .right-sub h5 {
+        font-size: 1.25em;
+    }
+
     .auto-padding {
         padding-left: 15px;
         padding-right: 15px;
@@ -534,13 +556,13 @@ a.active {
         padding: 15px;
     }
 
-    .comments .col-item {
-        padding: 15px 0;
-    }
-
     .posts-headers {
         font-size: 1rem;
     }
+}
+
+.comments .col-item {
+    border-bottom: 1px solid #efefef;
 }
 
 .col-item:nth-child(1) {
@@ -551,22 +573,12 @@ a.active {
     border-bottom: none;
 }
 
+.comments .col-item {
+    padding: 24px 0;
+}
 
 .highlight-area {
     background: #F5F5DC;
-}
-
-.right-sub {
-    margin-bottom: 12px;
-    padding: 12px;
-    display: block;
-}
-
-.right-sub h5 {
-    margin-top: 0;
-    margin-bottom: 0;
-    color: rgb(127,127,127);
-    font-size: 1em;
 }
 
 .ubuntu {
@@ -696,37 +708,6 @@ a.active {
 .markdown blockquote {
     margin-top: 0;
     margin-bottom: 1.25em;
-}
-
-@keyframes bouncing-loader {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0.1;
-        transform: translateY(-1rem);
-    }
-}
-
-.bouncing-loader {
-    display: flex;
-    justify-content: center;
-}
-
-.bouncing-loader > div {
-    width: 1rem;
-    height: 1rem;
-    margin: 3rem 0.2rem;
-    background: #8385aa;
-    border-radius: 50%;
-    animation: bouncing-loader 0.6s infinite alternate;
-}
-.bouncing-loader > div:nth-child(2) {
-    animation-delay: 0.2s;
-}
-.bouncing-loader > div:nth-child(3) {
-    animation-delay: 0.4s;
 }
 
 .post-title:visited {

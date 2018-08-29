@@ -423,4 +423,5 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :select-primary-language "Select primary language"
    :select-primary-language-explain "User who doesn't follow this language won't see this post."
    :select-which-languages "Select which languages of posts you'd like to see."
+   :go-to-home "Go to home"
    })

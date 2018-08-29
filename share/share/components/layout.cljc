@@ -19,8 +19,7 @@
   (let [locale (citrus/react :locale)
         zh-cn? (= locale :zh-cn)]
     [:div.ubuntu.right-footer.right-sub {:class "column1"
-                                         :style {:padding 12
-                                                 :font-size 14}}
+                                         :style {:font-size 14}}
 
      [:div.row1 {:style {:align-items "center"}}
       [:a.control

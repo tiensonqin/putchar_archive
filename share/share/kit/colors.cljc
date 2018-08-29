@@ -5,3 +5,5 @@
 (def shadow "#ddd")
 
 (def like "#fa6c8d")
+
+(def grey "rgb(127,127,127)")

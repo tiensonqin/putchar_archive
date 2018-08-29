@@ -193,31 +193,33 @@
 
      (when group-path?
        [:a {:href "/"
-            :title (t :popular)
+            :title (t :go-to-home)
             :style {:padding 12}}
-        (ui/icon {:type :logo
-                  :width 48
-                  :height 48})])
-
-     (when current-user
-       [:a {:href "/bookmarks"}
-        (ui/icon {:type :bookmark_border})])
+        (ui/icon {:type :home
+                  :color "#666"
+                  :width 32
+                  :height 32})])
 
      (when (and current-user unread?)
        [:a.control {:href "/notifications"}
         (ui/icon {:type "notifications"
-                  :color colors/primary})])
+                  :color colors/primary
+                  :width 28
+                  :height 28})])
 
      (when (and current-user new-report?)
        [:a {:href "/reports"}
-        [:i {:class "fa fa-flag"
-             :style {:font-size 20
-                     :color colors/primary}}]])
+        (ui/icon {:type :flag
+                  :color colors/primary
+                  :width 30
+                  :height 30})])
 
      (when current-user
        [:a {:href "/settings"}
         (ui/icon {:type :settings
-                  :color "#666"})])]
+                  :color "#666"
+                  :width 30
+                  :height 30})])]
 
 
     (group/stared-groups false groups group)
@@ -327,18 +329,18 @@
 
          (when (and (not mobile?) group-path?)
            [:a {:href "/"
-                :title (t :popular)
+                :title (t :go-to-home)
                 :style {:padding 12}}
-            (ui/icon {:type :logo
-                      :width 26
-                      :height 26})])
+            (ui/icon {:type :home
+                      :color "#666"})])
 
          ;; search
          (if (not post?)
            [:a.control {:title (t :search)
                         :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
                         :style {:padding 12}}
-            (ui/icon {:type "search"})])
+            (ui/icon {:type "search"
+                      :color "#666"})])
 
          ;; publish
          (if post?
@@ -369,7 +371,8 @@
            (if mobile?
              [:a {:href "/new-post"
                   :style {:padding 8}}
-              (ui/icon {:type :edit})]
+              (ui/icon {:type :edit
+                        :color "#666"})]
              (ui/button {:icon :add
                          :style {:margin-left 12}
                          :href "/new-post"}

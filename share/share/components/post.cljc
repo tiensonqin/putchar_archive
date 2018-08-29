@@ -225,7 +225,7 @@
           :style {:border "none"
                   :background-color "transparent"
                   :color "#383838"
-                  :font-size "18px"
+                  :font-size "16px"
                   :resize "none"
                   :width "100%"
                   :line-height "1.8"
@@ -253,7 +253,7 @@
        [:div.row {:style {:margin-top 12}}
         (comment/post-preview (or (:body form-data) init)
                               body-format
-                              {:font-size "18px"})])]))
+                              {:font-size "16px"})])]))
 
 (rum/defc select-group-item < rum/static
   [id form-data group]
@@ -1001,10 +1001,9 @@
                              (citrus/dispatch! :citrus/load-more-posts
                                                opts)))})
      (when loading?
-       (ui/bouncing-loader))
+       [:div.center [:div.spinner]])
 
-     (ops-delete-dialog)]
-    ))
+     (ops-delete-dialog)]))
 
 (rum/defcs post-list < rum/static
   (rum/local nil ::last-post)
@@ -1145,8 +1144,7 @@
        [:a {:on-click (fn [])}
         (ui/icon {:type :more
                   :color "#999"})]
-       [(ops-flag post)
-        (ops-delete post current-user-id)]
+       [(ops-flag post)]
        {:menu-style {:width 200}})]))
 
 (rum/defc quote-selection < rum/reactive
@@ -1264,7 +1262,7 @@
                                                                        {:screen_name (:screen_name user)}))))
                                   :class (str "editor " (name (:body_format post)))
                                   :style {:word-wrap "break-word"
-                                          :font-size "1.25em"}}
+                                          :font-size "1.127em"}}
                                  (:body post))]
 
               [:div.center-area

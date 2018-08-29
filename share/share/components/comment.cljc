@@ -325,7 +325,7 @@
          [:a {:on-click (fn [])
               :style {:margin-right 24}}
           (ui/icon {:type :more
-                    :color "#666"})]
+                    :color "rgb(127,127,127)"})]
          [(if (:permalink entity)
             [:a.button-text {:style {:font-size 14}
                              :on-click (fn []
@@ -355,8 +355,8 @@
                                            (citrus/dispatch! :comment/reply comment)
                                            (reset! show-comment-box? true))}
         (ui/icon {:type "reply"
-                  :color "#666"})
-        [:span {:style {:color "#666"
+                  :color "rgb(127,127,127)"})
+        [:span {:style {:color "rgb(127,127,127)"
                         :font-size 14}}
          (t :reply)]]]]
 
@@ -456,7 +456,7 @@
 
             (util/time-ago created_at)] ]
 
-          [:div {:style {:padding "4px 0 0 8px"}}
+          [:div {:style {:padding "8px 0 0 8px"}}
            (if @edit-mode?
              (update-comment-box comment edit-mode? [table fk])
              (widgets/transform-content body
@@ -479,7 +479,7 @@
   [entity [table fk] comments end?]
   (let [current-path (citrus/react [:router :handler])
         loading? (citrus/react [:query :scroll-loading? current-path])]
-    [:div.column.comments {:style {:font-size "18px"}}
+    [:div.column.comments {:style {:font-size "16px"}}
     (inf/infinite-list (map (fn [comment]
                               (comment-item entity [table fk] comments false comment)) comments)
                        {:on-load
@@ -492,7 +492,7 @@
                                                :id (:id entity)
                                                :last (last comments)})))})
      (when loading?
-       (ui/bouncing-loader))]))
+       [:div.spinner])]))
 
 (rum/defc comment-list < rum/reactive
   {:after-render (fn [state]
