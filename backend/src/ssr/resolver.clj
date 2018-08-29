@@ -19,7 +19,6 @@
   (let [locale (su/get-locale req)
         _ (reset! dicts/locale locale)
         {:keys [handler route-params]} (:ui/route req)
-        _ (prn (:ui/route req))
         handler (if (= handler :comment) :post handler)
         uid (get-in req [:context :uid])
         q-fn (get queries handler)

@@ -6,6 +6,7 @@
             [clojure.string :as str]
             [bidi.bidi :as bidi]
             #?(:cljs [goog.dom :as gdom])
+            #?(:cljs [goog.object :as gobj])
             [share.kit.mixins :as mixins]
             [share.kit.ui :as ui]
             [share.kit.query :as query]
@@ -329,7 +330,6 @@
 
 (rum/defcs add-canonical-url < (rum/local false ::expand?)
   [state form-data]
-  (prn form-data)
   (let [expand? (get state ::expand?)
         show? (or (:canonical_url form-data) @expand?)]
     [:div#add-canonical-url.column1 {:style {:margin "12px 0"}}
@@ -1173,6 +1173,36 @@
             [:span.quote-selection-area {:style {:margin-left 12}}
              "Quote"]]])))))
 
+(rum/defc read-post < rum/reactive
+  {:did-mount (fn [state]
+                #?(:cljs
+                   (when-let [post-body (dommy/sel1 "#post-body")]
+                     (let [offset-top (oget post-body "offsetTop")
+                           client-height (oget post-body "offsetHeight")]
+                       (when (<= (+ client-height offset-top)
+                                (gobj/get js/window "innerHeight"))
+                         (citrus/dispatch! :post/read
+                                           (first (:rum/args state)))))))
+                state)
+   :after-render (fn [state]
+                   #?(:cljs
+                      (let [post (first (:rum/args state))
+                            read? @(citrus/subscription [:post :read-list (:id post)])]
+                        (let [scroll-top (util/scroll-top)]
+                          (when (nil? read?)
+                            (when-let [post-body (dommy/sel1 "#post-body")]
+                             (let [scroll-top (util/scroll-top)
+                                   offset-top (oget post-body "offsetTop")]
+                               (when (>= scroll-top offset-top)
+                                 (citrus/dispatch! :post/read post)))))
+                          state))
+                      :clj state))
+   }
+  [post]
+  (let [scroll-top (citrus/react [:last-scroll-top (util/get-current-url)])]
+    [:div.read-post-placeholder {:style {:display "none"}}
+     scroll-top]))
+
 (rum/defcs post < rum/reactive
   (mixins/query :post)
   {:after-render
@@ -1262,7 +1292,8 @@
                                                                        {:screen_name (:screen_name user)}))))
                                   :class (str "editor " (name (:body_format post)))
                                   :style {:word-wrap "break-word"
-                                          :font-size "1.127em"}}
+                                          :font-size "1.127em"}
+                                  :id "post-body"}
                                  (:body post))]
 
               [:div.center-area
@@ -1288,7 +1319,9 @@
                (quote-selection current-user)]
 
               [:div {:style {:margin-top 24}}
-               (comment/comment-list post)]]
+               (comment/comment-list post)]
+
+              (read-post post)]
              ])
 
           [:div.row {:style {:justify-content "center"}}

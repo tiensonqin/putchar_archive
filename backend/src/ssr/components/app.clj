@@ -2,20 +2,21 @@
   (:require [com.stuartsierra.component :as component]
             [ring.middleware.file :refer [wrap-file]]
             [ring.middleware.resource :as resource]
-            [ring.middleware.gzip :refer [wrap-gzip]]
             [ring.middleware.format :refer [wrap-restful-format]]
             [ring.middleware.cookies :refer [wrap-cookies]]
             [ssr.middleware.bidi :refer [wrap-bidi]]
             [ssr.middleware.rum :refer [wrap-rum]]
-            [ssr.middleware.etag :refer [wrap-etag]]
             [ssr.middleware.auth :refer [wrap-auth]]
-            [api.handler.middleware :refer [inject-context wrap-exception wrap-authenticate custom-wrap-cors]]
+            [api.handler.middleware :refer [inject-context wrap-exception wrap-authenticate custom-wrap-cors wrap-production-etag wrap-production-gzip ssr-wrap-stats]]
             [ring.middleware.reload :refer [wrap-reload]]
             [org.httpkit.server :as httpkit]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [share.config :as config]
             [backend.servers :refer [start-server-or-die!]]
+            [api.db.stat :as stat]
+            [api.db.util :as du]
+            [clojure.java.jdbc :as j]
             [clojure.string :as str]
             ;; only for dev usage
             [api.components.http-kit :as api]
@@ -46,17 +47,6 @@
         result)
       (handler req))))
 
-(defn wrap-production-etag [handler]
-  (fn [req]
-    (if-not config/development?
-      ((wrap-etag handler) req)
-      (handler req))))
-
-(defn wrap-production-gzip [handler]
-  (fn [req]
-    (if config/development?
-      (handler req)
-      ((wrap-gzip handler) req))))
 
 ;; TODO: reload not works
 (defn middlewares
@@ -72,6 +62,7 @@
       (wrap-keyword-params)
       (wrap-params)
       (wrap-restful-format)
+      (ssr-wrap-stats)
       (inject-context context)
       (wrap-bidi routes)
       (wrap-cookies)

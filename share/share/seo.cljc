@@ -22,7 +22,6 @@
                                          (:screen_name route-params)
                                          "/"
                                          (:permalink route-params))])]
-            (prn {:post post})
             [(:title post)
              (get-description (:body post))
              (:canonical_url post)

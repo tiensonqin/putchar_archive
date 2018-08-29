@@ -11,8 +11,13 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.cookies :refer [wrap-cookies]]
+            [ssr.middleware.etag :refer [wrap-etag]]
+            [ring.middleware.gzip :refer [wrap-gzip]]
+            [share.routes :refer [routes]]
             [ring.util.response :as resp]
             [api.util :as util]
+            [api.db.util :as du]
+            [api.db.stat :as stat]
             [clojure.string :as str]
             [ring.middleware.gzip :refer [wrap-gzip]]
             [api.cookie :as cookie]
@@ -21,7 +26,8 @@
             [clojure.java.jdbc :as j]
             [clojure.set :as set]
             [api.services.slack :as slack]
-            [api.config :as config]))
+            [api.config :as config]
+            [share.config :as share-config]))
 
 (defn inject-context [f context]
   (fn [req]
@@ -32,6 +38,7 @@
 ;; TODO: rate limit
 (def mutation-whitelist
   #{:group/search :post/search :data/pull-emojis
+    :post/read
     :user/new :auth/email
     :auth/request-code})
 
@@ -95,6 +102,31 @@
            (slack/error e request)
            (util/bad (.getCause e))))))
 
+(defn api-wrap-stats [handler]
+  (fn [request]
+    (when-let [permalink (get-in request [:params :args :post :permalink])]
+      ;; get permalink from post
+      (j/with-db-connection [conn (get-in request [:context :datasource])]
+        (when-let [post-id (du/select-one-field conn :posts {:permalink permalink} :id)]
+          ;; views
+          (stat/create conn post-id "view" (:remote-addr request)))))
+    (handler request)))
+
+
+(defn ssr-wrap-stats [handler]
+  (fn [request]
+    (let [{:keys [handler route-params]} (:ui/route request)]
+      (when (and (= handler :post)
+                 (:screen_name route-params)
+                 (:permalink route-params))
+        (let [permalink (str "@" (:screen_name route-params) "/" (:permalink route-params))]
+          ;; get permalink from post
+          (j/with-db-connection [conn (get-in request [:context :datasource])]
+            (when-let [post-id (du/select-one-field conn :posts {:permalink permalink} :id)]
+              ;; views
+              (stat/create conn post-id "view" (:remote-addr request)))))))
+    (handler request)))
+
 ;; TODO: Access-Control-Max-Age
 (defn custom-wrap-cors [handler]
   (let [access-control (cors/normalize-config [:access-control-allow-origin [(re-pattern (:website-uri config/config))]
@@ -112,6 +144,18 @@
               (cors/add-access-control request access-control response)))
           (handler request))))))
 
+(defn wrap-production-etag [handler]
+  (fn [req]
+    (if-not share-config/development?
+      ((wrap-etag handler) req)
+      (handler req))))
+
+(defn wrap-production-gzip [handler]
+  (fn [req]
+    (if share-config/development?
+      (handler req)
+      ((wrap-gzip handler) req))))
+
 (defn middlewares
   [app context]
   (-> app
@@ -124,4 +168,6 @@
       (wrap-cookies)
       (custom-wrap-cors)
       (inject-context context)
-      (wrap-gzip)))
+      (api-wrap-stats)
+      (wrap-production-etag)
+      (wrap-production-gzip)))

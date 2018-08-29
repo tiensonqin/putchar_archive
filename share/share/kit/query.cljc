@@ -51,4 +51,4 @@
              (if loading
                loading
                [:div.row {:style {:justify-content "center"}}
-                [:div.spinner {:margin-top 64}]])))))))
+                [:div.spinner {:style {:margin-top 64}}]])))))))

@@ -15,6 +15,7 @@
             [api.db.token :as token]
             [api.db.search :as search]
             [api.db.cache :as cache]
+            [api.db.stat :as stat]
             [api.db.notification :as notification]
             [api.db.bookmark :as bookmark]
             [api.handler.query :as query]
@@ -284,6 +285,12 @@
 (defmethod handle :group/top [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (util/ok (u/top-group conn uid (:id data)))))
+
+(defmethod handle :post/read [[{:keys [uid datasource redis]} data request]]
+  (j/with-db-transaction [conn datasource]
+    (let [post-id (:id data)]
+      (stat/create conn post-id "read" (:remote-addr request))
+      (util/ok {:read true}))))
 
 (defmethod handle :post/new-draft [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]

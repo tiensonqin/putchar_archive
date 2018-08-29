@@ -544,8 +544,8 @@
                         (scroll/open!)))
                    state)}
   [reconciler]
-  (let [{:keys [current show-panel?]} (citrus/react :layout)
-        {:keys [width height]} current
+  (let [show-panel? (citrus/react [:layout :show-panel?])
+        width (citrus/react [:layout :current :width])
         {route :handler params :route-params} (citrus/react :router)
         current-user (citrus/react [:user :current])
         loading? (if current-user

@@ -23,3 +23,17 @@ alter table posts drop column is_private;
 alter table posts alter column lang set default 'en';
 
 update posts set lang = 'en' where lang is null;
+
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+
+CREATE TABLE stats (
+time        TIMESTAMPTZ       NOT NULL DEFAULT now(),
+type        TEXT              NOT NULL, -- view or click
+ip          TEXT              NOT NULL,
+post_id     UUID              NOT NULL
+);
+
+-- not work
+-- ALTER TABLE stats ADD CONSTRAINT stats_type_ip_post_id UNIQUE (type,ip,post_id);
+
+SELECT create_hypertable('stats', 'time');

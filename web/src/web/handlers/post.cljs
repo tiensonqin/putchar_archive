@@ -407,4 +407,20 @@
                         :key :latest-body-format
                         :value body-format}}
        {:state state}))
+
+   :post/read
+   (fn [state post]
+     {:state {:read-list (assoc (:read-list state) (:id post) true)}
+      :http {:params [:post/read {:id (:id post)}]
+             :on-load :post/read-success
+             :on-error :post/read-failed}})
+
+   :post/read-success
+   (fn [state result]
+     {:state state})
+
+   :post/read-failed
+   (fn [state error]
+     (prn "mark as read failed, should retry several times.")
+     {:state state})
    })
