@@ -16,6 +16,7 @@
                  [org.postgresql/postgresql "42.2.4"]
                  [org.clojure/java.jdbc "0.7.3"]
                  [honeysql "0.9.1"]
+                 [ragtime "0.7.2"]
                  [hikari-cp "1.8.2"]
                  [com.taoensso/carmine "2.16.0"]
                  [buddy/buddy-sign "2.2.0"]
@@ -61,6 +62,9 @@
   :repl-options {:init-ns user}
 
   :bikeshed {:max-line-length 200}
+
+  :aliases {"migrate"  ["run" "-m" "user/migrate"]
+            "rollback" ["run" "-m" "user/rollback"]}
 
   :profiles {:dev {:dependencies [[org.clojure/tools.nrepl "0.2.13"]
                                   [reloaded.repl "0.2.3"]
