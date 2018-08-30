@@ -470,7 +470,7 @@
                                :font-weight 600
                                :margin-top 2
                                :margin-left 6}}
-         "Lambdahackers"])]]))
+         "Lambdahackers (BETA)"])]]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]
