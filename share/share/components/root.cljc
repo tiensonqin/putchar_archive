@@ -393,7 +393,7 @@
          (when (and (not post?)
                     (not mobile?)
                     current-user)
-           (ui/menu {:menu-style {:margin-top 6}}
+           (ui/menu
              [:a {:href (str "/@" (:screen_name current-user))
                   :style {:margin-left 24}}
               (ui/avatar {:shape "circle"
@@ -420,7 +420,7 @@
                                :style {:font-size 14}}
                (t :sign-out)]]
 
-             nil))
+             {:menu-style {:margin-top 6}}))
 
          (when (and (not post?)
                     mobile?)
@@ -452,7 +452,7 @@
      title]
     [:span {:key "dm-span"
             :class "direct-message"
-            :style {:margin-top 6}}
+            :style {:margin-top 16}}
      (ui/icon {:key "plus-circle"
                :type "add_circle_outline"
                :style {:font-size 20}})]]])

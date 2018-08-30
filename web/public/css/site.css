@@ -11,7 +11,7 @@
     padding: 12;
 }
 
-.editor textarea:focus, .editor input:focus{
+.comment-list textarea:focus, .editor textarea:focus, .editor input:focus{
     outline: none;
 }
 
