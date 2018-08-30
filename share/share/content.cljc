@@ -7,6 +7,7 @@
             #?(:cljs ["react-dom/server" :as react-dom-server])
             #?(:cljs [sablono.core :as html])
             [appkit.citrus :as citrus]
+            [share.kit.colors :as colors]
             [share.asciidoc :as ascii]
             [share.markdown :as md]
             ))
@@ -100,13 +101,13 @@
                  :class "ant-avatar-sm"})
      [:span {:style {:margin-left 6
                      :font-size 13
-                     :color "#666"}}
+                     :color "#bbb"}}
       (str screen_name ":")]]
 
     (ui/icon {:type :arrow_upward
               :width 18
               :height 18
-              :color "#666"})]])
+              :color "#bbb"})]])
 
 (defn quotes
   [body body-format]

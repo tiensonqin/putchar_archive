@@ -16,7 +16,7 @@
             [share.config :as config]
             #?(:cljs [goog.dom :as gdom])
             [appkit.macros :refer [oset!]]
-            ))
+            [share.kit.colors :as colors]))
 
 (defn signup-fields
   [user username-taken? email-taken? email]
@@ -133,8 +133,7 @@
                                 :text-overflow "ellipsis"
                                 :overflow "hidden"
                                 :white-space "nowrap"
-                                :margin-top 12
-                                :color "#666"}}
+                                :margin-top 12}}
            (util/original-name name)])]))])
 
 (rum/defc pick-groups < rum/reactive
@@ -263,8 +262,7 @@
                    "fa fa-check-square"
                    "fa fa-square-o")
           :style {:font-size 20
-                  :margin-right 12
-                  :color "#1a1a1a"}}]]
+                  :margin-right 12}}]]
     (t :email-notification-settings-text)]])
 
 (def github-repo-fields
@@ -287,8 +285,7 @@
         [:div.row1 {:style {:align-items "center"}}
          (ui/icon {:type "github"})
          [:a {:style {:margin-left 12
-                      :font-weight "500"
-                      :color "#1a1a1a"}
+                      :font-weight "500"}
               :href (:github_repo @user)}
           (util/get-github-repo-name (:github_repo @user))]]
 
@@ -330,7 +327,7 @@
                                             {:margin-right 12
                                              :margin-bottom 12}
                                           followed?
-                                          (assoc :background-color "#2e2e2e"
+                                          (assoc :background-color colors/dark-cyan
                                                  :color "#FFF"))
                                   :on-click (fn []
                                               (let [value (if followed?
@@ -346,7 +343,7 @@
       (t :select-which-languages)]
 
      [:div.row1 {:style {:flex-wrap "wrap"}}
-      (button-cp "en" "en")
+      (button-cp "English" "en")
       (button-cp "简" "zh-cn")
       (button-cp "繁" "zh-tw")
       (button-cp "Japanese" "japanese")
@@ -373,8 +370,7 @@
                     "fa fa-check-square"
                     "fa fa-square-o")
            :style {:font-size 20
-                   :margin-right 12
-                   :color "#1a1a1a"}}]]
+                   :margin-right 12}}]]
      (t :dont-show-vote-numbers)]]))
 
 (rum/defcs profile < rum/reactive
@@ -595,7 +591,5 @@ The posts and comments that you have posted will not be deleted, in order to pre
                               :merge-path path}
                        :show-avatar? true
                        :show-group? false
-                       :empty-widget [:div
-                                      [:span {:style {:padding 24
-                                                      :font-size "24"}}
-                                       (t :no-bookmarks-yet)]]))]))
+                       :empty-widget [:h5.auto-padding
+                                      (t :no-bookmarks-yet)]))]))

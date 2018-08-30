@@ -28,7 +28,7 @@
                                                    [:comment :form-data :preview?]
                                                    (if preview? false true)))}
      (ui/icon {:type "visibility"
-               :color (if preview? colors/primary "#999")
+               :color (if preview? colors/primary colors/shadow)
                :width 20})]))
 
 (rum/defcs default-select-input <
@@ -75,7 +75,7 @@
      (cond
        (nil? current-user)
        [:div.column1 {:style {:height 120
-                              :border "1px solid #ddd"
+                              :border "1px solid #777"
                               :border-radius 4
                               :align-items "center"
                               :justify-content "center"}}
@@ -91,7 +91,7 @@
                         :background "#fff"
                         :width "100%"
                         :padding 12
-                        :min-height 180}}]
+                        :min-height 150}}]
          [:div.column
          (post-box/post-box
           :comment
@@ -103,17 +103,17 @@
            :min-rows 5
 
            :style {:border-radius 4
-                   :border "1px solid rgb(169,169,169)"
+                   :border "1px solid #777"
+                   :color "#efefef"
                    :font-size "16px"
-                   :color "#383838"
                    :line-height "1.7"
-                   :background "#fff"
+                   :background "transparent"
                    :resize "none"
                    :width "100%"
                    :padding 12
                    :white-space "pre-wrap"
                    :overflow-wrap "break-word"
-                   :min-height 180}
+                   :min-height 150}
 
            :other-attrs {:auto-focus (if current-reply true false)
                          :ref (fn [v]
@@ -171,7 +171,7 @@
 
              (t :post-comment))))
        (if show?
-         [:a.nohl {:title (t :close)
+         [:a.control {:title (t :close)
                    :on-click #(do
                                 (reset! show? false)
                                 (citrus/dispatch! :citrus/default-update
@@ -199,16 +199,17 @@
                                                           [:comment :refs k] v))
                      :auto-focus true
                      :style {:border-radius 4
-                             :color "#383838"
+                             :border "1px solid #777"
+                             :color "#efefef"
+                             :background "transparent"
                              :font-size "16px"
                              :line-height "1.7"
-                             :background "#fff"
                              :resize "none"
                              :width "100%"
                              :padding 12
                              :white-space "pre-wrap"
                              :overflow-wrap "break-word"
-                             :min-height 180}
+                             :min-height 150}
                      :default-value body
                      :on-change (fn [e]
                                   (let [v (util/ev e)]
@@ -244,7 +245,7 @@
             (ui/donut-white)
             (t :update))))
        (if show?
-         [:a.nohl {:title (t :close)
+         [:a.control {:title (t :close)
                    :on-click #(do
                                 (reset! show? false)
                                 (citrus/dispatch! :citrus/default-update
@@ -287,9 +288,9 @@
      [:div.row {:style {:align-items "center"
                         :justify-content (if (seq replies) "space-between" "flex-end")}}
       (when (and (seq replies) has-replies?)
-        [:a.hover-activated.row1 {:on-click #(swap! expand-replies? not)
-                                  :style {:align-items "flex-end"
-                                          :font-size 14}}
+        [:a.control.row1 {:on-click #(swap! expand-replies? not)
+                          :style {:align-items "flex-end"
+                                  :font-size 14}}
          [:span {:style {:font-weight "600"}}
           (str replies-count)]
          [:span {:style {:margin-left 4
@@ -310,14 +311,14 @@
                            "favorite_border")
                    :color (if liked?
                             colors/like
-                            "#999")
+                            colors/shadow)
                    :width 20
                    :height 20})]
 
 
         [:span.number {:style {:margin-left 6
                                :font-size "15px"
-                               :color "rgb(127,127,127)"
+                               :color colors/shadow
                                :font-weight "600"}}
          likes]]
 
@@ -325,7 +326,7 @@
          [:a {:on-click (fn [])
               :style {:margin-right 24}}
           (ui/icon {:type :more
-                    :color "rgb(127,127,127)"})]
+                    :color colors/shadow})]
          [(if (:permalink entity)
             [:a.button-text {:style {:font-size 14}
                              :on-click (fn []
@@ -350,15 +351,11 @@
              (t :delete-this-comment)])]
          {:menu-style {:width 200}})
 
-       [:a.row1.no-decoration {:style {:align-items "center"}
-                               :on-click (fn []
+       [:a.control {:on-click (fn []
                                            (citrus/dispatch! :comment/reply comment)
                                            (reset! show-comment-box? true))}
         (ui/icon {:type "reply"
-                  :color "rgb(127,127,127)"})
-        [:span {:style {:color "rgb(127,127,127)"
-                        :font-size 14}}
-         (t :reply)]]]]
+                  :color colors/shadow})]]]
 
      (when @show-link?
        [:div.row1 {:style {:margin-top 12
@@ -373,10 +370,10 @@
        [:div.column {:style {:margin-top 12}}
         (comments-cp entity replies)
 
-        [:a.hover-activated.row1 {:on-click #(swap! expand-replies? not)
-                                  :style {:align-items "flex-end"
-                                          :margin-top 24
-                                          :font-size 14}}
+        [:a.control.row1 {:on-click #(swap! expand-replies? not)
+                          :style {:align-items "flex-end"
+                                  :margin-top 24
+                                  :font-size 14}}
          [:span (t :collapse)]
          [:i {:style {:margin-left 4}
               :class "fa fa-chevron-up"}]]])]))
@@ -411,23 +408,18 @@
          [:div {:style {:display "flex"
                         :flex-direction "column"
                         :flex 1}}
-          [:div.pervasive-head {:style {:display "flex"
-                                        :flex 1
-                                        :justify-content "space-between"
-                                        :line-height "14px"}}
+          [:div.space-between {:style {:line-height "14px"}}
            [:div
             (if (:screen_name user)
-              [:span {:style {:padding "0 3px 0 8px"
-                              :font-weight 500}}
-               [:a.control {:href (str "/@" (:screen_name user))
-                            :style {:color "rgba(0,0,0,0.84)"
-                                    :font-size 14}}
-                (str "@" (:screen_name user))]])
+              [:a.control {:href (str "/@" (:screen_name user))
+                           :style {:font-size 14
+                                   :padding "0 3px 0 8px"}}
+               (:screen_name user)])
 
             (if owner?
               [:span
-               [:a {:style {:margin-left 8
-                            :font-size 13}
+               [:a.control {:style {:margin-left 8
+                                    :font-size 13}
                     :on-click (fn []
                                 (reset! edit-mode? true)
                                 (citrus/dispatch! :citrus/default-update
@@ -525,8 +517,7 @@
         (if (> comments-count 0)
           [:div.space-between {:style {:align-items "center"
                                        :margin-bottom 12}}
-           [:h3 {:style {:color "#666"
-                         :margin 0}}
+           [:h3 {:style {:margin 0}}
             (when-not (zero? (count comments))
               (str (+ (:comments_count entity) (if count-delta count-delta 0)) " " (t :replies)))]]))
 

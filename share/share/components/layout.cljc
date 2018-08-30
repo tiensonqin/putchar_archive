@@ -2,7 +2,6 @@
   (:require [rum.core :as rum]
             [share.kit.query :as query]
             [share.kit.ui :as ui]
-            [share.kit.colors :as colors]
             [share.components.group :as group]
             [share.components.login :as login]
             [share.components.post :as post]
@@ -48,8 +47,7 @@
                      (ui/icon {:type :translate
                                :width 18
                                :height 18
-                               :color "#666"})]]
-                   )]
+                               :color "#bbb"})]])]
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"

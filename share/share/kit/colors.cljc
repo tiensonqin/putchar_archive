@@ -1,9 +1,11 @@
 (ns share.kit.colors)
 
-(def primary "#2156a5")
+(def primary "#6DD")
 
-(def shadow "#ddd")
+(def header "#25BFBF")
 
 (def like "#fa6c8d")
 
-(def grey "rgb(127,127,127)")
+(def shadow "#bbb")
+
+(def dark-cyan "#008B8B")

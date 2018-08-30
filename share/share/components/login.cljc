@@ -7,12 +7,13 @@
             [share.config :as config]
             [share.util :as util]
             [share.dicts :refer [t]]
+            [share.kit.colors :as colors]
             [clojure.string :as str]))
 
 (defn email-login-fields
   []
-  {:email         {:label (t :email)
-                   :warning (t :invalid-email)
+  {:email         {:warning (t :invalid-email)
+                   :placeholder "Email"
                    :validators [form/email?]}})
 
 (rum/defc signin
@@ -26,12 +27,12 @@
                                 (assoc :background background-color))}
 
    (ui/button {:key "github"
-               :class "btn-lg"
+               :class "btn-lg btn-primary"
                :href (str config/website "/auth/github")
                :style {:width 250}}
      [:div.row1 {:style {:align-items "center"}}
       (ui/icon {:type :github
-                :color "#24292E"
+                :color "#FFF"
                 :width 18
                 :opts {:style {:margin-left -20}}})
       [:span {:class "btn-contents"
@@ -42,21 +43,23 @@
    [:hr.hr-divider.divider-text.divider-text-center {:style {:width 250}
                                                      :data-text "or"}]
 
-   [:div.column
+   [:div.column1 {:style {:margin-top 10}}
     (form/render
       {:style {:width 250}
        :loading? [:user :loading?]
        :fields (email-login-fields)
-       :submit-text (t :signin)
-       :confirm-attrs {:style {:width 250}}
+       :submit-text (t :signin-with-email)
+       :confirm-attrs {:class "btn"
+                       :style {:width 250
+                               :background "#FFF"}}
        :on-submit (fn [form-data]
                     (citrus/dispatch! :user/request-code @form-data))
        :cancel-button? false})]
 
    (widgets/transform-content (t :agree-text)
                               {:style {:font-size 14
-                                       :margin-top 12
-                                       :color "rgb(127,127,127)"
+                                       :margin-top 24
+                                       :color colors/shadow
                                        :width 250}})])
 
 (rum/defc signin-modal < rum/reactive

@@ -154,11 +154,11 @@
     (dropdown
      (cond->
          {:placement placement
-          :overlay [:ul.menu.shadow
+          :overlay [:ul.menu
                     {:style (merge
                              {:margin-top 12
                               :background "#FFF"
-                              :border-radius 4
+                              :border "1px solid #6dd"
                               :width 276
                               :font-weight 600
                               :z-index 9}

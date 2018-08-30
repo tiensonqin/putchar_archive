@@ -70,14 +70,13 @@
   [{:keys [id name screen_name bio website github_handle twitter_handle] :as user}]
   (let [mobile? (util/mobile?)
         current-user (citrus/react [:user :current])]
-    [:div.space-between.auto-padding
+    [:div.space-between.auto-padding.user-card
      {:style {:padding-top "24px"
               :padding-bottom "24px"}}
      [:div.column
       [:div.row1 {:style {:flex-wrap "wrap"}}
        (if name
          [:span {:style {:font-size (if mobile? 24 33)
-                         :color "rgba(0,0,0,0.64)"
                          :font-weight "600"}}
          name])
        [:a.control {:href (str "/@" screen_name)
@@ -88,20 +87,14 @@
                           :font-size 24})}
          (str "@" screen_name)]]]
 
-      (if bio
-        [:span {:style {:margin-left 3
-                        :margin-top 12
-                       :font-size "18px"}}
-         (transform-content bio nil)])
-
       [:div.row1 {:style {:margin-left 3
                           :flex-wrap "wrap"
-                          :margin-top 12}}
+                          :margin-top 24}}
        (if github_handle
          [:a {:href (str "https://github.com/" github_handle)
               :target "_blank"}
           (ui/icon {:type :github
-                    :color "#666"
+                    :color "rgb(127,127,127)"
                     :width 19})])
 
        (if twitter_handle
@@ -110,7 +103,8 @@
               :style {:margin-left 24}}
           (ui/icon {:type :twitter
                     :width 26
-                    :height 26})])
+                    :height 26
+                    :color "rgb(127,127,127)"})])
 
        (let [url (str config/website "/@" screen_name "/newest.rss")]
          [:a.control.ubuntu {:href url
@@ -123,7 +117,12 @@
          [:a {:style {:margin-left 24
                       :font-size "18px"}
               :href website}
-          website])]]
+          website])]
+
+      (if bio
+        (transform-content bio {:style {:margin-left 3
+                                        :margin-top 24
+                                        :font-size 18}}))]
      [:img {:src (util/cdn-image screen_name
                                  :height 100
                                  :width 100)
@@ -141,18 +140,18 @@
         zh-cn? (= :zh-cn (citrus/react [:locale]))]
     [:div.auto-padding.posts-headers {:style {:margin-top 24
                                               :margin-bottom 12}}
-     [:div.row1.ubuntu {:style {:font-weight (if zh-cn? "500" "600")}}
-      [:a.control {:class (if posts? "active" "")
+     [:div.row1.ubuntu.user-buttons {:style {:font-weight (if zh-cn? "500" "600")}}
+      [:a.control {:class (if posts? "is-active" "")
                    :href (str "/@" screen_name)}
        (t :latest-posts)]
 
       (if current-user?
-        [:a.control {:class (if drafts? "active" "")
+        [:a.control {:class (if drafts? "is-active" "")
                      :href "/drafts"
                      :style {:margin-left 24}}
          (t :drafts)])
 
-      [:a.control {:class (if comments? "active" "")
+      [:a.control {:class (if comments? "is-active" "")
                    :style {:margin-left 24}
                    :href (str "/@" screen_name "/comments")}
        (t :latest-comments)]]]))
@@ -242,6 +241,7 @@
 
     :else
     (ui/button {:style {:width width}
+                :class "btn-primary"
                 :href (str "/" (:name group))
                 :on-click #(citrus/dispatch! :user/star-group {:object_type :group
                                                                :object_id (:id group)})}
@@ -336,21 +336,17 @@
     [:div.auto-padding.ubuntu
      (if (contains? #{:home :newest :latest-reply} current-path)
        [:div {:style {:margin-bottom 12}}
-        [:div.space-between {:style {:align-items "center"}}
-         [:h1.heading-1 {:style {:margin-top 0
-                                 :margin-bottom "16px"}}
-          "Lambdahackers"]
-
+        [:div.space-between {:style {:align-items "center"
+                                     :margin-bottom 24}}
+         (sort-buttons current-user nil false)
          (when (not (util/mobile?))
            [:a {:target "_blank"
+                :title "RSS"
                 :href (str config/website "/hot.rss")}
             (ui/icon {:type :rss
                       :color "rgb(127,127,127)"})])]
 
-        [:p {:style {:font-size "1.25em"}}
-         (t :slogan)]
-
-        (sort-buttons current-user nil false)]
+        ]
 
        [:div {:style {:padding-bottom 8}}
         [:div.space-between {:style {:flex-wrap "wrap"}}
@@ -358,7 +354,7 @@
                                  :margin-bottom "16px"}}
           (util/original-name (:name group))]
 
-         [:div.row1 {:style {:align-items "center"
+         [:div.row1 {:style {:margin-top 3
                              :margin-left 12}}
           (if (:stars group)
             [:a.control {:title (t :see-all)
@@ -394,7 +390,8 @@
         [:div
          (transform-content (:purpose group) {:style {:font-size "16px"}})]
 
-        [:div.space-between {:style {:flex-wrap "wrap"}}
+        [:div.space-between {:style {:flex-wrap "wrap"
+                                     :margin-top 12}}
          (sort-buttons current-user group stared-group?)
          (ui/menu
            [:a {:on-click (fn [e])
@@ -460,13 +457,12 @@
 
       (when-not (or (util/mobile?)
                     (contains? #{:new-post :post-edit} current-handler))
-        [:span.ubuntu {:style {:font-size 20
-                               :color "#333"
+        [:span.ubuntu {:style {:font-size 18
+                               :color "#ddd"
                                :font-weight 600
                                :margin-top 2
-                               :margin-left 6
-                               :letter-spacing "0.03em"}}
-         "HACKERS"])]]))
+                               :margin-left 6}}
+         "Lambdahackers"])]]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]
@@ -488,7 +484,7 @@
          :animation "slide-up"}
         [:a.no-decoration.control.ubuntu {:style {:padding 12
                                                   :font-size 13
-                                                  :font-weight "600"}}
+                                                  :font-weight colors/shadow}}
          (if markdown?
            "Markdown"
            "Asciidoc")]))
@@ -502,7 +498,7 @@
                       [:post :form-data :preview?]
                       (not (:preview? form-data))))}
      (ui/icon {:type "visibility"
-               :color (if (:preview? form-data) colors/primary "#666")})]]))
+               :color (if (:preview? form-data) colors/primary colors/shadow)})]]))
 
 (rum/defc github-connect
   []
@@ -530,20 +526,16 @@
                                               :margin-top 6
                                               :margin-bottom 6}}
 
-       (ui/icon {:type :label_outline
-                 :color "rgb(127,127,127)"
-                 :opts {:style {:margin-right 12}}})
-
        (for [[tag count] tags]
          (let [this? (= current-tag (name tag))]
-           [:div.row1 {:key tag
-                       :style {:padding "6px 12px 6px 0"
-                               :align-items "center"}}
-            [:a.tag {:class (if this? "active")
-                     :href (str "/@" screen-name "/tag/" (name tag))}
-             (util/tag-decode (name tag))]
+           [:a.tag.no-decoration {:key tag
+                                  :href (str "/@" screen-name "/tag/" (name tag))
+                                  :style {:align-items "center"}
+                                  :class (if this? "active")}
+            (util/tag-decode (name tag))
             [:span {:style {:margin-left 6
-                            :color (if this? "#2156a5" "rgb(127,127,127)")}}
+                            :font-size "0.8em"
+                            :vertical-align "super"}}
              count]]))
 
        (cond

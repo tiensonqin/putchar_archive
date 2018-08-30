@@ -11,7 +11,6 @@
             [rum.core :as rum]
             [share.version :refer [version]]
             [share.kit.ui :as ui]
-            [share.kit.colors :as colors]
             [share.components.widgets :as widgets]
             [share.seo :as seo]
             [api.services.slack :as slack]))
@@ -229,10 +228,11 @@
          {:keys [handler route-params]} (:ui/route req)
          current-user (get-in state [:user :current])
          [seo-title seo-content canonical-url seo-image] (seo/seo-title-content handler route-params state)
-         zh-cn? (= locale :zh-cn)]
+          zh-cn? (= locale :zh-cn)
+          ]
      (h/html5
       (head req handler zh-cn? seo-content seo-title seo-image canonical-url)
-      [:body {:style {:min-height "100%"}}
+      [:body
        [:div#app content]
 
        [:script {:src (if util/development?

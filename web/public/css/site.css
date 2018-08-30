@@ -23,10 +23,6 @@ div.editor i {
     font-size: 100%;
 }
 
-.editor p, .editor-content p {
-    line-height: 1.5;
-}
-
 .editor-content pre, .editor pre, .posts pre {
     overflow-x: auto;
     display: block;
@@ -47,11 +43,6 @@ div.editor i {
     flex-direction: column;
     margin: 12px 0 64px 0;
     background: transparent;
-}
-
-.pervasive-head span, .pervasive-head span a {
-    color: rgb(127,127,127);
-    font-size: 12px;
 }
 
 .group-list .ant-input:focus, .group-list .ant-input:hover, .new-post-title .ant-input:focus, .new-post-title .ant-input:hover, .message-box .ant-input:focus, .message-box .ant-input:hover, .editor .ant-input:hover, .editor .ant-input:focus {
@@ -121,15 +112,6 @@ div.editor i {
     line-height: 1.2em;
 }
 
-.comment-parent { */
-    margin: 12px 0;
-    border-left: 5px solid #ccc;
-    color: rgba(0,0,0,0.85);
-    padding: 12px;
-    background-color: #FFF;
-    border-radius: 0 4px 4px 0;
-}
-
 hr.gradient, .post hr {
     border: 0;
     margin: 36px 0;
@@ -175,11 +157,11 @@ code {
     max-width: 100%;
     display: block;
     margin: 0 auto;
-    margin-top: 24px;
-    margin-bottom: 24px;
+    margin-top: 64px;
+    margin-bottom: 64px;
 }
 
-.comment img {
+.user-card img, .comment img {
     margin: 12px 0;
 }
 
@@ -197,25 +179,6 @@ code {
     text-align:center;
 }
 
-hr.style-eight {
-    overflow: visible; /* For IE */
-    padding: 0;
-    border: none;
-    border-top: medium double #6a6f8c;
-    color: #6a6f8c;
-    text-align: center;
-    margin: 24px 0 24px 0;
-}
-hr.style-eight:after {
-    /* content: "§"; */
-    display: inline-block;
-    position: relative;
-    top: -0.7em;
-    font-size: 1.5em;
-    padding: 0 0.25em;
-    background: white;
-}
-
 .scale {
     -webkit-transition: -webkit-transform .15s linear;
  }
@@ -231,10 +194,6 @@ a.scale:hover {
     color: rgb(127,127,127);
 }
 
-.voted {
-    color: #000000;
-}
-
 br {
     content: "";
     margin: 1.5em;
@@ -248,7 +207,7 @@ br {
 
 span.logo {
     font-size: 24px;
-    color: rgb(63, 63, 87);
+    color: #ddd;
     font-weight: 600;
     margin-left: 12px;
     display: inline-block;
@@ -274,31 +233,6 @@ span.logo {
     margin: 6px 0;
 }
 
-.hover-activated {
-    color: #999;
-}
-
-.hover-activated:hover {
-    color: #000;
-    text-decoration: none;
-}
-
-.pick-groups-item h2 {
-    color: #333;
-}
-
-#add-tags .rc-select-selection__choice {
-    margin-top: 7px;
-    margin-right: 12px;
-    background: rgb(46, 46, 46);
-    color: #FFFFFF;
-}
-
-.shadow-none, .shadow-none:hover {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
 .comment h1, .comment h2, .comment h3, .comment h4, .comment h1, .comment h5, .comment h6 {
     margin: 6px 0;
     font-weight: 600;
@@ -307,7 +241,7 @@ span.logo {
 label {
     display: inline-block;
     margin-bottom: 3px;
-    color: #666;
+    color: #bbb;
     font-weight: 600;
 }
 
@@ -353,16 +287,6 @@ input[type=checkbox] + label:before {
     letter-spacing: 10px;
 }
 
-
-.control:hover {
-    color: #000000;
-    text-decoration: none;
-}
-
-.control {
-    color: rgba(0,0,0,0.84);
-}
-
 input.white::placeholder {
     color: #FFF;
 }
@@ -398,7 +322,7 @@ a.set-cover {
 }
 
 svg:hover {
-    fill: #000000;
+    fill: #6DD;
 }
 
 .like svg:hover {
@@ -451,27 +375,17 @@ a.delete {
     box-shadow: 0 5px 20px #FFF;
 }
 
-a.active {
-    color: #000;
-}
-
 .icon-button i {
-    color: #999;
+    color: #bbb;
 }
 
 .icon-button:hover i {
-    color: #000000;
+    color: #6dd;
 }
 
 .ver_divider {
-        width: 8px!important;
-        background: -moz-linear-gradient(top,  rgba(100,199,171,0) 0%, #dfdfdf 53%, rgba(74,163,223,0) 100%); /* FF3.6+ */
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(100,199,171,0)), color-stop(53%,#dfdfdf), color-stop(100%,rgba(74,163,223,0))); /* Chrome,Safari4+ */
-        background: -webkit-linear-gradient(top,  rgba(100,199,171,0) 0%,#dfdfdf 53%,rgba(74,163,223,0) 100%); /* Chrome10+,Safari5.1+ */
-        background: -o-linear-gradient(top,  rgba(100,199,171,0) 0%,#dfdfdf 53%,rgba(74,163,223,0) 100%); /* Opera 11.10+ */
-        background: -ms-linear-gradient(top,  rgba(100,199,171,0) 0%,#dfdfdf 53%,rgba(74,163,223,0) 100%); /* IE10+ */
-        background: linear-gradient(to bottom,  rgba(100,199,171,0) 0%,#dfdfdf 53%,rgba(74,163,223,0) 100%); /* W3C */
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0064c7ab', endColorstr='#004aa3df',GradientType=0 ); /* IE6-9 */
+        width: 3px!important;
+        background: linear-gradient(to bottom, #444 0%, #999 53%, #444 100%) /* W3C */
 }
 
 .mention {
@@ -513,7 +427,7 @@ a.active {
 .right-sub h5 {
     margin-top: 0;
     margin-bottom: 0;
-    color: rgb(127,127,127);
+    color: #aaa;
     font-size: 1em;
 }
 
@@ -562,7 +476,7 @@ a.active {
 }
 
 .comments .col-item {
-    border-bottom: 1px solid #efefef;
+    border-bottom: 1px solid #353535;
 }
 
 .col-item:nth-child(1) {
@@ -578,11 +492,11 @@ a.active {
 }
 
 .highlight-area {
-    background: #F5F5DC;
+    background: #333;
 }
 
 .ubuntu {
-    font-family: ubuntu, "Source Sans Pro", "Roboto", Helvetica, -apple-system,BlinkMacSystemFont, "Segoe UI","Microsoft YaHei", Arial, sans-serif;
+    font-family: ubuntu, -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
 
 .hr-divider {
@@ -605,7 +519,7 @@ a.active {
     position: absolute;
     top: -.687rem;
     padding-right: .625rem;
-    background-color: #FFF;
+    background-color: #444;
     font-size: .875rem;
     color: rgb(127,127,127);
 }
@@ -618,16 +532,7 @@ a.active {
     padding-left: .625rem;
 }
 
-.tag {
-    color: rgb(127,127,127);
-}
-
-.tag .btn-primary {
-    color: #FFF;
-}
-
 .quoteblock blockquote, .quoteblock blockquote p {
-    color: rgba(0,0,0,0.9);
     font-size: 1.15rem;
     line-height: 1.5;
     word-spacing: 0.1em;
@@ -664,9 +569,9 @@ a.active {
 
 .markdown blockquote, .comment-box .quoteblock, .comment .quoteblock {
     margin: 0.5em 0;
-    border-left: 5px solid #cfcfcf;
-    background-color: #efefef;
+    border-left: 4px solid #ccc;
     padding: 12px;
+    background: #555;
 }
 
 .comment-box .concate, .comment .concate {
@@ -684,12 +589,6 @@ a.active {
 
 .quoteblock {
     padding: 1em 1.25em 1.5em 1.7em;
-}
-
-.quoteblock .attribution cite, .verseblock .attribution cite {
-    display: block;
-    letter-spacing: -0.05em;
-    color: rgba(0,0,0,0.6);
 }
 
 .asciidoc blockquote {
@@ -710,6 +609,11 @@ a.active {
     margin-bottom: 1.25em;
 }
 
-.post-title:visited {
-    color: #666;
+.control {
+    color: #bbb;
+}
+
+.control:hover {
+    color: #6dd;
+    text-decoration: none;
 }

@@ -112,7 +112,7 @@
    :translation-links "Translation links"
    :translation-text "So you can translate an article and add a link to it."
    :github-sync "Github Sync"
-   :github-sync-text "Git commit to publish posts, supports both [Markdown](https://guides.github.com/features/mastering-markdown/) and [Asciidoctor](https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/). :sparkles:"
+   :github-sync-text "Create your blog, using git commit to publish, both [Markdown](https://guides.github.com/features/mastering-markdown/) and [Asciidoctor](https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/) are supported. :sparkles:"
    :contact "Contact"
    :privacy "Privacy"
    :terms "Terms"
@@ -424,4 +424,5 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :select-primary-language-explain "User who doesn't follow this language won't see this post."
    :select-which-languages "Select which languages of posts you'd like to see."
    :go-to-home "Go to home"
+   :signin-with-email "Sign in with Email"
    })

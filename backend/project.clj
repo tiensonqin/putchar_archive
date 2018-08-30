@@ -43,8 +43,7 @@
                  [compojure "1.6.0"]
                  [tongue "0.2.4"]
                  [http-kit "2.2.0"]
-                 [selmer "1.11.6"]
-                 ]
+                 [selmer "1.11.6"]]
 
   :source-paths ["src" "../share"]
   :jvm-opts ["-Duser.timezone=UTC" "-Dclojure.spec.check-asserts=true"]

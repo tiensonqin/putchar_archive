@@ -85,7 +85,7 @@
                         "bookmark_border")
                 :color (if bookmarked?
                          colors/primary
-                         "#666")}
+                         colors/shadow)}
                icon-attrs))]))
 
 (rum/defc edit-toolbox < rum/reactive
@@ -122,7 +122,7 @@
                            identity)
               :style {:margin-left margin}}
           (ui/icon {:type :photo
-                    :color "#666"})]))
+                    :color colors/shadow})]))
 
      (when post-edit?
        [:a {:title (t :poll)
@@ -133,7 +133,7 @@
                          identity)
             :style {:margin-left margin}}
         (ui/icon {:type :poll
-                  :color (if poll? colors/primary "#666")})])
+                  :color (if poll? colors/primary colors/shadow)})])
 
      [:input
       {:id "photo_upload"
@@ -163,7 +163,8 @@
                              :font-weight "600"
                              :padding-left 0
                              :width "100%"
-                             :padding-right 36}
+                             :padding-right 36
+                             :color "#efefef"}
                      :on-change (fn [e]
                                   (citrus/dispatch! :citrus/set-post-form-data
                                                     {:title-validated? true
@@ -225,7 +226,7 @@
           :placeholder (t :post-body-placeholder)
           :style {:border "none"
                   :background-color "transparent"
-                  :color "#383838"
+                  :color "#ddd"
                   :font-size "16px"
                   :resize "none"
                   :width "100%"
@@ -299,7 +300,7 @@
        [:p.help "Language must be choosed!"])
 
     [:div.row1 {:style {:flex-wrap "wrap"}}
-     (button-cp "en" "en")
+     (button-cp "English" "en")
      (button-cp "简" "zh-cn")
      (button-cp "繁" "zh-tw")
      (button-cp "Japanese" "japanese")
@@ -357,7 +358,7 @@
   [form-data stared-groups choices skip?]
   (let [images (:images form-data)
         images? (seq images)]
-    [:div.column.ubuntu
+    [:div.column.ubuntu#publish-dialog
      [:div.row1 {:style {:align-items "center"}}
       [:h4 {:style {:margin-bottom "1em"}}
        (if @skip?
@@ -386,8 +387,6 @@
          [:div#select-groups {:class "row"
                               :style {:flex-wrap "wrap"}}
           (cp stared-groups)]))
-
-     (if images? [:div.divider])
 
      (if images?
        [:div#set-cover
@@ -528,7 +527,9 @@
          :on-close #(citrus/dispatch! :citrus/default-update [:post :publish-modal?] false)
          :visible modal?
          :wrap-class-name "center"
-         :style {:width (min 600 (- (:width (util/get-layout)) 48))}
+         :style {:width (min 600 (- (:width (util/get-layout)) 48))
+                 :height (- (:height (util/get-layout)) 100)
+                 :overflow-y "auto"}
          :animation "zoom"
          :maskAnimation "fade"
          :footer
@@ -544,46 +545,47 @@
   (when (seq choices)
     (let [poll_choice (or poll_choice (citrus/react [:post :choices permalink]))]
       [:div.column1 {:style (assoc choices-style :position "relative")}
-      (if poll_closed
-        [:a {:title (t :locked)}
-         (ui/icon {:type :lock
-                   :color "#999"
-                   :width 20
-                   :height 20
-                   :opts {:style {:position "absolute"
-                                  :right 0
-                                  :top 12}}})])
 
-      [:div.column
-       (for [{:keys [id v votes]} choices]
-         (let [chosen? (= id poll_choice)]
-           [:a.control.row1.no-decoration.scale
-            {:style {:margin-bottom 24
-                     :align-items "center"
-                     :color (if (nil? poll_choice)
-                              "#1a1a1a"
-                              "#666")}
-             :key id
-             :on-click (fn [e]
-                         (when-not (or poll_closed poll_choice)
-                           (util/stop e))
-                         (if (nil? poll_choice)
-                           (citrus/dispatch! :post/vote-choice
-                                             (:permalink post)
-                                             {:post_id (:id post)
-                                              :choice_id id})))}
-            (if chosen?
-              [:i {:class "fa fa-check-square-o"
-                   :style {:font-size 20
-                           :margin-right 12}}]
-              [:span.radio-button {:style {:border-radius 10}}])
-            v
-            (let [votes (if votes votes 0)]
-              [:span.number {:style {:font-weight "600"
-                                     :margin-left 12
-                                     :color "#999"
-                                     :padding-top 4}}
-               votes])]))]])))
+       (if poll_closed
+         [:a {:title (t :locked)}
+          (ui/icon {:type :lock
+                    :width 20
+                    :height 20
+                    :opts {:style {:position "absolute"
+                                   :right 0
+                                   :top 12}}})])
+
+       [:div.column
+        (for [{:keys [id v votes]} choices]
+          (let [chosen? (= id poll_choice)]
+            [:a.control.row1.no-decoration.scale
+             {:style {:margin-bottom 24
+                      :align-items "center"
+                      :color (if (nil? poll_choice)
+                               "#efefef"
+                               colors/shadow)}
+              :key id
+              :on-click (fn [e]
+                          (when-not (or poll_closed poll_choice)
+                            (util/stop e))
+                          (if (nil? poll_choice)
+                            (citrus/dispatch! :post/vote-choice
+                                              (:permalink post)
+                                              {:post_id (:id post)
+                                               :choice_id id})))}
+             (if chosen?
+               [:i {:class "fa fa-check-square-o"
+                    :style {:font-size 20
+                            :margin-right 12
+                            :color colors/primary}}]
+               [:span.radio-button {:style {:border-radius 10}}])
+             v
+             (let [votes (if votes votes 0)]
+               [:span.number {:style {:font-weight "600"
+                                      :margin-left 12
+                                      :color "#999"
+                                      :padding-top 4}}
+                votes])]))]])))
 
 (rum/defcs edit-choices < rum/reactive
   (rum/local false ::expand?)
@@ -715,7 +717,8 @@
            :style {:margin-right 24}}
        (ui/icon {:type :twitter
                  :width 27
-                 :height 27})])))
+                 :height 27
+                 :color colors/shadow})])))
 
 (rum/defc ops-link
   [post]
@@ -731,7 +734,7 @@
                            :margin-top 4}}
    (ui/icon {:type :share
              :width 18
-             :color "#666"})])
+             :color colors/shadow})])
 
 (rum/defc ops-delete
   [post current-user-id]
@@ -774,7 +777,7 @@
       (:title post)]])))
 
 (rum/defc ops-menu
-  [post self? mobile? absolute?]
+  [post self? mobile? absolute? menu-color]
   (ui/menu
     [:a {:style (if absolute?
                   {:position "absolute"
@@ -786,7 +789,7 @@
          :on-click (fn [e]
                      (util/stop e))}
      (ui/icon {:type :more
-               :color "#999"
+               :color menu-color
                :width 20
                :height 20})]
     [
@@ -852,7 +855,7 @@
           self? (and current-user self?)]
       [:div.post-item.col-item {:style {:position "relative"}}
        (when user?
-         (ops-menu post self? mobile? true))
+         (ops-menu post self? mobile? true "#666"))
 
        [:div.row
         (if show-avatar?
@@ -866,7 +869,7 @@
         [:div.column
          (when user?
            [:div.row1 {:style {:margin-bottom 12
-                               :color "#666"
+                               :color colors/shadow
                                :font-size 15}}
             (util/date-format (:created_at post))
 
@@ -884,10 +887,7 @@
            [:div
             [:a.no-decoration.post-title {:style {:margin-right 6}
                                           :href post-link}
-             (if (:choices post)
-               (str "[" (str/lower-case (t :poll)) "] "
-                    (:title post))
-               (:title post))]
+             (:title post)]
 
             (when-not mobile?
               (tags (:tags post)
@@ -900,16 +900,16 @@
                     :height "16px"
                     :margin "6px 6px 6px 0"}))]
 
-           [:a.comments_count {:href post-link
-                               :title (str (:comments_count post)
-                                           " "
-                                           (t :replies))
-                               :on-click util/stop
-                               :style {:margin-left 24}}
-            [:span.number {:style {:font-weight "600"
-                                   :color "#919191"
-                                   :font-size 18}}
-             (:comments_count post)]]]
+           (when-not user?
+             [:a.control {:href post-link
+                          :title (str (:comments_count post)
+                                      " "
+                                      (t :replies))
+                          :on-click util/stop
+                          :style {:margin-left 24}}
+              [:span.number {:style {:font-weight "600"
+                                     :font-size 18}}
+               (:comments_count post)]])]
 
           (if-let [cover (:cover post)]
             [:a {:href post-link}
@@ -929,8 +929,7 @@
            [:div.space-between.ubuntu {:style {:align-items "center"
                                                :margin-top 12}}
             [:div.row1 {:style {:align-items "center"}}
-             (vote post)
-             ]
+             (vote post)]
 
 
             [:div.row1 {:style {:color "rgb(127,127,127)"
@@ -964,7 +963,7 @@
                                      :src (util/cdn-image poster)})]))])))
 
              (when-not mobile?
-               (ops-menu post self? mobile? false))
+               (ops-menu post self? mobile? false "#999"))
 
              [:a.no-decoration.control {:title (if last_reply_at
                                                  (str
@@ -1037,13 +1036,8 @@
       [:div.empty-posts
        (if empty-widget
          empty-widget
-         [:a.row1.auto-padding {:href "/new-post"
-                                :style {:margin-top 24
-                                        :align-items "center"}}
-          (ui/icon {:type :edit
-                    :width 20
-                    :height 20
-                    :opts {:style {:margin-right 12}}})
+         [:a.auto-padding {:href "/new-post"
+                                :style {:margin-top 24}}
           [:span.ubuntu {:style {:margin-top 3}}
            (t :be-the-first)]])])))
 
@@ -1058,13 +1052,11 @@
                 :merge-path posts-path}
                :show-avatar? false
                :show-group? true
-               :empty-widget [:div
-                              [:span {:style {:padding 24
-                                              :font-size "24"}}
-                               (case current-handler
-                                 :drafts (t :no-drafts-yet)
-                                 :bookmarks (t :no-bookmarks-yet)
-                                 (t :no-posts-yet))]])))
+               :empty-widget [:h5.auto-padding
+                              (case current-handler
+                                :drafts (t :no-drafts-yet)
+                                :bookmarks (t :no-bookmarks-yet)
+                                (t :no-posts-yet))])))
 
 (rum/defcs post-edit < rum/reactive
   (mixins/query :post-edit)
@@ -1129,7 +1121,8 @@
     [:div.row {:id "toolbox"
                :style {:padding 0
                        :align-items "center"
-                       :margin-bottom 48}}
+                       :margin-bottom 48
+                       :margin-top 64}}
 
      [:div.row {:style {:align-items "center"}}
       (vote post)]
@@ -1231,58 +1224,33 @@
                 avatar (util/cdn-image (:screen_name user))]
             [:div.column.auto-padding {:key "post"}
              [:div {:style {:padding "12px 0"}}
-              [:div.center-area
-               [:div.ubuntu
-                {:style {:display "flex"
-                         :flex-direction "row"
-                         :padding-bottom 24}}
-                [:a {:href (str "/@" (:screen_name user))}
-                 (ui/avatar {:src avatar
-                             :shape "circle"})]
+              [:div.center-area {:style {:margin-bottom 64}}
+               [:h1 {:style {:font-weight "600"
+                             :margin-top 0
+                             :margin-bottom "1em"
+                             :text-align "center"
+                             :font-size "280%"
+                             :text-transform "uppercase"
+                             :color "#FFF"}}
+                (:title post)]
 
-                [:div {:style {:margin-left 12
-                               :margin-top -4}}
-                 [:div.row1
-                  (if (:name user)
-                    [:span {:style {:font-weight "600"
-                                    :color "rgba(0,0,0,0.64)"}}
-                     (:name user)])
-                  [:a {:href (str "/@" (:screen_name user))
-                       :color "#666"}
-                   [:span {:style (if (:name user)
-                                    {:margin-left 6
-                                     :font-size 15
-                                     :color "#666"}
-                                    {:font-weight "600"
-                                     :color "rgba(0,0,0,0.64)"
-                                     :font-size 18})}
-                    (if (:name user) " @" "@") (:screen_name user)]]]
-                 (when-let [bio (:bio user)]
-                   [:div.row {:style {:color "#666"
-                                      :margin-top 6
-                                      :max-height 60
-                                      :overflow "hidden"
-                                      :font-size 15}}
-                    (first (str/split (:bio user) #"!\["))])]]
+               [:div {:style {:text-align "center"
+                              :font-style "italic"
+                              :font-size "1.1em"}}
+                [:a.control {:href (str "/@" (:screen_name user))}
+                 (if (:name user)
+                   (:name user)
+                   (str "@" (:screen_name user)))]
 
-               [:div.space-between.ubuntu {:style {:padding "0 3px"}}
-                [:p.number {:style {:font-size 14
-                                    :margin-bottom 6}}
+                [:span {:style {:margin-left 12
+                                :color "#bbb"}}
                  (util/date-format (:created_at post))]
+
                 (if (= (:id current-user) (:id user))
                   [:a.control {:on-click (fn [e]
                                            (util/set-href! (str config/website "/p/" (:id post) "/edit")))
-                               :style {:font-size 14}}
-                   (t :edit)])]
-
-               [:h1 {:style {:font-weight "600"
-                             :margin-top "0.5em"}}
-
-                (if (:choices post)
-                  [:span
-                   (str "[" (str/lower-case (t :poll)) "] "
-                        (:title post))]
-                  (:title post))]]
+                               :style {:margin-left 12}}
+                   (t :edit)])]]
 
               [:div.post
                (widgets/raw-html {:on-mouse-up (fn [e]
@@ -1297,9 +1265,10 @@
                                  (:body post))]
 
               [:div.center-area
+               (when (seq (:choices post))
+                 [:div.hr])
                [:div {:style {:margin "24px 0"}}
                 (choices-cp post {:align-items "center"})]
-
                (when (seq (:tags post))
                  [:div.row1 {:style {:margin "24px 0"}}
                   (ui/icon {:type :label_outline
@@ -1309,10 +1278,6 @@
                   (tags (:tags post)
                         nil
                         nil)])
-
-               ;; [:p.number {:style {:font-size 14}}
-               ;;  [:span (t :updated-at) ": "]
-               ;;  (util/date-format (:updated_at post))]
 
                (toolbox post)
 

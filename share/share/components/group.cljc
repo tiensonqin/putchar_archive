@@ -186,8 +186,7 @@
         [:div.row1 {:style {:align-items "center"
                             :justify-content "space-between"}}
          [:div
-          [:a {:style {:color "rgba(0,0,0,.64)"
-                       :font-size 20
+          [:a.control {:style {:font-size 20
                        :font-weight "600"}
                :href (str "/" (:name group))}
            (util/original-name (:name group))]]
@@ -317,12 +316,15 @@
           edit-post? (= route :post-edit)
           text [:span.logo.fadein {:style {:max-width (if mobile?
                                                  80
-                                                 300)}}
+                                                 300)
+                                           :color "#ddd"}}
                 (util/original-name group-name)]
           logo [:div {:key "group-logo"}
                 [:img {:src (util/group-logo group-name)
                        :style {:max-height 36
-                               :max-width 64}}]]
+                               :max-width 64
+                               ;; TODO: using svg
+                               :border-radius "50%"}}]]
           logo-text [:div.row1 {:style {:align-items "center"}}
                      logo
                      text]]
@@ -343,7 +345,7 @@
                   (not new-post?)
                   (not (util/mobile?))
                   show-join-button?)
-         [:div {:style {:margin-left 12}}
+         [:div {:style {:margin-left 24}}
           (w/join-button current-user current-group stared-group? 80)])])
 
     (w/website-logo)))
@@ -390,7 +392,8 @@
     [:div#joined_groups.row1.right-sub
      [:div.space-between {:style {:align-items "center"
                                   :margin-bottom 6}}
-      [:h5 (t :groups)]
+      [:h5 {:color "#aaa"}
+       (t :groups)]
 
       [:a {:href "/groups"
            :title (t :add-more-groups)
@@ -399,7 +402,7 @@
        (ui/icon {:type :add_circle_outline
                  :width 20
                  :height 20
-                 :color "#666"})]]
+                 :color "#aaa"})]]
 
      (if (seq groups)
        (let [n (count groups)

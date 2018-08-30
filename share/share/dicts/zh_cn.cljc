@@ -112,7 +112,7 @@
    :translation-links "贡献翻译"
    :translation-text "你可以翻译一篇文章，添加原链接后分享给你的朋友。"
    :github-sync "Github 同步"
-   :github-sync-text "用 Git 来发布文章, 支持 [Markdown](https://guides.github.com/features/mastering-markdown/) 和 [Asciidoctor](https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/). :sparkles:"
+   :github-sync-text "创建你的博客，用 Git 来发布文章, 支持 [Markdown](https://guides.github.com/features/mastering-markdown/) 和 [Asciidoctor](https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/). :sparkles:"
    :contact "联系我们"
    :privacy "隐私"
    :terms "条款"
@@ -435,4 +435,5 @@
    :select-primary-language-explain "不关注该语言的用户就不会看到这篇文章"
    :select-which-languages "设置你关注的语言。"
    :go-to-home "首页"
+   :signin-with-email "邮箱登录"
    })

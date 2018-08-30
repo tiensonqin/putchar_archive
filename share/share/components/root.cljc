@@ -127,7 +127,9 @@
                              :height 48
                              :line-height "30px"
                              :font-size "18px"
-                             :font-weight "500"}
+                             :font-weight "600"
+                             :background "#555"
+                             :color "#FFF"}
                             (util/mobile?)
                             (assoc :max-width 300))
                    :placeholder (case current-path
@@ -156,11 +158,13 @@
       [:a.control {:on-click (fn [] (search-fn q current-path))
                    :style {:margin-right 24
                            :margin-top 12}}
-       (ui/icon {:type "search"})]
+       (ui/icon {:type "search"
+                 :color colors/shadow})]
 
       [:a.control {:on-click close-fn
                    :style {:margin-top 12}}
-       (ui/icon {:type "close"})]]]))
+       (ui/icon {:type "close"
+                 :color colors/shadow})]]]))
 
 (rum/defc modal-panel
   <
@@ -176,7 +180,6 @@
   [:div#modal-panel {:style {:width width
                              :padding 24
                              :z-index 999
-                             :background-color "#f6f6f6"
                              :padding-bottom 180
                              :height "100vh"
                              :max-height "100vh"
@@ -196,7 +199,7 @@
             :title (t :go-to-home)
             :style {:padding 12}}
         (ui/icon {:type :home
-                  :color "#666"
+                  :color "#ddd"
                   :width 32
                   :height 32})])
 
@@ -217,7 +220,7 @@
      (when current-user
        [:a {:href "/settings"}
         (ui/icon {:type :settings
-                  :color "#666"
+                  :color "#ddd"
                   :width 30
                   :height 30})])]
 
@@ -228,7 +231,7 @@
 
     (if current-user
       (ui/button {:on-click #(citrus/dispatch! :user/logout)
-                  :style {:color "#777"
+                  :style {:color "#ddd"
                           :margin-top 48}}
         (t :sign-out)))]])
 
@@ -273,6 +276,7 @@
                                   :margin-top 12
                                   :max-width 600
                                   :overflow "hidden"
+                                  :color "#ddd"
                                   :text-overflow "ellipsis"
                                   :white-space "nowrap"}}
               (:title current-post)]])
@@ -290,7 +294,7 @@
              (if (>= width 375)
                [:span.ubuntu {:style {:margin-left 12
                                       :font-weight "600"
-                                      :color "#666"
+                                      :color "#ddd"
                                       :font-size 13}}
                (t :draft)])]
             (= current-path :groups)
@@ -332,7 +336,7 @@
                 :title (t :go-to-home)
                 :style {:padding 12}}
             (ui/icon {:type :home
-                      :color "#666"})])
+                      :color "#ddd"})])
 
          ;; search
          (if (not post?)
@@ -340,7 +344,7 @@
                         :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
                         :style {:padding 12}}
             (ui/icon {:type "search"
-                      :color "#666"})])
+                      :color "#ddd"})])
 
          ;; publish
          (if post?
@@ -360,6 +364,7 @@
              (when-not group-path?
                (ui/button {:on-click (fn []
                                        (citrus/dispatch! :user/show-signin-modal?))
+                           :class "btn-primary"
                            :style {:margin-left 12
                                    :margin-right 12
                                    :font-size 15}}
@@ -372,8 +377,12 @@
              [:a {:href "/new-post"
                   :style {:padding 8}}
               (ui/icon {:type :edit
-                        :color "#666"})]
-             (ui/button {:icon :add
+                        :color "#ddd"})]
+             (ui/button {:icon :edit
+                         :icon-attrs {:color "#efefef"
+                                      :width 20
+                                      :height 20}
+                         :class "btn-primary"
                          :style {:margin-left 12}
                          :href "/new-post"}
                (t :write-new-post))))
@@ -421,7 +430,8 @@
                                  :margin-top 2}
                          :on-click (fn []
                                      (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
-             (ui/icon {:type "menu"})]))]]])))
+             (ui/icon {:type "menu"
+                       :color "#ddd"})]))]]])))
 
 (rum/defc head-title
   [mobile? title href]
@@ -431,7 +441,7 @@
                 :flex-direction "row"
                 :justify-content "space-between"
                 :align-items "center"
-                :color "#cecece"
+                :color "#ddd"
                 :padding "0 12px 6px 12px"}
         :href href}
     [:span.title {:style {:font-weight "500"
@@ -570,7 +580,7 @@
         ]
 
     [:div.column
-     [:div.main {:style {:background (if mobile? "#FFFFFF" "#F6F6F6")}}
+     [:div.main
 
       (notification)
 
@@ -578,8 +588,8 @@
         groups group)
 
       [:div.row {:class (cond
-                          post-page?
-                          ""
+                          (= route :post-edit)
+                          "bigger-wrap"
                           :else
                           "wrap")
                  :style {:overflow-y "hidden"}}
@@ -592,7 +602,7 @@
        (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login} route)))
          [:div#right {:key "right"
                       :class "column1"
-                      :style {:margin-top 108
+                      :style {:margin-top 88
                               :margin-left 24
                               :width 276}}
           [:div.column
@@ -602,20 +612,20 @@
                   (not (:github_repo current-user))
                   (not hide-github-connect?))
              [:div.ubuntu.fadein {:style {:padding 12
-                                   :margin "12px 0"}}
-              [:div.shadow {:style {:padding 12
-                                    :background "#F5F5DC"}}
+                                          :margin "12px 0"}}
+              [:div {:style {:padding "12px 12px 16px 12px"
+                             :border "1px solid #999"
+                             :border-radius 4}}
                (widgets/transform-content (t :github-sync-text) nil)
                (if current-user
                  (widgets/github-connect)
                  ;; github connect
-                 (ui/button {:class "btn-primary"
-                             :on-click (fn []
+                 (ui/button {:on-click (fn []
                                          #?(:cljs (cookie/cookie-set :setup-github-sync true))
-                                         (util/set-href! (str config/website "/auth/github?sync=true")))}
+                                         (util/set-href! (str config/website "/auth/github?sync=true")))
+                             :style {:background "#efefef"}}
                    [:div.row1 {:style {:align-items "center"}}
                     (ui/icon {:type :github
-                              :color "#FFFFFF"
                               :width 18
                               :opts {:style {:margin-left -6}}})
                     [:span {:class "btn-contents"
