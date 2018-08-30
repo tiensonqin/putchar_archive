@@ -262,7 +262,7 @@
       (rum/with-key (search-box search-mode?) "search-box")
       [:div#head {:key "head"
                   :style (if (and last-scroll-top (> last-scroll-top 60))
-                           {:box-shadow "0 1px #666"}
+                           {:box-shadow "0 2px 8px #004B56"}
                            nil)}
        [:div.row {:class "wrap"
                   :style {:justify-content "space-between"}}
