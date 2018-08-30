@@ -1224,13 +1224,7 @@
             [:div.column.auto-padding {:key "post"}
              [:div {:style {:padding "12px 0"}}
               [:div.center-area {:style {:margin-bottom 64}}
-               [:h1 {:style {:font-weight "600"
-                             :margin-top 0
-                             :margin-bottom "1em"
-                             :text-align "center"
-                             :font-size "280%"
-                             :text-transform "uppercase"
-                             :color "#FFF"}}
+               [:h1.post-page-title
                 (:title post)]
 
                [:div {:style {:text-align "center"

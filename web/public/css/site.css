@@ -431,6 +431,16 @@ a.delete {
     font-size: 1em;
 }
 
+
+.post-page-title {
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 1em;
+    text-align: center;
+    font-size: 280%;
+    color: #FFF;
+}
+
 @media screen and (min-width: 768px) {
     .col-item {
         padding: 15px 0;
@@ -472,6 +482,10 @@ a.delete {
 
     .posts-headers {
         font-size: 1rem;
+    }
+
+    .post-page-title {
+        font-size: 1.5rem;
     }
 }
 
