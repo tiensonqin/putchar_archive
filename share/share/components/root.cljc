@@ -128,7 +128,7 @@
                              :line-height "30px"
                              :font-size "18px"
                              :font-weight "600"
-                             :background colors/primary
+                             :background colors/main
                              :color "#FFF"}
                             (util/mobile?)
                             (assoc :max-width 300))
@@ -420,7 +420,7 @@
                                :style {:font-size 14}}
                (t :sign-out)]]
 
-             {:menu-style {:margin-top 6}}))
+             {:menu-style {:margin-top 17}}))
 
          (when (and (not post?)
                     mobile?)
