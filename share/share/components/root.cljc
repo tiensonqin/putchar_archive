@@ -258,7 +258,6 @@
 
         join-group? (and current-group (contains? (set (map first (seq stared_groups))) (:id current-group)))
         new-report? (citrus/react [:report :new?])]
-    (prn last-scroll-top)
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
       [:div#head {:key "head"
