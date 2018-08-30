@@ -322,7 +322,7 @@ a.set-cover {
 }
 
 svg:hover {
-    fill: #6DD;
+    fill: #FF8C00;
 }
 
 .like svg:hover {
@@ -380,12 +380,12 @@ a.delete {
 }
 
 .icon-button:hover i {
-    color: #6dd;
+    color: #FF8C00;
 }
 
 .ver_divider {
         width: 3px!important;
-        background: linear-gradient(to bottom, #444 0%, #999 53%, #444 100%) /* W3C */
+        background: linear-gradient(to bottom, #002B36 0%, #999 53%, #002B36 100%) /* W3C */
 }
 
 .mention {
@@ -519,7 +519,7 @@ a.delete {
     position: absolute;
     top: -.687rem;
     padding-right: .625rem;
-    background-color: #444;
+    background-color: #002B36;
     font-size: .875rem;
     color: rgb(127,127,127);
 }
@@ -571,7 +571,6 @@ a.delete {
     margin: 0.5em 0;
     border-left: 4px solid #ccc;
     padding: 12px;
-    background: #555;
 }
 
 .comment-box .concate, .comment .concate {
@@ -614,7 +613,7 @@ a.delete {
 }
 
 .control:hover {
-    color: #6dd;
+    color: #FF8C00;
     text-decoration: none;
 }
 

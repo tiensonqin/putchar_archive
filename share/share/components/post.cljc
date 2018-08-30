@@ -264,7 +264,7 @@
                        {:margin-right 12
                         :margin-bottom 12}
                        (= id (:group_id form-data))
-                       (assoc :background-color "#2e2e2e"
+                       (assoc :background-color colors/primary
                               :color "#FFF"))
               :on-click (fn []
                           (citrus/dispatch! :citrus/set-post-form-data
@@ -280,7 +280,7 @@
                                            {:margin-right 12
                                             :margin-bottom 12}
                                          (= value (:lang form-data))
-                                         (assoc :background-color "#2e2e2e"
+                                         (assoc :background-color colors/primary
                                                 :color "#FFF"))
                                 :on-click (fn []
                                             (citrus/dispatch! :citrus/set-post-form-data

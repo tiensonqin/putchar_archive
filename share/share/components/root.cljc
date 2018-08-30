@@ -128,7 +128,7 @@
                              :line-height "30px"
                              :font-size "18px"
                              :font-weight "600"
-                             :background "#555"
+                             :background colors/primary
                              :color "#FFF"}
                             (util/mobile?)
                             (assoc :max-width 300))
@@ -184,7 +184,7 @@
                              :height "100vh"
                              :max-height "100vh"
                              :overflow-y "auto"
-                             :background "#444"}}
+                             :background colors/main}}
    [:div
     [:div.row1 {:style {:justify-content "space-between"
                         :align-items "center"
@@ -258,9 +258,13 @@
 
         join-group? (and current-group (contains? (set (map first (seq stared_groups))) (:id current-group)))
         new-report? (citrus/react [:report :new?])]
+    (prn last-scroll-top)
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
-      [:div#head {:key "head"}
+      [:div#head {:key "head"
+                  :style (if (and last-scroll-top (> last-scroll-top 60))
+                           {:box-shadow "0 1px #666"}
+                           nil)}
        [:div.row {:class "wrap"
                   :style {:justify-content "space-between"}}
         (if (and (= current-path :post)
@@ -380,10 +384,8 @@
               (ui/icon {:type :edit
                         :color "#ddd"})]
              (ui/button {:icon :edit
-                         :icon-attrs {:color "#efefef"
-                                      :width 20
+                         :icon-attrs {:width 20
                                       :height 20}
-                         :class "btn-primary"
                          :style {:margin-left 12}
                          :href "/new-post"}
                (t :write-new-post))))
@@ -391,7 +393,7 @@
          (when (and (not post?)
                     (not mobile?)
                     current-user)
-           (ui/menu
+           (ui/menu {:menu-style {:margin-top 6}}
              [:a {:href (str "/@" (:screen_name current-user))
                   :style {:margin-left 24}}
               (ui/avatar {:shape "circle"
@@ -597,13 +599,13 @@
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"
-                   :style {:margin-top (if mobile? 84 100)}}
+                   :style {:margin-top (if mobile? 96 112)}}
         (routes reconciler route params current-user hot-groups)]
 
        (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login} route)))
          [:div#right {:key "right"
                       :class "column1"
-                      :style {:margin-top 88
+                      :style {:margin-top 100
                               :margin-left 24
                               :width 276}}
           [:div.column
@@ -624,7 +626,7 @@
                  (ui/button {:on-click (fn []
                                          #?(:cljs (cookie/cookie-set :setup-github-sync true))
                                          (util/set-href! (str config/website "/auth/github?sync=true")))
-                             :style {:background "#efefef"}}
+                             :style {:background "#FFF"}}
                    [:div.row1 {:style {:align-items "center"}}
                     (ui/icon {:type :github
                               :width 18

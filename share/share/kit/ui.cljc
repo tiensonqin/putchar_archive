@@ -158,7 +158,7 @@
                     {:style (merge
                              {:margin-top 12
                               :background "#FFF"
-                              :border "1px solid #6dd"
+                              :border "1px solid #FF8C00"
                               :width 276
                               :font-weight 600
                               :z-index 9}

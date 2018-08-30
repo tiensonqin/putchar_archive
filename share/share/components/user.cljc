@@ -327,7 +327,7 @@
                                             {:margin-right 12
                                              :margin-bottom 12}
                                           followed?
-                                          (assoc :background-color colors/dark-cyan
+                                          (assoc :background-color colors/primary
                                                  :color "#FFF"))
                                   :on-click (fn []
                                               (let [value (if followed?

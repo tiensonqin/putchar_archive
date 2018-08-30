@@ -27,7 +27,7 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     color: #d6dbdf;
-    background: #444444;
+    background: #002B36;
 }
 
 *,
@@ -51,7 +51,7 @@ textarea {
 }
 
 a {
-    color: #6DD;
+    color: #FF8C00;
     background-color: transparent;
     text-decoration: none;
     outline: none;
@@ -62,7 +62,7 @@ a {
 }
 
 a:hover {
-    color: #25BFBF;
+    color: #FF8C00;
     text-decoration: underline;
 }
 
@@ -212,12 +212,12 @@ a:hover {
 }
 
 .btn-danger:hover, .btn-primary:hover, .btn-danger:visited, .btn-primary:visited, .btn-primary:focus {
-    color: #6dd;
+    color: #FF8C00;
     font-weight: 600;
 }
 
 .btn-primary {
-    background-color: #008B8B;
+    background-color: #FF8C00;
     color: #FFF;
 }
 
@@ -239,7 +239,7 @@ a:hover {
 .btn-primary .btn-contents {
     font-weight: 600;
     letter-spacing: normal;
-    color: #efefef;
+    color: #fff;
 }
 
 a.hover-opacity:hover {
@@ -324,7 +324,7 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
 }
 
 .post-title:hover {
-    color: #6dd;
+    color: #FF8C00;
 }
 
 .post-item img {
@@ -354,7 +354,7 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
 }
 .button-text {
     letter-spacing: normal;
-    background: #444;
+    background: #002B36;
     border: none;
     text-align: left;
     outline: none;
@@ -396,9 +396,9 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     user-select: none;
     flex-direction: row;
     justify-content: space-between;
-    height: 56px;
-    padding: 0 15px;
-    background: #555;
+    height: 70px;
+    padding: 8 15px;
+    background: #002B36;
     width: 100%;
     -webkit-transform: translate3d(0,0,0);
 }
@@ -490,13 +490,17 @@ input#search_groups {
     padding: 3px 6px;
     margin: 12px 12px 12px 0;
     background: #000;
-    color: #6DD;
+    color: #FFF;
     border-radius: 3px;
     text-decoration: none;
     font-size: 14px;
 }
 
-span.active, a.tag.active {
+a.tag.active {
+    color: #FF8C00;
+}
+
+span.active {
     color: #FFF;
 }
 

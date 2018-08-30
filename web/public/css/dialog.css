@@ -22,7 +22,7 @@
 }
 .rc-dialog-content {
   position: relative;
-  background-color: #444;
+  background-color: #002B36;
   border: none;
   border-radius: 6px 6px;
   background-clip: padding-box;
@@ -61,7 +61,7 @@
     Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding: 13px 20px 14px 20px;
   border-radius: 5px 5px 0 0;
-  background: #444;
+  background: #002B36;
   color: #fff;
   border-bottom: 1px solid #666;
 }

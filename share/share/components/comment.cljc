@@ -310,7 +310,7 @@
                            "favorite"
                            "favorite_border")
                    :color (if liked?
-                            colors/like
+                            colors/primary
                             colors/shadow)
                    :width 20
                    :height 20})]

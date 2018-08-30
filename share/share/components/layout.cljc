@@ -11,6 +11,7 @@
             [share.dicts :refer [t]]
             [share.util :as util]
             [share.config :as config]
+            [share.kit.colors :as colors]
             [clojure.string :as str]))
 
 (rum/defc right-footer < rum/reactive
@@ -83,9 +84,11 @@
                          :margin-top 16}}
       [:a {:href "https://twitter.com/lambdahackers"
            :style {:margin-right 24}}
-       (ui/icon {:type :twitter})]
+       (ui/icon {:type :twitter
+                 :color colors/shadow})]
 
       [:a {:href "https://github.com/tiensonqin/lambdahackers"
            :style {:margin-right 24}}
        (ui/icon {:type :github
-                 :width 18})]]]))
+                 :width 18
+                 :color colors/shadow})]]]))
