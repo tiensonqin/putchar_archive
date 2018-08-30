@@ -183,7 +183,8 @@
                              :padding-bottom 180
                              :height "100vh"
                              :max-height "100vh"
-                             :overflow-y "auto"}}
+                             :overflow-y "auto"
+                             :background "#444"}}
    [:div
     [:div.row1 {:style {:justify-content "space-between"
                         :align-items "center"
@@ -231,8 +232,7 @@
 
     (if current-user
       (ui/button {:on-click #(citrus/dispatch! :user/logout)
-                  :style {:color "#ddd"
-                          :margin-top 48}}
+                  :style {:margin-top 48}}
         (t :sign-out)))]])
 
 (rum/defcs head
@@ -285,13 +285,14 @@
                       (util/ios?))
              [:a {:style {:margin-right 12}
                   :on-click (fn [] (citrus/dispatch! :router/back))}
-              (ui/icon {:type :ios_back})])
+              (ui/icon {:type :ios_back
+                        :color colors/primary})])
            (cond
             (contains? #{:new-post :post-edit} current-path)
             [:div.row1 {:style {:align-items "center"}}
              (widgets/website-logo)
 
-             (if (>= width 375)
+             (when-not mobile?
                [:span.ubuntu {:style {:margin-left 12
                                       :font-weight "600"
                                       :color "#ddd"

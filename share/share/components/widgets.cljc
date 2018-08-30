@@ -113,11 +113,17 @@
           (ui/icon {:type :rss
                     :color "rgb(127,127,127)"})])
 
-       (if website
+       (if (and website (not mobile?))
          [:a {:style {:margin-left 24
                       :font-size "18px"}
               :href website}
           website])]
+
+      (when (and website mobile?)
+        [:a {:style {:font-size "18px"
+                     :margin-top 24}
+             :href website}
+         website])
 
       (if bio
         (transform-content bio {:style {:margin-left 3

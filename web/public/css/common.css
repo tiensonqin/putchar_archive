@@ -532,11 +532,3 @@ span.active, a.tag.active {
     0%    { transform: rotate(0deg); }
     100%  { transform: rotate(360deg); }
 }
-
-textarea, input {
-    background: #efefef;
-}
-
-#publish-dialog h6, #publish-dialog h5, #publish-dialog h4 {
-    color: #666;
-}
