@@ -90,8 +90,15 @@
       [:div.row1 {:style {:margin-left 3
                           :flex-wrap "wrap"
                           :margin-top 24}}
+       (let [url (str config/website "/@" screen_name "/newest.rss")]
+         [:a.control.ubuntu {:href url
+                             :target "_blank"}
+          (ui/icon {:type :rss
+                    :color "rgb(127,127,127)"})])
+
        (if github_handle
          [:a {:href (str "https://github.com/" github_handle)
+              :style {:margin-left 20}
               :target "_blank"}
           (ui/icon {:type :github
                     :color "rgb(127,127,127)"
@@ -100,17 +107,11 @@
        (if twitter_handle
          [:a {:href (str "https://twitter.com/" twitter_handle)
               :target "_blank"
-              :style {:margin-left 24}}
+              :style {:margin-left 24
+                      :margin-top -1}}
           (ui/icon {:type :twitter
                     :width 26
                     :height 26
-                    :color "rgb(127,127,127)"})])
-
-       (let [url (str config/website "/@" screen_name "/newest.rss")]
-         [:a.control.ubuntu {:href url
-                             :target "_blank"
-                             :style {:margin-left 24}}
-          (ui/icon {:type :rss
                     :color "rgb(127,127,127)"})])
 
        (if (and website (not mobile?))
@@ -399,29 +400,30 @@
         [:div.space-between {:style {:flex-wrap "wrap"
                                      :margin-top 12}}
          (sort-buttons current-user group stared-group?)
-         (ui/menu
-           [:a {:on-click (fn [e])
-                :style {:margin-left 24}}
-            (ui/icon {:type :more
-                      :color "rgb(127,127,127)"})]
-           [(if admin?
-              [:a.button-text {:href (str "/" (:name group) "/edit")
-                               :style {:font-size 14}}
-               (t :edit)])
+         (if current-user
+           (ui/menu
+            [:a {:on-click (fn [e])
+                 :style {:margin-left 24}}
+             (ui/icon {:type :more
+                       :color "rgb(127,127,127)"})]
+            [(if admin?
+               [:a.button-text {:href (str "/" (:name group) "/edit")
+                                :style {:font-size 14}}
+                (t :edit)])
 
-            (if admin?
-              [:a.button-text {:on-click (fn []
-                                           (reset! promote? true))
-                               :style {:font-size 14}}
-               (t :promote-member)])
+             (if admin?
+               [:a.button-text {:on-click (fn []
+                                            (reset! promote? true))
+                                :style {:font-size 14}}
+                (t :promote-member)])
 
-            (if member?
-              [:a.button-text {
-                               :on-click #(citrus/dispatch! :user/unstar-group {:object_type :group
-                                                                                :object_id (:id group)})
-                               :style {:font-size 14}}
-               (t :leave-group)])]
-           {:menu-style {:width 200}})]
+             (if member?
+               [:a.button-text {
+                                :on-click #(citrus/dispatch! :user/unstar-group {:object_type :group
+                                                                                 :object_id (:id group)})
+                                :style {:font-size 14}}
+                (t :leave-group)])]
+            {:menu-style {:width 200}}))]
 
         (promote-dialog group promote?)])]))
 

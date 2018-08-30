@@ -768,9 +768,8 @@
                             (util/stop e)
                             (citrus/dispatch! :post/delete post))}
                (t :delete))}
-    [:div {:style {:background "#FFF"}}
-     [:a {:style {:margin-left 12
-                  :color "rgba(0,0,0,0.84)"}
+    [:div
+     [:a {:style {:margin-left 12}
           :href (str "/" (:permalink post))
           :on-click (fn [e]
                       (util/stop e))}

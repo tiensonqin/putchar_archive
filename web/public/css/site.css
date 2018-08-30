@@ -541,7 +541,7 @@ a.delete {
     text-align: justify;
 }
 
-.quoteblock blockquote>.paragraph:last-child p {
+.quoteblock blockquote>.paragraph:last-child p, blockquote > p:last-child {
     margin-bottom: 0;
 }
 
