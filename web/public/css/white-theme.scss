@@ -1,0 +1,41 @@
+$primary-color: #FFF;
+
+body.white-theme {
+    background: $primary-color;
+    color: #212529;
+}
+
+.white-theme {
+    a {
+        color: #007bff;
+    }
+
+    a:hover {
+        color: #0056b3;
+    }
+
+    .control {
+        color: #666;
+    }
+
+    #sort-buttons a:hover, .is-active {
+        color: #000;
+    }
+
+    .divider {
+        color: rgba(0,0,0,0.65);
+    }
+
+    label {
+        color: #666;
+    }
+
+    .radio-button {
+        background: #fff;
+        border: 1px solid #999;
+    }
+
+    #back-to-top {
+        background: #aaa;
+    }
+}

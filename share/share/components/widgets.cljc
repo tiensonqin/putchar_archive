@@ -77,21 +77,22 @@
       [:div.row1 {:style {:flex-wrap "wrap"}}
        (if name
          [:span {:style {:font-size (if mobile? 24 33)
-                         :font-weight "600"}}
+                         :font-weight "600"
+                         :color "#bbb"
+                         :margin-right 12}}
          name])
        [:a.control {:href (str "/@" screen_name)
                     :style {:margin-top (if mobile? 8 17)}}
         [:span {:style (if name
-                         {:margin-left 12}
-                         {:color "#000"
-                          :font-size 24})}
+                         {}
+                         {:font-size 24})}
          (str "@" screen_name)]]]
 
       [:div.row1 {:style {:margin-left 3
                           :flex-wrap "wrap"
                           :margin-top 24}}
        (let [url (str config/website "/@" screen_name "/newest.rss")]
-         [:a.control.ubuntu {:href url
+         [:a.ubuntu {:href url
                              :target "_blank"}
           (ui/icon {:type :rss
                     :color "rgb(127,127,127)"})])
@@ -115,8 +116,8 @@
                     :color "rgb(127,127,127)"})])
 
        (if (and website (not mobile?))
-         [:a {:style {:margin-left 24
-                      :font-size "18px"}
+         [:a.control {:style {:margin-left 24
+                              :font-size "18px"}
               :href website}
           website])]
 
@@ -248,12 +249,10 @@
 
     :else
     (ui/button {:style {:width width}
-                :class "btn-primary"
                 :href (str "/" (:name group))
                 :on-click #(citrus/dispatch! :user/star-group {:object_type :group
                                                                :object_id (:id group)})}
-      (t :join))
-    ))
+      (t :join))))
 
 (rum/defc sort-buttons < rum/reactive
   [current-user group stared-group?]
@@ -351,9 +350,7 @@
                 :title "RSS"
                 :href (str config/website "/hot.rss")}
             (ui/icon {:type :rss
-                      :color "rgb(127,127,127)"})])]
-
-        ]
+                      :color "rgb(127,127,127)"})])]]
 
        [:div {:style {:padding-bottom 8}}
         [:div.space-between {:style {:flex-wrap "wrap"}}
@@ -362,7 +359,8 @@
           (util/original-name (:name group))]
 
          [:div.row1 {:style {:margin-top 3
-                             :margin-left 12}}
+                             :margin-left 12
+                             :height 24}}
           (if (:stars group)
             [:a.control {:title (t :see-all)
                          :href (str "/" (:name group) "/members")}
@@ -438,7 +436,6 @@
                   :right 20
                   :width 36
                   :height 36
-                  :background "#aaa"
                   :z-index 9999
                   :border-radius 2
                   :padding-top 6
@@ -461,13 +458,14 @@
      [:div.row1 {:style {:align-items "center"}}
       (ui/icon {:type :logo
                 :width 36
-                :height 36})
+                :height 36
+                :color "#ccc"})
 
       (when-not (or (util/mobile?)
                     (contains? #{:new-post :post-edit} current-handler))
         [:span.ubuntu {:style {:font-size 18
-                               :color "#ddd"
                                :font-weight 600
+                               :color "#ccc"
                                :margin-top 2
                                :margin-left 6}}
          "Lambdahackers (BETA)"])]]))

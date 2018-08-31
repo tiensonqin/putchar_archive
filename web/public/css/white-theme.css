@@ -1,0 +1,32 @@
+body.white-theme {
+  background: #FFF;
+  color: #212529;
+}
+
+.white-theme a {
+  color: #007bff;
+}
+.white-theme a:hover {
+  color: #0056b3;
+}
+.white-theme .control {
+  color: #666;
+}
+.white-theme #sort-buttons a:hover, .white-theme .is-active {
+  color: #000;
+}
+.white-theme .divider {
+  color: rgba(0, 0, 0, 0.65);
+}
+.white-theme label {
+  color: #666;
+}
+.white-theme .radio-button {
+  background: #fff;
+  border: 1px solid #999;
+}
+.white-theme #back-to-top {
+  background: #aaa;
+}
+
+/*# sourceMappingURL=white-theme.css.map */

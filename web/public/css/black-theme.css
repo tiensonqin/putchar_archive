@@ -1,0 +1,127 @@
+body.black-theme {
+  background-image: linear-gradient(to bottom, #1f364d 56px, #0e2439 100%);
+  color: #bbb;
+}
+
+.black-theme a {
+  color: #87ceeb;
+}
+.black-theme a:hover {
+  color: #55ceeb;
+}
+.black-theme .control {
+  color: #999;
+}
+.black-theme #sort-buttons a:hover, .black-theme .is-active {
+  color: #ddd;
+}
+.black-theme .btn {
+  background-color: #214b75;
+  color: #ccc;
+}
+.black-theme a.btn:hover {
+  color: #FFF;
+}
+.black-theme .btn-primary {
+  background-color: royalblue;
+}
+.black-theme .post-title {
+  color: #ddd;
+}
+.black-theme .post-title:visited {
+  color: #aaa;
+}
+.black-theme a.control:hover, .black-theme .post-title:hover {
+  background-color: #274059;
+  border-radius: 2px;
+  color: #FFF;
+}
+.black-theme .button-text {
+  color: #ccc;
+  background: #0e2439;
+}
+.black-theme input#search:focus, .black-theme input#search:active, .black-theme input#search_groups, .black-theme input#search_groups:active {
+  outline: none;
+  color: #ddd;
+}
+.black-theme input#search_groups:-ms-input-placeholder {
+  color: #bbb;
+  font-weight: 600;
+}
+.black-theme input#search_groups::-webkit-input-placeholder {
+  color: #bbb;
+  font-weight: 600;
+}
+.black-theme .divider {
+  background: #333;
+}
+.black-theme span.logo {
+  color: #aaa;
+}
+.black-theme label {
+  color: #bbb;
+}
+.black-theme .icon-button i {
+  color: #bbb;
+}
+.black-theme .icon-button:hover i {
+  color: #87ceeb;
+}
+.black-theme .ver_divider {
+  background: linear-gradient(to bottom, #1f364d 0%, #999 53%, #0e2439 100%);
+}
+.black-theme .mention {
+  color: #87ceeb;
+}
+.black-theme .right-sub h5 {
+  color: #aaa;
+}
+.black-theme .post-page-title {
+  color: #ccc;
+}
+.black-theme .hr-divider {
+  background-color: lightgray;
+}
+.black-theme .divider-text:after {
+  color: #7f7f7f;
+  background-color: #1f364d;
+}
+.black-theme .rc-dialog-content {
+  background-color: #1f364d;
+}
+.black-theme .rc-dialog-close {
+  color: #ddd;
+}
+.black-theme .rc-dialog-header {
+  color: #fff;
+  border-bottom: 1px solid #666;
+}
+.black-theme input#search {
+  background: #1f364d;
+  color: #FFF;
+}
+.black-theme #modal-panel {
+  background: #0e2439;
+}
+.black-theme svg:hover {
+  fill: #87ceeb;
+}
+.black-theme .tag {
+  background: #274059;
+  color: #87ceeb;
+}
+.black-theme .tag.active {
+  color: #87ceeb;
+  background: #000;
+}
+.black-theme .radio-button {
+  border: 1px solid #bbb;
+}
+.black-theme .highlight-area {
+  background: #1f364d;
+}
+.black-theme #back-to-top {
+  background: #214b75;
+}
+
+/*# sourceMappingURL=black-theme.css.map */

@@ -246,8 +246,7 @@
 
               [:div {:style {:height 24}}]
 
-              (ui/button {:class "btn-primary"
-                          :style {:width 200}
+              (ui/button {:style {:width 200}
                           :href "/new-group"}
                 (t :create-it-yourself))])
 

@@ -104,7 +104,7 @@
 
            :style {:border-radius 4
                    :border "1px solid #777"
-                   :color "#efefef"
+                   :color "#ccc"
                    :font-size "16px"
                    :line-height "1.7"
                    :background "transparent"
@@ -189,35 +189,37 @@
            :entity-id id}
         body (or (citrus/react [:comment :drafts k]) body)]
     [:div.comment-box {:style {:margin-bottom 48}}
-     (if preview?
-       [:div.column {:style {:min-height 130
-                             :justify-content "space-between"}}
-        (post-preview body :asciidoc nil)
-        [:div.divider {:style {:margin-bottom 12}}]]
+     (ui/textarea {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
+                                                        [:comment :refs k] v))
+                   :auto-focus true
+                   :style {:border-radius 4
+                           :border "1px solid #777"
+                           :color "#ccc"
+                           :background "transparent"
+                           :font-size "16px"
+                           :line-height "1.7"
+                           :resize "none"
+                           :width "100%"
+                           :padding 12
+                           :white-space "pre-wrap"
+                           :overflow-wrap "break-word"
+                           :min-height 150}
+                   :default-value body
+                   :on-change (fn [e]
+                                (let [v (util/ev e)]
+                                  (citrus/dispatch! :comment/save-local k v)))})
 
-       (ui/textarea {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
-                                                          [:comment :refs k] v))
-                     :auto-focus true
-                     :style {:border-radius 4
-                             :border "1px solid #777"
-                             :color "#efefef"
-                             :background "transparent"
-                             :font-size "16px"
-                             :line-height "1.7"
-                             :resize "none"
-                             :width "100%"
-                             :padding 12
-                             :white-space "pre-wrap"
-                             :overflow-wrap "break-word"
-                             :min-height 150}
-                     :default-value body
-                     :on-change (fn [e]
-                                  (let [v (util/ev e)]
-                                    (citrus/dispatch! :comment/save-local k v)))}))
-
+     (when preview?
+       [:div.column
+        [:div.divider {:style {:margin-bottom 12}}]
+        (post-preview body :asciidoc nil)]
+)
      ;; submit button
-     [:div.space-between
+     [:div.row1 {:style {:justify-content "flex-end"
+                         :margin-top 6}}
       [:div.row1 {:style {:align-items "center"}}
+       (preview)
+
        (let [on-submit (fn [e]
                          #?(:cljs
                             (do
@@ -233,8 +235,9 @@
                                  (if (not (str/blank? body))
                                    ""
                                    " disabled"))
-                     :style {:margin-top 6
-                            :width 138}
+                     :style {:margin-left 24
+                             :margin-top 6
+                             :width 138}
                      :on-key-down (fn [e]
                                    (when (= 13 (.-keyCode e))
                                      ;; enter key
@@ -245,17 +248,17 @@
             (ui/donut-white)
             (t :update))))
        (if show?
-         [:a.control {:title (t :close)
-                   :on-click #(do
-                                (reset! show? false)
-                                (citrus/dispatch! :citrus/default-update
-                                                  [:comment :reply-box?]
-                                                  false))
-                   :style {:margin-left 6}}
+         [:a {:title (t :close)
+              :on-click #(do
+                           (reset! show? false)
+                           (citrus/dispatch! :citrus/default-update
+                                             [:comment :reply-box?]
+                                             false))
+              :style {:margin-left 6}}
           (ui/icon {:type "close"
                     :color "#999"})])]
 
-      (preview)]]))
+      ]]))
 
 (declare comment-item)
 

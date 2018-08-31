@@ -127,9 +127,7 @@
                              :height 48
                              :line-height "30px"
                              :font-size "18px"
-                             :font-weight "600"
-                             :background colors/main
-                             :color "#FFF"}
+                             :font-weight "600"}
                             (util/mobile?)
                             (assoc :max-width 300))
                    :placeholder (case current-path
@@ -155,14 +153,14 @@
                                    (when (= (.-key e) "Enter")
                                      (search-fn q current-path)))
                    }]
-      [:a.control {:on-click (fn [] (search-fn q current-path))
-                   :style {:margin-right 24
-                           :margin-top 12}}
+      [:a {:on-click (fn [] (search-fn q current-path))
+           :style {:margin-right 24
+                   :margin-top 12}}
        (ui/icon {:type "search"
                  :color colors/shadow})]
 
-      [:a.control {:on-click close-fn
-                   :style {:margin-top 12}}
+      [:a {:on-click close-fn
+           :style {:margin-top 12}}
        (ui/icon {:type "close"
                  :color colors/shadow})]]]))
 
@@ -183,8 +181,7 @@
                              :padding-bottom 180
                              :height "100vh"
                              :max-height "100vh"
-                             :overflow-y "auto"
-                             :background colors/main}}
+                             :overflow-y "auto"}}
    [:div
     [:div.row1 {:style {:justify-content "space-between"
                         :align-items "center"
@@ -205,7 +202,7 @@
                   :height 32})])
 
      (when (and current-user unread?)
-       [:a.control {:href "/notifications"}
+       [:a {:href "/notifications"}
         (ui/icon {:type "notifications"
                   :color colors/primary
                   :width 28
@@ -260,10 +257,7 @@
         new-report? (citrus/react [:report :new?])]
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
-      [:div#head {:key "head"
-                  :style (if (and last-scroll-top (> last-scroll-top 60))
-                           {:box-shadow "0 2px 8px #004B56"}
-                           nil)}
+      [:div#head {:key "head"}
        [:div.row {:class "wrap"
                   :style {:justify-content "space-between"}}
         (if (and (= current-path :post)
@@ -327,7 +321,7 @@
                :id "right-head"}
 
          (when (and new-report? (not mobile?))
-           [:a.control
+           [:a
             {:title (t :reports)
              :href "/reports"
              :style {:padding 12}}
@@ -344,9 +338,9 @@
 
          ;; search
          (if (not post?)
-           [:a.control {:title (t :search)
-                        :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
-                        :style {:padding 12}}
+           [:a {:title (t :search)
+                :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
+                :style {:padding 12}}
             (ui/icon {:type "search"
                       :color "#ddd"})])
 
@@ -359,9 +353,9 @@
            (if current-user
              (when (and unread?
                         (not mobile?))
-               [:a.control {:href "/notifications"
-                            :title (t :notifications)
-                            :style {:padding 12}}
+               [:a {:href "/notifications"
+                    :title (t :notifications)
+                    :style {:padding 12}}
                 (ui/icon {:type "notifications"
                           :color colors/primary})])
 
@@ -382,8 +376,7 @@
                   :style {:padding 8}}
               (ui/icon {:type :edit
                         :color "#ddd"})]
-             (ui/button {:icon :edit
-                         :icon-attrs {:width 20
+             (ui/button {:icon-attrs {:width 20
                                       :height 20}
                          :style {:margin-left 12}
                          :href "/new-post"}
@@ -428,10 +421,10 @@
              :visible show-panel?
              :overlay (modal-panel width mobile? unread? new-report? current-user groups group group-path?)
              :animation "slide-up"}
-            [:a.control {:style {:padding "12px 0 12px 12px"
-                                 :margin-top 2}
-                         :on-click (fn []
-                                     (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
+            [:a {:style {:padding "12px 0 12px 12px"
+                         :margin-top 2}
+                 :on-click (fn []
+                             (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
              (ui/icon {:type "menu"
                        :color "#ddd"})]))]]])))
 

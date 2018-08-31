@@ -229,11 +229,14 @@
          current-user (get-in state [:user :current])
          [seo-title seo-content canonical-url seo-image] (seo/seo-title-content handler route-params state)
           zh-cn? (= locale :zh-cn)
-          ]
+          theme :black]
      (h/html5
       (head req handler zh-cn? seo-content seo-title seo-image canonical-url)
-      [:body
-       [:div#app content]
+      [:body {:class (if (= theme :black)
+                       "black-theme"
+                       "white-theme")}
+       [:div#app
+        content]
 
        [:script {:src (if util/development?
                         "/js/compiled/main.js"

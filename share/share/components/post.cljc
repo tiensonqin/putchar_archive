@@ -37,9 +37,9 @@
                    (swap! init-tops (if toped? dec inc)))
         hide-votes? (citrus/react [:hide-votes?])]
     [:div.row1
-     [:a.scale.control.row1 {:title title
-                             :on-click on-click
-                             :style {:align-items "center"}}
+     [:a.scale.row1 {:title title
+                     :on-click on-click
+                     :style {:align-items "center"}}
       (ui/icon {:width (if post? 24 18)
                 :type :thumb_up
                 :color (if toped? colors/primary "rgb(127,127,127)")
@@ -164,7 +164,7 @@
                              :padding-left 0
                              :width "100%"
                              :padding-right 36
-                             :color "#efefef"}
+                             :color "#ccc"}
                      :on-change (fn [e]
                                   (citrus/dispatch! :citrus/set-post-form-data
                                                     {:title-validated? true
@@ -226,7 +226,7 @@
           :placeholder (t :post-body-placeholder)
           :style {:border "none"
                   :background-color "transparent"
-                  :color "#ddd"
+                  :color "#ccc"
                   :font-size "16px"
                   :resize "none"
                   :width "100%"
@@ -264,7 +264,7 @@
                        {:margin-right 12
                         :margin-bottom 12}
                        (= id (:group_id form-data))
-                       (assoc :background-color colors/primary
+                       (assoc :background-color colors/black
                               :color "#FFF"))
               :on-click (fn []
                           (citrus/dispatch! :citrus/set-post-form-data
@@ -280,7 +280,7 @@
                                            {:margin-right 12
                                             :margin-bottom 12}
                                          (= value (:lang form-data))
-                                         (assoc :background-color colors/primary
+                                         (assoc :background-color colors/black
                                                 :color "#FFF"))
                                 :on-click (fn []
                                             (citrus/dispatch! :citrus/set-post-form-data
