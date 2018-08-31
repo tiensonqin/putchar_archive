@@ -336,8 +336,7 @@
     [:div.auto-padding.ubuntu
      (if (contains? #{:home :newest :latest-reply} current-path)
        [:div {:style {:margin-bottom 12}}
-        [:div.space-between {:style {:align-items "center"
-                                     :margin-bottom 24}}
+        [:div.space-between {:style {:align-items "center"}}
          (sort-buttons current-user nil false)
          (when (not (util/mobile?))
            [:a {:target "_blank"

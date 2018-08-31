@@ -143,7 +143,7 @@
   color: #071839;
 }
 .white-theme *:not(pre) > code {
-  color: darkgreen;
+  color: #000;
 }
 .white-theme .comments .col-item {
   border-bottom: 1px solid #dfdfdf;
