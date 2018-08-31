@@ -3,6 +3,9 @@ body.white-theme {
   color: #212529;
 }
 
+.white-theme #head {
+  background: #FFF;
+}
 .white-theme a {
   color: #007bff;
 }
@@ -13,6 +16,13 @@ body.white-theme {
   color: #666;
 }
 .white-theme #sort-buttons a:hover, .white-theme .is-active {
+  color: #000;
+}
+.white-theme .btn {
+  background-color: #ccc;
+  color: #333;
+}
+.white-theme a.btn:hover {
   color: #000;
 }
 .white-theme .divider {

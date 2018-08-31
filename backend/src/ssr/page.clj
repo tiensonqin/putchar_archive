@@ -33,7 +33,7 @@
 (defonce debug-state (atom nil))
 
 (defn head
-  [req handler zh-cn? seo-content seo-title seo-image canonical-url]
+  [req handler zh-cn? seo-content seo-title seo-image canonical-url theme]
   (let [post? (= handler :post)
         group-name (and (= handler :group)
                         (get-in req [:ui/route :route-params :group-name]))]
@@ -126,9 +126,6 @@
              :title "Newest posts"
              :href (str (:website-uri config) "/newest.rss")}]
 
-     [:meta {:name "theme-color"
-             :content "#FFFFFF"}]
-
      [:link
       {:href "/apple-touch-icon.png",
        :sizes "180x180",
@@ -152,7 +149,9 @@
        :rel "mask-icon"}]
 
      [:meta {:content "#1a1a1a", :name "msapplication-TileColor"}]
-     [:meta {:content "#ffffff", :name "theme-color"}]
+     [:meta {:content (if (= theme "black-theme")
+                        "#1f364d"
+                        "#FFFFFF"), :name "theme-color"}]
 
      [:link {:rel "manifest"
              :href "/manifest.json"}]
@@ -229,12 +228,10 @@
          current-user (get-in state [:user :current])
          [seo-title seo-content canonical-url seo-image] (seo/seo-title-content handler route-params state)
           zh-cn? (= locale :zh-cn)
-          theme :black]
+          theme (str (get state :theme) "-theme")]
      (h/html5
-      (head req handler zh-cn? seo-content seo-title seo-image canonical-url)
-      [:body {:class (if (= theme :black)
-                       "black-theme"
-                       "white-theme")}
+      (head req handler zh-cn? seo-content seo-title seo-image canonical-url theme)
+      [:body {:class theme}
        [:div#app
         content]
 

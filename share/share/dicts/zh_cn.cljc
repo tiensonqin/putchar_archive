@@ -380,6 +380,7 @@
    :delete-this-comment "删除"
 
    ;; post tags
+   :tags "Tags"
    :add-tags-label "添加标签 (可选):"
    :add-tags "最多 3 个标签， 逗号分隔..."
    :email-notification-settings "邮件通知"

@@ -78,14 +78,15 @@
        (if name
          [:span {:style {:font-size (if mobile? 24 33)
                          :font-weight "600"
-                         :color "#bbb"
+                         :color "#ddd"
                          :margin-right 12}}
          name])
        [:a.control {:href (str "/@" screen_name)
                     :style {:margin-top (if mobile? 8 17)}}
         [:span {:style (if name
                          {}
-                         {:font-size 24})}
+                         {:font-size 24
+                          :color "#ddd"})}
          (str "@" screen_name)]]]
 
       [:div.row1 {:style {:margin-left 3
@@ -248,11 +249,12 @@
     nil
 
     :else
-    (ui/button {:style {:width width}
+    [:a.ubuntu {:style {:font-weight "bold"
+                        :font-size 16}
                 :href (str "/" (:name group))
                 :on-click #(citrus/dispatch! :user/star-group {:object_type :group
-                                                               :object_id (:id group)})}
-      (t :join))))
+                                                        :object_id (:id group)})}
+     (t :join)]))
 
 (rum/defc sort-buttons < rum/reactive
   [current-user group stared-group?]

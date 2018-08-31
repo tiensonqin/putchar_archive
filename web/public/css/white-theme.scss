@@ -1,13 +1,21 @@
-$primary-color: #FFF;
+$main-color: #FFF;
+$primary-color: #007bff;
+$header-color: #FFF;
+$btn-color: #214b75;
+
 
 body.white-theme {
-    background: $primary-color;
+    background: $main-color;
     color: #212529;
 }
 
 .white-theme {
+    #head {
+        background: $header-color;
+    }
+
     a {
-        color: #007bff;
+        color: $primary-color;
     }
 
     a:hover {
@@ -19,6 +27,15 @@ body.white-theme {
     }
 
     #sort-buttons a:hover, .is-active {
+        color: #000;
+    }
+
+    .btn {
+        background-color: #ccc;
+        color: #333;
+    }
+
+    a.btn:hover {
         color: #000;
     }
 

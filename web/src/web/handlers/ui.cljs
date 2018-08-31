@@ -57,6 +57,11 @@
      {:state (assoc state :hide-votes? false)
       :cookie [:set-forever "hide-votes" false]})
 
+   :citrus/set-theme
+   (fn [state value]
+     {:state (assoc state :theme value)
+      :cookie [:set-forever "theme" value]})
+
    :citrus/touch-start
    (fn [state e]
      {:state {:touch {:touching? true

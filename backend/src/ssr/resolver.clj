@@ -46,6 +46,7 @@
                                         :height (if mobile? 400 1024)}}
                :locale       (keyword locale)
                :hide-votes?  (= (get-in req [:cookies "hide-votes" :value]) "true")
+               :theme (get-in req [:cookies "theme" :value] "white")
                :hide-github-connect? (= (get-in req [:cookies "hide-github-connect" :value]) "true")
                :user         {:current current-user}
                :notification nil

@@ -48,6 +48,7 @@
         hide-votes?      (or
                           (= (cookie/cookie-get :hide-votes) "true")
                           (:hide-votes? state))
+
         setup-github-sync?      (= (cookie/cookie-get :setup-github-sync) "true")
         zh-cn? (= locale :zh-cn)
         current-user (get-in state [:user :current])
@@ -74,6 +75,7 @@
                                (update m :stared_groups util/normalize))))
                 (assoc :locale locale
                        :hide-votes? hide-votes?
+                       :theme (or (cookie/cookie-get :theme) "white")
                        :setup-github-sync? setup-github-sync?)
                 (assoc-in [:comment :liked-comments]
                           (storage/get :liked-comments))

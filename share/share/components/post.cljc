@@ -259,13 +259,11 @@
 
 (rum/defc select-group-item < rum/static
   [id form-data group]
-  (ui/button {:class "btn-sm"
-              :style (cond->
-                       {:margin-right 12
-                        :margin-bottom 12}
-                       (= id (:group_id form-data))
-                       (assoc :background-color colors/black
-                              :color "#FFF"))
+  (ui/button {:class (str "btn-sm "
+                          (if (= id (:group_id form-data))
+                            "btn-primary"))
+              :style {:margin-right 12
+                      :margin-bottom 12}
               :on-click (fn []
                           (citrus/dispatch! :citrus/set-post-form-data
                                             {:group_id id
@@ -275,13 +273,11 @@
 (rum/defc select-language
   [form-data]
   (let [button-cp (fn [lang value]
-                    (ui/button {:class "btn-sm"
-                                :style (cond->
-                                           {:margin-right 12
-                                            :margin-bottom 12}
-                                         (= value (:lang form-data))
-                                         (assoc :background-color colors/black
-                                                :color "#FFF"))
+                    (ui/button {:class (str "btn-sm "
+                                            (if (= value (:lang form-data))
+                                              "btn-primary"))
+                                :style {:margin-right 12
+                                        :margin-bottom 12}
                                 :on-click (fn []
                                             (citrus/dispatch! :citrus/set-post-form-data
                                                               {:lang value}))}
@@ -884,20 +880,12 @@
          [:div.column {:style {:justify-content "center"}}
           [:div.space-between
            [:div
-            [:a.no-decoration.post-title {:style {:margin-right 6}
-                                          :href post-link}
-             (:title post)]
-
-            (when-not mobile?
-              (tags (:tags post)
-                   {:style (cond-> {}
-                             mobile?
-                             (assoc :display "flex"
-                                    :flex-directon "row"
-                                    :flex-wrap "wrap"))}
-                   {:font-size "10pt"
-                    :height "16px"
-                    :margin "6px 6px 6px 0"}))]
+            [:a.no-decoration.post-title (cond->
+                                             {:style {:margin-right 6}
+                                              :href post-link}
+                                           (seq (:tags post))
+                                           (assoc :title (str (t :tags) ": " (str/join ", " (:tags post)))))
+             (:title post)]]
 
            (when-not user?
              [:a.control {:href post-link

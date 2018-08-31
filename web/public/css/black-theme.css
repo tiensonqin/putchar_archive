@@ -3,8 +3,11 @@ body.black-theme {
   color: #bbb;
 }
 
+.black-theme #head {
+  background: #1f364d;
+}
 .black-theme a {
-  color: #87ceeb;
+  color: #6dd;
 }
 .black-theme a:hover {
   color: #55ceeb;
@@ -16,14 +19,14 @@ body.black-theme {
   color: #ddd;
 }
 .black-theme .btn {
-  background-color: #214b75;
-  color: #ccc;
+  background-color: #ccc;
+  color: #333;
 }
 .black-theme a.btn:hover {
-  color: #FFF;
+  color: #000;
 }
 .black-theme .btn-primary {
-  background-color: royalblue;
+  background-color: #3bb;
 }
 .black-theme .post-title {
   color: #ddd;
@@ -65,19 +68,19 @@ body.black-theme {
   color: #bbb;
 }
 .black-theme .icon-button:hover i {
-  color: #87ceeb;
+  color: #6dd;
 }
 .black-theme .ver_divider {
   background: linear-gradient(to bottom, #1f364d 0%, #999 53%, #0e2439 100%);
 }
 .black-theme .mention {
-  color: #87ceeb;
+  color: #6dd;
 }
 .black-theme .right-sub h5 {
   color: #aaa;
 }
 .black-theme .post-page-title {
-  color: #ccc;
+  color: #ddd;
 }
 .black-theme .hr-divider {
   background-color: lightgray;
@@ -104,14 +107,14 @@ body.black-theme {
   background: #0e2439;
 }
 .black-theme svg:hover {
-  fill: #87ceeb;
+  fill: #6dd;
 }
 .black-theme .tag {
   background: #274059;
-  color: #87ceeb;
+  color: #6dd;
 }
 .black-theme .tag.active {
-  color: #87ceeb;
+  color: #6dd;
   background: #000;
 }
 .black-theme .radio-button {
@@ -122,6 +125,9 @@ body.black-theme {
 }
 .black-theme #back-to-top {
   background: #214b75;
+}
+.black-theme pre > code, .black-theme .hljs {
+  background: #1f364d;
 }
 
 /*# sourceMappingURL=black-theme.css.map */

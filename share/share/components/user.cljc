@@ -322,13 +322,10 @@
             (reset! languages-atom languages))
         button-cp (fn [lang value]
                     (let [followed? (contains? (set @languages-atom) value)]
-                      (ui/button {:class "btn-sm"
-                                 :style (cond->
-                                            {:margin-right 12
-                                             :margin-bottom 12}
-                                          followed?
-                                          (assoc :background-color colors/primary
-                                                 :color "#FFF"))
+                      (ui/button {:class (str "btn-sm "
+                                              (if followed? "btn-primary"))
+                                  :style {:margin-right 12
+                                          :margin-bottom 12}
                                   :on-click (fn []
                                               (let [value (if followed?
                                                             (vec (distinct (remove #{value} @languages-atom)))

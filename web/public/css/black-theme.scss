@@ -1,5 +1,5 @@
 $main-color: #0e2439;
-$primary-color: #87ceeb;
+$primary-color: #6dd;
 $header-color: #1f364d;
 $btn-color: #214b75;
 
@@ -9,6 +9,10 @@ body.black-theme {
 }
 
 .black-theme {
+    #head {
+        background: $header-color;
+    }
+
     a {
         color: $primary-color;
     }
@@ -26,16 +30,16 @@ body.black-theme {
     }
 
     .btn {
-        background-color: $btn-color;
-        color: #ccc;
+        background-color: #ccc;
+        color: #333;
     }
 
     a.btn:hover {
-        color: #FFF;
+        color: #000;
     }
 
     .btn-primary {
-        background-color: royalblue;
+        background-color: #3bb;
     }
 
     .post-title {
@@ -104,7 +108,7 @@ body.black-theme {
     }
 
     .post-page-title {
-        color: #ccc;
+        color: #ddd;
     }
 
     .hr-divider {
@@ -163,4 +167,9 @@ body.black-theme {
     #back-to-top {
         background: $btn-color;
     }
+
+    pre > code, .hljs {
+        background: $header-color;
+    }
+
 }

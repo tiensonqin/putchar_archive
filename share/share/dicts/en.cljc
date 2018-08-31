@@ -168,7 +168,7 @@
    :search-groups "Search groups..."
    :search-posts "Search posts..."
    :reports "Reports"
-   :write-new-post "New post"
+   :write-new-post "Write new post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
    :root-title "Lambdahackers - The repo of programmers' thoughts."
    :root-description "Lambdahackers is a community for programmers to discuss and share their thoughts. You can read news, or join your favorite groups to post, comment or vote. You can also create a community as long as it's related to programmers."
@@ -371,7 +371,7 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :delete-this-post "Delete this post"
    :report-this-comment "Report this comment"
    :delete-this-comment "Delete this comment"
-
+   :tags "Tags"
    :add-tags-label "Add tags (optional):"
    :add-tags "Up to 3 tags, seperated by commas..."
    :email-notification-settings "Email notification settings"

@@ -14,6 +14,22 @@
             [share.kit.colors :as colors]
             [clojure.string :as str]))
 
+(rum/defc theme < rum/reactive
+  []
+  (let [theme (citrus/react [:theme])
+        black? (= theme "black")]
+    [:div.row1 {:style {:margin-top 16}}
+     [:a.control {:on-click (fn [e]
+                              (util/stop e)
+                              (citrus/dispatch! :citrus/set-theme (if black?
+                                                                    "white"
+                                                                    "black")))}
+      (str
+       (t :switch-to)
+       (if black?
+         "White theme"
+         "Black theme"))]]))
+
 (rum/defc right-footer < rum/reactive
   []
   (let [locale (citrus/react :locale)
@@ -30,25 +46,7 @@
       [:a.control
        {:style {:margin-left 24}
         :href "mailto:tiensonqin@gmail.com"}
-       (t :contact-us)]
-
-      (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
-                                         :on-click (fn [e]
-                                                     (util/stop e)
-                                                     (citrus/dispatch! :citrus/set-locale (if zh-cn?
-                                                                                            :en
-                                                                                            :zh-cn)))}
-                               (if zh-cn?
-                                 "English"
-                                 "简体中文"))
-                    :animation "slide-up"}
-                   [:a.no-decoration {:key "language"
-                                      :style {:margin-left 24}}
-                    [:div.row1
-                     (ui/icon {:type :translate
-                               :width 18
-                               :height 18
-                               :color "#bbb"})]])]
+       (t :contact-us)]      ]
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
@@ -79,6 +77,8 @@
                    :style {:margin-right 24}}
        (t :bugs)]]
 
+     (theme)
+
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
                          :margin-top 16}}
@@ -91,4 +91,20 @@
            :style {:margin-right 24}}
        (ui/icon {:type :github
                  :width 18
-                 :color colors/shadow})]]]))
+                 :color colors/shadow})]
+
+      (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
+                                         :on-click (fn [e]
+                                                     (util/stop e)
+                                                     (citrus/dispatch! :citrus/set-locale (if zh-cn?
+                                                                                            :en
+                                                                                            :zh-cn)))}
+                               (if zh-cn?
+                                 "English"
+                                 "简体中文"))
+                    :animation "slide-up"}
+                   [:a
+                    (ui/icon {:type :translate
+                              :width 20
+                              :height 20
+                              :color "#bbb"})])]]))

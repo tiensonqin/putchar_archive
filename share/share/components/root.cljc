@@ -360,13 +360,13 @@
                           :color colors/primary})])
 
              (when-not group-path?
-               (ui/button {:on-click (fn []
+               [:a.ubuntu {:on-click (fn []
                                        (citrus/dispatch! :user/show-signin-modal?))
-                           :class "btn-primary"
                            :style {:margin-left 12
                                    :margin-right 12
-                                   :font-size 15}}
-                 (t :signin)))))
+                                   :font-size 17
+                                   :font-weight "600"}}
+                (t :signin)])))
 
          ;; new post
          (when (and current-user
@@ -376,11 +376,10 @@
                   :style {:padding 8}}
               (ui/icon {:type :edit
                         :color "#ddd"})]
-             (ui/button {:icon-attrs {:width 20
-                                      :height 20}
-                         :style {:margin-left 12}
+             [:a.ubuntu {:style {:margin-left 12
+                                 :font-size 16}
                          :href "/new-post"}
-               (t :write-new-post))))
+              (t :write-new-post)]))
 
          (when (and (not post?)
                     (not mobile?)
