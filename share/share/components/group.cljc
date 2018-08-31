@@ -321,9 +321,7 @@
           logo [:div {:key "group-logo"}
                 [:img {:src (util/group-logo group-name)
                        :style {:max-height 36
-                               :max-width 64
-                               ;; TODO: using svg
-                               :border-radius "50%"}}]]
+                               :max-width 64}}]]
           logo-text [:div.row1 {:style {:align-items "center"}}
                      logo
                      text]]

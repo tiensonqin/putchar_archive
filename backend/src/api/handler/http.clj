@@ -516,8 +516,7 @@
              ;; only send email if user is offline.
              (j/with-db-connection [conn datasource]
                (let [exclude-emails (atom #{})
-                     data {
-                           :post-title (:title post)
+                     data {:post-title (:title post)
                            :screen_name (:screen_name user)
                            :body (:body comment)
                            :created_at (su/date-format (:created_at comment))
