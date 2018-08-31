@@ -18,7 +18,7 @@
      (:require-macros [cljs.core.async.macros :refer [go]])))
 
 (rum/defc avatar
-  [user {:keys [class title pro?]}]
+  [user {:keys [class title]}]
   [:div.user-avatar
    [:a {:title (or title (:name user) (:screen_name user))
         :href (str "/@" (:screen_name user))}
@@ -27,15 +27,7 @@
                   {:src (util/cdn-image (:screen_name user))
                    :shape "circle"}
                   class
-                  (assoc :class class)))
-     (if pro?
-       [:span {:style {:background colors/primary
-                       :color "#FFF"
-                       :padding "0 6px"
-                       :border-radius 6
-                       :font-size 10
-                       :text-align "center"}}
-        "PRO"])]]])
+                  (assoc :class class)))]]])
 
 (rum/defc raw-html
   [opts html]
@@ -78,7 +70,7 @@
        (if name
          [:span {:style {:font-size (if mobile? 24 33)
                          :font-weight "600"
-                         :color "#ddd"
+                         :color (colors/icon-color)
                          :margin-right 12}}
          name])
        [:a.control {:href (str "/@" screen_name)
@@ -86,7 +78,7 @@
         [:span {:style (if name
                          {}
                          {:font-size 24
-                          :color "#ddd"})}
+                          :color (colors/icon-color)})}
          (str "@" screen_name)]]]
 
       [:div.row1 {:style {:margin-left 3
@@ -461,13 +453,13 @@
       (ui/icon {:type :logo
                 :width 36
                 :height 36
-                :color "#ccc"})
+                :color (colors/icon-color)})
 
       (when-not (or (util/mobile?)
                     (contains? #{:new-post :post-edit} current-handler))
         [:span.ubuntu {:style {:font-size 18
                                :font-weight 600
-                               :color "#ccc"
+                               :color (colors/icon-color)
                                :margin-top 2
                                :margin-left 6}}
          "Lambdahackers (BETA)"])]]))
@@ -492,7 +484,7 @@
          :animation "slide-up"}
         [:a.no-decoration.control.ubuntu {:style {:padding 12
                                                   :font-size 13
-                                                  :font-weight colors/shadow}}
+                                                  :font-weight (colors/shadow)}}
          (if markdown?
            "Markdown"
            "Asciidoc")]))
@@ -506,7 +498,7 @@
                       [:post :form-data :preview?]
                       (not (:preview? form-data))))}
      (ui/icon {:type "visibility"
-               :color (if (:preview? form-data) colors/primary colors/shadow)})]]))
+               :color (if (:preview? form-data) (colors/primary) (colors/shadow))})]]))
 
 (rum/defc github-connect
   []

@@ -3,12 +3,12 @@ $primary-color: #6dd;
 $header-color: #1f364d;
 $btn-color: #214b75;
 
-body.black-theme {
-    background-image: linear-gradient(to bottom, $header-color 56px,$main-color 100%);
-    color: #bbb;
-}
-
 .black-theme {
+    body {
+        background-image: linear-gradient(to bottom, $header-color 56px,$main-color 100%);
+        color: #bbb;
+    }
+
     #head {
         background: $header-color;
     }
@@ -172,4 +172,24 @@ body.black-theme {
         background: $header-color;
     }
 
+    #post-box, textarea {
+        color: #ccc;
+        border: 1px solid #777;
+    }
+
+    .editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .editor h6 a {
+        color: #ddd;
+    }
+
+    .comments .col-item {
+        border-bottom: 1px solid #353535;
+    }
+
+    .col-item:last-child {
+        border-bottom: none;
+    }
+
+    .menu-item:hover {
+        background: #ddd;
+    }
 }

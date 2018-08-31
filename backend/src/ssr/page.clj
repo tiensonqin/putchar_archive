@@ -229,25 +229,26 @@
          [seo-title seo-content canonical-url seo-image] (seo/seo-title-content handler route-params state)
           zh-cn? (= locale :zh-cn)
           theme (str (get state :theme) "-theme")]
-     (h/html5
-      (head req handler zh-cn? seo-content seo-title seo-image canonical-url theme)
-      [:body {:class theme}
-       [:div#app
-        content]
+      (h/html5
+       {:class theme}
+       (head req handler zh-cn? seo-content seo-title seo-image canonical-url theme)
+       [:body
+        [:div#app
+         content]
 
-       [:script {:src (if util/development?
-                        "/js/compiled/main.js"
-                        (str "/main-" version ".js"))}]
+        [:script {:src (if util/development?
+                         "/js/compiled/main.js"
+                         (str "/main-" version ".js"))}]
 
-       [:script {:src "/asciidoctor.min.js"}]
+        [:script {:src "/asciidoctor.min.js"}]
 
-       ;; TODO: http2 push using json
-       [:script
-        (str "web.core.init(" (state->str state) ")")]
+        ;; TODO: http2 push using json
+        [:script
+         (str "web.core.init(" (state->str state) ")")]
 
-       [:script
-        (format
-         "
+        [:script
+         (format
+          "
 // Check that service workers are registered
 if ('serviceWorker' in navigator) {
   // Use the window load event to keep the page load performant
@@ -256,11 +257,11 @@ if ('serviceWorker' in navigator) {
   });
 }
 "
-         (if util/development?
-           "_dev"
-           ""))]
+          (if util/development?
+            "_dev"
+            ""))]
 
-       ;; Google analytics
-       [:script {:src "/ga.js"
-                 :defer true
-                 :async true}]]))))
+        ;; Google analytics
+        [:script {:src "/ga.js"
+                  :defer true
+                  :async true}]]))))

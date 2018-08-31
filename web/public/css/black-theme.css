@@ -1,8 +1,7 @@
-body.black-theme {
+.black-theme body {
   background-image: linear-gradient(to bottom, #1f364d 56px, #0e2439 100%);
   color: #bbb;
 }
-
 .black-theme #head {
   background: #1f364d;
 }
@@ -128,6 +127,22 @@ body.black-theme {
 }
 .black-theme pre > code, .black-theme .hljs {
   background: #1f364d;
+}
+.black-theme #post-box, .black-theme textarea {
+  color: #ccc;
+  border: 1px solid #777;
+}
+.black-theme .editor h1 a, .black-theme .editor h2 a, .black-theme .editor h3 a, .black-theme .editor h4 a, .black-theme .editor h5 a, .black-theme .editor h6 a {
+  color: #ddd;
+}
+.black-theme .comments .col-item {
+  border-bottom: 1px solid #353535;
+}
+.black-theme .col-item:last-child {
+  border-bottom: none;
+}
+.black-theme .menu-item:hover {
+  background: #ddd;
 }
 
 /*# sourceMappingURL=black-theme.css.map */

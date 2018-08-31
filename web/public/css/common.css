@@ -47,8 +47,8 @@ body {
     user-select: none;
     flex-direction: row;
     justify-content: space-between;
-    height: 70px;
-    padding: 8px 15px;
+    height: 60px;
+    padding: 3px 15px;
     width: 100%;
     -webkit-transform: translate3d(0,0,0);
 }
@@ -146,13 +146,6 @@ a:hover {
 #app {
     height: 100%;
     overflow-y: auto;
-}
-
-.shadow {
-    border-radius: 4px;
-    -webkit-box-shadow: 0 1px 8px #ddd;
-    box-shadow: 0 1px 8px #ddd;
-    display: block;
 }
 
 .center {
@@ -474,10 +467,6 @@ span.active {
     opacity: 0;
 }
 
-.editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .editor h6 a {
-    color: #ddd;
-}
-
 .spinner {
     height: 40px;
     width: 40px;
@@ -490,4 +479,9 @@ span.active {
 @keyframes rotate {
     0%    { transform: rotate(0deg); }
     100%  { transform: rotate(360deg); }
+}
+
+a#quote-selection {
+    background: #2156a5;
+    color: #FFF;
 }

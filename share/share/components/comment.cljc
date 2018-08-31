@@ -28,7 +28,7 @@
                                                    [:comment :form-data :preview?]
                                                    (if preview? false true)))}
      (ui/icon {:type "visibility"
-               :color (if preview? colors/primary colors/shadow)
+               :color (if preview? (colors/primary) (colors/shadow))
                :width 20})]))
 
 (rum/defcs default-select-input <
@@ -103,8 +103,6 @@
            :min-rows 5
 
            :style {:border-radius 4
-                   :border "1px solid #777"
-                   :color "#ccc"
                    :font-size "16px"
                    :line-height "1.7"
                    :background "transparent"
@@ -193,8 +191,6 @@
                                                         [:comment :refs k] v))
                    :auto-focus true
                    :style {:border-radius 4
-                           :border "1px solid #777"
-                           :color "#ccc"
                            :background "transparent"
                            :font-size "16px"
                            :line-height "1.7"
@@ -313,15 +309,15 @@
                            "favorite"
                            "favorite_border")
                    :color (if liked?
-                            colors/primary
-                            colors/shadow)
+                            (colors/primary)
+                            (colors/shadow))
                    :width 20
                    :height 20})]
 
 
         [:span.number {:style {:margin-left 6
                                :font-size "15px"
-                               :color colors/shadow
+                               :color (colors/shadow)
                                :font-weight "600"}}
          likes]]
 
@@ -329,7 +325,7 @@
          [:a {:on-click (fn [])
               :style {:margin-right 24}}
           (ui/icon {:type :more
-                    :color colors/shadow})]
+                    :color (colors/shadow)})]
          [(if (:permalink entity)
             [:a.button-text {:style {:font-size 14}
                              :on-click (fn []
@@ -358,7 +354,7 @@
                                            (citrus/dispatch! :comment/reply comment)
                                            (reset! show-comment-box? true))}
         (ui/icon {:type "reply"
-                  :color colors/shadow})]]]
+                  :color (colors/shadow)})]]]
 
      (when @show-link?
        [:div.row1 {:style {:margin-top 12

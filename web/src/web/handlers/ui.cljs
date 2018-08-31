@@ -2,7 +2,8 @@
   (:require [share.util :as util]
             [clojure.string :as str]
             [appkit.promise :as p]
-            [share.dommy :as dommy]))
+            [share.dommy :as dommy]
+            [share.kit.colors :as colors]))
 
 (def handlers
   {:layout/change
@@ -59,6 +60,11 @@
 
    :citrus/set-theme
    (fn [state value]
+     (reset! colors/theme value)
+     (let [html (dommy/sel1 "html")
+           black? (= (name value) "black")]
+       (dommy/remove-class! html (if black? "white-theme" "black-theme"))
+       (dommy/add-class! html (str value "-theme")))
      {:state (assoc state :theme value)
       :cookie [:set-forever "theme" value]})
 

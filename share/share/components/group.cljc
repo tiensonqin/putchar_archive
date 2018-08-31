@@ -316,7 +316,7 @@
           text [:span.logo.fadein {:style {:max-width (if mobile?
                                                  80
                                                  300)
-                                           :color "#ddd"}}
+                                           :color (colors/icon-color)}}
                 (util/original-name group-name)]
           logo [:div {:key "group-logo"}
                 [:img {:src (util/group-logo group-name)
@@ -391,7 +391,7 @@
     [:div#joined_groups.row1.right-sub
      [:div.space-between {:style {:align-items "center"
                                   :margin-bottom 6}}
-      [:h5 {:color "#aaa"}
+      [:h5 {:color (colors/shadow)}
        (t :groups)]
 
       [:a {:href "/groups"
@@ -401,7 +401,7 @@
        (ui/icon {:type :add_circle_outline
                  :width 20
                  :height 20
-                 :color "#aaa"})]]
+                 :color (colors/shadow)})]]
 
      (if (seq groups)
        (let [n (count groups)
@@ -441,19 +441,22 @@
   [params]
   (let [{:keys [admins members]} (citrus/react [:group :by-name (:group-name params)])]
     [:div.column.auto-padding
-     [:h1 (str (t :all-members) ": ")]
+     [:h1 {:style {:margin-bottom "1em"}}
+      (str (t :all-members) ": ")]
 
-     ;; admins
-     [:div.h2 {:style {:margin-bottom 12}}
-      (str/upper-case (t :admins))]
+     (query/query
+       [:div.column
+        ;; admins
+        [:div.h2 {:style {:margin-bottom 12}}
+         (str/upper-case (t :admins))]
 
-     [:div.row1 {:style {:flex-wrap "wrap"}}
-      (members-cp admins)]
+        [:div.row1 {:style {:flex-wrap "wrap"}}
+         (members-cp admins)]
 
 
-     [:div.divider]
+        [:div.divider]
 
-     ;; members
-     [:div.h2 {:style {:margin-bottom 12}}
-      (str/upper-case (t :members))]
-     (members-cp members)]))
+        ;; members
+        [:div.h2 {:style {:margin-bottom 12}}
+         (str/upper-case (t :members))]
+        (members-cp members)])]))

@@ -1,11 +1,25 @@
-(ns share.kit.colors)
+(ns share.kit.colors
+  (:require #?(:cljs [appkit.cookie :as cookie])
+            [clojure.string]))
 
-(def main "#0e2439")
+(def theme (atom (or #?(:cljs (cookie/cookie-get :theme)
+                        :clj "white")
+                     "white")))
 
-(def primary "#6dd")
+(defn primary
+  []
+  (if (= @theme "black")
+    "#6dd"
+    "#2156a5"))
 
-(def shadow "#bbb")
+(defn shadow
+  []
+  (if (= @theme "black")
+    "#bbb"
+    "#666"))
 
-(def white "#ddd")
-
-(def black "#222")
+(defn icon-color
+  []
+  (if (= @theme "black")
+    "#ccc"
+    "#444"))

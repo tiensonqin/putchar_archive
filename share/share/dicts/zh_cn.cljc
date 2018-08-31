@@ -437,4 +437,6 @@
    :select-which-languages "设置你关注的语言。"
    :go-to-home "首页"
    :signin-with-email "邮箱登录"
+   :light-theme "浅色主题"
+   :dark-theme "深色主题"
    })

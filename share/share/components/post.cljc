@@ -24,7 +24,8 @@
 (rum/defcs vote < rum/reactive
   (rum/local 0 ::init-tops)
   [state post]
-  (let [init-tops (get state ::init-tops)
+  (let [theme (citrus/react [:theme])
+        init-tops (get state ::init-tops)
         toped-posts (set (citrus/react [:post :toped]))
         toped? (and (set? toped-posts)
                     (toped-posts (:id post)))
@@ -42,7 +43,7 @@
                      :style {:align-items "center"}}
       (ui/icon {:width (if post? 24 18)
                 :type :thumb_up
-                :color (if toped? colors/primary "rgb(127,127,127)")
+                :color (if toped? (colors/primary) "rgb(127,127,127)")
                 :opts {:style {:margin-top -2}}})]
      (when-not hide-votes?
        [:span.number {:style {:margin-left 6
@@ -84,8 +85,8 @@
                         "bookmark"
                         "bookmark_border")
                 :color (if bookmarked?
-                         colors/primary
-                         colors/shadow)}
+                         (colors/primary)
+                         (colors/shadow))}
                icon-attrs))]))
 
 (rum/defc edit-toolbox < rum/reactive
@@ -122,7 +123,7 @@
                            identity)
               :style {:margin-left margin}}
           (ui/icon {:type :photo
-                    :color colors/shadow})]))
+                    :color (colors/shadow)})]))
 
      (when post-edit?
        [:a {:title (t :poll)
@@ -133,7 +134,7 @@
                          identity)
             :style {:margin-left margin}}
         (ui/icon {:type :poll
-                  :color (if poll? colors/primary colors/shadow)})])
+                  :color (if poll? (colors/primary) (colors/shadow))})])
 
      [:input
       {:id "photo_upload"
@@ -164,7 +165,7 @@
                              :padding-left 0
                              :width "100%"
                              :padding-right 36
-                             :color "#ccc"}
+                             :color (colors/icon-color)}
                      :on-change (fn [e]
                                   (citrus/dispatch! :citrus/set-post-form-data
                                                     {:title-validated? true
@@ -194,7 +195,7 @@
                              )))}
         (ui/icon {:type "fullscreen"
                   :color (if @fullscreen?
-                           colors/primary
+                           (colors/primary)
                            "#666")})])]))
 
 (rum/defcs new-post-body <
@@ -226,7 +227,6 @@
           :placeholder (t :post-body-placeholder)
           :style {:border "none"
                   :background-color "transparent"
-                  :color "#ccc"
                   :font-size "16px"
                   :resize "none"
                   :width "100%"
@@ -368,7 +368,7 @@
            :style {:margin-left 12
                    :font-weight "600"
                    :color (if @skip?
-                            colors/primary
+                            (colors/primary)
                             "rgb(127,127,127)")}}
        (util/format "(%s)" (if @skip?
                              (t :undo)
@@ -559,7 +559,7 @@
                       :align-items "center"
                       :color (if (nil? poll_choice)
                                "#efefef"
-                               colors/shadow)}
+                               (colors/shadow))}
               :key id
               :on-click (fn [e]
                           (when-not (or poll_closed poll_choice)
@@ -573,7 +573,7 @@
                [:i {:class "fa fa-check-square-o"
                     :style {:font-size 20
                             :margin-right 12
-                            :color colors/primary}}]
+                            :color (colors/primary)}}]
                [:span.radio-button {:style {:border-radius 10}}])
              v
              (let [votes (if votes votes 0)]
@@ -714,7 +714,7 @@
        (ui/icon {:type :twitter
                  :width 27
                  :height 27
-                 :color colors/shadow})])))
+                 :color (colors/shadow)})])))
 
 (rum/defc ops-link
   [post]
@@ -730,7 +730,7 @@
                            :margin-top 4}}
    (ui/icon {:type :share
              :width 18
-             :color colors/shadow})])
+             :color (colors/shadow)})])
 
 (rum/defc ops-delete
   [post current-user-id]
@@ -864,7 +864,7 @@
         [:div.column
          (when user?
            [:div.row1 {:style {:margin-bottom 12
-                               :color colors/shadow
+                               :color (colors/shadow)
                                :font-size 15}}
             (util/date-format (:created_at post))
 
@@ -1136,8 +1136,6 @@
           [:a#quote-selection.no-decoration.quote-selection-area
            {:style {:padding "6px 12px"
                     :border-radius 4
-                    :background "#bbb"
-                    :color "#FFF"
                     :position "fixed"
                     :top (+ (get-in selection [:boundary :bottom]) 12)
                     :left (+ (get-in selection [:boundary :left]))}
@@ -1215,22 +1213,21 @@
                [:h1.post-page-title
                 (:title post)]
 
-               [:div {:style {:text-align "center"
+               [:div#post-user {:style {:text-align "center"
                               :font-style "italic"
                               :font-size "1.1em"}}
-                [:a.control {:href (str "/@" (:screen_name user))}
+                [:a {:href (str "/@" (:screen_name user))}
                  (if (:name user)
                    (:name user)
                    (str "@" (:screen_name user)))]
 
-                [:span {:style {:margin-left 12
-                                :color "#bbb"}}
+                [:span {:style {:margin-left 12}}
                  (util/date-format (:created_at post))]
 
                 (if (= (:id current-user) (:id user))
-                  [:a.control {:on-click (fn [e]
-                                           (util/set-href! (str config/website "/p/" (:id post) "/edit")))
-                               :style {:margin-left 12}}
+                  [:a {:on-click (fn [e]
+                                   (util/set-href! (str config/website "/p/" (:id post) "/edit")))
+                       :style {:margin-left 12}}
                    (t :edit)])]]
 
               [:div.post

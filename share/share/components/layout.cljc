@@ -27,8 +27,8 @@
       (str
        (t :switch-to)
        (if black?
-         "White theme"
-         "Black theme"))]]))
+         (t :light-theme)
+         (t :dark-theme)))]]))
 
 (rum/defc right-footer < rum/reactive
   []
@@ -85,13 +85,13 @@
       [:a {:href "https://twitter.com/lambdahackers"
            :style {:margin-right 24}}
        (ui/icon {:type :twitter
-                 :color colors/shadow})]
+                 :color (colors/shadow)})]
 
       [:a {:href "https://github.com/tiensonqin/lambdahackers"
            :style {:margin-right 24}}
        (ui/icon {:type :github
                  :width 18
-                 :color colors/shadow})]
+                 :color (colors/shadow)})]
 
       (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
                                          :on-click (fn [e]
@@ -107,4 +107,4 @@
                     (ui/icon {:type :translate
                               :width 20
                               :height 20
-                              :color "#bbb"})])]]))
+                              :color (colors/shadow)})])]]))

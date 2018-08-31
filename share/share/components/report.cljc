@@ -32,8 +32,7 @@
                                        :object_type type
                                        :object_id id}]
                              (citrus/dispatch! :report/new data))))]
-          [:div.column {:style {:background "#FFF"
-                                :justify-content "center"
+          [:div.column {:style {:justify-content "center"
                                 :align-items "center"}}
            (ui/button {:style {:width 300}
                        :on-click (on-click 0)}
@@ -147,7 +146,7 @@
                          :on-click (fn []
                                      (citrus/dispatch! :citrus/report-delete report))}
                         (t :delete))}
-             [:div {:style {:background "#FFF"}}
+             [:div
               (if (= object_type "post")
                 [:a {:style {:margin-left 12
                              :color "rgba(0,0,0,0.84)"}
@@ -165,8 +164,7 @@
               :style {:width (min 600 (- (:width (util/get-layout)) 48))}
               :animation "zoom"
               :maskAnimation "fade"}
-             [:div.column {:style {:background "#FFF"
-                                   :justify-content "center"
+             [:div.column {:style {:justify-content "center"
                                    :align-items "center"}}
               (ui/avatar {:class "ant-avatar-lg"
                           :shape "circle"

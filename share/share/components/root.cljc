@@ -157,12 +157,12 @@
            :style {:margin-right 24
                    :margin-top 12}}
        (ui/icon {:type "search"
-                 :color colors/shadow})]
+                 :color (colors/shadow)})]
 
       [:a {:on-click close-fn
            :style {:margin-top 12}}
        (ui/icon {:type "close"
-                 :color colors/shadow})]]]))
+                 :color (colors/shadow)})]]]))
 
 (rum/defc modal-panel
   <
@@ -197,28 +197,28 @@
             :title (t :go-to-home)
             :style {:padding 12}}
         (ui/icon {:type :home
-                  :color "#ddd"
+                  :color (colors/icon-color)
                   :width 32
                   :height 32})])
 
      (when (and current-user unread?)
        [:a {:href "/notifications"}
         (ui/icon {:type "notifications"
-                  :color colors/primary
+                  :color (colors/primary)
                   :width 28
                   :height 28})])
 
      (when (and current-user new-report?)
        [:a {:href "/reports"}
         (ui/icon {:type :flag
-                  :color colors/primary
+                  :color (colors/primary)
                   :width 30
                   :height 30})])
 
      (when current-user
        [:a {:href "/settings"}
         (ui/icon {:type :settings
-                  :color "#ddd"
+                  :color (colors/icon-color)
                   :width 30
                   :height 30})])]
 
@@ -273,7 +273,7 @@
                                   :margin-top 12
                                   :max-width 600
                                   :overflow "hidden"
-                                  :color "#ddd"
+                                  :color (colors/icon-color)
                                   :text-overflow "ellipsis"
                                   :white-space "nowrap"}}
               (:title current-post)]])
@@ -283,7 +283,7 @@
              [:a {:style {:margin-right 12}
                   :on-click (fn [] (citrus/dispatch! :router/back))}
               (ui/icon {:type :ios_back
-                        :color colors/primary})])
+                        :color (colors/primary)})])
            (cond
             (contains? #{:new-post :post-edit} current-path)
             [:div.row1 {:style {:align-items "center"}}
@@ -292,7 +292,7 @@
              (when-not mobile?
                [:span.ubuntu {:style {:margin-left 12
                                       :font-weight "600"
-                                      :color "#ddd"
+                                      :color (colors/icon-color)
                                       :font-size 13}}
                (t :draft)])]
             (= current-path :groups)
@@ -327,14 +327,14 @@
              :style {:padding 12}}
             [:i {:class "fa fa-flag"
                  :style {:font-size 20
-                         :color colors/primary}}]])
+                         :color (colors/primary)}}]])
 
          (when (and (not mobile?) group-path?)
            [:a {:href "/"
                 :title (t :go-to-home)
                 :style {:padding 12}}
             (ui/icon {:type :home
-                      :color "#ddd"})])
+                      :color (colors/icon-color)})])
 
          ;; search
          (if (not post?)
@@ -342,7 +342,7 @@
                 :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
                 :style {:padding 12}}
             (ui/icon {:type "search"
-                      :color "#ddd"})])
+                      :color (colors/icon-color)})])
 
          ;; publish
          (if post?
@@ -357,7 +357,7 @@
                     :title (t :notifications)
                     :style {:padding 12}}
                 (ui/icon {:type "notifications"
-                          :color colors/primary})])
+                          :color (colors/primary)})])
 
              (when-not group-path?
                [:a.ubuntu {:on-click (fn []
@@ -375,7 +375,7 @@
              [:a {:href "/new-post"
                   :style {:padding 8}}
               (ui/icon {:type :edit
-                        :color "#ddd"})]
+                        :color (colors/icon-color)})]
              [:a.ubuntu {:style {:margin-left 12
                                  :font-size 16}
                          :href "/new-post"}
@@ -425,7 +425,7 @@
                  :on-click (fn []
                              (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
              (ui/icon {:type "menu"
-                       :color "#ddd"})]))]]])))
+                       :color (colors/icon-color)})]))]]])))
 
 (rum/defc head-title
   [mobile? title href]
@@ -435,7 +435,7 @@
                 :flex-direction "row"
                 :justify-content "space-between"
                 :align-items "center"
-                :color "#ddd"
+                :color (colors/icon-color)
                 :padding "0 12px 6px 12px"}
         :href href}
     [:span.title {:style {:font-weight "500"
@@ -571,8 +571,7 @@
         post-page? (= route :post)
         group-path? (contains? #{:post :comment :group :group-edit    :group-hot-posts :group-new-posts :members} route)
         hide-github-connect? (contains? #{true "true"} (citrus/react [:hide-github-connect?]))
-        ]
-
+        theme (citrus/react [:theme])]
     [:div.column
      [:div.main
 
@@ -616,8 +615,7 @@
                  ;; github connect
                  (ui/button {:on-click (fn []
                                          #?(:cljs (cookie/cookie-set :setup-github-sync true))
-                                         (util/set-href! (str config/website "/auth/github?sync=true")))
-                             :style {:background "#FFF"}}
+                                         (util/set-href! (str config/website "/auth/github?sync=true")))}
                    [:div.row1 {:style {:align-items "center"}}
                     (ui/icon {:type :github
                               :width 18
@@ -634,7 +632,6 @@
                (t :close)]])
 
            (layout/right-footer)]])]]
-
      (login/signin-modal mobile?)
      ;; report modal
      (report/report)

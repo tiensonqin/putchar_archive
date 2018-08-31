@@ -318,10 +318,6 @@ a.set-cover {
     margin-bottom: 0;
 }
 
-a#back-to-top:hover {
-    background: #999;
-}
-
 #back-to-top svg:hover {
     fill: #fff;
 }
@@ -341,10 +337,6 @@ a#back-to-top:hover {
 a.delete {
     text-decoration: none;
     color: #666;
-}
-
-#quote-selection:hover {
-    background: #999999;
 }
 
 .logo svg:hover {
@@ -378,10 +370,6 @@ a.delete {
 .post {
     max-width: 768px;
     margin: 0 auto;
-}
-
-.menu-item:hover {
-    background: #ddd;
 }
 
 
@@ -453,16 +441,8 @@ a.delete {
     }
 }
 
-.comments .col-item {
-    border-bottom: 1px solid #353535;
-}
-
 .col-item:nth-child(1) {
     padding-top: 15px;
-}
-
-.col-item:last-child {
-    border-bottom: none;
 }
 
 .comments .col-item {
