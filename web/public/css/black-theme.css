@@ -144,5 +144,8 @@
 .black-theme .menu-item:hover {
   background: #ddd;
 }
+.black-theme .heading-1 {
+  color: #ddd;
+}
 
 /*# sourceMappingURL=black-theme.css.map */

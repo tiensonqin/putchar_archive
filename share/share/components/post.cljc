@@ -72,7 +72,7 @@
         bookmarks (-> (if (:bookmarks post) (:bookmarks post) 0)
                       (+ @init-bookmarks))]
     [:a.row1.no-decoration
-     {:style {:margin-right 18
+     {:style {:margin-right 15
               :margin-left -6}
       :title (if bookmarked? (t :unbookmark) (t :bookmark))
       :on-click  (fn [e]
