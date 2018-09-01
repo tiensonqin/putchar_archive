@@ -92,7 +92,8 @@
 
        (if github_handle
          [:a {:href (str "https://github.com/" github_handle)
-              :style {:margin-left 20}
+              :style {:margin-left 20
+                      :margin-top 1}
               :target "_blank"}
           (ui/icon {:type :github
                     :color "rgb(127,127,127)"
@@ -102,10 +103,10 @@
          [:a {:href (str "https://twitter.com/" twitter_handle)
               :target "_blank"
               :style {:margin-left 24
-                      :margin-top -1}}
+                      :margin-top 3}}
           (ui/icon {:type :twitter
-                    :width 26
-                    :height 26
+                    :width 21
+                    :height 21
                     :color "rgb(127,127,127)"})])
 
        (if (and website (not mobile?))
@@ -166,34 +167,6 @@
        (transform-content rule {:body-format :markdown
                                 :style {:font-size 15}})
        [:div.divider]])))
-
-(rum/defc share < rum/reactive
-  [group]
-  (let [mobile? (util/mobile?)]
-    [:div.row1 {:style {:align-items "center"
-                        :margin-left 24}}
-    ;; link
-    (when mobile?
-      [:a.icon-button {:title (t :share)
-                       :on-click (fn []
-                                   (let [title (util/original-name (:name group))
-                                         link (str config/website "/" (:name group))]
-                                     (util/share {:title title :url link})))}
-       (ui/icon {:type :share
-                 :width 18
-                 :height 18
-                 :color "rgb(127,127,127)"})])
-
-     (when-not mobile?
-       (let [url (str "https://twitter.com/share?url=" (bidi/url-encode (str config/website "/" (:name group)))
-                     "&text=Join group " (util/original-name (:name group)) "! #"
-                     (:name group))]
-        [:a.hover-opacity.twitter {:href url
-                                   :title (str "Tweet " (util/original-name (:name group)))
-                                   :target "_blank"}
-         (ui/icon {:type :twitter
-                   :width 24
-                   :height 24})]))]))
 
 (rum/defcs promote-dialog < rum/reactive
   (rum/local false ::promote-user)

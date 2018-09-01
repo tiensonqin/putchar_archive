@@ -712,8 +712,8 @@
            :target "_blank"
            :style {:margin-right 24}}
        (ui/icon {:type :twitter
-                 :width 27
-                 :height 27
+                 :width 21
+                 :height 21
                  :color (colors/shadow)})])))
 
 (rum/defc ops-link

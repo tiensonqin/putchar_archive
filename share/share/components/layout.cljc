@@ -85,7 +85,9 @@
       [:a {:href "https://twitter.com/lambdahackers"
            :style {:margin-right 24}}
        (ui/icon {:type :twitter
-                 :color (colors/shadow)})]
+                 :color (colors/shadow)
+                 :width 20
+                 :height 20})]
 
       [:a {:href "https://github.com/tiensonqin/lambdahackers"
            :style {:margin-right 24}}
