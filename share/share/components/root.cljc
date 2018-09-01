@@ -365,7 +365,8 @@
               (ui/icon {:type :edit
                         :color (colors/icon-color)})]
              [:a.ubuntu {:style {:margin-left 12
-                                 :font-size 16}
+                                 :font-size 16
+                                 :color (colors/new-post-color)}
                          :href "/new-post"}
               (t :write-new-post)]))
 

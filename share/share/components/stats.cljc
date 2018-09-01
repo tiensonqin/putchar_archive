@@ -70,13 +70,12 @@
   (mixins/query :stats)
   [params]
   (let [mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div.column.auto-padding.center {:style {:max-width 1024}}
+    [:div.column.auto-padding.center#stats {:style {:max-width 1024}}
      [:h1 (t :stats)]
      (query/query
        (let [stats (citrus/react [:stats])]
         (if (seq stats)
-          [:div#stats
-           ;; all views and reads
+          [:div.center
            (let [all-views (apply + (map :views stats))
                  all-reads (apply + (map :reads stats))]
              [:h5 {:style {:margin-top 48

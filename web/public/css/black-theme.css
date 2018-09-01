@@ -147,5 +147,8 @@
 .black-theme .heading-1 {
   color: #ddd;
 }
+.black-theme .user-posts .post-title:visited {
+  color: #ccc;
+}
 
 /*# sourceMappingURL=black-theme.css.map */

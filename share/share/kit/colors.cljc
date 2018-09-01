@@ -23,3 +23,9 @@
   (if (= @theme "black")
     "#ccc"
     "#444"))
+
+(defn new-post-color
+  []
+  (if (= @theme "black")
+    "#ddd"
+    "#222"))

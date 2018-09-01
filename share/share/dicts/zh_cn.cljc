@@ -138,7 +138,7 @@
    ;; post
    :photo-upload "上传图片， 一次最多可以上传 9 张图片"
    :post-title-warning "标题长度大于 4 且不超过 64 个字符。"
-   :post-body-placeholder "开工..."
+   :post-body-placeholder "内容..."
    :publish "发布"
    :settings "设置"
    :publish-to "发布到: "

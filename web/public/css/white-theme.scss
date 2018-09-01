@@ -221,4 +221,9 @@ $h-color: rgb(7,24,57);
     .menu a:hover {
         color: $primary-color;
     }
+
+    .user-posts .post-title:visited {
+        color: initial;
+    }
+
 }
