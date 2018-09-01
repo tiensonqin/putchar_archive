@@ -15,6 +15,7 @@
             [share.components.notifications :as notifications]
             [share.components.search :as search]
             [share.components.report :as report]
+            [share.components.stats :as stats]
             [share.components.docs :as docs]
             [share.components.widgets :as widgets]
             [share.components.layout :as layout]
@@ -76,6 +77,8 @@
                           (notifications/notifications params))
          :reports       (fn [params current-user hot-groups]
                           (report/reports params))
+         :stats         (fn [params current-user hot-groups]
+                          (stats/stats params))
          :privacy       (fn [params current-user hot-groups]
                           (docs/privacy))
          :terms         (fn [params current-user hot-groups]
@@ -399,6 +402,12 @@
                                :style {:font-size 14}}
                (t :bookmarks)]
 
+              [:a.button-text {:href "/stats"
+                               :on-click (fn []
+                                           (citrus/dispatch! :citrus/re-fetch :stats nil))
+                               :style {:font-size 14}}
+               (t :stats)]
+
               [:a.button-text {:href "/settings"
                                :style {:font-size 14}}
                (t :settings)]
@@ -588,7 +597,7 @@
                    :style {:margin-top (if mobile? 96 112)}}
         (routes reconciler route params current-user hot-groups)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 100

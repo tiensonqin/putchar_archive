@@ -439,4 +439,10 @@
    :signin-with-email "邮箱登录"
    :light-theme "浅色主题"
    :dark-theme "深色主题"
+   :no-stats-yet "暂时没有统计数据。"
+   :recent-7-days "最近 7 天数据"
+   :views "浏览"
+   :reads "阅读"
+   :stats "统计"
+   :posts "文章"
    })

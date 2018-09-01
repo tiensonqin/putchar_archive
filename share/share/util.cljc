@@ -99,6 +99,11 @@
         (tf/unparse (tf/formatter format) (cc/to-date-time date))))
    ))
 
+(defn days-ago [days]
+  (let [day #?(:clj (c/ago (c/days days))
+               :cljs (cljst/ago (cljst/days days)))]
+    (date-format day)))
+
 (defn time-ago [date]
   (let [to-date-time #?(:clj cc/to-date-time
                         :cljs cljscc/to-date-time)

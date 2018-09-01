@@ -65,7 +65,7 @@
 (defn query
   [db user-id]
   (j/query db
-    ["select post_id, stats, views, reads, post_created_at from stats_agg where user_id = ? order by post_created_at desc" user-id]))
+    ["select s.post_id, posts.title as post_title, s.stats, s.views, s.reads, s.post_created_at from stats_agg as s left join posts on s.post_id = posts.id where s.user_id = ? order by s.post_created_at desc limit 100" user-id]))
 
 (comment
   (create user/db

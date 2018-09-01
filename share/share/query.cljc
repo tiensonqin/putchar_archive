@@ -119,6 +119,10 @@
     {:q {:reports {:fields [:*]
                    :cursor {:limit 100}}}}))
 
+(def stats-query
+  (fn [state args]
+    {:q {:stats {:fields [:*]}}}))
+
 (def user-query
   (fn [state args]
     (let [post-filter :newest]
@@ -196,6 +200,8 @@
    :notifications notifications-query
 
    :reports reports-query
+
+   :stats stats-query
 
    :post      post-query
 

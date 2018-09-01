@@ -15,6 +15,7 @@
             [api.db.report :as report]
             [api.db.star :as star]
             [api.db.choice :as choice]
+            [api.db.stat :as stat]
             [bidi.bidi :as bidi]
             [api.jwt :as jwt]
             [clojure.java.jdbc :as j]
@@ -68,6 +69,12 @@
   (if uid
     (j/with-db-connection [conn datasource]
       (report/get-user-reports conn uid (:cursor data)))))
+
+(defn get-stats
+  [{:keys [uid datasource]} data]
+  (if uid
+    (j/with-db-connection [conn datasource]
+      (stat/query conn uid))))
 
 ;; {:user {:fields :*
 ;;         :args {:id 123}}}
@@ -293,6 +300,7 @@
    ;; args {:user_id ID}
    :notifications get-notifications
    :reports get-reports
+   :stats get-stats
 
    ;; args {:filter (enum :hot :new) :user_id ID}
    :posts get-posts

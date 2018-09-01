@@ -564,7 +564,5 @@
   [:div#comments-list
    (if (seq result)
      (map (partial user-comment-item user-id) result)
-     [:div
-      [:span {:style {:padding 24
-                      :font-size "24"}}
-       (t :no-comments-yet)]])])
+     [:h5.auto-padding
+      (t :no-comments-yet)])])

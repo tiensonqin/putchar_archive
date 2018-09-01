@@ -558,3 +558,14 @@ a.delete {
     margin-top: 0;
     margin-bottom: 1.25em;
 }
+
+#stats table {
+    background: none;
+    border: none;
+}
+
+#stats table thead, #stats table tfoot {
+    background: none;
+}
+
+#stats table tr.even, #stats table tr.alt, #stats table tr:nth-of-type(even) { background: none; }

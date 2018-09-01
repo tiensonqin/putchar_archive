@@ -427,4 +427,10 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :signin-with-email "Sign in with Email"
    :light-theme "Light theme"
    :dark-theme "Dark theme"
+   :no-stats-yet "No stats yet."
+   :recent-7-days "Recent 7 days"
+   :views "views"
+   :reads "reads"
+   :stats "Stats"
+   :posts "Posts"
    })

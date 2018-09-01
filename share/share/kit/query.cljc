@@ -43,7 +43,6 @@
 
          (let [qid  (util/md5-query q)
                result (citrus/react [:query :cache qid])]
-           (prn {:result result})
            (cond
              result
              content

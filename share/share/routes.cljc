@@ -15,6 +15,7 @@
         [["@" :screen_name]                                       :user]
         ["votes"                                                  :votes]
         ["bookmarks"                                              :bookmarks]
+        ["stats"                                                  :stats]
         ["newest"                                                 :newest]
         ["latest-reply"                                           :latest-reply]
         ;; rss
