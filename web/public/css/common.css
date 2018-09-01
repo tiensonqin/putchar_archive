@@ -251,7 +251,7 @@ a:hover {
 }
 
 a.hover-opacity:hover {
-    opacity: 0.8;
+    color: #000;
 }
 
 ul {

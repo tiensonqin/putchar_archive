@@ -16,7 +16,7 @@
   []
   (if (= @theme "black")
     "#bbb"
-    "#666"))
+    "#555"))
 
 (defn icon-color
   []

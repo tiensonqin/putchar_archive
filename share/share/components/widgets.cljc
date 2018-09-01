@@ -413,12 +413,12 @@
 (rum/defc website-logo < rum/reactive
   []
   (let [current-handler (citrus/react [:router :handler])]
-    [:a.hover-opacity.row1.no-decoration {:href "/"
-                                          :on-click (fn []
-                                                      (citrus/dispatch! :citrus/reset-first-group)
-                                                      (citrus/dispatch! :citrus/re-fetch :home {}))
-                                          :style {:margin-left -2
-                                                  :align-items "center"}}
+    [:a.row1.no-decoration {:href "/"
+                            :on-click (fn []
+                                        (citrus/dispatch! :citrus/reset-first-group)
+                                        (citrus/dispatch! :citrus/re-fetch :home {}))
+                            :style {:margin-left -2
+                                    :align-items "center"}}
      [:div.row1 {:style {:align-items "center"}}
       (ui/icon {:type :logo
                 :width 36
@@ -453,8 +453,8 @@
                            "Markdown")))
          :animation "slide-up"}
         [:a.no-decoration.control.ubuntu {:style {:padding 12
-                                                  :font-size 13
-                                                  :font-weight (colors/shadow)}}
+                                                  :font-size 14
+                                                  :color (colors/icon-color)}}
          (if markdown?
            "Markdown"
            "Asciidoc")]))

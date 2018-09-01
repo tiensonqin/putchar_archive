@@ -227,7 +227,7 @@
           :placeholder (t :post-body-placeholder)
           :style {:border "none"
                   :background-color "transparent"
-                  :font-size "16px"
+                  :font-size "18px"
                   :resize "none"
                   :width "100%"
                   :line-height "1.8"
@@ -255,7 +255,7 @@
        [:div.row {:style {:margin-top 12}}
         (comment/post-preview (or (:body form-data) init)
                               body-format
-                              {:font-size "16px"})])]))
+                              {:font-size "18px"})])]))
 
 (rum/defc select-group-item < rum/static
   [id form-data group]
