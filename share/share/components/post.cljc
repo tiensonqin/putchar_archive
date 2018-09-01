@@ -558,7 +558,7 @@
              {:style {:margin-bottom 24
                       :align-items "center"
                       :color (if (nil? poll_choice)
-                               "#efefef"
+                               (colors/primary)
                                (colors/shadow))}
               :key id
               :on-click (fn [e]

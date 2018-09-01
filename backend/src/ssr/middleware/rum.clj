@@ -237,7 +237,8 @@
                 (if-let [user (u/get-by-email conn email)]
                   (-> (resp/redirect (:website-uri config/config))
                       (assoc :cookies
-                             cookie/delete-token))
+                             (u/generate-tokens conn user)
+                             :status 302))
                   (resp/redirect (str (:website-uri config/config) "/not-found"))))))
           (resp/redirect (str (:website-uri config/config) "/not-found")))
 

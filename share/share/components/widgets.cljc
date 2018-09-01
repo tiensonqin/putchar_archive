@@ -241,8 +241,7 @@
     nil
 
     :else
-    [:a.ubuntu {:style {:font-weight "bold"
-                        :font-size 16}
+    [:a.ubuntu {:style {:font-size 16}
                 :href (str "/" (:name group))
                 :on-click #(citrus/dispatch! :user/star-group {:object_type :group
                                                         :object_id (:id group)})}

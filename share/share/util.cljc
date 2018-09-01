@@ -369,7 +369,8 @@
     (apply merge-with deep-merge maps)
     (last maps)))
 
-(deep-merge {:a {:b 1}} {:a {:b 2 :c 3}})
+(comment
+  (deep-merge {:a {:b 1}} {:a {:b 2 :c 3}}))
 
 ;; TODO: pprint
 (defn debug
@@ -640,9 +641,10 @@
 (defn scroll-to-element
   []
   #?(:cljs
-     (when-let [hash js/window.location.hash]
-       (when-let [element (gdom/getElement (subs hash 1))]
-         (scroll/into-view element)))))
+     (let [hash js/window.location.hash]
+       (when-not (s/blank? hash)
+           (when-let [element (gdom/getElement (subs hash 1))]
+          (scroll/into-view element))))))
 
 ;; TODO: remove this
 (defn me?

@@ -42,7 +42,7 @@
 
     ;; 2. parent comment
     (if (:reply_to comment)
-      (when-let [parent-comment (j/query db ["select * from comments where id = ?" (:reply_to comment)])]
+      (when-let [parent-comment (first (j/query db ["select * from comments where id = ?" (:reply_to comment)]))]
         (when (not (contains? (hash-set user-id post-user-id) (:user_id parent-comment)))
           (notification/create (:user_id parent-comment)
                                {:type :reply-comment

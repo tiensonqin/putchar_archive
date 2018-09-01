@@ -103,6 +103,7 @@
            :min-rows 5
 
            :style {:border-radius 4
+                   :border "1px solid #999"
                    :font-size "16px"
                    :line-height "1.7"
                    :background "transparent"

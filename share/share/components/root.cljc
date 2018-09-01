@@ -201,20 +201,6 @@
                   :width 32
                   :height 32})])
 
-     (when (and current-user unread?)
-       [:a {:href "/notifications"}
-        (ui/icon {:type "notifications"
-                  :color (colors/primary)
-                  :width 28
-                  :height 28})])
-
-     (when (and current-user new-report?)
-       [:a {:href "/reports"}
-        (ui/icon {:type :flag
-                  :color (colors/primary)
-                  :width 30
-                  :height 30})])
-
      (when current-user
        [:a {:href "/settings"}
         (ui/icon {:type :settings
@@ -320,7 +306,7 @@
                :style {:align-items "center"}
                :id "right-head"}
 
-         (when (and new-report? (not mobile?))
+         (when new-report?
            [:a
             {:title (t :reports)
              :href "/reports"
@@ -351,8 +337,7 @@
          ;; login or notification
          (when-not post?
            (if current-user
-             (when (and unread?
-                        (not mobile?))
+             (when unread?
                [:a {:href "/notifications"
                     :title (t :notifications)
                     :style {:padding 12}}
