@@ -815,7 +815,7 @@
   (if (seq tags)
     [:span.ubuntu opts
      (for [tag tags]
-       [:a.tag.control
+       [:a.tag
         {:key (util/random-uuid)
          :href (str "/tag/" (name tag))
          :style (merge {:margin-right 12

@@ -130,8 +130,11 @@
   fill: #2156a5;
 }
 .white-theme a.tag {
-  background: #222;
-  color: #FFF;
+  background: rgba(0,0,0,0.1);
+  color: rgba(0,0,0,0.65);
+}
+.white-theme a.tag:hover {
+    background: rgba(0,0,0,0.15);
 }
 .white-theme a.tag.active {
   background: #2156a5;
