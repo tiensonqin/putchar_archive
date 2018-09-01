@@ -124,7 +124,7 @@
   color: #000;
 }
 .white-theme #modal-panel {
-  background: #FCFCFC;
+  background: #FFF;
 }
 .white-theme svg:hover {
   fill: #2156a5;
@@ -151,7 +151,7 @@
   color: #000;
 }
 .white-theme .comments .col-item {
-  border-bottom: 1px solid #dfdfdf;
+  border-bottom: 1px solid #efefef;
 }
 .white-theme .col-item:last-child {
   border-bottom: none;
