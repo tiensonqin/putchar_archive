@@ -40,8 +40,7 @@
              (clojure.core/update :admins
                            (fn [xs]
                              (map (fn [x]
-                                    {:screen_name x
-                                     :pro? (contains? @u/pro-members (:screen_name x))})
+                                    {:screen_name x})
                                xs)))))))
 
 (defn star

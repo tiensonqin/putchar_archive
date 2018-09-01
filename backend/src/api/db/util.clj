@@ -123,7 +123,7 @@
 (defn select-one-field
   [db table id-or-where field]
   (-> (query db {:select [field]
-                 :from [table]
+                 :from [(keyword table)]
                  :where (build-where id-or-where)})
       (first)
       (clojure.core/get field)))

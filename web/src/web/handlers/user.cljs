@@ -2,7 +2,6 @@
   (:require [share.util :as util]
             [share.dicts :refer [t] :as dicts]
             [appkit.caches :as caches]
-            [web.stripe :as stripe]
             [appkit.macros :refer [oget]]))
 
 (def handlers
@@ -205,26 +204,6 @@
       :local-storage {:action :set
                       :key "redirect-url"
                       :value js/window.location.pathname}})
-
-   :user/subscribe-pro
-   (fn [state customer]
-     {:state {:loading? true}
-      :http {:params [:user/subscribe-pro customer]
-             :on-load :user/subscribe-pro-success
-             :on-error :user/subscribe-pro-failed}})
-
-   :user/subscribe-pro-success
-   (fn [state result]
-     {:state {:loading? false
-              :current (assoc (:current state)
-                              :type "pro")}
-      :dispatch [:notification/add :success (t :thanks-for-your-support)]})
-
-   :user/subscribe-pro-failed
-   (fn [state result]
-     ;; TODO:
-     {:state {:loading? false}
-      })
 
    :user/poll
    (fn [state]

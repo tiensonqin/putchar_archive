@@ -209,14 +209,6 @@
                    :group (group/unstar conn (:object_id data) uid))]
       (util/ok {:current (u/get conn uid)}))))
 
-(defmethod handle :user/subscribe-pro [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (let [customer (stripe/create-customer data)]
-      (u/make-pro conn uid)
-      (future (slack/error "Stripe new customer: " customer))
-      ;; TODO: handle fail
-      (util/ok {:subscribed true}))))
-
 (defmethod handle :report/new [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (if (block/examine conn uid (:group_id data))

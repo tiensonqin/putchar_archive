@@ -17,7 +17,6 @@
             [cognitect.transit :as t]
             [cljs.core.async :as async]
             [web.loader :as loader]
-            [web.stripe :as stripe]
             [share.emoji :as emoji])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
@@ -89,9 +88,6 @@
     ;; (go
     ;;   ;; ;; load MathJax
     ;;   ;; (loader/load-math)
-
-    ;;   ;; stripe checkout
-    ;;   ;; (loader/load-stripe-checkout)
     ;;   )
 
     (when (nil? emojis)

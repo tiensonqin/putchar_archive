@@ -1,40 +1,53 @@
 (ns api.tick
-  (:require [tick.core :as tick]
-            [tick.timeline :refer [timeline periodic-seq]]
-            [tick.clock :as clock]
-            [tick.schedule :as schedule]
+  (:require [chime :refer [chime-at]]
+            [clj-time.core :as t]
+            [clj-time.periodic :refer [periodic-seq]]
             [api.db.post :as post]
             [api.db.group :as group]
             [api.db.cache :as cache]
+            [api.db.stat :refer [build-stats]]
+            [api.services.slack :as slack]
             [taoensso.carmine :as car]
-            [clojure.java.jdbc :as j]))
+            [clojure.java.jdbc :as j])
+  (:import [org.joda.time DateTimeZone]))
 
 (defn- schedule-job
   [db period f]
-  (let [timeline (timeline (periodic-seq (clock/now) period))
-        schedule (schedule/schedule f timeline)]
-    (schedule/start schedule (clock/clock-ticking-in-seconds))
-    schedule))
+  (chime-at (rest
+             (periodic-seq (t/now) period))
+            f
+            {:error-handler (fn [e]
+                              (slack/error "schedule job failed: "  e))}))
+
+(defn- cron-job
+  [db hour f]
+  (chime-at (->> (periodic-seq (.. (t/now)
+                                   (withZone (DateTimeZone/forID "UTC"))
+                                   (withTime hour 0 0 0))
+                               (-> 1 t/days)))
+            f
+            {:error-handler (fn [e]
+                              (slack/error "schedule cron job failed: "  e))}))
 
 (defn recalculate-posts-rank
   [db]
-  (schedule-job db (tick/hours 1) (fn [_tick-date]
-                                    (j/with-db-connection [conn db]
-                                      (post/recalculate-rank conn)))))
+  (schedule-job db (t/hours 1) (fn [_time]
+                                 (j/with-db-connection [conn db]
+                                   (post/recalculate-rank conn)))))
 
 (defn compute-group-posts-count
   [db]
-  (schedule-job db (tick/hours 24) (fn [tick-date]
-                                     (j/with-db-connection [conn db]
-                                       (let [groups (j/query conn ["select count(id) as week_count, group_id from posts
+  (schedule-job db (t/hours 24) (fn [_time]
+                                  (j/with-db-connection [conn db]
+                                    (let [groups (j/query conn ["select count(id) as week_count, group_id from posts
 WHERE created_at BETWEEN
     NOW()::DATE-EXTRACT(DOW FROM NOW())::INTEGER-7
     AND NOW()::DATE-EXTRACT(DOW from NOW())::INTEGER
 group by group_id
 limit 100
 "])]
-                                         (doseq [{:keys [week_count group_id]} groups]
-                                           (group/update conn group_id {:week_posts_count week_count})))))))
+                                      (doseq [{:keys [week_count group_id]} groups]
+                                        (group/update conn group_id {:week_posts_count week_count})))))))
 
 (defn recompute-stars
   [db]
@@ -46,9 +59,9 @@ limit 100
 
 (defn recompute-stars-job
   [db]
-  (schedule-job db (tick/hours 12) (fn [_tick-date]
-                                     (j/with-db-connection [conn db]
-                                       (recompute-stars db)))))
+  (schedule-job db (t/hours 12) (fn [_time]
+                                  (j/with-db-connection [conn db]
+                                    (recompute-stars conn)))))
 
 (defn recompute-tags
   [db]
@@ -74,13 +87,20 @@ limit 100
 
 (defn recompute-tags-job
   [db]
-  (schedule-job db (tick/hours 36) (fn [_tick-date]
-                                     (j/with-db-connection [conn db]
-                                       (recompute-tags db)))))
+  (schedule-job db (t/hours 24) (fn [_time]
+                                  (j/with-db-connection [conn db]
+                                    (recompute-tags conn)))))
+
+(defn compute-stats
+  [db]
+  (cron-job db 0 (fn [_time]
+                   (j/with-db-connection [conn db]
+                     (build-stats conn)))))
 
 (defn jobs
   [db]
   [(recalculate-posts-rank db)
    (compute-group-posts-count db)
    (recompute-stars-job db)
-   (recompute-tags-job db)])
+   (recompute-tags-job db)
+   (compute-stats db)])

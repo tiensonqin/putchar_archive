@@ -28,6 +28,7 @@
                  [com.cemerick/url "0.1.1"]
                  [amazonica "0.3.115"]
                  [tick "0.3.5"]
+                 [jarohen/chime "0.2.2"]
                  [clucie "0.3.0"]
                  [org.clojure/core.async "0.3.465"]
                  [bk/ring-gzip "0.2.1"]

@@ -4,9 +4,7 @@
             [backend.application :as app]
             [api.config :refer [config]]
             [reloaded.repl :refer [system init]]
-            [hikari-cp.core :as hikari]
-            [ragtime.jdbc :as jdbc]
-            [ragtime.repl :as repl]))
+            [hikari-cp.core :as hikari]))
 
 (defn dev-system []
   (app/app-system config))
@@ -30,16 +28,4 @@
 
 ;; (defonce db {:datasource (hikari-cp.core/make-datasource (:hikari-spec api.config/config))})
 
-(def me #uuid "6ea73d6d-55c2-49c0-b567-0ff41c424545")
-
-;; db migrations
-
-(defn load-config []
-  {:datastore  (jdbc/sql-database (make-db))
-   :migrations (jdbc/load-resources "migrations")})
-
-(defn migrate []
-  (repl/migrate (load-config)))
-
-(defn rollback []
-  (repl/rollback (load-config)))
+(def me #uuid "d2f42955-e9e7-4cf1-aea4-91a7e163f293")

@@ -1,0 +1,2 @@
+{:up   ["alter table posts drop column views"]
+ :down ["alter table posts add column views bigint DEFAULT 0 NOT NULL"]}

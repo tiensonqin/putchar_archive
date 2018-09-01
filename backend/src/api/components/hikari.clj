@@ -1,7 +1,8 @@
 (ns api.components.hikari
   (:require [com.stuartsierra.component :as component]
             [hikari-cp.core :as hikari]
-            [clojure.java.jdbc :as j]))
+            [clojure.java.jdbc :as j]
+            [api.db-migrate :as migrate]))
 
 (defrecord Hikari [db-spec datasource]
   component/Lifecycle
@@ -9,6 +10,8 @@
     (let [s (or datasource (hikari/make-datasource db-spec))]
       ;; set time zone
       (j/execute! {:datasource s} ["set time zone 'UTC'"])
+      ;; migrate
+      (migrate/migrate {:datasource s})
       (assoc component :datasource s)))
   (stop [component]
     (when datasource

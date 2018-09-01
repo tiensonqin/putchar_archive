@@ -28,14 +28,6 @@
 (def ^:private base-map {:select fields
                          :from [table]})
 
-(defonce pro-members (atom {}))
-
-(defn load-pro!
-  [db]
-  (reset! pro-members
-          (let [users (j/query db ["select screen_name from users where block is false and type = ? order by created_at desc" "pro"])]
-            (set (map :screen_name users)))))
-
 (defn get-user-stared-groups
   [db id-or-user]
   (let [{:keys [stared_groups]} (if (map? id-or-user)
@@ -188,13 +180,6 @@
                         (concat [group-id])
                         (vec))]
     (update db id {:stared_groups new-groups})))
-
-(defn make-pro
-  [db uid]
-  (update db uid {:type "pro"})
-  (when-let [user (get db uid)]
-    (reset! pro-members
-            (set (conj @pro-members (:screen_name user))))))
 
 (defn get-github-path
   [db user-id post-id]

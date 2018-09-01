@@ -1,0 +1,11 @@
+{:up   ["
+CREATE TABLE stats_agg (
+    stats text NOT NULL,
+    post_id uuid NOT NULL unique,
+    post_created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()) NOT NULL,
+    user_id uuid NOT NULL,
+    views bigint DEFAULT 0 NOT NULL,
+    reads bigint DEFAULT 0 NOT NULL
+);
+"]
+ :down ["drop table stats_agg"]}

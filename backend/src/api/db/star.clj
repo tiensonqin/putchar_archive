@@ -15,8 +15,7 @@
 
 (defn get-group-members
   [db group-id cursor]
-  (let [pro-members @u/pro-members
-        members (-> {:select [:screen_name]
+  (let [members (-> {:select [:screen_name]
                      :from [table]
                      :where [:and
                              [:= :object_type "group"]
@@ -25,7 +24,4 @@
                     (->> (util/query db)))]
     (->> members
         (remove (fn [x]
-                  (nil? (:screen_name x))))
-        (map (fn [x]
-               (assoc x :pro? (contains? pro-members (:screen_name x)))))
-        )))
+                  (nil? (:screen_name x)))))))
