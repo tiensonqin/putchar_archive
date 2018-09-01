@@ -188,8 +188,7 @@
    [:div
     [:div.row1 {:style {:justify-content "space-between"
                         :align-items "center"
-                        :margin-bottom 24
-                        :margin-top 24}}
+                        :margin-bottom 24}}
      (when current-user
        [:a {:href (str "/@" (:screen_name current-user))}
         (ui/avatar {:shape "circle"

@@ -232,7 +232,8 @@
 
      (if group
        (let [path (str "/" (:name group) "/")]
-         [:div.row1 {:style {:align-items "center"}}
+         [:div.row1 {:style {:align-items "center"
+                             :margin-right 24}}
           [:a.control {:key "latest-reply"
                        :href (str path "latest-reply")
                        :style {:font-size "1.125rem"}

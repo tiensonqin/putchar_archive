@@ -63,13 +63,11 @@
                 (assoc-in [:last-scroll-top (util/get-current-url)] (util/scroll-top))
                 (update-in [:group :by-name]
                            (fn [m]
-                             (if (seq m)
-                               (into (util/normalize :name
-                                                    (->> (concat (get-in state [:group :hot])
-                                                                 (get-in state [:user :current :stared_groups]))
-                                                         (remove nil?)))
-                                     m)
-                               {})))
+                             (into (util/normalize :name
+                                                   (->> (concat (get-in state [:group :hot])
+                                                                (get-in state [:user :current :stared_groups]))
+                                                        (remove nil?)))
+                                   m)))
                 (update-in [:user :current]
                            (fn [m]
                              (if m
