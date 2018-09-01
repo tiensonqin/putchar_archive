@@ -371,19 +371,31 @@
                     current-user)
            (ui/menu
              [:a {:href (str "/@" (:screen_name current-user))
+                  :on-click (fn []
+                              (citrus/dispatch! :citrus/re-fetch
+                                                :user
+                                                {:screen_name (:screen_name current-user)}))
                   :style {:margin-left 24}}
               (ui/avatar {:shape "circle"
                           :class "ant-avatar-mm"
                           :src (util/cdn-image (:screen_name current-user))})]
              [[:a.button-text {:href (str "/@" (:screen_name current-user))
+                               :on-click (fn []
+                                           (citrus/dispatch! :citrus/re-fetch
+                                                             :user
+                                                             {:screen_name (:screen_name current-user)}))
                                :style {:font-size 14}}
                (t :go-to-profile)]
 
               [:a.button-text {:href "/drafts"
+                               :on-click (fn []
+                                           (citrus/dispatch! :citrus/re-fetch :drafts nil))
                                :style {:font-size 14}}
                (t :drafts)]
 
               [:a.button-text {:href "/bookmarks"
+                               :on-click (fn []
+                                           (citrus/dispatch! :citrus/re-fetch :bookmarks nil))
                                :style {:font-size 14}}
                (t :bookmarks)]
 
@@ -494,8 +506,7 @@
                           (fn []
                             (when @scroll/on-scroll-switch
                               (let [scroll-top (util/scroll-top)]
-                                (citrus/dispatch-sync! :citrus/set-scroll-top (util/get-current-url) scroll-top)))))
-       )
+                                (citrus/dispatch! :citrus/set-scroll-top (util/get-current-url) scroll-top))))))
      :clj nil))
 
 (def rendered? (atom false))

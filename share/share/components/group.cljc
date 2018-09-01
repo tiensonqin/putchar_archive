@@ -139,18 +139,16 @@
 (rum/defc group-common < rum/reactive
   [group-name post-filter]
   (let [group-name (if group-name (str/lower-case group-name))
-        {:keys [id name purpose posts] :as group} (citrus/react [:group :by-name group-name])
-        path [:posts :by-group group-name post-filter]
-        posts (citrus/react path)]
+        {:keys [id name purpose] :as group} (citrus/react [:group :by-name group-name])
+]
     [:div.column {:style {:padding-bottom 24}}
      (w/cover-nav group)
 
-     (if group
-       (query/query
+     (query/query
+       (let [path [:posts :by-group group-name post-filter]
+             posts (citrus/react path)]
          (post/post-list posts {:group_id id
-                                :merge-path path}))
-       [:div.row1 {:style {:justify-content "center"}}
-        (ui/donut)])]))
+                                :merge-path path})))]))
 
 (rum/defc group < rum/reactive
   (mixins/query :group)
@@ -297,11 +295,10 @@
 (rum/defc members-cp
   [members]
   [:div.row1 {:style {:flex-wrap "wrap"}}
-   (for [{:keys [screen_name pro?] :as member} members]
+   (for [{:keys [screen_name] :as member} members]
      [:div {:key screen_name
             :style {:padding 6}}
-      (w/avatar member {:pro? pro?
-                        :class "ant-avatar"})])])
+      (w/avatar member {:class "ant-avatar"})])])
 
 (rum/defcs group-logo
   < rum/reactive

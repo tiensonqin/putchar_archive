@@ -16,9 +16,7 @@
           state
           (if (:merge q)
             (:merge q)
-            {route-handler true}))
-
-  )
+            {route-handler true})))
 
 (defonce latest-qid (atom nil))
 
@@ -97,7 +95,7 @@
      (let [q ((get query/queries route-handler) state params)
            qid (util/md5-query q)]
        {:state (-> state
-                   (update-in [:query :cache] dissoc qid)
+                   (assoc-in [:query :cache] nil)
                    (assoc :posts nil
                           :comments nil))
         :dispatch [:query/send route-handler q]}))

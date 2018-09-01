@@ -511,21 +511,20 @@ The posts and comments that you have posted will not be deleted, in order to pre
     (if user
       (let [posts (citrus/react [:drafts])]
         (let [{:keys [id name screen_name bio website]} user
-             avatar (util/cdn-image screen_name)]
+              avatar (util/cdn-image screen_name)]
           [:div.column.center-area {:class "user-posts"
                                     :style {:margin-bottom 48}}
-          (widgets/user-card user)
+           (widgets/user-card user)
 
-          (widgets/posts-comments-header screen_name)
+           (widgets/posts-comments-header screen_name)
 
-          ;; posts
-          [:div
-           (query/query
-             (post/user-post-list id posts nil))]]))
+           ;; posts
+           [:div
+            (query/query
+              (post/user-post-list id posts nil))]]))
       [:div.row {:style {:justify-content "center"}}
        (ui/donut)])
-    [:h1 "Signin first"]
-    ))
+    [:h1 "Signin first"]))
 
 (rum/defc comments < rum/reactive
   (mixins/query :comments)
@@ -575,14 +574,10 @@ The posts and comments that you have posted will not be deleted, in order to pre
   (let [post-filter :bookmarked
         path [:posts :current-user post-filter]
         user (citrus/react [:user :current])
-        posts (citrus/react path)
-        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div.column.center-area {:style {:margin-bottom 48}}
-     ;; posts
-     [:h2 {:style (cond-> {:margin "0 0 24px 0"}
-                    mobile?
-                    (assoc :padding-left 12))}
-      (str (t :bookmarks) ":")]
+        posts (citrus/react path)]
+    [:div.column {:style {:margin-bottom 48}}
+     (widgets/cover-nav nil)
+
      (query/query
        (post/post-list posts {:filter post-filter
                               :merge-path path}

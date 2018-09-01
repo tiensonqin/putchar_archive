@@ -23,9 +23,9 @@
 (defn attach-listeners
   "Attach scroll and resize listeners."
   [state]
-  #?(:cljs (let [opts (-> state :rum/args second)]
-             (mixins/listen state js/window :scroll (fn []
-                                                      (on-scroll (:on-load opts)))))
+  #?(:cljs (let [opts (-> state :rum/args second)
+                 debounced-on-scroll (util/debounce 300 #(on-scroll (:on-load opts)))]
+             (mixins/listen state js/window :scroll debounced-on-scroll))
      :clj nil))
 
 (rum/defcs infinite-list <

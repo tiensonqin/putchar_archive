@@ -43,6 +43,7 @@
 
          (let [qid  (util/md5-query q)
                result (citrus/react [:query :cache qid])]
+           (prn {:result result})
            (cond
              result
              content
@@ -51,4 +52,5 @@
              (if loading
                loading
                [:div.row {:style {:justify-content "center"}}
-                [:div.spinner {:style {:margin-top 64}}]])))))))
+                [:div.spinner
+                 {:style {:margin-top 24}}]])))))))

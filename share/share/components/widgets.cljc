@@ -251,68 +251,67 @@
   [current-user group stared-group?]
   (let [post-filter (citrus/react [:post :filter])
         {:keys [handler route-params]} (citrus/react [:router])
-        zh-cn? (= (citrus/react [:locale]) :zh-cn)
-        [path new-path hot-path latest-reply-path]
-        (case handler
-          :group
-          (let [path (str "/" (:name group) "/")]
-            [path (str path "newest") (str path "hot") (str path "latest-reply")])
-
-          ["/" "/newest" "/" "/latest-reply"])
-        post-filter (cond
-                      (= handler :newest)
-                      :newest
-                      (= handler :home)
-                      :hot
-                      (= handler :latest-reply)
-                      :latest-reply
-                      :else
-                      post-filter)
-        latest-reply [:a.control.no-decoration {:key "latest-reply"
-                                  :class (if (= post-filter :latest-reply) "is-active")
-                                  :href latest-reply-path}
-                      (t :latest-reply)]
-        hot [:a.control.no-decoration {:key "hot"
-                         :class (if (= post-filter :hot) "is-active")
-                         :href hot-path}
-             (t :hot)]
-
-        new [:a.control.no-decoration {:key "newest"
-                         :class (if (= post-filter :newest) "is-active")
-                         :href new-path}
-             (t :new-created)]
-        drafts (and current-user
-                    [:a.control.no-decoration {:key "drafts"
-                                               :href "/drafts"}
-                     (str/lower-case (t :drafts))])
-        bookmarks (and current-user
-                       [:a.control.no-decoration {:key "bookmarks"
-                                                  :href "/bookmarks"}
-                        (str/lower-case (t :bookmarks))])]
+        zh-cn? (= (citrus/react [:locale]) :zh-cn)]
     [:div.row1#sort-buttons.ubuntu {:style (cond->
                                       {:flex-wrap "wrap"
                                        :align-items "center"
                                        :font-weight (if zh-cn? "500" "700")})}
 
      (if group
+       (let [path (str "/" (:name group) "/")]
+         [:div.row1 {:style {:align-items "center"}}
+          [:a.control {:key "latest-reply"
+                       :href (str path "latest-reply")
+                       :style {:font-size "1.125rem"}
+                       :class (if (= post-filter :latest-reply) "is-active")
+                       :on-click (fn []
+                                   (citrus/dispatch! :citrus/re-fetch :group {:group-name (:name group)
+                                                                              :post-filter post-filter}))}
+           (t :latest-reply)]
+          [:a.control {:key "hot"
+                       :href (str path "hot")
+                       :style {:font-size "1.125rem"
+                               :margin-left 24}
+                       :class (if (= post-filter :hot) "is-active")
+                       :on-click (fn []
+                                   (citrus/dispatch! :citrus/re-fetch :group {:group-name (:name group)
+                                                                              :post-filter post-filter}))}
+           (t :hot)]
+          [:a.control {:key "newest"
+                       :href (str path "newest")
+                       :style {:font-size "1.125rem"
+                               :margin-left 24}
+                       :class (if (= post-filter :newest) "is-active")
+                       :on-click (fn []
+                                   (citrus/dispatch! :citrus/re-fetch :group {:group-name (:name group)
+                                                                              :post-filter post-filter}))}
+           (t :new)]])
        [:div.row1 {:style {:align-items "center"}}
-        [:span {:style {:font-size "1.125rem"}}
-         latest-reply]
-        [:span {:style {:font-size "1.125rem"
-                        :margin-left 24}} hot]
-        [:span {:style {:margin-left 24
-                        :font-size "1.125rem"}} new]]
-       [:div.row1 {:style {:align-items "center"}}
-        [:span {:style {:font-size "1.125rem"}}
-         hot]
-        [:span {:style {:margin-left 24
-                        :font-size "1.125rem"}} new]
-        (if drafts
-          [:span {:style {:margin-left 24
-                          :font-size "1.125rem"}} drafts])
-        (if bookmarks
-          [:span {:style {:margin-left 24
-                          :font-size "1.125rem"}} bookmarks])])
+        [:a.control {:key "hot"
+                     :href "/"
+                     :style {:font-size "1.125rem"}
+                     :class (if (= handler :home) "is-active")
+                     :on-click (fn []
+                                 (citrus/dispatch! :citrus/reset-first-group)
+                                 (citrus/dispatch! :citrus/re-fetch :home {}))}
+         (t :hot)]
+        [:a.control {:key "newest"
+                     :href "/newest"
+                     :style {:font-size "1.125rem"
+                             :margin-left 24}
+                     :class (if (= handler :newest) "is-active")
+                     :on-click (fn []
+                                 (citrus/dispatch! :citrus/re-fetch :newest {}))}
+         (t :new-created)]
+        (if current-user
+          [:a.control {:key "bookmarks"
+                       :href "/bookmarks"
+                       :style {:font-size "1.125rem"
+                               :margin-left 24}
+                       :class (if (= handler :bookmarks) "is-active")
+                       :on-click (fn []
+                                   (citrus/dispatch! :citrus/re-fetch :bookmarks {}))}
+           (str/lower-case (t :bookmarks))])])
 
      (when (and (util/mobile?) current-user group)
        (join-button current-user group stared-group? 80))]))
@@ -333,7 +332,7 @@
         member? (contains? (set (keys stared_groups))
                            (:id group))]
     [:div.auto-padding.ubuntu
-     (if (contains? #{:home :newest :latest-reply} current-path)
+     (if (contains? #{:home :newest :latest-reply :drafts :bookmarks} current-path)
        [:div {:style {:margin-bottom 12}}
         [:div.space-between {:style {:align-items "center"}}
          (sort-buttons current-user nil false)

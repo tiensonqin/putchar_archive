@@ -26,6 +26,9 @@
         current-group-id (or (:group_id params)
                              (get-in state [:group :current]))
         post-filter (cond
+                      (= current-path :home)
+                      :hot
+
                       (contains? #{:user} current-path)
                       :newest
 
