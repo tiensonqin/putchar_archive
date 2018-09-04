@@ -98,7 +98,7 @@
        (group/get conn (:id data))
 
        (:name data)
-       (group/get conn (str/lower-case (bidi/url-decode (:name data))))
+       (group/get conn (str/lower-case (:name data)))
 
        :else
        nil))

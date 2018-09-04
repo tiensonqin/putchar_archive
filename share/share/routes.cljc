@@ -62,8 +62,6 @@
     (update result :route-params
             (fn [params]
               (cond-> params
-                (:group-name params)
-                (update :group-name bidi/url-decode)
                 (:tag params)
                 (update :tag bidi/url-decode)
 

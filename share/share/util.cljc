@@ -220,8 +220,7 @@
   (re-find #"^([A-Za-z]){1}([A-Za-z0-9_]){0,14}$" v))
 
 (defn group-name? [v]
-  (re-find (re-pattern
-            (format "^@?([0-9-_& %s]){1,18}$" reg/unicode)) v))
+  (re-find #"^([A-Za-z0-9_]){0,18}$" v))
 
 (defn encrypted-name? [v]
   (re-find #"^@?([%a-zA-Z0-9]){1,192}$" v))
@@ -461,8 +460,7 @@
              (map s/capitalize)
              (interpose " ")
              (map #(s/replace % "Ocaml" "OCaml"))
-             (apply str)
-             (bidi/url-decode))))
+             (apply str))))
 
 (defn internal-name
   [name]

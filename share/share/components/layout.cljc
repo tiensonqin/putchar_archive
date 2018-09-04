@@ -112,7 +112,7 @@
                  :color (colors/shadow)})]
 
       [:a {:href "https://discord.gg/4FHR3jh"
-           :title "Say hi"
+           :title "Lambdahackers discord group"
            :style {:margin-left 21}}
        (ui/icon {:type :discord
                  :width 30
