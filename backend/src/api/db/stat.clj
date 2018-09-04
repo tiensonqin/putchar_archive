@@ -48,9 +48,9 @@
                (j/update! db "stats_agg"
                           {:views (+ last-day-views views)
                            :reads (+ last-day-reads reads)
-                           :stats (pr-str {:views (take-last 7 (conj (:views stats) last-day-views))
-                                    :reads (take-last 7 (conj (:views stats) last-day-reads))})}
-                          {:post_id id}))
+                           :stats (pr-str {:views (vec (take-last 7 (conj (:views stats) last-day-views)))
+                                           :reads (vec (take-last 7 (conj (:views stats) last-day-reads)))})}
+                          ["post_id = ?" id]))
              ;; no stats yet, create new record
              (let [post (post/get db id)]
                (j/insert! db "stats_agg"

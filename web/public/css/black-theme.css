@@ -150,5 +150,11 @@
 .black-theme .user-posts .post-title:visited {
   color: #ccc;
 }
+.black-theme table thead tr th, .black-theme table thead tr td, .black-theme table tfoot tr th, .black-theme table tfoot tr td {
+  color: #ddd;
+}
+.black-theme table tr th, .black-theme table tr td {
+  color: #ddd;
+}
 
 /*# sourceMappingURL=black-theme.css.map */

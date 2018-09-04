@@ -484,7 +484,7 @@
                                                :id (:id entity)
                                                :last (last comments)})))})
      (when loading?
-       [:div.spinner])]))
+       [:div.center [:div.spinner]])]))
 
 (rum/defc comment-list < rum/reactive
   {:after-render (fn [state]
