@@ -440,4 +440,6 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :change-it-to "change it to "
    :non-tech "Non-Tech"
    :this-is-non-tech "This is Non-Tech"
+   :no-moderators-yet "No moderators yet."
+   :send-us-an-email-moderator "Send us an email or leave a message on our discord group if you want to be a moderator."
    })

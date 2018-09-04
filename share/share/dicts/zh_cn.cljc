@@ -452,4 +452,6 @@
    :change-it-to "修改为 "
    :non-tech "Non-Tech"
    :this-is-non-tech "标记为 Non-Tech"
+   :no-moderators-yet "暂时还没有管理员。"
+   :send-us-an-email-moderator "如果你有兴趣做管理员，可以在 Discord 里留言或者发送给我们邮件。"
    })

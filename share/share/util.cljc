@@ -217,13 +217,13 @@
       (non-blank? s)))
 
 (defn username? [v]
-  (re-find #"^([A-Za-z]){1}([A-Za-z0-9_]){0,14}$" v))
+  (re-find #"^([A-Za-z]){1}([A-Za-z0-9-]){0,14}$" v))
 
 (defn group-name? [v]
-  (re-find #"^([A-Za-z0-9_]){0,18}$" v))
+  (re-find #"^([A-Za-z0-9-]){0,18}$" v))
 
 (defn encrypted-name? [v]
-  (re-find #"^@?([%a-zA-Z0-9]){1,192}$" v))
+  (re-find #"^@?([%a-zA-Z0-9-]){1,192}$" v))
 
 (defn encrypted-group-name? [v]
   (or (group-name? v)

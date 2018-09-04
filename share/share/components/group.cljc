@@ -442,16 +442,29 @@
      (query/query
        [:div.column
         ;; admins
-        [:div.h2 {:style {:margin-bottom 12}}
+        [:h3 {:style {:margin-bottom 12}}
          (str/upper-case (t :admins))]
 
         [:div.row1 {:style {:flex-wrap "wrap"}}
-         (members-cp admins)]
+         (if (and (= 1 (count admins))
+                  (= "tiensonqin" (:screen_name (first admins))))
+
+           [:div
+            [:p (t :send-us-an-email-moderator)]
+            [:a
+             {:href "mailto:tiensonqin@gmail.com"}
+             "Email contact"]
+
+            [:a
+             {:style {:margin-left 24}
+              :href "https://discord.gg/4FHR3jh"}
+             "Discord group"]]
+           (members-cp admins))]
 
 
         [:div.divider]
 
         ;; members
-        [:div.h2 {:style {:margin-bottom 12}}
+        [:h3 {:style {:margin-bottom 12}}
          (str/upper-case (t :members))]
         (members-cp members)])]))
