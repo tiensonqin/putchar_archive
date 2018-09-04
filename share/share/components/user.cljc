@@ -342,7 +342,7 @@
      [:div.row1 {:style {:flex-wrap "wrap"}}
       (button-cp "English" "en")
       (button-cp "简体中文" "zh-cn")
-      (button-cp "繁体中文" "zh-tw")
+      (button-cp "正體中文" "zh-tw")
       (button-cp "Japanese" "japanese")
       (button-cp "German" "german")
       (button-cp "French" "french")

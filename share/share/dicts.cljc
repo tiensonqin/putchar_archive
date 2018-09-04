@@ -9,7 +9,7 @@
   (linked/map
     "en" "English"
     "zh-cn" "简体中文"
-    "zh-tw" "繁体中文"
+    "zh-tw" "正體中文"
     "japanese" "Japanese"
     "german" "German"
     "french" "French"
