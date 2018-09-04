@@ -78,6 +78,8 @@
                        :setup-github-sync? setup-github-sync?)
                 (assoc-in [:comment :liked-comments]
                           (storage/get :liked-comments))
+                (assoc-in [:user :default-post-language]
+                          (cookie/cookie-get "default-post-language"))
                 (assoc-in [:comment :drafts]
                           (storage/get :comments-drafts))))
 

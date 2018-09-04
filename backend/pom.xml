@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>api</groupId>
-  <artifactId>api</artifactId>
+  <groupId>backend</groupId>
+  <artifactId>backend</artifactId>
   <packaging>jar</packaging>
   <version>0.1.0-SNAPSHOT</version>
-  <name>api</name>
-  <description>FIXME: GraphQL API for api</description>
-  <url>FIXME: https://github.com/fixme</url>
+  <name>backend</name>
+  <description>lambdahackers backend.</description>
+  <url>https://github.com/tiensonqin/lambdahackers</url>
+  <scm/>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>test</testSourceDirectory>
@@ -22,7 +23,27 @@
     </testResources>
     <directory>target</directory>
     <outputDirectory>target/classes</outputDirectory>
-    <plugins/>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>../share</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <repositories>
     <repository>
@@ -37,17 +58,7 @@
     </repository>
     <repository>
       <id>clojars</id>
-      <url>https://clojars.org/repo/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>my.datomic.com</id>
-      <url>https://my.datomic.com/repo</url>
+      <url>https://repo.clojars.org/</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
@@ -63,32 +74,83 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.9.0-beta3</version>
+      <version>1.9.0</version>
     </dependency>
     <dependency>
-      <groupId>com.datomic</groupId>
-      <artifactId>datomic-pro</artifactId>
-      <version>0.9.5561.62</version>
+      <groupId>hiccup</groupId>
+      <artifactId>hiccup</artifactId>
+      <version>2.0.0-alpha1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>tools.nrepl</artifactId>
+      <version>0.2.13</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pinyin4clj</groupId>
+      <artifactId>pinyin4clj</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>primitive-math</groupId>
+      <artifactId>primitive-math</artifactId>
+      <version>0.1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>data.xml</artifactId>
+      <version>0.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.taoensso</groupId>
+      <artifactId>encore</artifactId>
+      <version>2.87.0</version>
+    </dependency>
+    <dependency>
+      <groupId>ring</groupId>
+      <artifactId>ring-defaults</artifactId>
+      <version>0.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>ring</groupId>
+      <artifactId>ring-devel</artifactId>
+      <version>1.6.3</version>
+    </dependency>
+    <dependency>
+      <groupId>ring-middleware-format</groupId>
+      <artifactId>ring-middleware-format</artifactId>
+      <version>0.7.2</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>9.3-1102-jdbc41</version>
+      <version>42.2.4</version>
     </dependency>
     <dependency>
-      <groupId>io.rkn</groupId>
-      <artifactId>conformity</artifactId>
-      <version>0.5.1</version>
+      <groupId>org.clojure</groupId>
+      <artifactId>java.jdbc</artifactId>
+      <version>0.7.3</version>
     </dependency>
     <dependency>
-      <groupId>com.tiensonqin</groupId>
-      <artifactId>my-lacinia-pedestal</artifactId>
-      <version>0.4.1-SNAPSHOT</version>
+      <groupId>honeysql</groupId>
+      <artifactId>honeysql</artifactId>
+      <version>0.9.1</version>
     </dependency>
     <dependency>
-      <groupId>io.aviso</groupId>
-      <artifactId>logging</artifactId>
-      <version>0.2.0</version>
+      <groupId>ragtime</groupId>
+      <artifactId>ragtime</artifactId>
+      <version>0.7.2</version>
+    </dependency>
+    <dependency>
+      <groupId>hikari-cp</groupId>
+      <artifactId>hikari-cp</artifactId>
+      <version>1.8.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.taoensso</groupId>
+      <artifactId>carmine</artifactId>
+      <version>2.16.0</version>
     </dependency>
     <dependency>
       <groupId>buddy</groupId>
@@ -101,15 +163,131 @@
       <version>1.1.0</version>
     </dependency>
     <dependency>
+      <groupId>com.stuartsierra</groupId>
+      <artifactId>component</artifactId>
+      <version>0.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.taoensso</groupId>
+      <artifactId>timbre</artifactId>
+      <version>4.10.0</version>
+    </dependency>
+    <dependency>
+      <groupId>ring-cors</groupId>
+      <artifactId>ring-cors</artifactId>
+      <version>0.1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>clj-social</groupId>
+      <artifactId>clj-social</artifactId>
+      <version>0.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cemerick</groupId>
+      <artifactId>url</artifactId>
+      <version>0.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>amazonica</groupId>
+      <artifactId>amazonica</artifactId>
+      <version>0.3.115</version>
+    </dependency>
+    <dependency>
+      <groupId>tick</groupId>
+      <artifactId>tick</artifactId>
+      <version>0.3.5</version>
+    </dependency>
+    <dependency>
+      <groupId>jarohen</groupId>
+      <artifactId>chime</artifactId>
+      <version>0.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>clucie</groupId>
+      <artifactId>clucie</artifactId>
+      <version>0.3.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.clojure</groupId>
-      <artifactId>tools.nrepl</artifactId>
-      <version>0.2.13</version>
-      <scope>test</scope>
+      <artifactId>core.async</artifactId>
+      <version>0.3.465</version>
+    </dependency>
+    <dependency>
+      <groupId>bk</groupId>
+      <artifactId>ring-gzip</artifactId>
+      <version>0.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>bidi</groupId>
+      <artifactId>bidi</artifactId>
+      <version>2.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.flatland</groupId>
+      <artifactId>ordered</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+    <dependency>
+      <groupId>frankiesardo</groupId>
+      <artifactId>linked</artifactId>
+      <version>1.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>tiensonqin</groupId>
+      <artifactId>appkit</artifactId>
+      <version>0.1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojurescript</artifactId>
+      <version>1.9.946</version>
+    </dependency>
+    <dependency>
+      <groupId>org.asciidoctor</groupId>
+      <artifactId>asciidoctorj</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vladsch.flexmark</groupId>
+      <artifactId>flexmark-all</artifactId>
+      <version>0.32.18</version>
+    </dependency>
+    <dependency>
+      <groupId>compojure</groupId>
+      <artifactId>compojure</artifactId>
+      <version>1.6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>tongue</groupId>
+      <artifactId>tongue</artifactId>
+      <version>0.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>http-kit</groupId>
+      <artifactId>http-kit</artifactId>
+      <version>2.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>selmer</groupId>
+      <artifactId>selmer</artifactId>
+      <version>1.11.6</version>
     </dependency>
     <dependency>
       <groupId>reloaded.repl</groupId>
       <artifactId>reloaded.repl</artifactId>
       <version>0.2.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>enlive</groupId>
+      <artifactId>enlive</artifactId>
+      <version>1.1.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>expound</groupId>
+      <artifactId>expound</artifactId>
+      <version>0.6.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

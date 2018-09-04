@@ -221,6 +221,15 @@
        [:p {:class "help is-danger"}
         (:image-upload-error @form)])]))
 
+(rum/defc select
+  [options select-opts]
+  [:select select-opts
+   (for [{:keys [value text selected]} options]
+     [:option (cond-> {:key value}
+                selected
+                (assoc :selected "selected"))
+      text])])
+
 (rum/defc submit < rum/reactive
   [on-submit {:keys [submit-text
                      cancel-button?

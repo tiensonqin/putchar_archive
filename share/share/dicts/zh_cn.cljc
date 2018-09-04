@@ -432,7 +432,7 @@
    :add-canonical-url "设置 Canonical 链接(可选)"
    :add-canonical-url-placeholder "请确认该链接指向的是你的原创内容。"
    :go-to-fullscreen "进入全屏"
-   :select-primary-language "选择文章语言"
+   :select-primary-language "选择文章主要语言"
    :select-primary-language-explain "不关注该语言的用户就不会看到这篇文章"
    :select-which-languages "设置你关注的语言。"
    :go-to-home "首页"
@@ -445,4 +445,9 @@
    :reads "阅读"
    :stats "统计"
    :posts "文章"
+   :language-default-choice "设置 \"%s\" 为默认选择"
+   :language-must-be-chosen "请选择主要语言!"
+   :post-primary-language "文章主要语言"
+   :is-my-default-language-choice " 是我的默认文章语言, "
+   :change-it-to "修改为 "
    })

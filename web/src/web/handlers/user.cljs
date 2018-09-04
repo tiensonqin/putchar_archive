@@ -249,4 +249,7 @@
    (fn [state result]
      {:state (assoc-in state [:current :has-unread-notifications?] false)})
 
-   })
+   :user/set-default-post-language
+   (fn [state value]
+     {:state {:default-post-language value}
+      :cookie [:set-forever "default-post-language" value]})})

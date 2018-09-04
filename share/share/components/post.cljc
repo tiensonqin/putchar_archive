@@ -11,6 +11,7 @@
             [share.kit.ui :as ui]
             [share.kit.query :as query]
             [share.kit.colors :as colors]
+            [share.helpers.form :as form]
             [share.dommy :as dommy]
             [share.util :as util]
             [share.dicts :refer [t] :as dicts]
@@ -271,7 +272,7 @@
     (util/original-name (:name group))))
 
 (rum/defc select-language
-  [form-data]
+  [default form-data]
   (let [button-cp (fn [lang value]
                     (ui/button {:class (str "btn-sm "
                                             (if (= value (:lang form-data))
@@ -283,30 +284,43 @@
                                                               {:lang value}))}
                       lang))]
     [:div#select-language {:style {:margin "12px 0"}}
-    [:h6
-     (t :select-primary-language)]
+     [:h6
+      (str (t :select-primary-language) ":")]
 
-    [:p {:style {:margin-bottom "1em"
-                 :font-size 14
-                 :color "rgb(127,127,127)"}}
-     (t :select-primary-language-explain)]
+     [:p {:style {:margin-bottom "1em"
+                  :font-size 14
+                  :color "rgb(127,127,127)"}}
+      (t :select-primary-language-explain)]
 
      (when (and (contains? (set (keys form-data)) :lang)
                 (nil? (:lang form-data)))
-       [:p.help "Language must be choosed!"])
+       [:p.help (t :language-must-be-chosen)])
 
-    [:div.row1 {:style {:flex-wrap "wrap"}}
-     (button-cp "English" "en")
-     (button-cp "简" "zh-cn")
-     (button-cp "繁" "zh-tw")
-     (button-cp "Japanese" "japanese")
-     (button-cp "German" "german")
-     (button-cp "French" "french")
-     (button-cp "Spanish" "spanish")
-     (button-cp "Russian" "russian")
-     (button-cp "Italian" "italian")]
+     [:div.row1 {:style {:flex-wrap "wrap"}}
+      (for [[value text] dicts/langs]
+        (button-cp text value))]
 
-     ]))
+     (cond
+       (and (:lang form-data) (not default))
+       (ui/button {:class "btn-primary"
+                   :on-click (fn []
+                               (citrus/dispatch!
+                                :user/set-default-post-language
+                                (:lang form-data)))}
+         (util/format (t :language-default-choice) (get dicts/langs (:lang form-data))))
+
+       (and default (:lang form-data) (not= default (:lang form-data)))
+       [:p {:style {:font-size 15
+                    :color (colors/shadow)}}
+        (get dicts/langs default)
+        (t :is-my-default-language-choice)
+        [:a {:on-click (fn []
+                         (citrus/dispatch!
+                          :user/set-default-post-language
+                          (:lang form-data)))}
+         (str (t :change-it-to) (get dicts/langs (:lang form-data)))]
+        "."]
+       )]))
 
 (rum/defc add-tags
   [form-data]
@@ -350,10 +364,13 @@
                                   (citrus/dispatch! :citrus/set-post-form-data
                                                     {:canonical_url (util/ev value)})))}))]))
 
-(rum/defc select-group < rum/reactive
-  [form-data stared-groups choices skip?]
-  (let [images (:images form-data)
-        images? (seq images)]
+(rum/defcs select-group < rum/reactive
+  (rum/local false ::language-select-update?)
+  [state form-data stared-groups choices skip?]
+  (let [language-select-update? (get state ::language-select-update?)
+        images (:images form-data)
+        images? (seq images)
+        default-post-language (citrus/react [:user :default-post-language])]
     [:div.column.ubuntu#publish-dialog
      [:div.row1 {:style {:align-items "center"}}
       [:h4 {:style {:margin-bottom "1em"}}
@@ -376,13 +393,35 @@
 
      (when-not @skip?
        (let [c (count stared-groups)
-            cp (fn [groups]
-                 (for [[id group] groups]
-                   [:div {:key id}
-                    (select-group-item id form-data group)]))]
+             cp (fn [groups]
+                  (for [[id group] groups]
+                    [:div {:key id}
+                     (select-group-item id form-data group)]))]
          [:div#select-groups {:class "row"
                               :style {:flex-wrap "wrap"}}
-          (cp stared-groups)]))
+
+          (if (<= c 8)
+            (cp stared-groups)
+            ;; select
+            (form/select (for [[id group] stared-groups]
+                         (cond-> {:value (:name group)
+                                  :text (:name group)}
+                           (= id (:group_id form-data))
+                           (assoc :selected "selected")))
+            {:on-change (fn [e]
+                          (let [group-name (util/ev e)
+                                group (some->> (vals stared-groups)
+                                               (filter #(= (:name %) group-name))
+                                               (first))]
+                            (citrus/dispatch! :citrus/set-post-form-data
+                                              {:group_id (:id group)
+                                               :group_name group-name})))
+             :style {:width 180
+                     :height 30
+                     :border "1px solid #aaa"
+                     :font-size 16
+                     :background "transparent"
+                     :border-radius 4}}))]))
 
      (if images?
        [:div#set-cover
@@ -404,9 +443,21 @@
                            (= (:url image) (:cover form-data))
                            (assoc :border "4px solid #999"))}]])])
 
-     (select-language form-data)
-
      (add-tags form-data)
+
+     (if (and default-post-language
+              (not @language-select-update?))
+       [:p {:style {:margin-top 12
+                    :margin-bottom 0
+                    :font-size 15
+                    :color (colors/shadow)}}
+        (str (t :post-primary-language) ": ") (get dicts/langs default-post-language)
+        [:a.control {:style {:margin-left 24
+                             :font-size 15}
+                     :on-click (fn []
+                                 (reset! language-select-update? true))}
+         (t :edit)]]
+       (select-language default-post-language form-data))
 
      (add-canonical-url form-data)]))
 
@@ -524,7 +575,7 @@
          :visible modal?
          :wrap-class-name "center"
          :style {:width (min 600 (- (:width (util/get-layout)) 48))
-                 :height (- (:height (util/get-layout)) 100)
+                 ;; :height (- (:height (util/get-layout)) 100)
                  :overflow-y "auto"}
          :animation "zoom"
          :maskAnimation "fade"

@@ -2,33 +2,20 @@
   (:require [tongue.core :as tongue]
             [share.dicts.en :as en]
             [share.dicts.zh-cn :as zh-cn]
-            [share.dicts.zh-tw :as zh-tw]))
+            [share.dicts.zh-tw :as zh-tw]
+            [linked.core :as linked]))
 
-(def langs
-  [:english
-   :german
-   :simplified_chinese
-   :traditional_chinese
-   :japanese
-   :french
-   :spanish
-   :turkish
-   :italian
-   :portuguese
-   :swedish
-   :danish
-   :norwegian
-   :dutch
-   :polish
-   :indonesian
-   :hindi
-   :russian
-   :korean
-   :thai
-   :arabic
-   :bengali
-   :punjabi
-   ])
+(defonce langs
+  (linked/map
+    "en" "English"
+    "zh-cn" "简体中文"
+    "zh-tw" "繁体中文"
+    "japanese" "Japanese"
+    "german" "German"
+    "french" "French"
+    "spanish" "Spanish"
+    "russian" "Russian"
+    "italian" "Italian"))
 
 (def dicts
   {:en    en/dicts

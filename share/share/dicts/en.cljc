@@ -420,7 +420,7 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :add-canonical-url "Set Canonical Url (Optional)"
    :add-canonical-url-placeholder "Please only add content that you own."
    :go-to-fullscreen "Go to fullscreen"
-   :select-primary-language "Select primary language"
+   :select-primary-language "Select post primary language"
    :select-primary-language-explain "User who doesn't follow this language won't see this post."
    :select-which-languages "Select which languages of posts you'd like to see."
    :go-to-home "Go to home"
@@ -433,4 +433,9 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :reads "reads"
    :stats "Stats"
    :posts "Posts"
+   :language-default-choice "Set \"%s\" as my default choice."
+   :language-must-be-chosen "Language must be chosen!"
+   :post-primary-language "Post primary language"
+   :is-my-default-language-choice " is my default language choice, "
+   :change-it-to "change it to "
    })
