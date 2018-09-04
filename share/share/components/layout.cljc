@@ -82,19 +82,6 @@
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
                          :margin-top 16}}
-      [:a {:href "https://twitter.com/lambdahackers"
-           :style {:margin-right 24}}
-       (ui/icon {:type :twitter
-                 :color (colors/shadow)
-                 :width 20
-                 :height 20})]
-
-      [:a {:href "https://github.com/tiensonqin/lambdahackers"
-           :style {:margin-right 24}}
-       (ui/icon {:type :github
-                 :width 18
-                 :color (colors/shadow)})]
-
       (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
                                          :on-click (fn [e]
                                                      (util/stop e)
@@ -109,4 +96,24 @@
                     (ui/icon {:type :translate
                               :width 20
                               :height 20
-                              :color (colors/shadow)})])]]))
+                              :color (colors/shadow)})])
+
+      [:a {:href "https://twitter.com/lambdahackers"
+           :style {:margin-left 24}}
+       (ui/icon {:type :twitter
+                 :color (colors/shadow)
+                 :width 20
+                 :height 20})]
+
+      [:a {:href "https://github.com/tiensonqin/lambdahackers"
+           :style {:margin-left 24}}
+       (ui/icon {:type :github
+                 :width 18
+                 :color (colors/shadow)})]
+
+      [:a {:href "https://discord.gg/4FHR3jh"
+           :title "Say hi"
+           :style {:margin-left 21}}
+       (ui/icon {:type :discord
+                 :width 30
+                 :color "#7289DA"})]]]))

@@ -86,7 +86,9 @@
          :code-of-conduct (fn [params current-user hot-groups]
                             (docs/code-of-conduct))
          :newest (fn [params current-user hot-groups]
-                (post/sort-by-new))
+                   (post/sort-by-new))
+         :non-tech (fn [params current-user hot-groups]
+                     (post/non-tech))
          :latest-reply (fn [params current-user hot-groups]
                 (post/sort-by-latest-reply))
 

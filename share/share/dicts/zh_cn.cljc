@@ -450,4 +450,6 @@
    :post-primary-language "文章主要语言"
    :is-my-default-language-choice " 是我的默认文章语言, "
    :change-it-to "修改为 "
+   :non-tech "Non-Tech"
+   :this-is-non-tech "标记为 Non-Tech"
    })

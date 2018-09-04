@@ -17,10 +17,12 @@
         ["bookmarks"                                              :bookmarks]
         ["stats"                                                  :stats]
         ["newest"                                                 :newest]
+        ["non-tech"                                               :non-tech]
         ["latest-reply"                                           :latest-reply]
         ;; rss
         ["newest.rss"                                             :new-rss]
         ["hot.rss"                                                :hot-rss]
+        ["non-tech.rss"                                           :non-tech-rss]
         ["latest-reply.rss"                                       :latest-reply-rss]
         [["@" :screen_name "/newest.rss"]                         :user-latest-rss]
         [[[#"[^\/]+" :group-name] "/newest.rss"]                  :group-latest-rss]

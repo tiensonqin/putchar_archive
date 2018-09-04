@@ -438,4 +438,6 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :post-primary-language "Post primary language"
    :is-my-default-language-choice " is my default language choice, "
    :change-it-to "change it to "
+   :non-tech "Non-Tech"
+   :this-is-non-tech "This is Non-Tech"
    })

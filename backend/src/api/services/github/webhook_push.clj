@@ -4,6 +4,7 @@
             [api.services.github.commit :as commit]
             [api.services.commits :as commits]
             [api.services.slack :as slack]
+            [share.dicts :as dicts]
             [api.db.user :as u]
             [api.db.post :as post]
             [api.db.group :as group]
@@ -79,7 +80,7 @@
                      (if (= encoding "base64")
                        (let [body (github/base64-decode
                                    (str/replace content "\n" ""))
-                             {:keys [title body group tags is_draft lang canonical_url] :as spec} (extract-spec body)
+                             {:keys [title body group tags is_draft primary_lang canonical_url non_tech] :as spec} (extract-spec body)
                              group (util/internal-name group)
                              group (if group
                                      (group/get db group))
@@ -96,7 +97,7 @@
                                             :body_format body-format
                                             :tags tags
                                             :is_draft is_draft
-                                            :lang (or lang "en")}
+                                            :lang (get (util/kv-reverse dicts/langs) (or primary_lang "English"))}
 
                                            group
                                            (assoc :group_id (:id group)
@@ -106,7 +107,10 @@
                                            (assoc :permalink permalink)
 
                                            canonical_url
-                                           (assoc :canonical_url canonical_url)))]
+                                           (assoc :canonical_url canonical_url)
+
+                                           non_tech
+                                           (assoc :non_tech (boolean non_tech))))]
                          (cond
                            (= status "renamed")
                            (when-let [id (get repo-map previous_filename)]

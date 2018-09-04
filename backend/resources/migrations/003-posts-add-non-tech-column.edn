@@ -1,0 +1,2 @@
+{:up ["alter table posts add column non_tech boolean default false"]
+ :down ["alter table posts drop column non_tech"]}

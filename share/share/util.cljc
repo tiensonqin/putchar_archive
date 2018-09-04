@@ -866,3 +866,8 @@
                                       (reset! t nil)
                                       (apply f args))
                                    threshold)))))))
+
+(defn kv-reverse
+  [m]
+  (when (seq m)
+    (zipmap (vals m) (keys m))))

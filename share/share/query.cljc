@@ -30,6 +30,13 @@
      :args  nil
      :merge {:posts [:posts :latest]}}))
 
+(def non-tech-posts-query
+  (fn [state args]
+    {:q     {:posts {:fields post-fields
+                     :filter :non-tech}}
+     :args  nil
+     :merge {:posts [:posts :non-tech]}}))
+
 (def latest-reply-posts-query
   (fn [state args]
     {:q     {:posts {:fields post-fields
@@ -70,10 +77,11 @@
                             :poll_choice
                             :poll_closed
                             :choices
+                            :non_tech
                             [:user {:fields [:id :screen_name :name :bio :website]}]
                             [:group {:fields [:id :name :purpose :rule :admins :stars :related_groups :created_at]}]
                             [:comments {:fields [:*]
-                                        :cursor {:limit 10}}]]}}
+                                        :cursor {:limit 100}}]]}}
      :args {:post {:permalink (str "@"
                                    (:screen_name args)
                                    "/"
@@ -94,6 +102,7 @@
                                     :poll_choice
                                     :poll_closed
                                     :choices
+                                    :non_tech
                                     [:group {:fields [:id :name]}]
                                     ]}}
              :args {:post {:id id
@@ -186,6 +195,8 @@
   {:home home-query
 
    :newest newest-posts-query
+
+   :non-tech non-tech-posts-query
 
    :latest-reply latest-reply-posts-query
 

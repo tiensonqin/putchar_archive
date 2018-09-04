@@ -29,10 +29,13 @@
                       (= current-path :home)
                       :hot
 
+                      (= current-path :non-tech)
+                      :non-tech
+
                       (contains? #{:user} current-path)
                       :newest
 
-                      (= :bookmarks current-path)
+                      (= current-path :bookmarks)
                       :bookmarked
 
                       :else
@@ -102,6 +105,16 @@
                                             [:and
                                              [:= :rank (:rank last-post)]
                                              [:< :flake_id (:flake_id last-post)]]]]}
+
+                                  :non-tech
+                                  {:after (:rank last-post)
+                                   :where [:and
+                                           [:or
+                                            [:< :rank (:rank last-post)]
+                                            [:and
+                                             [:= :rank (:rank last-post)]
+                                             [:< :flake_id (:flake_id last-post)]]]]}
+
                                   :newest
                                   {:after (:flake_id last-post)}
 

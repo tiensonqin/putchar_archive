@@ -419,6 +419,7 @@
              :style {:width 180
                      :height 30
                      :border "1px solid #aaa"
+                     :margin-bottom 12
                      :font-size 16
                      :background "transparent"
                      :border-radius 4}}))]))
@@ -459,7 +460,24 @@
          (t :edit)]]
        (select-language default-post-language form-data))
 
-     (add-canonical-url form-data)]))
+     (add-canonical-url form-data)
+
+     (if (:non_tech form-data)
+       [:div.row1
+        (widgets/non-tech-label)
+
+        [:a.control {:style {:margin-left 12}
+                     :on-click (fn []
+                                 (citrus/dispatch! :citrus/set-post-form-data
+                                                   {:non_tech false}))}
+         (ui/icon {:type :close
+                   :color (colors/icon-color)})]]
+
+       [:a.control {:style {:font-size 15}
+                    :on-click (fn []
+                                (citrus/dispatch! :citrus/set-post-form-data
+                                                  {:non_tech true}))}
+        (t :this-is-non-tech)])]))
 
 (rum/defc publish-button < rum/reactive
   [form-data]
@@ -512,7 +530,7 @@
                                  (merge {:id (:id current-post)
                                          :is_draft false}
                                         (select-keys form-data
-                                                     [:title :body :choices :body_format :lang]))
+                                                     [:title :body :choices :body_format :lang :non_tech]))
 
                                  (:group_id form-data)
                                  (merge (select-keys form-data [:group_id :group_name]))
@@ -1116,7 +1134,7 @@
         (when (and post (nil? (:title form-data)))
           (citrus/dispatch! :citrus/set-post-form-data
                             (cond->
-                              (select-keys post [:title :body :choices :body_format :canonical_url :lang])
+                              (select-keys post [:title :body :choices :body_format :canonical_url :lang :non_tech])
                               (:group post)
                               (assoc :group_name (get-in post [:group :name])
                                      :group_id (get-in post [:group :id]))
@@ -1279,19 +1297,25 @@
                   [:a {:on-click (fn [e]
                                    (util/set-href! (str config/website "/p/" (:id post) "/edit")))
                        :style {:margin-left 12}}
-                   (t :edit)])]]
+                   (t :edit)])
+
+                (if (:non_tech post)
+                  [:a {:href "/non-tech"
+                       :style {:margin-left 12}}
+                   (t :non-tech)])]]
 
               [:div.post
-               (widgets/raw-html {:on-mouse-up (fn [e]
-                                                 (let [text (util/get-selection-text)]
-                                                   (when-not (str/blank? text)
-                                                     (citrus/dispatch! :comment/set-selection
-                                                                       {:screen_name (:screen_name user)}))))
-                                  :class (str "editor " (name (:body_format post)))
-                                  :style {:word-wrap "break-word"
-                                          :font-size "1.127em"}
-                                  :id "post-body"}
-                                 (:body post))]
+               (when (:body post)
+                 (widgets/raw-html {:on-mouse-up (fn [e]
+                                                   (let [text (util/get-selection-text)]
+                                                     (when-not (str/blank? text)
+                                                       (citrus/dispatch! :comment/set-selection
+                                                                         {:screen_name (:screen_name user)}))))
+                                    :class (str "editor " (name (:body_format post)))
+                                    :style {:word-wrap "break-word"
+                                            :font-size "1.127em"}
+                                    :id "post-body"}
+                                   (:body post)))]
 
               [:div.center-area
                (when (seq (:choices post))
@@ -1333,6 +1357,19 @@
      (query/query
        (post-list posts
                   {:merge-path [:posts :latest]}
+                  :show-group? true)))])
+
+(rum/defc non-tech < rum/reactive
+  (mixins/query :non-tech)
+  []
+  [:div.column {:style {:padding-bottom 48}}
+
+   (widgets/cover-nav nil)
+
+   (let [posts (citrus/react [:posts :non-tech])]
+     (query/query
+       (post-list posts
+                  {:merge-path [:posts :non-tech]}
                   :show-group? true)))])
 
 (rum/defc sort-by-latest-reply < rum/reactive

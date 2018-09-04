@@ -277,6 +277,7 @@
                      :on-click (fn []
                                  (citrus/dispatch! :citrus/re-fetch :newest {}))}
          (t :new-created)]
+
         (if current-user
           [:a.control {:key "bookmarks"
                        :href "/bookmarks"
@@ -285,7 +286,16 @@
                        :class (if (= handler :bookmarks) "is-active")
                        :on-click (fn []
                                    (citrus/dispatch! :citrus/re-fetch :bookmarks {}))}
-           (str/lower-case (t :bookmarks))])])
+           (str/lower-case (t :bookmarks))])
+
+        [:a.control {:key "non-tech"
+                     :href "/non-tech"
+                     :style {:font-size "1.125rem"
+                             :margin-left 24}
+                     :class (if (= handler :non-tech) "is-active")
+                     :on-click (fn []
+                                 (citrus/dispatch! :citrus/re-fetch :non-tech {}))}
+         (str/lower-case (t :non-tech))]])
 
      (when (and (util/mobile?) current-user group)
        (join-button current-user group stared-group? 80))]))
@@ -306,7 +316,7 @@
         member? (contains? (set (keys stared_groups))
                            (:id group))]
     [:div.auto-padding.ubuntu
-     (if (contains? #{:home :newest :latest-reply :drafts :bookmarks} current-path)
+     (if (contains? #{:home :newest :latest-reply :drafts :bookmarks :non-tech} current-path)
        [:div {:style {:margin-bottom 12}}
         [:div.space-between {:style {:align-items "center"}}
          (sort-buttons current-user nil false)
@@ -528,3 +538,11 @@
 
          :else
          nil)])))
+
+(rum/defc non-tech-label
+  []
+  [:span {:style {:padding "2px 6px"
+                  :border "1px solid"
+                  :border-radius "3px"
+                  :font-size 13}}
+   (t :non-tech)])

@@ -246,6 +246,14 @@
   [:and
    [:= :is_draft false]])
 
+(defn get-non-tech
+  ([db cursor]
+   (get-non-tech db [:and
+                     [:= :is_draft false]
+                     [:= :non_tech true]] cursor))
+  ([db where cursor]
+   (get-posts db where cursor)))
+
 (defn get-new
   ([db cursor]
    (get-new db post-conditions cursor))

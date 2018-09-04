@@ -209,11 +209,20 @@
                      (:user-tag data)
                      (get-user-tag-posts conn data)
 
+                     (= :non-tech (:filter data))
+                     (post/get-non-tech conn
+                                   [:and
+                                    [:= :is_draft false]
+                                    [:= :non_tech true]
+                                    [:in :lang languages]]
+                                   cursor)
+
                      (and (:group_id data) (= :hot (:filter data)))
                      (post/get-hot conn
                                    [:and
                                     [:= :group_id (:group_id data)]
                                     [:= :is_draft false]
+                                    [:= :non_tech false]
                                     [:in :lang languages]]
                                    cursor)
 
@@ -222,6 +231,7 @@
                                    [:and
                                     [:= :group_id (:group_id data)]
                                     [:= :is_draft false]
+                                    [:= :non_tech false]
                                     [:in :lang languages]]
                                    cursor)
 
