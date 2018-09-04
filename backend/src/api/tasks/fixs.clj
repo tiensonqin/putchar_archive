@@ -68,7 +68,7 @@
           (comment/update db id {:post_permalink permalink})
           (do
             (prn "Wrong: without permalink, comment id: " id)
-            (comment/delete db id)))))))
+            (comment/delete db id false)))))))
 
 (defn oauth_id
   [db]
@@ -159,5 +159,5 @@
              (:body post)
              (su/link? (str/trim (:body post))))
         ;; delete
-        (post/delete db (:id post))))
+        (post/delete db (:id post) false)))
     ))

@@ -10,6 +10,7 @@
             [api.db.block :as block]
             [api.db.cache :as cache]
             [api.db.notification :as notification]
+            [share.admins :as admins]
             [taoensso.carmine :as car]))
 
 (defonce ^:private table :reports)
@@ -30,11 +31,6 @@
           vs (map (comp (fn [v] (Integer/parseInt v)) second) result)]
       (zipmap ks vs))))
 
-(defn has-new?
-  [groups]
-  (let [reports (get-groups-reports)]
-    (seq (filter (fn [id] (if-let [n (reports id)]
-                            (> n 0))) (set groups)))))
 
 (defn get-data
   [db {:keys [object_type object_id]}]
@@ -47,7 +43,9 @@
                (cond
                  (:post_id comment)
                  (let [post (post/get db (:post_id comment))]
-                   {:group (group/get db (get-in post [:group :id]))
+                   {:group (if-let [group-id (get-in post [:group :id])]
+                             (group/get db group-id)
+                             nil)
                     :post post
                     :comment comment
                     :user (u/get db (:user_id comment) [:id :screen_name])})
@@ -75,25 +73,36 @@
 (defn get-user-reports
   [db user-id cursor]
   (let [user (u/get db user-id)
-        groups-ids (group/get-user-managed-ids db (:screen_name user))]
+        groups-ids (group/get-user-managed-ids db (:screen_name user))
+        admin? (contains? admins/admins (:screen-name user))]
     (if (seq groups-ids)
       (-> {:select [:*]
            :from [:reports]
-           :where [:and
-                   [:in :group_id groups-ids]
-                   [:= :status "pending"]
-                   ]}
+           :where (if admin?
+                    [:and
+                     [:in :group_id groups-ids]
+                     [:= :status "pending"]]
+                    [:= :status "pending"])}
           (util/wrap-cursor cursor)
           (->> (util/query db))))))
 
+(defn has-new?
+  [db screen-name groups-ids]
+  (util/exists? db table
+                (if (contains? admins/admins screen-name)
+                  [:= :status "pending"]
+                  [:and
+                   [:in :group_id groups-ids]
+                   [:= :status "pending"]])))
+
 (defn delete-object
-  [db {:keys [object_type object_id data] :as report}]
+  [db {:keys [object_type object_id data reason] :as report} moderator]
   ;; notification
   (case (name object_type)
     "post"
-    (post/delete db object_id)
+    (post/delete db object_id moderator reason)
     "comment"
-    (comment/delete db object_id))
+    (comment/delete db object_id moderator reason))
 
   (util/update db table (:id report) {:status "ok"})
   (if (:group_id report)

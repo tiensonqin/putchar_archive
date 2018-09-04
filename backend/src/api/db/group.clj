@@ -9,6 +9,7 @@
             [api.db.user :as u]
             [api.db.search :as search]
             [api.db.notification :as notification]
+            [api.db.moderation-log :as mlog]
             [clj-time.core :as t]
             [clojure.string :as str]
             [share.util :refer [normalize]]
@@ -32,16 +33,17 @@
   ([db id]
    (get db id :all))
   ([db id keys]
-   (let [id (if (uuid? id) id
-                (and (string? id)
-                     (util/get-id-by-field db table {:name id})))
-         group (cache/get table id (partial db-get db) false keys)]
-     (some-> group
-             (clojure.core/update :admins
-                           (fn [xs]
-                             (map (fn [x]
-                                    {:screen_name x})
-                               xs)))))))
+   (when id
+     (let [id (if (uuid? id) id
+                 (and (string? id)
+                      (util/get-id-by-field db table {:name id})))
+          group (cache/get table id (partial db-get db) false keys)]
+      (some-> group
+              (clojure.core/update :admins
+                                   (fn [xs]
+                                     (map (fn [x]
+                                            {:screen_name x})
+                                       xs))))))))
 
 (defn star
   [db group-id user-id]
@@ -167,7 +169,7 @@
    (set)))
 
 (defn add-admin
-  [db id who screen-name]
+  [db id who screen-name moderator]
   (if-let [user (u/get db screen-name)]
     (if-not (contains? (set (map :id (:stared_groups user))) id)
       [:error :user-not-joined]
@@ -184,6 +186,13 @@
                               :who (u/get db who [:id :name :screen_name])
                               :group (select-keys group [:id :name])
                               :created_at (util/sql-now)})
+
+        (when moderator
+          (mlog/create db
+                       {:moderator moderator
+                        :group_name (:name group)
+                        :type "group-promote-user"
+                        :data (pr-str {:promoted screen-name})}))
         [:ok (set new-admins)]))
     [:error :user-not-exists]))
 

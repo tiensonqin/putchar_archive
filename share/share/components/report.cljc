@@ -181,5 +181,11 @@
                           :on-click (fn []
                                       (citrus/dispatch! :report/user-action {:report report
                                                                              :action :forever}))}
-                "Block this user from current group")])]))
+                "Block this user from current group")
+
+              (ui/button {:style {:width 300
+                                  :margin-bottom 48}
+                          :on-click (fn []
+                                      (citrus/dispatch! :report/nothing report))}
+                "Nothing")])]))
        [:h2.ubuntu (t :no-more-reports)]))])

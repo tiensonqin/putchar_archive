@@ -20,6 +20,7 @@
             [share.components.widgets :as widgets]
             [share.components.post-box :as post-box]
             [share.kit.infinite-list :as inf]
+            [share.admins :as admins]
             #?(:cljs [web.scroll :as scroll])))
 
 (rum/defcs vote < rum/reactive
@@ -1276,7 +1277,8 @@
   (let [permalink (util/encode-permalink (str "@" screen_name "/" permalink))
         current-user (citrus/react [:user :current])]
     (query/query
-      (let [post (citrus/react [:post :by-permalink permalink])]
+      (let [post (citrus/react [:post :by-permalink permalink])
+            {:keys [admins]} (get post :group)]
         (if post
           (let [{:keys [group user choices]} post
                 current-reply (citrus/react [:comment :reply])
@@ -1288,8 +1290,8 @@
                 (:title post)]
 
                [:div#post-user {:style {:text-align "center"
-                              :font-style "italic"
-                              :font-size "1.1em"}}
+                                        :font-style "italic"
+                                        :font-size "1.1em"}}
                 [:a {:href (str "/@" (:screen_name user))}
                  (if (:name user)
                    (:name user)
@@ -1298,7 +1300,9 @@
                 [:span {:style {:margin-left 12}}
                  (util/date-format (:created_at post))]
 
-                (if (= (:id current-user) (:id user))
+                (if (or
+                     (= (:id current-user) (:id user))
+                     (admins/admin? (and admins (map :screen_name admins)) (:screen_name current-user)))
                   [:a {:on-click (fn [e]
                                    (util/set-href! (str config/website "/p/" (:id post) "/edit")))
                        :style {:margin-left 12}}

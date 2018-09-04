@@ -56,10 +56,11 @@
   ([db id]
    (get db id :all))
   ([db id keys]
-   (let [id (if (uuid? id) id
-                (and (string? id)
-                     (util/get-id-by-field db table {:screen_name id})))]
-     (cache/get table id (partial db-get db) false keys))))
+   (when id
+     (let [id (if (uuid? id) id
+                 (and (string? id)
+                      (util/get-id-by-field db table {:screen_name id})))]
+      (cache/get table id (partial db-get db) false keys)))))
 
 (defn get-by-email
   "Get user's info by email."

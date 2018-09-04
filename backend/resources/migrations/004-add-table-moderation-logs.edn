@@ -1,0 +1,17 @@
+{:up ["
+CREATE TABLE moderation_logs (
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    flake_id bigint NOT NULL,
+    moderator text NOT NULL,
+    group_name text default null,
+    post_permalink text default null,
+    comment_idx integer default null,
+    type text NOT NULL,
+    data text default null,
+    reason text default null,
+    created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()) NOT NULL,
+    CONSTRAINT created_at_chk CHECK ((date_part('timezone'::text, created_at) = '0'::double precision))
+);
+
+"]
+ :down ["drop table moderation_logs"]}

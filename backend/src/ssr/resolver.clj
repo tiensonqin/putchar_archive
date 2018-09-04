@@ -70,7 +70,7 @@
                               :bookmarked (if uid (bookmark/get-bookmarked-posts uid) nil)}
                :comment      nil
                :report       {:new? (if (seq admin-groups)
-                                      (report/has-new? admin-groups)
+                                      (report/has-new? db (:screen_name current-user) admin-groups)
                                       false)}
                :search       nil}
         state (if q-fn

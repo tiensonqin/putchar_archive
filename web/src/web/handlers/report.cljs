@@ -84,4 +84,9 @@
    :report/user-action-failed
    (fn [state report error]
      ;; open next user modal
-     {:state (assoc state :error error)})})
+     {:state (assoc state :error error)})
+
+   :report/nothing
+   (fn [state report]
+     {:state state
+      :dispatch [:citrus/report-user-action-success report]})})

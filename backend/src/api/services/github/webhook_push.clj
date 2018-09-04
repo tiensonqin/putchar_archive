@@ -67,7 +67,7 @@
 
                  (= status "removed")
                  (when-let [id (get repo-map filename)]
-                   (post/delete db id)
+                   (post/delete db id false)
                    (u/github-delete-path db (:id user) repo-map filename))
 
                  :else

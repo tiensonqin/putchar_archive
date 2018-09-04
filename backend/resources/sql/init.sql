@@ -15,42 +15,42 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: timescaledb; Type: EXTENSION; Schema: -; Owner: 
+-- Name: timescaledb; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS timescaledb WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION timescaledb; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION timescaledb; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION timescaledb IS 'Enables scalable inserts and complex queries for time-series data';
 
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: 
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
@@ -190,9 +190,7 @@ CREATE TABLE groups (
     related_groups text[],
     logo text,
     week_posts_count integer DEFAULT 0 NOT NULL,
-    related_cultures text[],
     cover_settings text,
-    collections text,
     CONSTRAINT created_at_chk CHECK ((date_part('timezone'::text, created_at) = '0'::double precision))
 );
 
@@ -703,4 +701,3 @@ CREATE INDEX users_created_at_index ON users USING btree (created_at DESC);
 --
 -- PostgreSQL database dump complete
 --
-

@@ -10,6 +10,7 @@
             [share.kit.colors :as colors]
             [share.dommy :as dommy]
             [share.kit.mixins :as mixins]
+            [share.admins :as admins]
             [share.dicts :refer [t]]
             [clojure.string :as str]
             [share.dommy :as dommy]
@@ -379,12 +380,12 @@
               :class "fa fa-chevron-up"}]]])]))
 
 (rum/defcs comment-item
-  < {:key-fn (fn [entity [table fk] comments reply? comment] (:id comment))}
+  < {:key-fn (fn [entity [table fk] comments reply? comment admin?] (:id comment))}
   rum/reactive
   (rum/local false ::show-comment-box?)
   (rum/local false ::edit-mode?)
   (rum/local false ::expand-parent?)
-  [state entity [table fk] comments reply? {:keys [id idx user body created_at del reply_to] :as comment}]
+  [state entity [table fk] comments reply? {:keys [id idx user body created_at del reply_to] :as comment} admin?]
   (if comment
     (let [entity_id (:id entity)
           edit-mode? (::edit-mode? state)
@@ -416,11 +417,11 @@
                                    :padding "0 3px 0 8px"}}
                (:screen_name user)])
 
-            (if owner?
+            (if (or owner? admin?)
               [:span
                [:a.control {:style {:margin-left 8
                                     :font-size 13}
-                    :on-click (fn []
+                            :on-click (fn []
                                 (reset! edit-mode? true)
                                 (citrus/dispatch! :citrus/default-update
                                                   [:comment :reply-box?]
@@ -468,12 +469,12 @@
           (comment-box current-user entity [table fk] comment show-comment-box? false)])])))
 
 (rum/defc comments-stream < rum/reactive
-  [entity [table fk] comments end?]
+  [entity [table fk] comments end? admin?]
   (let [current-path (citrus/react [:router :handler])
         loading? (citrus/react [:query :scroll-loading? current-path])]
     [:div.column.comments {:style {:font-size "16px"}}
     (inf/infinite-list (map (fn [comment]
-                              (comment-item entity [table fk] comments false comment)) comments)
+                              (comment-item entity [table fk] comments false comment admin?)) comments)
                        {:on-load
                         (if end?
                           identity
@@ -501,6 +502,8 @@
   (let [current-user (citrus/react [:user :current])
         entity-id (:id entity)
         [table fk] [:posts :post_id]
+        {:keys [admins]} (get entity :group)
+        admin? (admins/admin? (and admins (map :screen_name admins)) (:screen_name current-user))
         {:keys [result end? count-delta]}(citrus/react [:comment table entity-id])
         comments (remove nil? (vals result))
         comments (sort-by :created_at comments)
@@ -522,7 +525,7 @@
               (str (+ (:comments_count entity) (if count-delta count-delta 0)) " " (t :replies)))]]))
 
       (when (seq comments)
-        (comments-stream entity [table fk] comments end?))]]))
+        (comments-stream entity [table fk] comments end? admin?))]]))
 
 (rum/defcs user-comment-item
   < {:key-fn (fn [user-id [id comment]] id)}

@@ -27,6 +27,7 @@
             [bidi.bidi :as bidi]
             [api.services.slack :as slack]
             [clojure.set :as set]
+            [api.db.moderation-log :as mlog]
             [share.content :as content]))
 
 (defonce ^:private table :posts)
@@ -77,12 +78,13 @@
   ([db id-or-permalink]
    (get db id-or-permalink [:*]))
   ([db id-or-permalink fields]
-   (some->> (util/get db {:select fields
-                          :from [table]}
-                      (if (string? id-or-permalink)
-                        {:permalink id-or-permalink}
-                        id-or-permalink))
-            (normalize db))))
+   (when id-or-permalink
+     (some->> (util/get db {:select fields
+                           :from [table]}
+                       (if (string? id-or-permalink)
+                         {:permalink id-or-permalink}
+                         id-or-permalink))
+             (normalize db)))))
 
 (defn get-permalink-by-id
   [db id]
@@ -201,15 +203,23 @@
           (get db id))))))
 
 (defn delete
-  [db id-or-permalink]
-  (when-let [post (get db id-or-permalink)]
-    (let [{:keys [id flake_id group_id tags user_screen_name]} post]
-      (util/delete db table id)
-      (search/delete-post id)
+  ([db id-or-permalink]
+   (delete db id-or-permalink nil nil))
+  ([db id-or-permalink moderator reason]
+   (when-let [post (get db id-or-permalink)]
+     (let [{:keys [id flake_id group_id tags user_screen_name]} post]
+       (util/delete db table id)
+       (search/delete-post id)
 
-      ;; updated tags
-      (when (seq tags)
-        (update-tags user_screen_name #{} (set tags))))))
+       (when moderator
+         (mlog/create db {:moderator moderator
+                          :post_permalink (:permalink post)
+                          :type "post-delete"
+                          :reason reason}))
+
+       ;; updated tags
+       (when (seq tags)
+         (update-tags user_screen_name #{} (set tags)))))))
 
 (defn brief-body
   [posts]
@@ -241,10 +251,6 @@
        (map with-user-group)
        (flatten-frequent-posters)))
 
-(def post-conditions
-  [:and
-   [:= :is_draft false]])
-
 (defn get-non-tech
   ([db cursor]
    (get-non-tech db [:and
@@ -252,6 +258,11 @@
                      [:= :non_tech true]] cursor))
   ([db where cursor]
    (get-posts db where cursor)))
+
+(def post-conditions
+  [:and
+   [:= :is_draft false]
+   [:= :non_tech false]])
 
 (defn get-new
   ([db cursor]

@@ -37,11 +37,13 @@
             [api.services.commits :as commits]
             [api.db.block :as block]
             [api.db.task :as task]
+            [api.db.moderation-log :as mlog]
             [share.util :as su]
             [share.dicts :refer [t]]
             [share.emoji :as emoji]
             [share.content :as content]
-            [cheshire.core :refer [generate-string]]))
+            [cheshire.core :refer [generate-string]]
+            [share.admins :as admins]))
 
 ;; TODO: move search to graphql
 
@@ -50,21 +52,24 @@
   (let [owner? (du/owner? db uid table id)
         screen-name (:screen_name (u/get db uid))
         admin? (or
-                (= screen-name "tiensonqin")
+                (contains? admins/admins screen-name)
                 (and (= table :groups)
                      screen-name
                      (contains? (group/get-user-managed-ids db screen-name)
                                 id)))]
     (cond
+      owner?
+      (ok-result false)
+
       admin?
-      ok-result
+      (ok-result screen-name)
 
       (not owner?)
       {:status 401
        :message ""}
 
       :else
-      ok-result)))
+      (ok-result false))))
 
 (defmulti handle last)
 
@@ -81,7 +86,7 @@
         (util/ok
          (cond-> {:has-unread-notifications? (notification/has-unread? uid)}
            (seq admin-groups)
-           (assoc :has-unread-reports? (report/has-new? admin-groups)))))
+           (assoc :has-unread-reports? (report/has-new? conn (:screen_name user) admin-groups)))))
       (util/bad {:error "something is wrong."}))))
 
 (defmethod handle :user/get-current [[{:keys [uid datasource redis]
@@ -228,7 +233,8 @@
 (defmethod handle :report/delete-object [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (util/ok
-     (report/delete-object conn data))))
+     (let [current-user (u/get conn uid)]
+       (report/delete-object conn data (:screen_name current-user))))))
 
 (defmethod handle :report/user-action [[{:keys [uid datasource redis]} {:keys [report action]}]]
   (j/with-db-transaction [conn datasource]
@@ -258,8 +264,21 @@
 (defmethod handle :group/update [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (reject-not-owner-or-admin? conn uid :groups (:id data)
-                                (do
+                                (fn [moderator]
+                                  (when moderator
+                                    (when-let [old-group (group/get conn (:id data))]
+                                      (let [diff (set/difference (select-keys data [:rule :purpose])
+                                                                 (select-keys old-group [:rule :purpose]))]
+                                        (when (seq diff)
+                                          (mlog/create conn
+                                                       {:moderator moderator
+                                                        :group_name (:name old-group)
+                                                        :type "group-update"
+                                                        :data (pr-str diff)})))))
+
+                                  ;; rule purpose
                                   (group/update conn (:id data) (dissoc data :id))
+
                                   (util/ok data)))))
 
 ;; 1. user not exists
@@ -268,11 +287,13 @@
   (when-not (str/blank? (:screen_name data))
     (j/with-db-transaction [conn datasource]
       (reject-not-owner-or-admin? conn uid :groups (:id data)
-                                  (util/->response
-                                   (group/add-admin conn
-                                                    (:id data)
-                                                    uid
-                                                    (:screen_name data)))))))
+                                  (fn [moderator]
+                                    (util/->response
+                                     (group/add-admin conn
+                                                      (:id data)
+                                                      uid
+                                                      (:screen_name data)
+                                                      moderator)))))))
 
 (defmethod handle :group/top [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
@@ -298,155 +319,164 @@
     (j/with-db-connection [conn datasource]
       (reject-not-owner-or-admin?
        conn uid :posts id
-       (if (and (not (str/blank? (:title data)))
-                (du/exists? conn :posts [:and
-                                         [:= :title (:title data)]
-                                         [:= :user_id uid]
-                                         [:<> :id id]]))
-         (util/bad :post-title-exists)
-         (let [publish? (false? (:is_draft data))
-               old-post (post/get conn id)
-               data (if (and publish? (nil? (:permalink old-post)))
-                      (assoc data :permalink (post/permalink (:user_screen_name old-post)
-                                                             (or
-                                                              (:title data)
-                                                              (:title old-post))))
-                      data)
-               group-id (get-in old-post [:group :id])
-               data (if (:body data)
-                      (assoc data
-                             :video (content/get-first-youtube-video (:body data)))
-                      data)
-               post (post/update conn id (dissoc data :id))]
-           (cond
-             (and (or
-                   (:title data)
-                   (:body data)) publish?)
-             (future
-               (search/add-post post)
+       (fn [moderator]
+         (if (and (not (str/blank? (:title data)))
+                 (du/exists? conn :posts [:and
+                                          [:= :title (:title data)]
+                                          [:= :user_id uid]
+                                          [:<> :id id]]))
+          (util/bad :post-title-exists)
+          (let [publish? (false? (:is_draft data))
+                old-post (post/get conn id)
+                diff (set/difference (select-keys data [:title :body :tags :non_tech :lang])
+                                     (select-keys old-post [:title :body :tags :non_tech :lang]))
+                data (if (and publish? (nil? (:permalink old-post)))
+                       (assoc data :permalink (post/permalink (:user_screen_name old-post)
+                                                              (or
+                                                               (:title data)
+                                                               (:title old-post))))
+                       data)
+                group-id (get-in old-post [:group :id])
+                data (if (:body data)
+                       (assoc data
+                              :video (content/get-first-youtube-video (:body data)))
+                       data)
+                post (post/update conn id (dissoc data :id))]
+            (when (and moderator (seq diff))
+              (mlog/create conn {:moderator moderator
+                                 :post_permalink (:permalink old-post)
+                                 :type "post-update"
+                                 :data (pr-str diff)}))
+            (cond
+              (and (or
+                    (:title data)
+                    (:body data)) publish?)
+              (future
+                (search/add-post post)
 
-               (j/with-db-connection [conn datasource]
-                 (let [post (post/get conn id)
-                       {:keys [github_id github_repo]} (u/get conn uid)
-                       repo-map (some-> (du/select-one-field conn :users uid :github_repo_map)
-                                        (read-string))]
+                (j/with-db-connection [conn datasource]
+                  (let [post (post/get conn id)
+                        {:keys [github_id github_repo]} (u/get conn uid)
+                        repo-map (some-> (du/select-one-field conn :users uid :github_repo_map)
+                                         (read-string))]
 
-                   (if publish?
-                     (slack/new (str "New post: "
-                                     "Title: " (:title data)
-                                     ", Link: <" (str "https://lambdahackers.com/" (:permalink post))
-                                     ">.")))
+                    (if publish?
+                      (slack/new (str "New post: "
+                                      "Title: " (:title data)
+                                      ", Link: <" (str "https://lambdahackers.com/" (:permalink post))
+                                      ">.")))
 
-                   (when (and github_id github_repo)
-                     (when-let [token (token/get-token conn github_id)]
-                       (let [[github_handle github_repo] (su/get-github-handle-repo github_repo)
-                             body-format (or (:body_format post) "asciidoc")
-                             markdown? (= "markdown" body-format)
-                             link (:link post)
-                             [type path] (cond
-                                           link
-                                           [:new-link (str
-                                                       (if-let [group-name (:group_name post)]
-                                                         (str group-name "/links.adoc")
-                                                         "links.adoc"))]
-                                           :else
-                                           (if-let [path (u/get-github-path conn uid (:id post))]
-                                             [:update path]
-                                             [:new (str
-                                                    (if-let [group-name (:group_name post)]
+                    (when (and github_id github_repo)
+                      (when-let [token (token/get-token conn github_id)]
+                        (let [[github_handle github_repo] (su/get-github-handle-repo github_repo)
+                              body-format (or (:body_format post) "asciidoc")
+                              markdown? (= "markdown" body-format)
+                              link (:link post)
+                              [type path] (cond
+                                            link
+                                            [:new-link (str
+                                                        (if-let [group-name (:group_name post)]
+                                                          (str group-name "/links.adoc")
+                                                          "links.adoc"))]
+                                            :else
+                                            (if-let [path (u/get-github-path conn uid (:id post))]
+                                              [:update path]
+                                              [:new (str
+                                                     (if-let [group-name (:group_name post)]
+                                                       (str group-name "/"))
+                                                     (:title post)
+                                                     (if markdown? ".md" ".adoc"))]))]
+                          (if link
+                            (let [content (contents/get github_handle github_repo path)]
+                              (let [{:keys [encoding content] :as cont} content]
+                                (if (= encoding "base64") ; exists
+                                  (let [old-content (github/base64-decode
+                                                     (str/replace content "\n" ""))]
+                                    ;; commit
+                                    (let [commit (commit/auto-commit github_handle github_repo
+                                                                     path
+                                                                     (str old-content
+                                                                          "\n* "
+                                                                          (:title post)
+                                                                          " +\n"
+                                                                          link)
+                                                                     "utf-8"
+                                                                     (str "Add link: " link)
+                                                                     {:oauth-token token})]
+                                      (commits/add-commit (:sha commit))))
+
+                                  (let [commit (commit/auto-commit
+                                                github_handle github_repo
+                                                path
+                                                (str
+                                                 (if-let [group-name (get-in post [:group :name])]
+                                                   (su/format
+                                                    "= %s links\n\n%s[image:%s[]]\n"
+                                                    (su/original-name group-name)
+                                                    (str "https://lambdahackers.com/" group-name)
+                                                    (su/group-logo group-name 128 128))
+                                                   "")
+                                                 "\n* "
+                                                 (:title post)
+
+                                                 " +\n"
+                                                 link)
+                                                "utf-8"
+                                                (str "Add link: " link)
+                                                {:oauth-token token})]
+                                    (commits/add-commit (:sha commit))))))
+                            (do
+                              (when (:title data)
+                                (let [old-title (:title old-post)]
+                                  (when (and old-title (not= (:title data) old-title))
+                                    (let [old-path (str
+                                                    (if-let [group-name (:group_name old-post)]
                                                       (str group-name "/"))
-                                                    (:title post)
-                                                    (if markdown? ".md" ".adoc"))]))]
-                         (if link
-                           (let [content (contents/get github_handle github_repo path)]
-                             (let [{:keys [encoding content] :as cont} content]
-                               (if (= encoding "base64") ; exists
-                                 (let [old-content (github/base64-decode
-                                                    (str/replace content "\n" ""))]
-                                   ;; commit
-                                   (let [commit (commit/auto-commit github_handle github_repo
-                                                                    path
-                                                                    (str old-content
-                                                                         "\n* "
-                                                                         (:title post)
-                                                                         " +\n"
-                                                                         link)
-                                                                    "utf-8"
-                                                                    (str "Add link: " link)
-                                                                    {:oauth-token token})]
-                                     (commits/add-commit (:sha commit))))
+                                                    old-title
+                                                    (if (= "markdown" (or (:body_format old-post) "asciidoc"))
+                                                      ".md"
+                                                      ".adoc"))
+                                          result (commit/delete github_handle github_repo
+                                                                old-path
+                                                                (str "Delete post: " (:title post))
+                                                                {:oauth-token token})]
+                                      (when-let [commit-id (get-in result [:commit "sha"])]
+                                        (commits/add-commit commit-id)
+                                        (if repo-map
+                                          (u/github-delete-path conn uid repo-map old-path)))))))
 
-                                 (let [commit (commit/auto-commit
-                                               github_handle github_repo
-                                               path
-                                               (str
-                                                (if-let [group-name (get-in post [:group :name])]
-                                                  (su/format
-                                                   "= %s links\n\n%s[image:%s[]]\n"
-                                                   (su/original-name group-name)
-                                                   (str "https://lambdahackers.com/" group-name)
-                                                   (su/group-logo group-name 128 128))
-                                                  "")
-                                                "\n* "
-                                                (:title post)
+                              (let [commit (commit/auto-commit github_handle github_repo
+                                                               path
+                                                               (str
+                                                                (if markdown? "# " "= ")
+                                                                (:title post)
+                                                                "\n\n"
 
-                                                " +\n"
-                                                link)
-                                               "utf-8"
-                                               (str "Add link: " link)
-                                               {:oauth-token token})]
-                                   (commits/add-commit (:sha commit))))))
-                           (do
-                             (when (:title data)
-                               (let [old-title (:title old-post)]
-                                 (when (and old-title (not= (:title data) old-title))
-                                   (let [old-path (str
-                                                   (if-let [group-name (:group_name old-post)]
-                                                     (str group-name "/"))
-                                                   old-title
-                                                   (if (= "markdown" (or (:body_format old-post) "asciidoc"))
-                                                     ".md"
-                                                     ".adoc"))
-                                         result (commit/delete github_handle github_repo
-                                                               old-path
-                                                               (str "Delete post: " (:title post))
+                                                                (:body post))
+                                                               "utf-8"
+                                                               (str (if (= type :update)
+                                                                      "Update"
+                                                                      "New")
+                                                                    " post: " (:title post))
                                                                {:oauth-token token})]
-                                     (when-let [commit-id (get-in result [:commit "sha"])]
-                                       (commits/add-commit commit-id)
-                                       (if repo-map
-                                         (u/github-delete-path conn uid repo-map old-path)))))))
+                                (commits/add-commit (:sha commit))
 
-                             (let [commit (commit/auto-commit github_handle github_repo
-                                                              path
-                                                              (str
-                                                               (if markdown? "# " "= ")
-                                                               (:title post)
-                                                               "\n\n"
+                                (u/github-add-path conn uid repo-map path (:id post)))))))))
+                  ))
 
-                                                               (:body post))
-                                                              "utf-8"
-                                                              (str (if (= type :update)
-                                                                     "Update"
-                                                                     "New")
-                                                                   " post: " (:title post))
-                                                              {:oauth-token token})]
-                               (commits/add-commit (:sha commit))
+              (or (:title data) (:body data))
+              (future (search/update-post post))
 
-                               (u/github-add-path conn uid repo-map path (:id post)))))))))
-                 ))
-
-             (or (:title data) (:body data))
-             (future (search/update-post post))
-
-             :else
-             nil)
-           (util/ok post)))))))
+              :else
+              nil)
+            (util/ok post))))))))
 
 (defmethod handle :post/delete [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (reject-not-owner-or-admin? conn uid :posts (:id data)
-                                (do
-                                  (post/delete conn (:id data))
+                                (fn [moderator]
+                                  (post/delete conn (:id data) moderator)
+
                                   (future
                                     (j/with-db-connection [conn datasource]
                                       (let [post (post/get conn (:id data))
@@ -548,15 +578,26 @@
 (defmethod handle :comment/update [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (reject-not-owner-or-admin? conn uid :comments (:id data)
-                                (do
+                                (fn [moderator]
+                                  (when moderator
+                                    (when-let [old-comment (comment/get conn (:id data))]
+                                      (when (not= (:body old-comment) (:body data))
+                                        (mlog/create conn {:type "comment-update"
+                                                           :moderator moderator
+                                                           :post_permalink (:post_permalink old-comment)
+                                                           :comment_idx (:idx old-comment)
+                                                           :data (pr-str {:old-body (:body old-comment)
+                                                                          :new-body (:body data)})
+                                                           ;; :reason reason
+                                                           }))))
                                   (comment/update conn (:id data) (dissoc data :id))
                                   (util/ok data)))))
 
 (defmethod handle :comment/delete [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (reject-not-owner-or-admin? conn uid :comments (:id data)
-                                (do
-                                  (comment/delete conn (:id data))
+                                (fn [moderator]
+                                  (comment/delete conn (:id data) moderator)
                                   (util/ok {:result true})))))
 
 (defmethod handle :comment/like [[{:keys [uid datasource redis]} data]]

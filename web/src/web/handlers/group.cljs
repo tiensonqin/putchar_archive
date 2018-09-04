@@ -113,9 +113,9 @@
    (fn [state data {:keys [body]}]
      {:state (assoc state :error
                     (case (:message body)
-                      :user-not-exists
+                      ":user-not-exists"
                       (t :user-not-exists)
-                      :user-not-joined
+                      ":user-not-joined"
                       (t :user-not-joined)
                       (t :bad-happened)))})
 

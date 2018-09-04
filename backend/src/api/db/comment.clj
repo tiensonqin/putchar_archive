@@ -10,7 +10,8 @@
             [clojure.core.async :as async]
             [share.util :as su]
             [share.dicts :refer [t]]
-            [share.content :as content]))
+            [share.content :as content]
+            [api.db.moderation-log :as mlog]))
 
 (defonce ^:private table :comments)
 (defonce ^:private fields [:*])
@@ -125,18 +126,26 @@
                                    (assoc :updated_at (util/sql-now)))))
 
 (defn delete
-  [db id]
-  (when-let [comment (get db id)]
-    (update db id {:del true})
-    (when-let [reply-id (:reply_to comment)]
-      (dec-replies-count db reply-id))
-    (cond
-      (:post_id comment)
-      (post/dec-comments-count db (:post_id comment))
+  ([db id moderator]
+   (delete db id nil nil))
+  ([db id moderator reason]
+   (when-let [comment (get db id)]
+     (when moderator
+       (mlog/create db {:type "comment-delete"
+                        :moderator moderator
+                        :post_permalink (:post_permalink comment)
+                        :comment_idx (:idx comment)
+                        :reason reason}))
+     (update db id {:del true})
+     (when-let [reply-id (:reply_to comment)]
+       (dec-replies-count db reply-id))
+     (cond
+       (:post_id comment)
+       (post/dec-comments-count db (:post_id comment))
 
-      :else
-      nil
-      )))
+       :else
+       nil
+       ))))
 
 (defn query-sql
   [order-key order limit]

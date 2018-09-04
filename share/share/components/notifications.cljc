@@ -84,14 +84,15 @@
   [notification]
   (let [current-user (citrus/react [:user :current])
         {:keys [post comment my-comment]} notification]
-    [:div {:key (:id comment)}
+    [:div {:key (:id comment)
+           :style {:margin-top 24}}
      [:div.column
       [:div.row1
-       [:span (t :new-comment)]
+       [:h4 {:style {:margin-top 0}}
+        "New comment on "]
 
        [:a {:key "post"
-            :style {:color "rgba(0,0,0,0.84)"
-                    :margin-left 12}
+            :style {:margin-left 12}
             :href (str "/" (str (:permalink post) "/" (:idx comment)))}
         (:title post)]]
 
