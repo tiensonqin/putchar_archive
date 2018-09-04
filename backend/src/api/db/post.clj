@@ -95,9 +95,8 @@
        (str/replace #"[「」？…,=+>%<./\_?!:;()\[\]{}@#$%^&*'：，“”‘’ `\"\。《》【】|]" "-")
        (str/lower-case))
    (ascii-pinyin)
-   (take 64)
+   (take 48)
    (apply str)
-   (#(str % "-" (str/lower-case (au/flake-id->str))))
    (#(str/replace % #"-+" "-"))
    (bidi.bidi/url-encode)
    (str "@" screen-name "/")))
@@ -198,7 +197,7 @@
                   add-tags (set/difference s1 s2)
                   remove-tags (set/difference s2 s1)]
               (update-tags (:user_screen_name post)
-                          add-tags remove-tags)))
+                           add-tags remove-tags)))
           (get db id))))))
 
 (defn delete

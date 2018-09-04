@@ -147,10 +147,11 @@
                        (post-box/upload-images (.-files (.-target e)))))
        :hidden true}]]))
 
-(rum/defcs new-post-title <
+(rum/defcs new-post-title < rum/reactive
   (rum/local false ::fullscreen?)
   [state form-data init auto-focus?]
-  (let [fullscreen? (get state ::fullscreen?)]
+  (let [fullscreen? (get state ::fullscreen?)
+        title-exists? (citrus/react [:post :post-title-exists?])]
     [:div.new-post-title {:style {:position "relative"}}
      [:input.ubuntu {:type "text"
                      :class "header-text"
@@ -175,6 +176,10 @@
 
      (if (false? (get form-data :title-validated?))
        [:p {:class "help is-danger"} (t :post-title-warning)])
+
+     (if title-exists?
+       [:p {:class "help is-danger"} (str (:title form-data)
+                                          " already exists!")])
 
      (when-not (util/mobile?)
        [:a {:title (if @fullscreen?

@@ -78,7 +78,9 @@
        {:state (cond->
                  (assoc-in state [:post :form-data] form-data)
                  save-draft?
-                 (assoc-in [:post :saving?] true))}
+                 (assoc-in [:post :saving?] true)
+                 (not (str/blank? (:title v)))
+                 (assoc-in [:post :post-title-exists?] false))}
 
        (and body
             (not completed?))
@@ -141,7 +143,19 @@
    (fn [state data]
      {:state {:loading? true}
       :http {:params [:post/update (dissoc data :title-validated?)]
-             :on-load :citrus/update-ready}})
+             :on-load :citrus/update-ready
+             :on-error :post/update-failed}})
+
+   :post/update-failed
+   (fn [state result]
+     {:state (cond
+               (and (= (:status result) 400)
+                    (= (get-in result [:body :message]) ":post-title-exists"))
+               {:post-title-exists? true}
+
+               :else
+               state)})
+
 
    :citrus/update-ready
    (fn [state result]
@@ -345,7 +359,6 @@
 
    :post/new-draft-failed
    (fn [state result]
-     (prn {:failed result})
      {:state {:saving? false}})
 
    ;; save every 5 seconds, new-post or post-edit
@@ -397,11 +410,17 @@
 
    :post/save-failed
    (fn [state result]
-     ;; 1. clear interval
-     ;; TODO:
-     ;; 2. handle failed message
-     {:state {:saving? false
-              :clear-interval? true}})
+     ;; TODO: clear interval
+     {:state (merge
+              {:saving? false
+               :clear-interval? true}
+              (cond
+                (and (= (:status result) 400)
+                     (= (get-in result [:body :message]) ":post-title-exists"))
+                {:post-title-exists? true}
+
+                :else
+                state))})
 
    :post/reset-form-data
    (fn [state]
