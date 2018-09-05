@@ -12,7 +12,7 @@
             [api.db.refresh-token :as refresh-token]
             [api.db.search :as search]
             [api.db.notification :as notification]
-            [api.db.report :as report]
+            [api.db.moderation-log :as mlog]
             [api.db.star :as star]
             [api.db.choice :as choice]
             [api.db.stat :as stat]
@@ -69,6 +69,11 @@
   (if uid
     (j/with-db-connection [conn datasource]
       (report/get-user-reports conn uid (:cursor data)))))
+
+(defn get-moderation-logs
+  [{:keys [uid datasource]} data]
+  (j/with-db-connection [conn datasource]
+    (mlog/get-logs conn (:cursor data))))
 
 (defn get-stats
   [{:keys [uid datasource]} data]
@@ -310,6 +315,7 @@
    ;; args {:user_id ID}
    :notifications get-notifications
    :reports get-reports
+   :moderation-logs get-moderation-logs
    :stats get-stats
 
    ;; args {:filter (enum :hot :new) :user_id ID}

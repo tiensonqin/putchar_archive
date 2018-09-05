@@ -191,8 +191,8 @@
           (mlog/create db
                        {:moderator moderator
                         :group_name (:name group)
-                        :type "group-promote-user"
-                        :data (pr-str {:promoted screen-name})}))
+                        :type "Promote user to Moderator"
+                        :data {:promoted screen-name}}))
         [:ok (set new-admins)]))
     [:error :user-not-exists]))
 

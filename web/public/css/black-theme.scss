@@ -181,7 +181,7 @@ $btn-color: #214b75;
         color: #ddd;
     }
 
-    .comments .col-item {
+    .notifications .col-item, .comments .col-item, .reports .col-item, .moderation-logs .col-item {
         border-bottom: 1px solid #353535;
     }
 

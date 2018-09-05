@@ -150,7 +150,7 @@
 .white-theme *:not(pre) > code {
   color: #000;
 }
-.white-theme .comments .col-item {
+.white-theme .notifications .col-item, .white-theme .comments .col-item, .white-theme .reports .col-item, .white-theme .moderation-logs .col-item {
   border-bottom: 1px solid #efefef;
 }
 .white-theme .col-item:last-child {

@@ -135,7 +135,7 @@
 .black-theme .editor h1 a, .black-theme .editor h2 a, .black-theme .editor h3 a, .black-theme .editor h4 a, .black-theme .editor h5 a, .black-theme .editor h6 a {
   color: #ddd;
 }
-.black-theme .comments .col-item {
+.black-theme .notifications .col-item, .black-theme .comments .col-item, .black-theme .reports .col-item, .black-theme .moderation-logs .col-item {
   border-bottom: 1px solid #353535;
 }
 .black-theme .col-item:last-child {

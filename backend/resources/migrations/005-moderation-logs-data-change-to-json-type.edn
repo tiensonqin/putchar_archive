@@ -1,0 +1,2 @@
+{:up ["alter table moderation_logs alter column data type json USING data::json"]
+ :down "alter table moderation_logs alter column data type text"}

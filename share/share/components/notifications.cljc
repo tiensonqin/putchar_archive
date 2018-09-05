@@ -117,7 +117,7 @@
 (rum/defc notifications < rum/reactive
   (mixins/query :notifications)
   [params]
-  [:div.column.auto-padding
+  [:div.column.auto-padding.notifications
    (let [notifications (citrus/react [:notifications])]
      (query/query
        (if (seq notifications)

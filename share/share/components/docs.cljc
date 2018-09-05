@@ -25,18 +25,3 @@
         doc (get-doc "privacy" locale)]
     [:div.column.auto-padding {:style {:margin-bottom 64}}
      (widgets/transform-content doc {:body-format :asciidoc})]))
-
-(rum/defc terms < rum/reactive
-  []
-  (let [locale (citrus/react [:locale])
-        doc (get-doc "terms" locale)]
-    [:div.column.auto-padding {:style {:margin-bottom 64}}
-     (widgets/transform-content doc {:body-format :asciidoc})
-     ]))
-
-(rum/defc code-of-conduct < rum/reactive
-  []
-  (let [locale (citrus/react [:locale])
-        doc (get-doc "code_of_conduct" locale)]
-    [:div.column.auto-padding {:style {:margin-bottom 64}}
-     (widgets/transform-content doc {:body-format :asciidoc})]))

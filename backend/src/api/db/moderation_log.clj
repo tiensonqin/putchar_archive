@@ -1,7 +1,5 @@
 (ns api.db.moderation-log
-  (:require [api.db.util :as util]
-            [clj-time.core :as c]
-            [clj-time.coerce :as cc]))
+  (:require [api.db.util :as util]))
 
 (defonce ^:private table :moderation_logs)
 
@@ -9,4 +7,9 @@
   [db m]
   (util/create db table m :flake? true))
 
-;; type
+(defn get-logs
+  [db cursor]
+  (-> {:select [:*]
+       :from [table]}
+      (util/wrap-cursor cursor)
+      (->> (util/query db))))

@@ -109,6 +109,9 @@
 (defmethod mergef :reports [state route-handler q {:keys [reports] :as result} _]
   (assoc state :reports reports))
 
+(defmethod mergef :moderation-logs [state route-handler q {:keys [moderation-logs] :as result} _]
+  (assoc state :moderation-logs moderation-logs))
+
 (defmethod mergef :stats [state route-handler q {:keys [stats] :as result} _]
   (assoc state :stats stats))
 

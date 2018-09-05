@@ -131,7 +131,7 @@
   ([db id moderator reason]
    (when-let [comment (get db id)]
      (when moderator
-       (mlog/create db {:type "comment-delete"
+       (mlog/create db {:type "Comment Delete"
                         :moderator moderator
                         :post_permalink (:post_permalink comment)
                         :comment_idx (:idx comment)

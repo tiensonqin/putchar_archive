@@ -267,14 +267,15 @@
                                 (fn [moderator]
                                   (when moderator
                                     (when-let [old-group (group/get conn (:id data))]
-                                      (let [diff (set/difference (select-keys data [:rule :purpose])
-                                                                 (select-keys old-group [:rule :purpose]))]
+                                      (let [diff (su/map-difference
+                                                  (select-keys data [:rule :purpose])
+                                                  (select-keys old-group [:rule :purpose]))]
                                         (when (seq diff)
                                           (mlog/create conn
                                                        {:moderator moderator
                                                         :group_name (:name old-group)
-                                                        :type "group-update"
-                                                        :data (pr-str diff)})))))
+                                                        :type "Group Update"
+                                                        :data diff})))))
 
                                   ;; rule purpose
                                   (group/update conn (:id data) (dissoc data :id))
@@ -328,7 +329,7 @@
           (util/bad :post-title-exists)
           (let [publish? (false? (:is_draft data))
                 old-post (post/get conn id)
-                diff (set/difference (select-keys data [:title :body :tags :non_tech :lang])
+                diff (su/map-difference (select-keys data [:title :body :tags :non_tech :lang])
                                      (select-keys old-post [:title :body :tags :non_tech :lang]))
                 data (if (and publish? (nil? (:permalink old-post)))
                        (assoc data :permalink (post/permalink (:user_screen_name old-post)
@@ -345,8 +346,8 @@
             (when (and moderator (seq diff))
               (mlog/create conn {:moderator moderator
                                  :post_permalink (:permalink old-post)
-                                 :type "post-update"
-                                 :data (pr-str diff)}))
+                                 :type "Post Update"
+                                 :data diff}))
             (cond
               (and (or
                     (:title data)
@@ -582,12 +583,12 @@
                                   (when moderator
                                     (when-let [old-comment (comment/get conn (:id data))]
                                       (when (not= (:body old-comment) (:body data))
-                                        (mlog/create conn {:type "comment-update"
+                                        (mlog/create conn {:type "Comment Update"
                                                            :moderator moderator
                                                            :post_permalink (:post_permalink old-comment)
                                                            :comment_idx (:idx old-comment)
-                                                           :data (pr-str {:old-body (:body old-comment)
-                                                                          :new-body (:body data)})
+                                                           :data {:old-body (:body old-comment)
+                                                                  :new-body (:body data)}
                                                            ;; :reason reason
                                                            }))))
                                   (comment/update conn (:id data) (dissoc data :id))

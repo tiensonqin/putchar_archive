@@ -10,6 +10,7 @@
             [api.db.block :as block]
             [api.db.cache :as cache]
             [api.db.notification :as notification]
+            [api.db.moderation-log :as mlog]
             [share.admins :as admins]
             [taoensso.carmine :as car]))
 
@@ -118,15 +119,25 @@
 (defn block-user
   [db uid report action]
   (when (:group_id report)
-    ;; notification
-    (block/create db {:report_id (:id report)
-                      :user_id (au/->uuid (get-in report [:data :user :id]))
-                      :group_id (:group_id report)
-                      :action action
-                      :group_admin uid})
+    (let [user-id (au/->uuid (get-in report [:data :user :id]))
+          user (u/get db user-id)
+          moderator (u/get db uid)]
+      (block/create db {:report_id (:id report)
+                        :user_id user-id
+                        :group_id (:group_id report)
+                        :action action
+                        :group_admin uid})
 
-    (notification/create (get-in report [:data :user :id])
-                         {:type :group-blocked
-                          :group (get-in report [:data :group])
-                          :action action
-                          :created_at (util/sql-now)})))
+
+      (when moderator
+        (mlog/create db {:moderator (:screen_name moderator)
+                         :data {:screen_name (:screen_name user)}
+                         :type "User Block"
+                         :reason (:reason report)}))
+
+
+      (notification/create (get-in report [:data :user :id])
+                           {:type :group-blocked
+                            :group (get-in report [:data :group])
+                            :action action
+                            :created_at (util/sql-now)}))))

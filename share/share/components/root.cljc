@@ -15,6 +15,7 @@
             [share.components.notifications :as notifications]
             [share.components.search :as search]
             [share.components.report :as report]
+            [share.components.moderation-logs :as logs]
             [share.components.stats :as stats]
             [share.components.docs :as docs]
             [share.components.widgets :as widgets]
@@ -77,14 +78,12 @@
                           (notifications/notifications params))
          :reports       (fn [params current-user hot-groups]
                           (report/reports params))
+         :moderation-logs       (fn [params current-user hot-groups]
+                                  (logs/logs params))
          :stats         (fn [params current-user hot-groups]
                           (stats/stats params))
          :privacy       (fn [params current-user hot-groups]
                           (docs/privacy))
-         :terms         (fn [params current-user hot-groups]
-                          (docs/terms))
-         :code-of-conduct (fn [params current-user hot-groups]
-                            (docs/code-of-conduct))
          :newest (fn [params current-user hot-groups]
                    (post/sort-by-new))
          :non-tech (fn [params current-user hot-groups]

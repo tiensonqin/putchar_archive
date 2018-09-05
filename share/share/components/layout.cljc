@@ -46,25 +46,13 @@
       [:a.control
        {:style {:margin-left 24}
         :href "mailto:tiensonqin@gmail.com"}
-       (t :contact-us)]      ]
+       (t :contact-us)]
 
-     [:div.row1 {:style {:align-items "center"
-                         :flex-wrap "wrap"
-                         :margin-top 16}}
       [:a.control {:href "/privacy"
-                   :style {:margin-right 24}
-           :on-click (fn []
-                       (util/set-href! (str config/website "/privacy")))}
-       (t :privacy)]
-      [:a.control {:href "/terms"
-                   :style {:margin-right 24}
+                   :style {:margin-left 24}
                    :on-click (fn []
-                       (util/set-href! (str config/website "/terms")))}
-       (t :terms)]
-      [:a.control {:href "/code-of-conduct"
-                   :on-click (fn []
-                       (util/set-href! (str config/website "/code-of-conduct")))}
-       (t :code-of-conduct)]]
+                               (util/set-href! (str config/website "/privacy")))}
+       (t :privacy)]]
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
@@ -78,6 +66,11 @@
        (t :bugs)]]
 
      (theme)
+
+     [:a.control {:href "/moderation-logs"
+                  :style {:margin-top 12
+                          :display "block"}}
+      "Moderation logs"]
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"

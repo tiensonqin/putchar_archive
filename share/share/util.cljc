@@ -869,3 +869,13 @@
   [m]
   (when (seq m)
     (zipmap (vals m) (keys m))))
+
+(defn map-difference [m1 m2]
+  (let [ks1 (set (keys m1))
+        ks2 (set (keys m2))
+        ks1-ks2 (set/difference ks1 ks2)
+        ks1*ks2 (set/intersection ks1 ks2)]
+    (merge (select-keys m1 ks1-ks2)
+           (select-keys m1
+                        (remove (fn [k] (= (m1 k) (m2 k)))
+                                ks1*ks2)))))

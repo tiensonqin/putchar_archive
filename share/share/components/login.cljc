@@ -54,7 +54,8 @@
                                :background "#FFF"}}
        :on-submit (fn [form-data]
                     (citrus/dispatch! :user/request-code @form-data))
-       :cancel-button? false})]
+       :cancel-button? false
+       :submit-on-enter? true})]
 
    (widgets/transform-content (t :agree-text)
                               {:style {:font-size 14

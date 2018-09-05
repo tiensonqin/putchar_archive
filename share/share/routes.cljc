@@ -31,10 +31,9 @@
 
         ["search"                                                 :search]
         ["reports"                                                :reports]
+        ["moderation-logs"                                                :moderation-logs]
         ["new-post"                                                    :new-post]
         ["privacy"                                                :privacy]
-        ["terms"                                                  :terms]
-        ["code-of-conduct"                                        :code-of-conduct]
         [["@" :screen_name "/comments"]   :comments]
 
         [["tag/" [#"[^\/]+" :tag]]                                             :tag]

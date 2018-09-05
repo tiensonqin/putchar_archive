@@ -128,6 +128,11 @@
     {:q {:reports {:fields [:*]
                    :cursor {:limit 100}}}}))
 
+(def moderation-logs-query
+  (fn [state args]
+    {:q {:moderation-logs {:fields [:*]
+                           :cursor {:limit 20}}}}))
+
 (def stats-query
   (fn [state args]
     {:q {:stats {:fields [:*]}}}))
@@ -211,6 +216,8 @@
    :notifications notifications-query
 
    :reports reports-query
+
+   :moderation-logs moderation-logs-query
 
    :stats stats-query
 

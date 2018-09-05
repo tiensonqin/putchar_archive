@@ -312,7 +312,8 @@
                         (citrus/dispatch! :user/update {:github_repo (:link @form-data)})
                         (reset! expand? false))
            :style {:padding 0}
-           :loading? [:user :loading?]})])]))
+           :loading? [:user :loading?]
+           :submit-on-enter? true})])]))
 
 (rum/defcs languages-settings <
   (rum/local nil ::languages)

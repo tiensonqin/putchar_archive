@@ -61,7 +61,7 @@
 (rum/defcs reports < rum/reactive
   (mixins/query :reports)
   [state params]
-  [:div.column.auto-padding
+  [:div.column.auto-padding.reports
    (let [reports (citrus/react [:reports])
          user-dialog? (citrus/react [:report :next-user-dialog?])
          delete-dialog? (citrus/react [:report :delete-dialog?])

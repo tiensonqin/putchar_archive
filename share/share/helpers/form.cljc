@@ -291,7 +291,8 @@
                  confirm-attrs
                  header
                  footer
-                 loading?]
+                 loading?
+                 submit-on-enter?]
           :or {submit-text (t :submit)
                cancel-button? true
                style {:padding 12
@@ -323,11 +324,13 @@
               (swap! form-data dissoc :validators)
               (when @form-data
                 (on-submit form-data))))]
-      [:div.column.form {:style style
-                         :on-key-down (fn [e]
-                                        (when (= 13 (.-keyCode e))
-                                          ;; enter key
-                                          (validated-on-submit)))}
+      [:div.column.form (cond->
+                            {:style style}
+                          submit-on-enter?
+                          (assoc :on-key-down (fn [e]
+                                                (when (= 13 (.-keyCode e))
+                                                  ;; enter key
+                                                  (validated-on-submit)))))
        ;; title
        (if title [:h1 {:class "title"
                        :style {:margin-bottom 24}} title])

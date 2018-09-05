@@ -199,7 +199,7 @@ $h-color: rgb(7,24,57);
         color: #000;
     }
 
-    .comments .col-item {
+    .notifications .col-item, .comments .col-item, .reports .col-item, .moderation-logs .col-item {
         border-bottom: 1px solid #efefef;
     }
 

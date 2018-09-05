@@ -214,7 +214,7 @@
        (when moderator
          (mlog/create db {:moderator moderator
                           :post_permalink (:permalink post)
-                          :type "post-delete"
+                          :type "Post Delete"
                           :reason reason}))
 
        ;; updated tags
