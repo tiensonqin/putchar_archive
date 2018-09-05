@@ -123,7 +123,7 @@
   [:a.mention.ubuntu {:href (str "/@" screen-name)}
    (str "@" screen-name)])
 
-(def mention-pattern #"\B@(\w+)")
+(def mention-pattern #"^(?!.*\bRT\b)(?:.+\s)?@(\w+)")
 
 (defn get-mentions
   [s]
