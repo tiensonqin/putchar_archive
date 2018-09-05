@@ -97,7 +97,7 @@
        (str/replace #"[「」？…,=+>%<./\_?!:;()\[\]{}@#$%^&*'：，“”‘’ `\"\。《》【】|]" "-")
        (str/lower-case))
    (ascii-pinyin)
-   (take 48)
+   (take 64)
    (apply str)
    (#(str/replace % #"-+" "-"))
    (bidi.bidi/url-encode)

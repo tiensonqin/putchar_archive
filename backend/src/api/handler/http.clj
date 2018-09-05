@@ -330,7 +330,7 @@
           (let [publish? (false? (:is_draft data))
                 old-post (post/get conn id)
                 diff (su/map-difference (select-keys data [:title :body :tags :non_tech :lang])
-                                     (select-keys old-post [:title :body :tags :non_tech :lang]))
+                                        (select-keys old-post [:title :body :tags :non_tech :lang]))
                 data (if (and publish? (nil? (:permalink old-post)))
                        (assoc data :permalink (post/permalink (:user_screen_name old-post)
                                                               (or
@@ -347,7 +347,8 @@
               (mlog/create conn {:moderator moderator
                                  :post_permalink (:permalink old-post)
                                  :type "Post Update"
-                                 :data diff}))
+                                 :data {:new diff
+                                        :old (select-keys old-post (vec (keys diff)) )}}))
             (cond
               (and (or
                     (:title data)
