@@ -1,8 +1,10 @@
 = Putchar
 
+https://putchar.org
+
 Putchar is a reddit-like community for programmers to discuss and share their thoughts.
 
-https://putchar.org[image:https://putchar.org/images/logo.png[]]
+https://putchar.org[image:https://putchar.org/logo-2x.png[]]
 
 == Features
    * You can join any group you like, or create a group if it not exists.
