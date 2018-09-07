@@ -117,9 +117,11 @@
   [tags]
   (some->> tags
            (su/split-tags)
+           (remove str/blank?)
            (distinct)
            (map su/tag-encode)
-           (take 3)))
+           (take 3)
+           (seq)))
 
 (defn update-tags
   [screen-name add-tags remove-tags]

@@ -289,8 +289,10 @@
 
 (defn mobile?
   []
-  (re-find #"Mobi" #?(:cljs js/navigator.userAgent
-                      :clj @user-agent)))
+  (some->>
+   #?(:cljs js/navigator.userAgent
+      :clj @user-agent)
+   (re-find #"Mobi")))
 
 (defn set-timeout [t f]
   #?(:cljs (js/setTimeout f t)

@@ -29,7 +29,7 @@ body {
 }
 
 #head {
-    z-index: 9999;
+    z-index: 999;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
