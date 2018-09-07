@@ -402,24 +402,54 @@
 
 (rum/defc back-to-top < rum/reactive
   []
-  (let [url (util/get-current-url)]
-    (when-let [scroll-top (citrus/react [:last-scroll-top url])]
-      (if (> scroll-top 200)
-        [:a#back-to-top.fadein
-         {:style {:position "fixed"
-                  :bottom 20
-                  :right 20
-                  :width 36
-                  :height 36
-                  :z-index 9999
-                  :border-radius 2
-                  :padding-top 6
-                  :text-align "center"}
-          :on-click (fn []
-                      (citrus/dispatch! :citrus/set-scroll-top url 0))}
-         (ui/icon {:type :back-to-top
-                   :color "#efefef"})
-         ]))))
+  (let [url (util/get-current-url)
+        current-user (citrus/react [:user :current])
+        new-report? (citrus/react [:report :new?])
+        unread? (:has-unread-notifications? current-user)
+        last-scroll-top (citrus/react [:last-scroll-top url])
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))
+        alert? (and (not mobile?)
+                    last-scroll-top
+                    (> last-scroll-top 60))]
+    [:div.column1
+     (when (and alert? unread?)
+       [:a.fadein {:href "/notifications"
+                   :title (t :notifications)
+                   :style {:position "fixed"
+                           :top 64
+                           :right 64
+                           :z-index 9999}}
+        (ui/icon {:type "notifications"
+                  :color (colors/primary)})])
+
+
+     (when (and alert? new-report?)
+       [:div {:style {:position "fixed"
+                      :top 128
+                      :right 64}}
+        [:a
+         {:title (t :reports)
+          :href "/reports"}
+         [:i {:class "fa fa-flag"
+              :style {:font-size 20
+                      :color (colors/primary)}}]]])
+
+     (if (and last-scroll-top (> last-scroll-top 200))
+       [:a#back-to-top.fadein
+        {:style {:position "fixed"
+                 :bottom 20
+                 :right 20
+                 :width 36
+                 :height 36
+                 :z-index 9999
+                 :border-radius 2
+                 :padding-top 6
+                 :text-align "center"}
+         :on-click (fn []
+                     (citrus/dispatch! :citrus/set-scroll-top url 0))}
+        (ui/icon {:type :back-to-top
+                  :color "#efefef"})
+        ])]))
 
 (rum/defc website-logo < rum/reactive
   []

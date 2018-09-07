@@ -234,7 +234,6 @@
         new-post? (= :new-post current-path)
         post-edit? (= :post-edit current-path)
         post? (or new-post? post-edit?)
-        unread? (:has-unread-notifications? current-user)
         stared_groups (util/get-stared-groups current-user)
         current-group-id (citrus/react [:group :current])
         groups (citrus/react [:group :by-name])
@@ -243,80 +242,49 @@
                        (util/get-group-by-id groups current-group-id))
 
         join-group? (and current-group (contains? (set (map first (seq stared_groups))) (:id current-group)))
-        new-report? (citrus/react [:report :new?])]
+        new-report? (citrus/react [:report :new?])
+        unread? (:has-unread-notifications? current-user)
+]
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
-      [:div#head {:key "head"}
+      [:div#head {:key "head"
+                  :style (if mobile?
+                           {:position "fixed"
+                            :top 0
+                            :left 0}
+                           {})}
        [:div.row {:class "wrap"
                   :style {:justify-content "space-between"}}
-        (if (and (= current-path :post)
-                 (and last-scroll-top (> last-scroll-top 100))
-                 (not mobile?))
-          (let [{:keys [screen_name permalink]} params
-                permalink (util/encode-permalink (str "@" screen_name "/" permalink))
-                current-post (citrus/react [:post :by-permalink permalink])]
-            [:div.row1 {:style {:align-items "center"}}
-             (group/group-logo join-group? current-group width true false false)
-             [:h3.fadein {:style {:margin-left 12
-                                  :margin-right 12
-                                  :margin-top 12
-                                  :max-width 600
-                                  :overflow "hidden"
-                                  :color (colors/icon-color)
-                                  :text-overflow "ellipsis"
-                                  :white-space "nowrap"}}
-              (:title current-post)]])
-          [:div.row1 {:style {:align-items "center"}}
-           (when (and (not= current-path :home)
-                      (util/ios?))
-             [:a {:style {:margin-right 12}
-                  :on-click (fn [] (citrus/dispatch! :router/back))}
-              (ui/icon {:type :ios_back
-                        :color (colors/primary)})])
-           (cond
-            (contains? #{:new-post :post-edit} current-path)
-            [:div.row1 {:style {:align-items "center"}}
-             (widgets/website-logo)
-
-             (when-not mobile?
-               [:span.ubuntu {:style {:margin-left 12
-                                      :font-weight "600"
-                                      :color (colors/icon-color)
-                                      :font-size 13}}
-               (t :draft)])]
-            (= current-path :groups)
+        [:div.row1 {:style {:align-items "center"}}
+         (when (and (not= current-path :home)
+                    (util/ios?))
+           [:a {:style {:margin-right 12}
+                :on-click (fn [] (citrus/dispatch! :router/back))}
+            (ui/icon {:type :ios_back
+                      :color (colors/primary)})])
+         (cond
+           (contains? #{:new-post :post-edit} current-path)
+           [:div.row1 {:style {:align-items "center"}}
             (widgets/website-logo)
 
-            (and (= current-path :user)
-                 (and last-scroll-top (> last-scroll-top 100))
-                 (not= (:screen_name params) (:screen_name current-user)))
-            [:div.row1.fadein {:style {:align-items "center"
-                                :cursor "pointer"}}
-             (ui/avatar {:src (util/cdn-image (:screen_name params))
-                         :class "ant-avatar-mm"})
-             [:span {:style {:font-size 18
-                             :margin-left 12}}
-              (str "@" (:screen_name params))]]
+            (when-not mobile?
+              [:span.ubuntu {:style {:margin-left 12
+                                     :font-weight "600"
+                                     :color (colors/icon-color)
+                                     :font-size 13}}
+               (t :draft)])]
+           (= current-path :groups)
+           (widgets/website-logo)
 
-            group-path?
-            (group/group-logo join-group? current-group width mobile? true true)
+           group-path?
+           (group/group-logo join-group? current-group width mobile? true true)
 
-            :else
-            (widgets/website-logo))]
-          )
+           :else
+           (widgets/website-logo))]
 
         [:div {:class "row1"
                :style {:align-items "center"}
                :id "right-head"}
-
-         (when new-report?
-           [:a
-            {:title (t :reports)
-             :href "/reports"
-             :style {:padding 12}}
-            [:i {:class "fa fa-flag"
-                 :style {:font-size 20
-                         :color (colors/primary)}}]])
 
          (when (and (not mobile?) group-path?)
            [:a {:href "/"
@@ -337,24 +305,23 @@
          (if post?
            (rum/with-key (post/publish-to) "publish"))
 
+         (when new-report?
+           [:a
+            {:title (t :reports)
+             :href "/reports"
+             :style {:padding 12}}
+            [:i {:class "fa fa-flag"
+                 :style {:font-size 20
+                         :color (colors/primary)}}]])
+
          ;; login or notification
          (when-not post?
-           (if current-user
-             (when unread?
-               [:a {:href "/notifications"
-                    :title (t :notifications)
-                    :style {:padding 12}}
-                (ui/icon {:type "notifications"
-                          :color (colors/primary)})])
-
-             (when-not group-path?
-               [:a.ubuntu {:on-click (fn []
-                                       (citrus/dispatch! :user/show-signin-modal?))
-                           :style {:margin-left 12
-                                   :margin-right 12
-                                   :font-size 17
-                                   :font-weight "600"}}
-                (t :signin)])))
+           (when unread?
+             [:a {:href "/notifications"
+                  :title (t :notifications)
+                  :style {:padding 12}}
+              (ui/icon {:type "notifications"
+                        :color (colors/primary)})]))
 
          ;; new post
          (when (and current-user
@@ -595,13 +562,16 @@
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"
-                   :style {:margin-top (if mobile? 96 112)}}
+                   :style {:margin-top (if mobile? 96
+                                           52)}}
         (routes reconciler route params current-user hot-groups)]
 
        (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats} route)))
          [:div#right {:key "right"
                       :class "column1"
-                      :style {:margin-top 100
+                      :style {:margin-top (if mobile?
+                                            100
+                                            40)
                               :margin-left 24
                               :width 276}}
           [:div.column
