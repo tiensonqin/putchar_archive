@@ -316,12 +316,22 @@
 
          ;; login or notification
          (when-not post?
-           (when unread?
-             [:a {:href "/notifications"
-                  :title (t :notifications)
-                  :style {:padding 12}}
-              (ui/icon {:type "notifications"
-                        :color (colors/primary)})]))
+           (if current-user
+             (when unread?
+               [:a {:href "/notifications"
+                    :title (t :notifications)
+                    :style {:padding 12}}
+                (ui/icon {:type "notifications"
+                          :color (colors/primary)})])
+
+             (when-not group-path?
+               [:a.ubuntu {:on-click (fn []
+                                       (citrus/dispatch! :user/show-signin-modal?))
+                           :style {:margin-left 12
+                                   :margin-right 12
+                                   :font-size 17
+                                   :font-weight "600"}}
+                (t :signin)])))
 
          ;; new post
          (when (and current-user
