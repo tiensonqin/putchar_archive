@@ -325,13 +325,11 @@
                           :color (colors/primary)})])
 
              (when-not group-path?
-               [:a.ubuntu {:on-click (fn []
+               (ui/button {:on-click (fn []
                                        (citrus/dispatch! :user/show-signin-modal?))
                            :style {:margin-left 12
-                                   :margin-right 12
-                                   :font-size 17
-                                   :font-weight "600"}}
-                (t :signin)])))
+                                   :margin-right 12}}
+                 (t :signin)))))
 
          ;; new post
          (when (and current-user
@@ -587,35 +585,35 @@
           [:div.column
            (group/stared-groups loading? groups group)
 
-           (when (and
-                  (not (:github_repo current-user))
-                  (not hide-github-connect?))
-             [:div.ubuntu.fadein {:style {:padding 12
-                                          :margin "12px 0"}}
-              [:div {:style {:padding "12px 12px 16px 12px"
-                             :border "1px solid #999"
-                             :border-radius 4}}
-               (widgets/transform-content (t :github-sync-text) nil)
-               (if current-user
-                 (widgets/github-connect)
-                 ;; github connect
-                 (ui/button {:on-click (fn []
-                                         #?(:cljs (cookie/cookie-set :setup-github-sync true))
-                                         (util/set-href! (str config/website "/auth/github?sync=true")))}
-                   [:div.row1 {:style {:align-items "center"}}
-                    (ui/icon {:type :github
-                              :width 18
-                              :opts {:style {:margin-left -6}}})
-                    [:span {:class "btn-contents"
-                            :style {:margin-left 16
-                                    :font-weight "500"}}
-                     (t :connect-github)]]))]
+           ;; (when (and
+           ;;        (not (:github_repo current-user))
+           ;;        (not hide-github-connect?))
+           ;;   [:div.ubuntu.fadein {:style {:padding 12
+           ;;                                :margin "12px 0"}}
+           ;;    [:div {:style {:padding "12px 12px 16px 12px"
+           ;;                   :border "1px solid #999"
+           ;;                   :border-radius 4}}
+           ;;     (widgets/transform-content (t :github-sync-text) nil)
+           ;;     (if current-user
+           ;;       (widgets/github-connect)
+           ;;       ;; github connect
+           ;;       (ui/button {:on-click (fn []
+           ;;                               #?(:cljs (cookie/cookie-set :setup-github-sync true))
+           ;;                               (util/set-href! (str config/website "/auth/github?sync=true")))}
+           ;;         [:div.row1 {:style {:align-items "center"}}
+           ;;          (ui/icon {:type :github
+           ;;                    :width 18
+           ;;                    :opts {:style {:margin-left -6}}})
+           ;;          [:span {:class "btn-contents"
+           ;;                  :style {:margin-left 16
+           ;;                          :font-weight "500"}}
+           ;;           (t :connect-github)]]))]
 
-              [:a.control {:style {:margin-top 12
-                                   :font-size 13}
-                           :on-click (fn []
-                                       #?(:cljs (citrus/dispatch! :citrus/hide-github-connect)))}
-               (t :close)]])
+           ;;    [:a.control {:style {:margin-top 12
+           ;;                         :font-size 13}
+           ;;                 :on-click (fn []
+           ;;                             #?(:cljs (citrus/dispatch! :citrus/hide-github-connect)))}
+           ;;     (t :close)]])
 
            (layout/right-footer)]])]]
      (login/signin-modal mobile?)
