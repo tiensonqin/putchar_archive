@@ -1,7 +1,5 @@
 = Putchar
 
-https://putchar.org
-
 Putchar is a reddit-like community for programmers to discuss and share their thoughts.
 
 https://putchar.org[image:https://putchar.org/logo-2x.png[]]
