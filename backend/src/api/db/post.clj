@@ -307,7 +307,9 @@
      (car/hget tags-k screen-name))
     (su/keywordize))
    (filter (fn [[_ v]]
-             (> v 0)))))
+             (> v 0)))
+   (sort (fn [x1 x2]
+           (>= (second x1) (second x2))))))
 
 (defn get-latest-reply
   ([db cursor]
