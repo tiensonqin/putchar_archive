@@ -890,13 +890,14 @@
   (if (seq tags)
     [:span.ubuntu opts
      (for [tag tags]
-       [:a.tag
-        {:key (util/random-uuid)
-         :href (str "/tag/" (name tag))
-         :style (merge {:margin-right 12
-                        :white-space "nowrap"}
-                       tag-style)}
-        (util/tag-decode (name tag))])]))
+       (when-not (str/blank? tag)
+         [:a.tag
+          {:key (util/random-uuid)
+           :href (str "/tag/" (name tag))
+           :style (merge {:margin-right 12
+                          :white-space "nowrap"}
+                         tag-style)}
+          (util/tag-decode (name tag))]))]))
 
 (rum/defcs post-item < {:key-fn (fn [post]
                                   (:id post))}
@@ -1114,11 +1115,13 @@
                 :merge-path posts-path}
                :show-avatar? false
                :show-group? true
-               :empty-widget [:h5.auto-padding
-                              (case current-handler
-                                :drafts (t :no-drafts-yet)
-                                :bookmarks (t :no-bookmarks-yet)
-                                (t :no-posts-yet))])))
+               :empty-widget
+               [:div
+                [:h5.auto-padding {:style {:color (colors/shadow)}}
+                 "Empty."]
+                [:a {:title "Typewriter"
+                     :href "https://xkcd.com/477/"}
+                 [:img {:src "https://imgs.xkcd.com/comics/typewriter.png"}]]])))
 
 (rum/defcs post-edit < rum/reactive
   (mixins/query :post-edit)

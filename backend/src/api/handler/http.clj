@@ -477,7 +477,7 @@
   (j/with-db-transaction [conn datasource]
     (reject-not-owner-or-admin? conn uid :posts (:id data)
                                 (fn [moderator]
-                                  (post/delete conn (:id data) moderator)
+                                  (post/delete conn (:id data) moderator nil)
 
                                   (future
                                     (j/with-db-connection [conn datasource]

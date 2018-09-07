@@ -567,5 +567,10 @@
   [:div#comments-list
    (if (seq result)
      (map (partial user-comment-item user-id) result)
-     [:h5.auto-padding
-      (t :no-comments-yet)])])
+     [:div
+      [:h5.auto-padding {:style {:color (colors/shadow)}}
+       "Empty."]
+      [:a {:title "Real Programmers"
+           :href "https://xkcd.com/378/"}
+       [:img {:src "https://imgs.xkcd.com/comics/real_programmers.png"}]]
+      ])])
