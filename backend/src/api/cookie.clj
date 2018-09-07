@@ -15,7 +15,7 @@
                                   max-age (* (* 3600 24) 30)}}]
   (let [xsrf-token (str (util/uuid))
         domain (if (util/production?)
-                 ".lambdahackers.com"
+                 ".putchar.org"
                  "")
         secure (if (util/production?)
                  true
@@ -39,7 +39,7 @@
 
 (def delete-token
   (let [domain (if (util/production?)
-                 ".lambdahackers.com"
+                 ".putchar.org"
                  "")]
     {"x" {:value ""
           :path "/"
@@ -54,7 +54,7 @@
 
 (def setup-github-sync
   (let [domain (if (util/production?)
-                 ".lambdahackers.com"
+                 ".putchar.org"
                  "")]
     {"setup-github-sync" {:value "true"
                           :path "/"

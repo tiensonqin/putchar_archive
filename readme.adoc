@@ -1,8 +1,8 @@
-= Lambdahackers
+= Putchar
 
-Lambdahackers is a reddit-like community for programmers to discuss and share their thoughts.
+Putchar is a reddit-like community for programmers to discuss and share their thoughts.
 
-https://lambdahackers.com[image:https://lambdahackers.com/images/logo.png[]]
+https://putchar.org[image:https://putchar.org/images/logo.png[]]
 
 == Features
    * You can join any group you like, or create a group if it not exists.

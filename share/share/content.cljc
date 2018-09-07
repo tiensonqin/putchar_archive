@@ -218,7 +218,6 @@
 (defn post-transform
   [body body-format]
   (some-> body
-          (util/cdn-replace)
           (s/replace-first spec-re "")))
 
 (defn render

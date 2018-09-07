@@ -7,10 +7,10 @@
 
 (defn setup!
   [req conn uid github_id github_handle api?]
-  (let [repo-name "lambdahackers-blog"
+  (let [repo-name "putchar-blog"
         m {:name repo-name
            :description "My blog."
-           :homepage (str "https//lambdahackers.com/@" github_handle)
+           :homepage (str "https//putchar.org/@" github_handle)
            :private false
            :has_issues true
            :has_projects true
@@ -27,7 +27,7 @@
                        {:name "web"
                         :active true
                         :events ["push"]
-                        :config {:url "https://lambdahackers.com/github/push",
+                        :config {:url "https://putchar.org/github/push",
                                  :content_type "json"}}
                        {:oauth-token token})
 

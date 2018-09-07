@@ -70,7 +70,7 @@
         (if name
           [:span {:style {:font-size (if mobile? 24 33)
                           :font-weight "600"
-                          :color (colors/icon-color)
+                          :color (colors/new-post-color)
                           :margin-right 12}}
            name])
         [:a.control {:href (str "/@" screen_name)
@@ -78,7 +78,7 @@
          [:span {:style (if name
                           {}
                           {:font-size 24
-                           :color (colors/icon-color)})}
+                           :color (colors/new-post-color)})}
           (str "@" screen_name)]]]
 
        [:div.row1 {:style {:margin-left 3
@@ -443,7 +443,7 @@
                                :color (colors/icon-color)
                                :margin-top 2
                                :margin-left 6}}
-         "Lambdahackers (BETA)"])]]))
+         "Putchar (BETA)"])]]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]

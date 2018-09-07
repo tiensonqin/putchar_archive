@@ -30,7 +30,7 @@
    :latest-posts "Posts"
    :latest-comments "Comments"
    :groups "Groups"
-   :lambdahackers-hot-groups "Hot groups on lambdahackers"
+   :putchar-hot-groups "Hot groups on Putchar"
    :add-more-groups "Add more groups"
    :direct-messages "Direct messages"
    :expand "Expand"
@@ -170,8 +170,8 @@
    :reports "Reports"
    :write-new-post "Write new post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
-   :root-title "Lambdahackers - The repo of programmers' thoughts."
-   :root-description "Lambdahackers is a community for programmers to discuss and share their thoughts. You can read news, or join your favorite groups to post, comment or vote. You can also create a community as long as it's related to programmers."
+   :root-title "Putchar - The repo of programmers' thoughts."
+   :root-description "Putchar is a community for programmers to discuss and share their thoughts. You can read news, or join your favorite groups to post, comment or vote. You can also create a community as long as it's related to programmers."
    :go-to-profile "Posts"
    :profile-updated "Profile updated!"
    :sign-out "Sign Out"
@@ -295,7 +295,7 @@
    :we-are-working-hard "We're working hard to be a better place for your favorite groups. Your early support definitely helps – thank you! "
    :here-is-what "Here's what's unlocked on PRO:"
    :no-ads "No ads."
-   :a-pro-badge "A PRO badge under your avatar everywhere on lambdahackers."
+   :a-pro-badge "A PRO badge under your avatar everywhere on putchar."
    :more-to-come "More to come."
    :pro-costs "PRO costs "
    :nine-nine-per-month  "$0.99/month"
@@ -338,17 +338,17 @@
    :created-at "Created at"
    :last-reply-at "Latest reply at"
    :updated-at "Updated at"
-   :lambdahackers-group "Lambdahackers community"
+   :putchar-group "Putchar community"
    :already-20-groups "Sorry, you need to leave a group first to join this group."
    :loading "loading..."
    :contact-us "Contact Us"
-   :website-name "Lambdahackers"
+   :website-name "Putchar"
    :popular "Popular"
    :new-created "new"
    :bookmark "Bookmark"
    :unbookmark "Unbookmark"
    :bookmarks "Bookmarks"
-   :welcome-to-lambdahackers "Welcome to Lambdahackers!"
+   :welcome-to-putchar "Welcome to Putchar!"
    :activate-your-account "Sign In"
    :last-reply-by "Last reply by: "
    :frequent-poster "Frequent poster: "
@@ -356,14 +356,14 @@
    :email-login-placeholder "Enter your email address"
    :github-connect-text "[NOTE]
 ====
-So you can git commit a new post, and it will be automatically published on Lambdahackers, and vice versa.
+So you can git commit a new post, and it will be automatically published on Putchar, and vice versa.
 ====
 
 .Steps
 ****
 . You grant us with the `public_repo` permission.
 
-. We create a repo called *lambdahackers-blog* for syncing, you can change its name later.
+. We create a repo called *putchar-blog* for syncing, you can change its name later.
 
 . We add a webhook to listen for all push events of that repo.
 ****"
@@ -383,20 +383,20 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :default-text "You will be notified if someone mentions your @name or replies to you."
    :mute "Mute"
    :mute-text "You will never be notified of anything about this topic."
-   :about-description "Lambdahackers is a open source community built for the programmers to discuss and share their thoughts. "
+   :about-description "Putchar is a open source community built for the programmers to discuss and share their thoughts. "
    :about-text "
 === Features
 
 * Anyone can *create any group* as long as it's programmers related.
 * *Git commit to publish* your posts. :tada:
-  You can commit a new post (support both Markdown and Asciidoctor) to Github, the post will be automatically published on Lambdahackers, and vice versa.
+  You can commit a new post (support both Markdown and Asciidoctor) to Github, the post will be automatically published on Putchar, and vice versa.
 * A simple *blog* for everyone.
   It supports tags, permalinks.
   Series, custom domain and more features are coming...
 
 === FAQ
 
-* Who are the team behind Lambdahackers?
+* Who are the team behind Putchar?
   Currently only myself, @tiensonqin.
 
 * How do you earn money?
@@ -415,7 +415,7 @@ So you can git commit a new post, and it will be automatically published on Lamb
    :undo "Undo"
    :skip-group-selection "Skip group selection"
    :required "Required"
-   :agree-text "By clicking Sign In, you agree to our [Privacy](https://lambdahackers.com/privacy)."
+   :agree-text "By clicking Sign In, you agree to our [Privacy](https://putchar.org/privacy)."
    :login-to-comment "You must be logged in to comment"
    :add-canonical-url "Set Canonical Url (Optional)"
    :add-canonical-url-placeholder "Please only add content that you own."

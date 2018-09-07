@@ -13,5 +13,5 @@ Disallow: /votes
 Disallow: /search
 Disallow: /reports
 
-Sitemap: https://lambdahackers.com/sitemap.xml
-Host: https://lambdahackers.com
+Sitemap: https://putchar.org/sitemap.xml
+Host: https://putchar.org

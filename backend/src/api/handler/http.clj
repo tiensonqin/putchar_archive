@@ -109,8 +109,8 @@
     (let [content (-> (task/export conn uid)
                       (generate-string))]
       {:status 200
-       :headers {"Content-Type" "application/lambdahackers-profile"
-                 "Content-Disposition" "attachment; filename=lambdahackers_profile.json"}
+       :headers {"Content-Type" "application/putchar-profile"
+                 "Content-Disposition" "attachment; filename=putchar_profile.json"}
        :body content})))
 
 
@@ -365,7 +365,7 @@
                     (if publish?
                       (slack/new (str "New post: "
                                       "Title: " (:title data)
-                                      ", Link: <" (str "https://lambdahackers.com/" (:permalink post))
+                                      ", Link: <" (str "https://putchar.org/" (:permalink post))
                                       ">.")))
 
                     (when (and github_id github_repo)
@@ -415,7 +415,7 @@
                                                    (su/format
                                                     "= %s links\n\n%s[image:%s[]]\n"
                                                     (su/original-name group-name)
-                                                    (str "https://lambdahackers.com/" group-name)
+                                                    (str "https://putchar.org/" group-name)
                                                     (su/group-logo group-name 128 128))
                                                    "")
                                                  "\n* "
@@ -569,10 +569,10 @@
                                                                        (remove nil?)))]
                  (when (seq offline-emails)
                    (when (contains? offline-emails (:email parent))
-                     (email/send-comment [(:email parent)] (assoc data :title (format "%s replied to you on Lambdahackers." (:screen_name user)))))
+                     (email/send-comment [(:email parent)] (assoc data :title (format "%s replied to you on Putchar." (:screen_name user)))))
 
                    (when-let [mention-emails (seq (set/intersection offline-emails (set mention-emails)))]
-                     (email/send-comment (vec mention-emails) (assoc data :title (format "%s mentions you on Lambdahackers." (:screen_name user))))))
+                     (email/send-comment (vec mention-emails) (assoc data :title (format "%s mentions you on Putchar." (:screen_name user))))))
                  (reset! exclude-emails nil))))
             (util/ok comment)))
         (util/bad "Sorry your account is disabled for now.")))))

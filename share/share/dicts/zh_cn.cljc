@@ -30,7 +30,7 @@
    :latest-posts "文章"
    :latest-comments "评论"
    :groups "小组"
-   :lambdahackers-hot-groups "热门小组"
+   :putchar-hot-groups "热门小组"
    :add-more-groups "加入更多小组"
    :direct-messages "私信"
    :expand "展开"
@@ -173,8 +173,8 @@
    :reports "举报"
    :write-new-post "写文章"
    :new-post-description "写一篇新的文章。"
-   :root-title "码农的一亩三分地儿 - Lambdahackers"
-   :root-description "Lambdahackers 是一个码农之间互相讨论和分享学习的社区。任何人都可以加入自己喜欢的小组， 比如编程语言, 城市, 兴趣等。小组成员可以发帖, 分享链接, 讨论以及投票等。你也可以创建自己喜欢的社区, 只要跟码农相关即可。"
+   :root-title "码农的一亩三分地儿 - Putchar"
+   :root-description "Putchar 是一个码农之间互相讨论和分享学习的社区。任何人都可以加入自己喜欢的小组， 比如编程语言, 城市, 兴趣等。小组成员可以发帖, 分享链接, 讨论以及投票等。你也可以创建自己喜欢的社区, 只要跟码农相关即可。"
    :go-to-profile "文章"
    :profile-updated "已保存!"
    :sign-out "注销"
@@ -299,7 +299,7 @@
    :thats-all "。"
    :create-your-group "创建你的小组"
    :login-to-create-your-group "登录创建你的小组"
-   :we-are-working-hard "我们一直在努力希望 lambdahackers 能给你提供
+   :we-are-working-hard "我们一直在努力希望 putchar 能给你提供
 更高质量的内容和更好的社区，谢谢你对我们的支持!"
    :here-is-what "PRO 用户支持以下特性："
    :no-ads "没有广告。"
@@ -344,17 +344,17 @@
    :created-at "创建于"
    :last-reply-at "最近回复"
    :updated-at "上次修改时间"
-   :lambdahackers-group "Lambdahackers 小组"
+   :putchar-group "Putchar 小组"
    :already-20-groups "你已经加入了 20 个小组, 请先离开某个小组。"
    :loading "加载中..."
    :contact-us "联系我们"
-   :website-name "Lambdahackers"
+   :website-name "Putchar"
    :popular "热门话题"
    :new-created "最新"
    :bookmark "收藏"
    :unbookmark "取消收藏"
    :bookmarks "收藏"
-   :welcome-to-lambdahackers "欢迎来到 Lambdahackers!"
+   :welcome-to-putchar "欢迎来到 Putchar!"
    :activate-your-account "登录"
    :last-reply-by "最近回复: "
    :frequent-poster "最多讨论: "
@@ -362,7 +362,7 @@
    :email-login-placeholder "你的邮箱地址"
    :github-connect-text "[NOTE]
 ====
-你可以 git 提交一篇文章到指定的仓库, 这篇文章将会自动发布到 Lambdahackers。
+你可以 git 提交一篇文章到指定的仓库, 这篇文章将会自动发布到 Putchar。
 同样你也可以在网站上创建或者编辑某篇文章, 所有修改将会自动提交到你的仓库里。
 ====
 
@@ -370,7 +370,7 @@
 ****
 . 你赋予我们 `public_repo` 权限。
 
-. 我们会创建一个默认仓库 *lambdahackers-blog*, 你可以后续修改名字。
+. 我们会创建一个默认仓库 *putchar-blog*, 你可以后续修改名字。
 
 . 我们会在该仓库上添加一个 push hook, 用来监听该仓库所有的提交。
 ****"
@@ -392,7 +392,7 @@
    :default-text "当有人回复或者提及你时会收到邮件通知"
    :mute "勿扰"
    :mute-text "你不会再收到任何跟这个帖子有关的邮件通知"
-   :about-description "Lambdahackers 是一个开源的码农社区。大家可以在这里讨论，提问以及分享自己的文章或作品。"
+   :about-description "Putchar 是一个开源的码农社区。大家可以在这里讨论，提问以及分享自己的文章或作品。"
    :about-text "
 === 功能
 
@@ -400,7 +400,7 @@
   小组支持分类。
 
 * 用 *Git* 来发布文章。:tada:
-  你可以提交文章到 Github 上，支持 Markdown 和 Asciidoctor 格式，这篇文章将会自动发布到 Lambdahackers， 同样你也可以在网站上创建或者编辑某篇文章, 所有修改将会自动提交到你的仓库里。
+  你可以提交文章到 Github 上，支持 Markdown 和 Asciidoctor 格式，这篇文章将会自动发布到 Putchar， 同样你也可以在网站上创建或者编辑某篇文章, 所有修改将会自动提交到你的仓库里。
 
 * 一个简单的博客。
   支持标签。
@@ -408,14 +408,14 @@
 
 === FAQ
 
-* Lambdahackers 团队有哪些人？
+* Putchar 团队有哪些人？
   目前只有我一人，@tiensonqin。
 
 * 网站免费的话，你怎么赚钱呢？
   1. 我不会出售你的任何个人信息。
   2. 网站只会有很少的广告，比如社区赞助。
 
-* Lambdahackers 用了什么技术？
+* Putchar 用了什么技术？
   前端: https://clojurescript.org/[Clojurescript], https://reactjs.org/[React].
   后端: https://clojure.org/[Clojure], https://www.postgresql.org/[Postgres], https://redis.io/[Redis].
 
@@ -427,7 +427,7 @@
    :undo "取消"
    :skip-group-selection "跳过选择小组"
    :required "需要填写"
-   :agree-text "点击登录代表您同意我们的 [隐私政策](https://lambdahackers.com/privacy)。"
+   :agree-text "点击登录代表您同意我们的 [隐私政策](https://putchar.org/privacy)。"
    :login-to-comment "登录以后才可以评论。"
    :add-canonical-url "设置 Canonical 链接(可选)"
    :add-canonical-url-placeholder "请确认该链接指向的是你的原创内容。"

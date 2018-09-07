@@ -183,24 +183,18 @@
   (if name
     (cond
       ;; logo
-      (= name "lambdahackers")
+      (= name "putchar")
       (str config/website "/logo-2x.png")
 
       (s/starts-with? name "deleted-user-")
-      (str config/img-cdn "/11FAjQ9BPF.jpg" "?w=" width "&h=" height)
+      (str config/img-cdn "/11FAjQ9BPF.jpg")
 
       :else
-      (str config/img-cdn "/" name "." suffix "?w=" width "&h=" height))))
+      (str config/img-cdn "/" name "." suffix))))
 
 (defn group-logo
-  ([name]
-   (group-logo name 64 64))
-  ([name width height]
-   (let [params (cond-> {}
-                  width (assoc :w width)
-                  height (assoc :h height))]
-     (str config/img-cdn "/" name "_logo.png" "?"
-          (map->query params)))))
+  [name]
+  (str config/img-cdn  "/" name "_logo.png"))
 
 (defn format
   [fmt & args]
@@ -281,16 +275,6 @@
 
 (defn indexed [coll] (map-indexed vector coll))
 
-(def cdn-img-re
-  (re-pattern (format "%s/[^ ]+.jpg" config/img-cdn)))
-
-(defn cdn-replace
-  [body]
-  (some-> body
-          (s/replace cdn-img-re
-                     (fn [x]
-                       (str x "?auto=format&fm=jpg")))))
-
 (defn brief-description
   [body]
   (some->>
@@ -341,7 +325,7 @@
   (and s (re-find (re-pattern (str "^" link-re "\\[*\\]*" "$")) s)))
 
 (comment
-  (def asciidoc-link "https://lambdahackers.com[lambdahackers]"))
+  (def asciidoc-link "https://putchar.org[putchar]"))
 
 (def email-re #"[\w._%+-]+@[\w.-]+\.[\w]{2,4}")
 

@@ -106,7 +106,10 @@
                           (reset! uploading? false)
                           (citrus/dispatch! :citrus/default-update
                                             [:user :signup-step]
-                                            :pick-groups))))))
+                                            :pick-groups))))
+                     :max-width 100
+                     :max-height 100
+                     ))
        :hidden true}]]))
 
 (rum/defc groups-bar
@@ -124,7 +127,7 @@
                                             :user/signup-leave-group
                                             :user/signup-join-group) name)
              :title (util/original-name name)}
-         [:img.hover-shadow {:src (util/group-logo name 120 120)
+         [:img.hover-shadow {:src (util/group-logo name)
                              :class (if joined? "joined" "")}]]
         (if show-name?
           [:div.ubuntu {:style {:font-size 15
@@ -395,7 +398,9 @@
                         (fn [url]
                           (reset! uploading? false)
                           (citrus/dispatch! :notification/add :success (t :cached-change-avatar))
-                          nil)))))
+                          nil)))
+                     :max-width 100
+                     :max-height 100))
        :hidden true}]
 
      (form/render
@@ -443,7 +448,7 @@
        (t :my-data)]
       (ui/button {:on-click (fn []
                               #?(:cljs
-                                 (oset! js/window.location "href" "/user/lambdahackers_profile.json")))}
+                                 (oset! js/window.location "href" "/user/putchar_profile.json")))}
         (t :export-my-data))
       (ui/button {:style {:margin-top 40}
                   :on-click (fn []
@@ -466,16 +471,16 @@
                                  (oset! js/window.location "href" "/user/delete_request")))}
                  (t :delete))}
       (widgets/transform-content
-       "### What happens when I delete my account on lambdahackers?
+       "### What happens when I delete my account on putchar?
 
 * As soon as you confirm that you would like to delete your account, the following events happen immediately:
 
-. 1. All of your personal profile information will be deleted in our database. This includes your name, username, email, profile photo, description, and any connections to 3rd party social networks (that you use to sign in to lambdahackers).
+. 1. All of your personal profile information will be deleted in our database. This includes your name, username, email, profile photo, description, and any connections to 3rd party social networks (that you use to sign in to putchar).
 All existing memberships you have in any group will be disabled.
-You will be logged out and returned to the lambdahackers home page.
-The posts and comments that you have posted will not be deleted, in order to preserve the integrity of the public nature of discussions on lambdahackers. Any posts or comments that remain undeleted will not be identifiable as yours.
+You will be logged out and returned to the putchar home page.
+The posts and comments that you have posted will not be deleted, in order to preserve the integrity of the public nature of discussions on putchar. Any posts or comments that remain undeleted will not be identifiable as yours.
 
-. 2. If you wish to delete any posts or comments on lambdahackers, please do this prior to deleting your account. You can view your profile.
+. 2. If you wish to delete any posts or comments on putchar, please do this prior to deleting your account. You can view your profile.
 
 . 3. All backups containing personal information are deleted after 30 days."
        {:body-format :asciidoc}))]))

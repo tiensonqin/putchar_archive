@@ -50,13 +50,13 @@
           "box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; padding: 25px 0; word-break: break-word;",
           :align "center"}
          [:a.email-masthead_name
-          {:href "https://lambdahackers.com",
+          {:href "https://putchar.org",
            :style
            "box-sizing: border-box; color: #bbbfc3; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; font-weight: bold; text-decoration: none; text-shadow: 0 1px 0 white;"}
           [:span
            [:img {:src (str (:website-uri config) "/images/logo.png")
                   :height 64
-                  :alt "lambdahackers.com"}]]]]]
+                  :alt "putchar.org"}]]]]]
        [:tr
         [:td.email-body
          {:width "100%",
@@ -135,7 +135,7 @@
               :align "left"}
              "Thanks,\n                        "
              [:br]
-             "lambdahackers Team"]]]]]]
+             "Putchar Team"]]]]]]
        [:tr
         [:td
          {:style
@@ -156,7 +156,7 @@
              {:style
               "box-sizing: border-box; color: #AEAEAE; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5em; margin-top: 0;",
               :align "center"}
-             "© 2018 lambdahackers.com. All rights reserved."]]]]]]]]]]])
+             "© 2018 putchar.org. All rights reserved."]]]]]]]]]]])
 
 (defn template
   [title data & {:keys [lang]

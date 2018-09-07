@@ -27,22 +27,22 @@
              (:canonical_url post)
              (if (:cover post)
                (:cover post)
-               (util/cdn-image (get-in post [:user :screen_name]) :width 300 :height 300))])
+               (util/cdn-image (get-in post [:user :screen_name])))])
 
           :group
           ;; by-name
           (let [name (util/internal-name (:group-name route-params))
                 group (get-in state [:group :by-name name])]
-            [(util/original-name name) (get-description (:purpose group)) nil (util/group-logo name 300 300)])
+            [(util/original-name name) (get-description (:purpose group)) nil (util/group-logo name)])
 
           :user
           ;; by-screen-name
           (let [screen-name (:screen_name route-params)
                 user (get-in state [:user :by-screen-name screen-name])]
-            [(or (:name user) screen-name) (:bio user) nil (util/cdn-image screen-name :width 300 :height 300)])
+            [(or (:name user) screen-name) (:bio user) nil (util/cdn-image screen-name)])
 
           :groups
-          [(t :groups) (t :lambdahackers-hot-groups) nil website-logo]
+          [(t :groups) (t :putchar-hot-groups) nil website-logo]
 
           :new-post
           [(t :write-new-post) (t :new-post-description) nil website-logo]

@@ -13,7 +13,7 @@
   [:div.ubuntu.auto-padding
    [:h1.heading-1 {:style {:margin-top 0
                            :margin-bottom "16px"}}
-    "Lambdahackers"]
+    "Putchar"]
 
    [:p {:style {:font-size "1.125em"}}
     (t :about-description)]

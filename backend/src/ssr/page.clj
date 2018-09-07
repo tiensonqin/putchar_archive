@@ -56,7 +56,7 @@
              :content seo-content}]
 
      [:meta {:name "twitter:site"
-             :content "@lambdahackers"}]
+             :content "@putchar"}]
 
      [:meta {:name "twitter:title"
              :content seo-title}]
@@ -82,7 +82,7 @@
      [:meta {:property "og:description"
              :content seo-content}]
      [:meta {:property "og:site_name"
-             :content "lambdahackers"}]
+             :content "putchar"}]
 
      [:title seo-title]
      [:meta {:name "description"

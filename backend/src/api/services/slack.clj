@@ -30,7 +30,7 @@
 
 (defn at-prefix
   [msg]
-  (str "[lambdahackers] @channel\n" msg))
+  (str "[putchar] @channel\n" msg))
 
 (defn notify
   [channel msg]

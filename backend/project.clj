@@ -1,6 +1,6 @@
 (defproject backend "0.1.0-SNAPSHOT"
-  :description "lambdahackers backend."
-  :url "https://github.com/tiensonqin/lambdahackers"
+  :description "putchar backend."
+  :url "https://github.com/tiensonqin/putchar"
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [hiccup "2.0.0-alpha1"]

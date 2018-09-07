@@ -20,8 +20,8 @@
   (let [id (util/flake-id->str)]
     (u/create conn {:name "Deleted User"
                     :screen_name (str "deleted-user-" id)
-                    :email (str id "-not-exists@lambdahackers.com")
-                    :bio "I'm no longer a lambdahackers user."})))
+                    :email (str id "-not-exists@putchar.org")
+                    :bio "I'm no longer a putchar user."})))
 
 (defn delete-account
   [db user-id]

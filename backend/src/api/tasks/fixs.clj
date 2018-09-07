@@ -12,7 +12,8 @@
             [taoensso.carmine :as car]
             [api.util :as au]
             [share.util :as su]
-            [api.services.s3 :as s3]))
+            [api.services.s3 :as s3]
+            [clojure.java.shell :as shell]))
 
 (defn rebuild-admins
   [db]
@@ -161,3 +162,45 @@
         ;; delete
         (post/delete db (:id post) false)))
     ))
+
+(defn change-text
+  [s]
+  (if s
+    (-> s
+        (str/replace "lambdahackers.imgix.net" "img.putchar.org")
+        (str/replace "lambdahackers" "putchar"))))
+
+(defn lambdahackers->putchar
+  [db]
+  (let [posts (j/query db ["select * from posts"])]
+    (doseq [{:keys [id cover body] :as post} posts]
+      (post/update db id {:cover (change-text cover)
+                          :body (change-text body)}))))
+
+(defn group-user-avatar
+  [db]
+  (let [users (j/query db ["select * from users"])
+        groups (j/query db ["select * from groups"])]
+
+    ;; (doseq [{:keys [screen_name]} users]
+    ;;   (prn
+    ;;    (s3/save-url-image screen_name
+    ;;                       (str "https://lambdahackers.imgix.net"
+    ;;                            "/"
+    ;;                            screen_name
+    ;;                            ".jpg?w=100&h=100&auto=null"))))
+    (doseq [{:keys [name]} groups]
+      (prn
+       (s3/save-url-image (str name "_logo")
+                          (str "https://lambdahackers.imgix.net"
+                               "/"
+                               name
+                               "_logo.png?w=100&h=100&auto=null")
+                          "png"
+                          "image/png")))))
+
+(defn images
+  []
+  (let [images (read-string (slurp "/home/tienson/images"))]
+    (doseq [image images]
+     (shell/sh "wget" "-P" "/home/tienson/photos" ))))

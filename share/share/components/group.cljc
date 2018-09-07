@@ -68,7 +68,9 @@
                              file-form-data
                              (fn [url]
                                (reset! uploading? false)
-                               (swap! form assoc :logo url)))))))
+                               (swap! form assoc :logo url))))
+                          :max-width 100
+                          :max-height 100)))
           :hidden true}]
 
         (if (:logo-error @form)
@@ -112,7 +114,9 @@
                              (fn [url]
                                (reset! uploading? false)
                                (swap! form assoc :logo url)
-                               (citrus/dispatch! :notification/add :success (t :logo-changed-notification))))))))
+                               (citrus/dispatch! :notification/add :success (t :logo-changed-notification)))))
+                          :max-width 100
+                          :max-height 100)))
           :hidden true}]
 
         (if (:logo-error @form)
@@ -318,10 +322,7 @@
           logo [:div {:key "group-logo"}
                 [:img {:src (util/group-logo group-name)
                        :style {:max-height 36
-                               :max-width 64}}]]
-          logo-text [:div.row1 {:style {:align-items "center"}}
-                     logo
-                     text]]
+                               :max-width 64}}]]]
       [:div {:class "logo-area"
              :key "group-logo"
              :style {:align-items "center"}}
@@ -329,10 +330,7 @@
        [:a {:href (str "/" group-name)
             :on-click (fn []
                         (citrus/dispatch! :citrus/re-fetch :group {:group-name group-name}))}
-        (if mobile?
-          logo
-
-          logo-text)]
+        logo]
 
        (when (and current-group
                   (not stared-group?)

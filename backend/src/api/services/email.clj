@@ -36,7 +36,7 @@
   (when (seq to-addresses)
     (aws-with-credential
      (ses/send-email :destination {:to-addresses to-addresses}
-                     :source "lambdahackers <no-reply@lambdahackers.com>"
+                     :source "Putchar <no-reply@putchar.org>"
                      :message {:subject subject, :body {:text text
                                                         :html html}}))))
 
@@ -62,7 +62,7 @@
 (defn send-welcome
   [to confirmation-code]
   (let [data {:code confirmation-code}
-        title (t :welcome-to-lambdahackers)]
+        title (t :welcome-to-putchar)]
     (send-email [to] title
                 (selmer/render (get-template "welcome.txt")
                   data)
@@ -96,9 +96,9 @@
         (when (seq to)
           (let [name (util/original-name group-name)
                 token (:token (invite/create db group-name))
-                group-link (str "https://lambdahackers.com/" group-name
+                group-link (str "https://putchar.org/" group-name
                                 (if token (str "?token=" token)))
-                title (format "Invite to group %s on lambdahackers.com!" name)]
+                title (format "Invite to group %s on putchar.org!" name)]
             (send-email to title
                         (selmer/render (get-template "invite.txt")
                           (merge data
@@ -109,12 +109,12 @@
                          {:body [:div
                                  [:p "Hi there,
 "]
-                                 [:p [:a {:href (str "https://lambdahackers.com/@" who)
+                                 [:p [:a {:href (str "https://putchar.org/@" who)
                                           :target "_blank"}
                                       [:img {:src (str (:img-cdn config) "/" who ".jpg?w=40&h=40")
                                              :style  "border-radius: 6px;margin-right:6px;"}]
                                       [:span who]]
-                                  (format " invited you to join the group of %s on lambdahackers.com!"
+                                  (format " invited you to join the group of %s on putchar.org!"
                                           name)]]
                           :action-link group-link
                           :action-text (str "Join " name)}))))))))

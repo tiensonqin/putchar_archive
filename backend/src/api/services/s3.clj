@@ -8,7 +8,6 @@
             [amazonica.aws.s3 :as s3]
             [amazonica.aws.cloudfront :as cloudfront]
             [api.services.slack :as slack]
-            [api.services.imgix :as imgix]
             [clojure.string :as str]
             [bidi.bidi :as bidi])
   (:import [java.io ByteArrayInputStream]))
@@ -29,21 +28,21 @@
        (copy-uri-to-file uri tmp-path)
        (let [file (io/file tmp-path)
              length (.length file)]
-         (core/with-credential [access-key secret-key endpoint]
-           (s3/put-object :bucket-name "lambdahackers"
-                          :key name
-                          :file file
-                          :metadata {
-                                     ;; :server-side-encryption "AES256"
-                                     :content-type content-type
-                                     :content-length length
-                                     :cache-control "public, max-age=31536000"}))
+         (prn
+          (core/with-credential [access-key secret-key endpoint]
+            (s3/put-object :bucket-name "putchar"
+                           :key name
+                           :file file
+                           :metadata {
+                                      ;; :server-side-encryption "AES256"
+                                      :content-type content-type
+                                      :content-length length
+                                      :cache-control "public, max-age=31536000"})))
          (str (:img-cdn config)
               (str/replace name "pics" ""))))
      (catch Exception e
        (t/error e)
-       false)))
-  )
+       false))))
 
 (defn put-image
   [{:keys [tempfile length name png? invalidate?]
@@ -62,14 +61,15 @@
               name (format "pics/%s.%s" name image-type)
               {:keys [access-key secret-key endpoint]} (:aws config)]
           (core/with-credential [access-key secret-key endpoint]
-            (s3/put-object :bucket-name "lambdahackers"
+            (s3/put-object :bucket-name "putchar"
                            :key name
                            :metadata {:content-type content-type
                                       :content-length length
                                       :cache-control "public, max-age=31536000"}
                            :file tempfile))
-          (when invalidate?
-            (imgix/purger (str/replace name "pics" "")))
+          ;; (when invalidate?
+          ;;   (imgix/purger (str/replace name "pics" "")))
+
 
           (str (:img-cdn config)
                (str/replace name "pics" "")))

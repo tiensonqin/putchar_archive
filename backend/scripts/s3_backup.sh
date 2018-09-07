@@ -6,7 +6,7 @@ BASE_DIR='/var/backups/postgres'
 YMD=$(date "+%Y-%m-%d")
 DIR="$BASE_DIR/$YMD"
 
-S3_PATH="s3://lambdahackers-backups/lambdahackers_db_$YMD.out.gz"
+S3_PATH="s3://putchar-backups/putchar_db_$YMD.out.gz"
 
 # upload to s3
 aws s3 cp "$DIR/db.out.gz" $S3_PATH

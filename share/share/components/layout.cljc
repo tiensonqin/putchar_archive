@@ -61,7 +61,7 @@
                    :style {:margin-right 24}}
        (t :feature-requests)]
 
-      [:a.control {:href "https://github.com/tiensonqin/lambdahackers/issues"
+      [:a.control {:href "https://github.com/tiensonqin/putchar/issues"
                    :style {:margin-right 24}}
        (t :bugs)]]
 
@@ -91,21 +91,21 @@
                               :height 20
                               :color (colors/shadow)})])
 
-      [:a {:href "https://twitter.com/lambdahackers"
+      [:a {:href "https://twitter.com/putchar"
            :style {:margin-left 24}}
        (ui/icon {:type :twitter
                  :color (colors/shadow)
                  :width 20
                  :height 20})]
 
-      [:a {:href "https://github.com/tiensonqin/lambdahackers"
+      [:a {:href "https://github.com/tiensonqin/putchar"
            :style {:margin-left 24}}
        (ui/icon {:type :github
                  :width 18
                  :color (colors/shadow)})]
 
       [:a {:href "https://discord.gg/4FHR3jh"
-           :title "Lambdahackers discord group"
+           :title "Putchar discord group"
            :style {:margin-left 21}}
        (ui/icon {:type :discord
                  :width 30

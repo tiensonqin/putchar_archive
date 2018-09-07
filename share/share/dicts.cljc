@@ -40,7 +40,7 @@
    (t :other-issues)])
 
 (comment
-  (defonce s2t (read-string (slurp "/home/tienson/codes/projects/lambdahackers/temp/s2t.edn")))
+  (defonce s2t (read-string (slurp "/home/tienson/codes/projects/putchar/temp/s2t.edn")))
 
   (defn ->t
     []

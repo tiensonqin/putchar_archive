@@ -13,14 +13,14 @@
   (contains? #{5 6 7 8} exif-orientation))
 
 (defn re-scale
-  [exif-orientation width height]
+  [exif-orientation width height max-width max-height]
   (let [[width height]
         (if (reverse? exif-orientation)
           [height width]
           [width height])]
     (let [ratio (/ width height)
-          to-width (if (> width 1200) 1200 width)
-          to-height (if (> height 800) 800 height)
+          to-width (if (> width max-width) max-width width)
+          to-height (if (> height max-height) max-height height)
           new-ratio (/ to-width to-height)]
       (let [[w h] (cond
                     (> new-ratio ratio)
@@ -38,12 +38,12 @@
    (defn fix-orientation
      "Given image and exif orientation, ensure the photo is displayed
   rightside up"
-     [img exif-orientation cb]
+     [img exif-orientation cb max-width max-height]
      (let [off-canvas (js/document.createElement "canvas")
            ctx ^js (.getContext off-canvas "2d")
            width (oget img "width")
            height (oget img "height")
-           [to-width to-height] (re-scale exif-orientation width height)]
+           [to-width to-height] (re-scale exif-orientation width height max-width max-height)]
        (oset! ctx "imageSmoothingEnabled" false)
        (set! (.-width off-canvas) to-width)
        (set! (.-height off-canvas) to-height)
@@ -65,14 +65,17 @@
        )))
 
 #?(:cljs
-   (defn get-orientation [img cb]
+   (defn get-orientation
+     [img cb max-width max-height]
      (exif/getEXIFOrientation
       img
       (fn [orientation]
-        (fix-orientation img orientation cb)))))
+        (fix-orientation img orientation cb max-width max-height)))))
 
 (defn upload
-  [files file-cb]
+  [files file-cb & {:keys [max-width max-height]
+                    :or {max-width 800
+                         max-height 600}}]
   #?(:cljs
      (doseq [file (take 9 (array-seq files))]
        (let [type (gobj/get file "type")]
@@ -86,12 +89,13 @@
                                               data-url (.toDataURL off-canvas)
                                               blob (blob/blob data-url)]
                                           (.append file-form-data "file" blob)
-                                          (file-cb file file-form-data))))))
+                                          (file-cb file file-form-data)))
+                                      max-width
+                                      max-height)))
              (set! (.-src img)
                    (.createObjectURL (or (.-URL js/window)
                                          (.-webkitURL js/window))
                                      file))
              ))))
      :clj
-     nil)
-  )
+     nil))

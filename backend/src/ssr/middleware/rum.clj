@@ -63,13 +63,13 @@
           website-path (fn [& others] (apply str c/website "/" others))]
       (cond
         ;; export
-        (= "/user/lambdahackers_profile.json" (:uri req))
+        (= "/user/putchar_profile.json" (:uri req))
         (j/with-db-connection [conn datasource]
           (let [content (-> (task/export conn uid)
                             (generate-string))]
             {:status 200
-             :headers {"Content-Type" "application/x-lambdahackers-profile"
-                       "Content-Disposition" "attachment; filename=lambdahackers_profile.json"}
+             :headers {"Content-Type" "application/x-putchar-profile"
+                       "Content-Disposition" "attachment; filename=putchar_profile.json"}
              :body content}))
 
         (= "/user/delete_request" (:uri req))
@@ -248,23 +248,23 @@
 
         ;; whole site rss
         (= :new-rss (:handler route))
-        (util/rss {:title "lambdahackers"
+        (util/rss {:title "putchar"
                    :link (website-path "newest")
-                   :description "Latest posts on lambdahackers.com"}
+                   :description "Latest posts on putchar.org"}
                   (j/with-db-connection [conn datasource]
                     (post/->rss (post/get-new conn {:limit 20}))))
 
         (= :latest-reply-rss (:handler route))
-        (util/rss {:title "lambdahackers"
+        (util/rss {:title "putchar"
                    :link (website-path "latest-reply")
-                   :description "Latest replied posts on lambdahackers.com"}
+                   :description "Latest replied posts on putchar.org"}
                   (j/with-db-connection [conn datasource]
                     (post/->rss (post/get-latest-reply conn {:limit 20}))))
 
         (= :hot-rss (:handler route))
-        (util/rss {:title "lambdahackers"
+        (util/rss {:title "putchar"
                    :link (website-path "hot")
-                   :description "Hot posts on lambdahackers.com"}
+                   :description "Hot posts on putchar.org"}
                   (j/with-db-connection [conn datasource]
                     (post/->rss (post/get-hot conn {:limit 20}))))
 

@@ -29,7 +29,7 @@
     CLOSED: [2018-02-02 Fri 14:57]
     There are two ways:
     1. remove custom headers, application/transit+json -> text/plain
-    2. nginx forward https://lambdahackers.com/api to https://api.lambdahackers.com
+    2. nginx forward https://putchar.org/api to https://api.putchar.org
 
 *** DONE Exp 4 - cache query
     CLOSED: [2018-02-02 Fri 20:14]
@@ -179,7 +179,7 @@
     CLOSED: [2018-04-06 Fri 10:20]
 *** DONE [#A] group share
     CLOSED: [2018-04-06 Fri 10:39]
-*** DONE [#A] twitter image (lambdahackers logo, group logo, post cover)
+*** DONE [#A] twitter image (putchar logo, group logo, post cover)
     CLOSED: [2018-04-06 Fri 11:16]
 
 *** DONE [#A] post tags
@@ -580,7 +580,7 @@
     CLOSED: [2018-08-06 Mon 15:54]
     - [X] github login
     - [X] commit includes new posts, update and delete
-    - [X] maybe commit to github first and then publish on lambdahackers
+    - [X] maybe commit to github first and then publish on putchar
       Currently don't support this.
 *** DONE [Bug] github rename not works.
     CLOSED: [2018-08-06 Mon 17:52]
@@ -645,3 +645,6 @@
      http2 stream
 *** TODO [#C] test
 *** TODO [#C] Limit pictures usage
+*** TODO pictures thumbnails
+    64x64
+    100x100

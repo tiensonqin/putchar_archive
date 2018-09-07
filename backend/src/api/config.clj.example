@@ -52,10 +52,6 @@
      :error-uri (str config/website "/error.html")
      :img-cdn config/img-cdn
      :website-uri config/website
-     :imgix-key "xxx"
-     :stripe-secret-key (if util/development?
-                          "xxx"
-                          "xxx")
      :cookie-secret "xxx"
      :jwt-secret "xxx"
      :slack-hook "xxx"}))
