@@ -1,13 +1,14 @@
 = Putchar
 
-Putchar is a reddit-like community for programmers to discuss and share their thoughts.
+Putchar is a community for hackers to publish and discuss their thoughts.
 
 https://putchar.org[image:https://putchar.org/logo-2x.png[]]
 
 == Features
-   * You can join any group you like, or create a group if it not exists.
-   * *Git commit to publish* your posts.
-   * A simple *blog* for everyone.
+   * A simple and free blog for everyone.
+   * It supports multiple formats include Markdown and Asciidoctor, Org-mode is coming...
+   * You can also publish using Git, sync your posts with Github.
+   * No ads.
 
 == License
 
