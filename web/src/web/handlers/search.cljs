@@ -4,7 +4,6 @@
 
 (def handlers
   {
-   ;; search group {:q {:group_name "xxx"} :limit 10}
    ;; search posts {:q {:post_title "xxx"} :limit 10}
    :search/q
    (fn [state q]
@@ -14,9 +13,8 @@
    (fn [state api-path q]
      {:state {:loading? true
               :q (let [q (:q q)]
-                   (or (:group_name q)
-                      (:post_title q)
-                      (:screen_name q)))
+                   (or (:post_title q)
+                       (:screen_name q)))
               :result nil}
       :http {:params [api-path q]
              :on-load :search/ready}})

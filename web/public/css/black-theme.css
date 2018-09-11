@@ -24,6 +24,10 @@
 .black-theme a.btn:hover {
   color: #000;
 }
+.black-theme a#quote-selection {
+  background: #6dd;
+  color: #FFF;
+}
 .black-theme .btn-primary {
   background-color: #3bb;
 }
@@ -42,17 +46,9 @@
   color: #ccc;
   background: #0e2439;
 }
-.black-theme input#search:focus, .black-theme input#search:active, .black-theme input#search_groups, .black-theme input#search_groups:active {
+.black-theme input#search:focus, .black-theme input#search:active {
   outline: none;
   color: #ddd;
-}
-.black-theme input#search_groups:-ms-input-placeholder {
-  color: #bbb;
-  font-weight: 600;
-}
-.black-theme input#search_groups::-webkit-input-placeholder {
-  color: #bbb;
-  font-weight: 600;
 }
 .black-theme .divider {
   background: #333;

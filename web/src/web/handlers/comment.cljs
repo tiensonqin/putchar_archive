@@ -189,8 +189,7 @@
    (fn [state]
      (when (get-in state [:selection :mode?])
        (util/remove-selection-ranges))
-     {:state {:selection nil}}
-     )
+     {:state {:selection nil}})
 
    :citrus/load-more-comments
    (fn [state {:keys [table fk id last] :as params}]
@@ -201,4 +200,4 @@
                                     :cursor {:after (:flake_id last)}}}
                   :merge {:comments [:comment table id]}}
                  true]})
-   })
+})

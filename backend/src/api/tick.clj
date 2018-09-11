@@ -3,7 +3,6 @@
             [clj-time.core :as t]
             [clj-time.periodic :refer [periodic-seq]]
             [api.db.post :as post]
-            [api.db.group :as group]
             [api.db.cache :as cache]
             [api.db.stat :refer [build-stats]]
             [api.services.slack :as slack]
@@ -34,34 +33,6 @@
   (schedule-job db (t/hours 1) (fn [_time]
                                  (j/with-db-connection [conn db]
                                    (post/recalculate-rank conn)))))
-
-(defn compute-group-posts-count
-  [db]
-  (schedule-job db (t/hours 24) (fn [_time]
-                                  (j/with-db-connection [conn db]
-                                    (let [groups (j/query conn ["select count(id) as week_count, group_id from posts
-WHERE created_at BETWEEN
-    NOW()::DATE-EXTRACT(DOW FROM NOW())::INTEGER-7
-    AND NOW()::DATE-EXTRACT(DOW from NOW())::INTEGER
-group by group_id
-limit 100
-"])]
-                                      (doseq [{:keys [week_count group_id]} groups]
-                                        (group/update conn group_id {:week_posts_count week_count})))))))
-
-(defn recompute-stars
-  [db]
-  ;; each group
-  (let [groups (j/query db ["select id from groups"])]
-    (doseq [{:keys [id]} groups]
-      (let [stars (:count (first (j/query db ["select count(*) from stars where object_type = 'group' and object_id = ?" id])))]
-        (group/update db id {:stars stars})))))
-
-(defn recompute-stars-job
-  [db]
-  (schedule-job db (t/hours 12) (fn [_time]
-                                  (j/with-db-connection [conn db]
-                                    (recompute-stars conn)))))
 
 (defn recompute-tags
   [db]
@@ -100,7 +71,5 @@ limit 100
 (defn jobs
   [db]
   [(recalculate-posts-rank db)
-   (compute-group-posts-count db)
-   (recompute-stars-job db)
    (recompute-tags-job db)
    (compute-stats db)])

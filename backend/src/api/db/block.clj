@@ -7,16 +7,14 @@
 
 (defn create
   [db m]
-  (util/delete db table (select-keys m [:user_id :group_id]))
+  (util/delete db table (select-keys m [:user_id]))
   (util/create db table m :flake? true))
 
 (defn examine
-  [db user_id group_id]
+  [db user_id]
   (let [result (util/query db {:select [:action :created_at]
                                :from [table]
-                               :where [:and
-                                       [:= :user_id user_id]
-                                       [:= :group_id group_id]]})]
+                               :where [:= :user_id user_id]})]
     (if (seq result)
       (every?
        #(and (not= (:action %) "forever")

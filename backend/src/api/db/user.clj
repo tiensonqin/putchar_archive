@@ -18,34 +18,16 @@
             [clj-time.coerce :as cc]
             [api.db.util :as du]))
 
-;; karma rules
-;; post tops + comments tops
-
 (defonce ^:private table :users)
-(def ^:private fields [:id :name :screen_name :email :language :languages :website :bio :karma :type
-                       :github_id :stared_groups :created_at :github_handle :github_repo :twitter_handle :last_seen_at :email_notification])
+(def ^:private fields [:id :name :screen_name :email :language :languages :website :bio :type
+                       :github_id :created_at :github_handle :github_repo :twitter_handle :last_seen_at :email_notification])
 
 (def ^:private base-map {:select fields
                          :from [table]})
 
-(defn get-user-stared-groups
-  [db id-or-user]
-  (let [{:keys [stared_groups]} (if (map? id-or-user)
-                                  id-or-user
-                                  (util/get db base-map id-or-user))]
-    (when (seq stared_groups)
-      (let [groups (-> (util/query db {:from [:groups]
-                                       :select [:id :name :purpose]
-                                       :where [:in :id stared_groups]})
-                       (su/normalize))]
-        (for [group-id (take 20 stared_groups)]
-          (clojure.core/get groups group-id))))))
-
 (defn db-get
   [db id]
-  (when-let [user (util/get db base-map id)]
-    (assoc user :stared_groups
-           (get-user-stared-groups db (:id user)))))
+  (util/get db base-map id))
 
 (defn cache-reload
   [db id]
@@ -157,30 +139,6 @@
   [id cursor]
   (-> (me-rule id :comments)
       (util/wrap-cursor cursor)))
-
-(defn inc-karma
-  [db id]
-  (util/execute! db
-                 {:update table
-                  :where [:= :id id]
-                  :inc :karma})
-  (cache-reload db id))
-
-(defn dec-karma
-  [db id]
-  (util/execute! db
-                 {:update table
-                  :where [:= :id id]
-                  :dec :karma})
-  (cache-reload db id))
-
-(defn top-group
-  [db id group-id]
-  (let [stared-groups (util/select-one-field db table id :stared_groups)
-        new-groups (->> (remove #{ group-id } stared-groups)
-                        (concat [group-id])
-                        (vec))]
-    (update db id {:stared_groups new-groups})))
 
 (defn get-github-path
   [db user-id post-id]

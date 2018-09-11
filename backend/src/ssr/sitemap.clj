@@ -13,15 +13,9 @@
   (->
    (j/with-db-connection [conn db]
      (let [posts (j/query db ["select permalink from posts order by created_at desc limit 10000"])
-           groups (j/query db ["select name from groups where del = false order by created_at asc limit 10000"])
-           users (j/query db ["select screen_name from users order by created_at asc limit 10000"])
-           normalized-groups (util/normalize groups)]
+           users (j/query db ["select screen_name from users order by created_at asc limit 10000"])]
        [:urlset {:xmlns "http://www.sitemaps.org/schemas/sitemap/0.9"}
         [:url {} [:loc {} hostname]]
-        ;; groups
-        (for [{:keys [name]} groups]
-          (when name
-              [:url {} [:loc {} (format "%s/%s" hostname name)]]))
         ;; users
         (for [{:keys [screen_name]} users]
           [:url {} [:loc {} (format "%s/@%s" hostname screen_name)]])

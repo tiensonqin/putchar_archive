@@ -31,20 +31,6 @@
                   screen-name
                   analyzer))
 
-(defn add-group [group]
-  (let [group {:group_id (:id group)
-               :group_name (util/original-name (:name group))}]
-    (lucene/add! @index-store
-                 [group]
-                 [:group_id :group_name]
-                 analyzer)))
-
-(defn delete-group [id]
-  (lucene/delete! @index-store
-                  :group_id
-                  id
-                  analyzer))
-
 (defn add-post [post]
   (when (not (:is_draft post))
     (let [post {:post_id (:id post)
@@ -88,9 +74,6 @@
         (cond
           (:screen_name q)
           ["screen_name" (:screen_name q)]
-
-          (:group_name q)
-          ["group_name" (:group_name q)]
 
           (:post_title q)
           ["post_title" (:post_title q)])]

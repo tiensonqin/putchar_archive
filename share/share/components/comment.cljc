@@ -62,9 +62,6 @@
            :entity-id (if current-reply (:id current-reply) entity-id)}
         body (citrus/react [:comment :drafts k])
         loading? (citrus/react [:comment :loading?])
-        group-id (get-in entity [:group :id])
-        stared? (contains? (set (keys
-                                 (util/get-stared-groups current-user))) group-id)
         preview? (citrus/react [:comment :form-data :preview?])]
     (when (and (not disabled?) (not= k current-box-k))
         (citrus/dispatch! :citrus/default-update
@@ -80,8 +77,7 @@
                               :border-radius 4
                               :align-items "center"
                               :justify-content "center"}}
-        [:a.control {:on-click #(citrus/dispatch! :user/star-group {:object_type :group
-                                                                    :object_id group-id})}
+        [:a.control {:href "/login"}
          (t :login-to-comment)]]
 
        :else
@@ -137,7 +133,8 @@
 
       (preview)
       [:div.row1 {:style {:align-items "center"
-                          :margin-left 24}}
+                          :margin-left 24
+                          :margin-right 2}}
        (let [on-submit (fn [e]
                          #?(:cljs
                             (let [data {:body (.trim body)
@@ -502,8 +499,7 @@
   (let [current-user (citrus/react [:user :current])
         entity-id (:id entity)
         [table fk] [:posts :post_id]
-        {:keys [admins]} (get entity :group)
-        admin? (admins/admin? (and admins (map :screen_name admins)) (:screen_name current-user))
+        admin? (admins/admin? (:screen_name current-user))
         {:keys [result end? count-delta]}(citrus/react [:comment table entity-id])
         comments (remove nil? (vals result))
         comments (sort-by :created_at comments)

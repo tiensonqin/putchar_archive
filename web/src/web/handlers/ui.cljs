@@ -20,7 +20,6 @@
      (dommy/set-style! (dommy/sel1 "body") "overflow" "inherit")
      {:state {:show-panel? false}})
 
-
    :citrus/set-scroll-top
    (fn [state current-url v]
      (let [old-v (get-in state [:last-scroll-top current-url])
@@ -66,29 +65,4 @@
        (dommy/remove-class! html (if black? "white-theme" "black-theme"))
        (dommy/add-class! html (str value "-theme")))
      {:state (assoc state :theme value)
-      :cookie [:set-forever "theme" value]})
-
-   :citrus/touch-start
-   (fn [state e]
-     {:state {:touch {:touching? true
-                      :start-x (.-screenX e)
-                      :start-y (.-screenY e)}}})
-
-   :citrus/touch-end
-   (fn [state e]
-     (let [{:keys [start-x start-y] :as touch} (:touch state)
-           end-x (.-screenX e)
-           end-y (.-screenY e)
-           offset (- end-x start-x)
-           direction (if (> offset 0) :left :right)
-           switch-group? (> (util/abs offset) 120)]
-       (cond->
-         {:state {:touch (assoc touch
-                               :touching? false
-                               :end-x end-x
-                               :end-y end-y
-                               :direction direction)}}
-         switch-group?
-         (assoc :dispatch [:citrus/switch (if (= direction :right)
-                                                  :next
-                                                  :prev)]))))})
+      :cookie [:set-forever "theme" value]})})

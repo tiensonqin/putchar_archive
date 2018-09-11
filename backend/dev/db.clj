@@ -8,7 +8,6 @@
   (j/execute! db
               ["
 drop table if exists users;
-drop table if exists groups;
 drop table if exists stars;
 drop table if exists posts;
 drop table if exists comments;
@@ -25,7 +24,6 @@ drop table if exists refresh_tokens;
   (j/execute! db
               ["
 truncate table users;
-truncate table groups;
 truncate table stars;
 truncate table posts;
 truncate table comments;

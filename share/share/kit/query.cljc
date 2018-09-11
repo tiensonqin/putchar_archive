@@ -30,9 +30,7 @@
      :cljs
 
      (let [{:keys [route-handler args]} (get-context comp)
-           args (if (contains? #{:groups} route-handler)
-                  nil
-                  (util/read-string args))
+           args (util/read-string args)
            route-handler (if (= :comment route-handler)
                            :post
                            route-handler)

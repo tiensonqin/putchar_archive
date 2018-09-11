@@ -34,9 +34,7 @@
 
 (defn head
   [req handler zh-cn? seo-content seo-title seo-image canonical-url theme]
-  (let [post? (= handler :post)
-        group-name (and (= handler :group)
-                        (get-in req [:ui/route :route-params :group-name]))]
+  (let [post? (= handler :post)]
     [:head
      [:meta {:charset "utf-8"}]
      [:meta {:name "viewport"
@@ -91,26 +89,6 @@
        [:link {:rel "canonical"
                :href canonical-url}])
 
-     ;; rss
-     ;; group
-     (when group-name
-       [:link {:rel "alternate"
-               :type "application/rss+xml"
-               :title (str "Hot posts on " (util/original-name group-name))
-               :href (str (:website-uri config) "/" group-name "/hot.rss")}])
-
-     (when group-name
-       [:link {:rel "alternate"
-               :type "application/rss+xml"
-               :title (str "Latest posts on " (util/original-name group-name))
-               :href (str (:website-uri config) "/" group-name "/latest-reply.rss")}])
-
-     (when group-name
-       [:link {:rel "alternate"
-               :type "application/rss+xml"
-               :title (str "Newest posts on " (util/original-name group-name))
-               :href (str (:website-uri config) "/" group-name "/newest.rss")}])
-
      [:link {:rel "alternate"
              :type "application/rss+xml"
              :title "Hot posts"
@@ -118,14 +96,10 @@
 
      [:link {:rel "alternate"
              :type "application/rss+xml"
-             :title "Latest posts"
-             :href (str (:website-uri config) "/latest-reply.rss")}]
-
-     [:link {:rel "alternate"
-             :type "application/rss+xml"
              :title "Newest posts"
              :href (str (:website-uri config) "/newest.rss")}]
 
+     ;; TODO: add user and tag rss
      [:link
       {:href "/apple-touch-icon.png",
        :sizes "180x180",
@@ -148,7 +122,7 @@
        :href "/safari-pinned-tab.svg",
        :rel "mask-icon"}]
 
-     [:meta {:content "#1a1a1a", :name "msapplication-TileColor"}]
+     [:meta {:content "#071839", :name "msapplication-TileColor"}]
      [:meta {:content (if (= theme "black-theme")
                         "#1f364d"
                         "#FFFFFF"), :name "theme-color"}]
@@ -239,8 +213,6 @@
         [:script {:src (if util/development?
                          "/js/compiled/main.js"
                          (str "/main-" version ".js"))}]
-
-        [:script {:src "/asciidoctor.min.js"}]
 
         ;; TODO: http2 push using json
         [:script

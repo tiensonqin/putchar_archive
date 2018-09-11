@@ -4,7 +4,6 @@
             [share.util :as util]
             [appkit.citrus :as citrus]
             [share.components.post :as post]
-            [share.components.group :as group]
             [share.dicts :refer [t] :as dicts]))
 
 (rum/defc search < rum/reactive
@@ -27,6 +26,4 @@
          (post/post-list {:result result
                           :end? true}
                          {}
-                         :empty-widget [:div (t :empty-search-result)]
-                         :show-group? true))])
-    ))
+                         :empty-widget [:div (t :empty-search-result)]))])))

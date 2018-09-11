@@ -37,13 +37,13 @@
 
 ;; TODO: rate limit
 (def mutation-whitelist
-  #{:group/search :post/search :data/pull-emojis
+  #{:post/search :data/pull-emojis
     :post/read
     :user/new :auth/email
     :auth/request-code})
 
 (def query-whitelist
-  #{:user :group :groups :post :login :posts :tag :user-tag :moderation-logs})
+  #{:user :post :login :posts :tag :user-tag :moderation-logs})
 
 (defn- auth-whitelist?
   [request]

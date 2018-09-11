@@ -36,7 +36,6 @@
   []
   [(t :spam)
    (t :abusive)
-   (t :break-group-rules)
    (t :other-issues)])
 
 (comment

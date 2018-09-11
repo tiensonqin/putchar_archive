@@ -49,36 +49,14 @@
        (str (t :reason) ":")]
       (nth reasons reason)]]))
 
-(rum/defc group-blocked < rum/reactive
-  [{:keys [group action]}]
+(rum/defc blocked < rum/reactive
+  [{:keys [action]}]
   [:div.row
    (case action
      :3d
      [:div (str (t :disable-account-notification)
-                (util/original-name (:name group)) ".")]
-     [:div (str (t :block-notification) (util/original-name (:name group)) ".")])])
-
-(rum/defc group-admin-promote
-  [notification]
-  (let [{:keys [who group created_at]} notification]
-    [:div {:key (util/random-uuid)}
-     [:div.row {:style {:margin-top 12
-                        :align-items "center"}}
-      [:div.row
-       [:a {:href (str "/@" (:screen_name who))}
-        (ui/avatar {:shape "circle"
-                    :src (util/cdn-image (:screen_name who))})]
-       [:span {:style {:margin "0 6px"}}
-        (t :promote-notification)]
-
-       [:a {:href (str "/" (:name group))}
-        (ui/avatar {:shape "circle"
-                    :src (util/group-logo (:name group))})]]
-
-      [:div {:style {:align-self "flex-start"
-                     :color "#999"
-                     :font-size 12}}
-       (util/time-ago created_at)]]]))
+                 ".")]
+     [:div (t :block-notification)])])
 
 (rum/defc comment-c < rum/reactive
   [notification]
@@ -141,14 +119,11 @@
                :reply-comment
                (comment-c notification)
 
-               :group-admin-promote
-               (group-admin-promote notification)
-
                :post-or-comment-deleted
                (post-or-comment-deleted notification)
 
-               :group-blocked
-               (group-blocked notification))])]
+               :blocked
+               (blocked notification))])]
          [:div.center
           [:h2 {:style {:font-weight 500}}
            (t :no-more-notifications)]])))])

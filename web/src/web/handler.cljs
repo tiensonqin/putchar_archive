@@ -3,7 +3,6 @@
             [web.handlers.ui :as ui]
             [web.handlers.router :as router]
             [web.handlers.user :as user]
-            [web.handlers.group :as group]
             [web.handlers.post :as post]
             [web.handlers.post-box :as post-box]
             [web.handlers.message :as message]
@@ -22,7 +21,6 @@
     ui/handlers
     router/handlers
     user/handlers
-    group/handlers
     post/handlers
     post-box/handlers
     message/handlers

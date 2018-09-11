@@ -3,7 +3,6 @@
             [api.db.util :as util]
             [api.db.cache :as cache]
             [api.db.user :as u]
-            [api.db.group :as group]
             [api.db.post :as post]
             [taoensso.carmine :as car]
             ))
@@ -13,9 +12,4 @@
   ;; cache all users
   (let [all-ids (j/query db ["select id from users order by id desc"])]
     (doseq [id all-ids]
-      (u/cache-reload db (:id id))))
-
-  ;; cache all groups
-  (let [all-ids (j/query db ["select id from groups order by id desc"])]
-    (doseq [id all-ids]
-      (group/cache-reload db (:id id)))))
+      (u/cache-reload db (:id id)))))

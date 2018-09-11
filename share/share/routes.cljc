@@ -22,12 +22,8 @@
         ;; rss
         ["newest.rss"                                             :new-rss]
         ["hot.rss"                                                :hot-rss]
-        ["non-tech.rss"                                           :non-tech-rss]
         ["latest-reply.rss"                                       :latest-reply-rss]
         [["@" :screen_name "/newest.rss"]                         :user-latest-rss]
-        [[[#"[^\/]+" :group-name] "/newest.rss"]                  :group-latest-rss]
-        [[[#"[^\/]+" :group-name] "/hot.rss"]                     :group-hot-rss]
-        [[[#"[^\/]+" :group-name] "/latest-reply.rss"]            :group-latest-reply-rss]
 
         ["search"                                                 :search]
         ["reports"                                                :reports]
@@ -43,16 +39,7 @@
         ["drafts"                                                 :drafts]
         [["p/" :post-id "/edit"]                                              :post-edit]
         [["@" :screen_name "/" [#"[^\/]+" :permalink]]                        :post]
-        [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]        :comment]
-
-
-        ["groups"                                                         :groups]
-        ["new-group"                                                       :new-group]
-        ;; ["pricing"                                                             :pricing]
-        [[[#"[^\/]+" :group-name]]                                             :group]
-        [[[#"[^\/]+" :group-name] "/" [#"(newest|hot|latest-reply)" :post-filter]]           :group]
-        [[[#"[^\/]+" :group-name] "/members"]                                  :members]
-        [[[#"[^\/]+" :group-name] "/edit"]                                     :group-edit]]])
+        [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]        :comment]]])
 
 (defn match-route-with-query-params
   [path & {:as options}]
@@ -69,9 +56,7 @@
 
 (def login-routes
   #{:me :notifications :profile
-    :votes :reports :post-edit
-    :new-group :group-edit
-    })
+    :votes :reports :post-edit})
 
 ;; (extend-protocol bidi/ParameterEncoding
 ;;   #?(:clj java.util.UUID

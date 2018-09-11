@@ -160,5 +160,4 @@
        {:state {:cursor-position (count new-body)}
         :dispatch [:citrus/set-post-form-data {:body new-body
                                                :cover new-cover
-                                               :images new-images}]}))
-   })
+                                               :images new-images}]}))})

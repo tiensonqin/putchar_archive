@@ -83,13 +83,6 @@
                        :height "8rem"
                        :background "#ccc"}}]])
 
-     (ui/button {:style {:margin-top 24
-                         :width 250}
-                 :on-click (fn []
-                             (citrus/dispatch! :citrus/default-update
-                                               [:user :signup-step]
-                                               :pick-groups))}
-       (t :skip))
      [:input
       {:id "photo_upload"
        :type "file"
@@ -103,78 +96,11 @@
                         :image/upload
                         file-form-data
                         (fn [url]
-                          (reset! uploading? false)
-                          (citrus/dispatch! :citrus/default-update
-                                            [:user :signup-step]
-                                            :pick-groups))))
+                          (reset! uploading? false))))
                      :max-width 100
                      :max-height 100
                      ))
        :hidden true}]]))
-
-(rum/defc groups-bar
-  [groups signup-groups show-name?]
-  [:div.row {:style {:flex-wrap "wrap"
-                     :align-itmes "flex-end"}}
-   (for [{:keys [id name] :as group} groups]
-     (let [joined? (and (seq signup-groups)
-                        (contains? (set signup-groups) name))]
-       [:div.column1 {:key id
-                      :style {:margin-right 24
-                              :margin-bottom 24
-                              :justify-content "center"}}
-        [:a {:on-click #(citrus/dispatch! (if joined?
-                                            :user/signup-leave-group
-                                            :user/signup-join-group) name)
-             :title (util/original-name name)}
-         [:img.hover-shadow {:src (util/group-logo name)
-                             :class (if joined? "joined" "")}]]
-        (if show-name?
-          [:div.ubuntu {:style {:font-size 15
-                                :font-weight "600"
-                                :max-width 120
-                                :text-overflow "ellipsis"
-                                :overflow "hidden"
-                                :white-space "nowrap"
-                                :margin-top 12}}
-           (util/original-name name)])]))])
-
-(rum/defc pick-groups < rum/reactive
-  (mixins/query :groups)
-  [user]
-  (let [locale (citrus/react [:locale])
-        signup-groups (citrus/react [:user :signup-groups])
-        loading? (citrus/react [:user :loading?])
-        width (citrus/react [:layout :current :width])
-        mobile? (or (util/mobile?) (<= width 768))
-        groups-width (- (min 1104 width) (if mobile? 48 0))
-        groups (citrus/react [:group :hot])]
-    [:div.column {:style {:padding (if mobile?
-                                     "24px 24px 48px 24px"
-                                     "24px 0 48px 0")
-                          :margin "0 auto"}}
-     [:div.row1 {:style {:align-items "center"}}
-      (if (:screen_name user)
-        [:div {:style {:margin-right 12}}
-         (ui/avatar {:shape "circle"
-                     :src (util/cdn-image (:screen_name user) false)
-                     :class "ant-avatar-lg"})])
-
-      [:h2 {:style {:margin-bottom 48}}
-       (t :join-at-least)]]
-
-     [:div.pick-groups-item {:style {:width groups-width}}
-      (groups-bar groups signup-groups true)]
-
-     (if (> (count signup-groups) 0)
-       (ui/button {:class "btn-primary btn-lg"
-                   :on-click (fn []
-                               (citrus/dispatch! :user/signup-join-groups))
-                   :style {:margin-top 24}}
-         (if loading?
-           [:div {:style {:margin-top 2}}
-            (ui/donut-white)]
-           (t :done))))]))
 
 (rum/defc signup < rum/reactive
   [{:keys [email] :as params}]
@@ -185,9 +111,6 @@
      (case signup-step
       :add-avatar
       (add-avatar temp-user)
-
-      :pick-groups
-      (pick-groups temp-user)
 
       (let [github-avatar (:avatar_url temp-user)
             user (select-keys temp-user [:id :name :email])
@@ -476,7 +399,6 @@
 * As soon as you confirm that you would like to delete your account, the following events happen immediately:
 
 . 1. All of your personal profile information will be deleted in our database. This includes your name, username, email, profile photo, description, and any connections to 3rd party social networks (that you use to sign in to putchar).
-All existing memberships you have in any group will be disabled.
 You will be logged out and returned to the putchar home page.
 The posts and comments that you have posted will not be deleted, in order to preserve the integrity of the public nature of discussions on putchar. Any posts or comments that remain undeleted will not be identifiable as yours.
 
@@ -506,7 +428,8 @@ The posts and comments that you have posted will not be deleted, in order to pre
           (widgets/tags screen_name (:tags user) nil)
 
           (query/query
-            (post/user-post-list id posts posts-path))]])
+            (post/user-post-list id posts posts-path))]
+         ])
       [:div.row {:style {:justify-content "center"}}
        (ui/donut)])))
 
@@ -571,8 +494,7 @@ The posts and comments that you have posted will not be deleted, in order to pre
      (query/query
        (post/post-list posts {:filter post-filter
                               :merge-path path}
-                       :show-avatar? true
-                       :show-group? false))]))
+                       :show-avatar? true))]))
 
 (rum/defc bookmarks < rum/reactive
   (mixins/query :bookmarks)
@@ -582,12 +504,9 @@ The posts and comments that you have posted will not be deleted, in order to pre
         user (citrus/react [:user :current])
         posts (citrus/react path)]
     [:div.column {:style {:margin-bottom 48}}
-     (widgets/cover-nav nil)
-
      (query/query
        (post/post-list posts {:filter post-filter
                               :merge-path path}
                        :show-avatar? true
-                       :show-group? false
                        :empty-widget [:h5.auto-padding
                                       (t :no-bookmarks-yet)]))]))

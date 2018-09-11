@@ -3,20 +3,20 @@
   color: #212529;
 }
 .white-theme #app {
-  background: #fcfcfc;
+  background: #FFF;
 }
 @media screen and (max-width: 768px) {
   .white-theme {
     background: #ffffff;
   }
-}
-.white-theme #head {
-  background: #FFF;
-  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  .white-theme #head {
+    background: #FFF;
+    -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
 }
 .white-theme a {
-  color: #2156a5;
+  color: #071839;
 }
 .white-theme a:hover {
   color: #08c;
@@ -25,17 +25,24 @@
   color: #666;
 }
 .white-theme a.control:hover {
-  color: #2156a5;
+  color: #071839;
 }
-.white-theme #sort-buttons a:hover, .white-theme #sort-buttons a.is-active, .white-theme .user-buttons a.is-active {
+.white-theme a.is-active, .white-theme .user-buttons a.is-active {
   color: #000;
 }
 .white-theme .btn {
   background-color: #fff;
   color: #555;
 }
+.white-theme .btn:hover {
+  color: #333;
+}
+.white-theme a#quote-selection {
+  background: #071839;
+  color: #FFF;
+}
 .white-theme .btn-primary {
-  background-color: #2156a5;
+  background-color: #071839;
   color: #FFF;
 }
 .white-theme .divider {
@@ -64,22 +71,14 @@
   color: #071839;
 }
 .white-theme #post-user a:hover {
-  color: #2156a5;
+  color: #071839;
 }
 .white-theme .button-text {
   color: #666;
 }
-.white-theme input#search:focus, .white-theme input#search:active, .white-theme input#search_groups, .white-theme input#search_groups:active {
+.white-theme input#search:focus, .white-theme input#search:active {
   outline: none;
   color: #000;
-}
-.white-theme input#search_groups:-ms-input-placeholder {
-  color: #999;
-  font-weight: 600;
-}
-.white-theme input#search_groups::-webkit-input-placeholder {
-  color: #999;
-  font-weight: 600;
 }
 .white-theme span.logo {
   color: #071839;
@@ -88,13 +87,13 @@
   color: #999;
 }
 .white-theme .icon-button:hover i {
-  color: #2156a5;
+  color: #071839;
 }
 .white-theme .ver_divider {
   background: linear-gradient(to bottom, #FFF 0%, #ddd 53%, #FFF 100%);
 }
 .white-theme .mention {
-  color: #2156a5;
+  color: #071839;
 }
 .white-theme .right-sub h5 {
   color: #666;
@@ -127,14 +126,17 @@
   background: #FFF;
 }
 .white-theme svg:hover {
-  fill: #2156a5;
+  fill: #071839;
 }
 .white-theme a.tag {
-  background: #222;
-  color: #FFF;
+  background: #E3E3E3;
+  color: #071839;
+}
+.white-theme a.tag:hover {
+  background: #D3D3D3;
 }
 .white-theme a.tag.active {
-  background: #2156a5;
+  background: #071839;
   color: #FFF;
 }
 .white-theme .radio-button {
@@ -166,7 +168,7 @@
   background: #FFF;
 }
 .white-theme .menu a:hover {
-  color: #2156a5;
+  color: #071839;
 }
 .white-theme .user-posts .post-title:visited {
   color: initial;

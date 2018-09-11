@@ -10,7 +10,7 @@
   []
   (if (= @theme "black")
     "#6dd"
-    "#2156a5"))
+    "#071839"))
 
 (defn shadow
   []
@@ -29,3 +29,16 @@
   (if (= @theme "black")
     "#ddd"
     "#222"))
+
+(defn logo-background
+  []
+  (if (= @theme "black")
+    "#FFF"
+    "#000"))
+
+(defn logo-text-background
+  []
+  (if (= @theme "black")
+    "#000"
+    "#FFF"
+    ))

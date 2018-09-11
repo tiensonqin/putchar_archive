@@ -1,8 +1,6 @@
 $main-color: #FFF;
-$primary-color: #2156a5;
+$primary-color: #071839;
 $header-color: #FFF;
-$btn-color: #2156a5;
-$h-color: rgb(7,24,57);
 
 .white-theme {
     body {
@@ -11,17 +9,16 @@ $h-color: rgb(7,24,57);
     }
 
     #app {
-        background: #fcfcfc;
+        background: #FFF;
     }
 
     @media screen and (max-width: 768px) {
         background: #ffffff;
-    }
-
-    #head {
-        background: $header-color;
-        -webkit-box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        #head {
+            background: $header-color;
+            -webkit-box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        }
     }
 
     a {
@@ -40,7 +37,7 @@ $h-color: rgb(7,24,57);
         color: $primary-color;
     }
 
-    #sort-buttons a:hover, #sort-buttons a.is-active, .user-buttons a.is-active {
+    a.is-active, .user-buttons a.is-active {
         color: #000;
     }
 
@@ -49,8 +46,17 @@ $h-color: rgb(7,24,57);
         color: #555;
     }
 
+    .btn:hover {
+        color: #333;
+    }
+
+    a#quote-selection {
+        background: $primary-color;
+        color: #FFF;
+    }
+
     .btn-primary {
-        background-color: #2156a5;
+        background-color: $primary-color;
         color: #FFF;
     }
 
@@ -72,7 +78,7 @@ $h-color: rgb(7,24,57);
     }
 
     .post-title {
-        color: $h-color;
+        color: $primary-color;
     }
 
     .post-title:visited {
@@ -84,7 +90,7 @@ $h-color: rgb(7,24,57);
     }
 
     #post-user, #post-user a {
-        color: $h-color;
+        color: $primary-color;
     }
 
     #post-user a:hover {
@@ -95,22 +101,13 @@ $h-color: rgb(7,24,57);
         color: #666;
     }
 
-    input#search:focus, input#search:active, input#search_groups, input#search_groups:active{
+    input#search:focus, input#search:active {
         outline:none;
         color: #000;
     }
 
-    input#search_groups:-ms-input-placeholder {
-        color: #999;
-        font-weight: 600;
-    }
-    input#search_groups::-webkit-input-placeholder {
-        color: #999;
-        font-weight: 600;
-    }
-
     span.logo {
-        color: $h-color;
+        color: $primary-color;
     }
 
     .icon-button i {
@@ -134,7 +131,7 @@ $h-color: rgb(7,24,57);
     }
 
     .post-page-title {
-        color: $h-color;
+        color: $primary-color;
     }
 
     .hr-divider {
@@ -173,8 +170,12 @@ $h-color: rgb(7,24,57);
     }
 
     a.tag {
-        background: #222;
-        color: #FFF;
+        background: #E3E3E3;
+        color: $primary-color;
+    }
+
+    a.tag:hover {
+        background: #D3D3D3;
     }
 
     a.tag.active {
@@ -192,7 +193,7 @@ $h-color: rgb(7,24,57);
     }
 
     .editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .editor h6 a {
-        color: $h-color;
+        color: $primary-color;
     }
 
     *:not(pre) > code {
@@ -225,5 +226,4 @@ $h-color: rgb(7,24,57);
     .user-posts .post-title:visited {
         color: initial;
     }
-
 }

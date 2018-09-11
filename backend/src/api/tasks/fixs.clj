@@ -3,7 +3,6 @@
             [api.db.util :as util]
             [api.db.cache :as cache]
             [api.db.user :as u]
-            [api.db.group :as group]
             [api.db.post :as post]
             [api.db.comment :as comment]
             [api.db.search :as search]
@@ -14,16 +13,6 @@
             [share.util :as su]
             [api.services.s3 :as s3]
             [clojure.java.shell :as shell]))
-
-(defn rebuild-admins
-  [db]
-  (j/execute! db
-              "alter table groups alter admins type text[]")
-  (let [groups (j/query db ["select id, flake_id, admins from groups"])]
-    (doseq [{:keys [id flake_id admins] :as group} groups]
-      (doseq [screen_name admins]
-        (cache/wcar*
-         (car/zadd (cache/redis-key "user" screen_name "managed_groups") flake_id id))))))
 
 (defn post-links
   [db]
@@ -40,17 +29,6 @@
 
         :else
         nil))))
-
-
-(defn update-groups-lower-case
-  [db]
-  (let [groups (j/query db ["select id, flake_id, admins, name from groups"])]
-    (doseq [{:keys [id flake_id admins name] :as group} groups]
-      (api.db.group/update db id {:name (clojure.string/lower-case name)})))
-
-  (let [posts (j/query db ["select id, group_name from posts"])]
-    (doseq [{:keys [id group_name] :as post} posts]
-      (api.db.post/update db id {:group_name (clojure.string/lower-case group_name)}))))
 
 
 (defn post-permalinks
@@ -85,45 +63,9 @@
     (j/execute! db ["alter table users drop column oauth_type;"])
     (j/execute! db ["alter table users drop column oauth_id;"])))
 
-(defn test-dash-name
-  [db]
-  (let [groups (j/query db ["select id, name from groups"])]
-    (doseq [{:keys [id name]} groups]
-      (let [new-name (-> name
-                         (str/replace "__" "-")
-                         (str/replace "_" "-"))]
-        (when (not= new-name name)
-          (prn {:name name
-                :new-name new-name
-                :url (str "https://d15mmb60wiwqvv.cloudfront.net/pics/"
-                          name
-                          "_logo.png")
-                })))))
-
-  (c/rebuild db))
-
-(defn dash-name
-  [db]
-  (let [groups (j/query db ["select id, name from groups"])]
-    (doseq [{:keys [id name]} groups]
-      (when (re-find #"-" name)
-        (prn
-         (s3/save-url-image (str name "_logo")
-                            (str "https://d15mmb60wiwqvv.cloudfront.net/pics/"
-                                 name
-                                 ".png")
-                            "png"
-                            "image/png")))))
-
-  (c/rebuild db))
-
 (defn rebuild-search
   [db]
-  (let [groups (j/query db ["select id, name from groups where del is false and privacy <> ?" "private"])]
-    (doseq [group groups]
-      (search/add-group group)))
-
-  (let [posts (j/query db ["select id, group_id, title from posts where is_draft is false"])]
+  (let [posts (j/query db ["select id, title from posts where is_draft is false"])]
     (doseq [post posts]
       (search/add-post post)))
 
@@ -176,28 +118,6 @@
     (doseq [{:keys [id cover body] :as post} posts]
       (post/update db id {:cover (change-text cover)
                           :body (change-text body)}))))
-
-(defn group-user-avatar
-  [db]
-  (let [users (j/query db ["select * from users"])
-        groups (j/query db ["select * from groups"])]
-
-    ;; (doseq [{:keys [screen_name]} users]
-    ;;   (prn
-    ;;    (s3/save-url-image screen_name
-    ;;                       (str "https://lambdahackers.imgix.net"
-    ;;                            "/"
-    ;;                            screen_name
-    ;;                            ".jpg?w=100&h=100&auto=null"))))
-    (doseq [{:keys [name]} groups]
-      (prn
-       (s3/save-url-image (str name "_logo")
-                          (str "https://lambdahackers.imgix.net"
-                               "/"
-                               name
-                               "_logo.png?w=100&h=100&auto=null")
-                          "png"
-                          "image/png")))))
 
 (defn images
   []

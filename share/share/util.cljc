@@ -192,10 +192,6 @@
       :else
       (str config/img-cdn "/" name "." suffix))))
 
-(defn group-logo
-  [name]
-  (str config/img-cdn  "/" name "_logo.png"))
-
 (defn format
   [fmt & args]
   #?(:cljs (apply goog.string/format fmt args)
@@ -213,15 +209,8 @@
 (defn username? [v]
   (re-find #"^([A-Za-z]){1}([A-Za-z0-9-]){0,14}$" v))
 
-(defn group-name? [v]
-  (re-find #"^([A-Za-z0-9-]){0,18}$" v))
-
 (defn encrypted-name? [v]
   (re-find #"^@?([%a-zA-Z0-9-]){1,192}$" v))
-
-(defn encrypted-group-name? [v]
-  (or (group-name? v)
-      (encrypted-name? v)))
 
 (defn length? [{:keys [min max]}]
   (fn [v]
@@ -688,14 +677,6 @@
        new
        (subs s end (count s))))
 
-(defn get-stared-groups
-  [current-user]
-  (when-let [groups (:stared_groups current-user)]
-    #?(:clj (normalize groups)
-       :cljs (if (map? groups)
-               groups
-               (normalize groups)))))
-
 (defn distinct-by
   [k col]
   (reduce
@@ -719,12 +700,6 @@
   (some-> s
       strip-tags
       delete-spaces))
-
-(defn get-group-by-id
-  [groups current-group-id]
-  (some->> (vals groups)
-           (filter #(= (:id %) current-group-id))
-           first))
 
 (defn set-cursor-end
   [e]

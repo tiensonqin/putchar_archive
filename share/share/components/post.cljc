@@ -94,10 +94,9 @@
 (rum/defc edit-toolbox < rum/reactive
   []
   (let [form-data (citrus/react [:post :form-data])
-        poll? (citrus/react [:post :poll?])
         images (:images form-data)
         mobile? (util/mobile?)
-        margin 24
+        margin (if mobile? 12 24)
         current-path (citrus/react [:router :handler])
         post-edit? (= :post-edit current-path)
         new-post? (= :new-post current-path)
@@ -126,17 +125,6 @@
               :style {:margin-left margin}}
           (ui/icon {:type :photo
                     :color (colors/shadow)})]))
-
-     (when post-edit?
-       [:a {:title (t :poll)
-            :on-click #?(:cljs
-                         (fn []
-                           (citrus/dispatch! :post/show-poll))
-                         :clj
-                         identity)
-            :style {:margin-left margin}}
-        (ui/icon {:type :poll
-                  :color (if poll? (colors/primary) (colors/shadow))})])
 
      [:input
       {:id "photo_upload"
@@ -168,7 +156,7 @@
                              :padding-left 0
                              :width "100%"
                              :padding-right 36
-                             :color (colors/icon-color)}
+                             :color (colors/new-post-color)}
                      :on-change (fn [e]
                                   (citrus/dispatch! :citrus/set-post-form-data
                                                     {:title-validated? true
@@ -187,7 +175,7 @@
                      (t :back)
                      (t :go-to-fullscreen))
             :style {:position "absolute"
-                    :right 0}
+                    :right 12}
             :on-click (fn []
                         #?(:cljs
                            (if @fullscreen?
@@ -264,19 +252,6 @@
                               body-format
                               {:font-size "18px"})])]))
 
-(rum/defc select-group-item < rum/static
-  [id form-data group]
-  (ui/button {:class (str "btn-sm "
-                          (if (= id (:group_id form-data))
-                            "btn-primary"))
-              :style {:margin-right 12
-                      :margin-bottom 12}
-              :on-click (fn []
-                          (citrus/dispatch! :citrus/set-post-form-data
-                                            {:group_id id
-                                             :group_name (:name group)}))}
-    (util/original-name (:name group))))
-
 (rum/defc select-language
   [default form-data]
   (let [button-cp (fn [lang value]
@@ -333,7 +308,7 @@
   [:div#add-tags {:style {:margin-bottom 12}}
    [:h6 {:style {:margin-bottom "1em"}}
     (t :add-tags-label)]
-   (ui/input {:class "ant-input"
+   (ui/input {:class "ant-input ubuntu"
               :type "text"
               :autoComplete "off"
               :name "tags"
@@ -343,93 +318,25 @@
               :on-change (fn [value]
                            #?(:cljs
                               (citrus/dispatch! :citrus/set-post-form-data
-                                                {:tags (util/ev value)})))})])
+                                                {:tags (util/ev value)
+                                                 :tags-validated? true})))
+              :on-blur (fn [e]
+                         #?(:cljs
+                            (let [v (util/ev e)]
+                              (if (str/blank? v)
+                                (citrus/dispatch! :citrus/set-post-form-data
+                                                  {:tags-validated? false})))))})
+   (if (false? (get form-data :tags-validated?))
+     [:p {:class "help is-danger"} (t :post-tags-warning)])])
 
-(rum/defcs add-canonical-url < (rum/local false ::expand?)
-  [state form-data]
-  (let [expand? (get state ::expand?)
-        show? (or (:canonical_url form-data) @expand?)]
-    [:div#add-canonical-url.column1 {:style {:margin "12px 0"}}
-     (if show?
-       [:h6 {:style {:margin-bottom "1em"}}
-        (t :add-canonical-url)]
-       [:a.control {:style {:font-size 14}
-                   :on-click (fn [] (reset! expand? true))}
-       (t :add-canonical-url)])
-     (when show?
-       (ui/input {:class "ant-input"
-                  :type "text"
-                  :autoComplete "off"
-                  :auto-focus true
-                  :name "canonical_url"
-                  :style {:max-width 300}
-                  :placeholder (t :add-canonical-url-placeholder)
-                  :default-value (or (:canonical_url form-data) "")
-                  :on-change (fn [value]
-                               #?(:cljs
-                                  (citrus/dispatch! :citrus/set-post-form-data
-                                                    {:canonical_url (util/ev value)})))}))]))
-
-(rum/defcs select-group < rum/reactive
+(rum/defcs publish-dialog < rum/reactive
   (rum/local false ::language-select-update?)
-  [state form-data stared-groups choices skip?]
+  [state form-data]
   (let [language-select-update? (get state ::language-select-update?)
         images (:images form-data)
         images? (seq images)
         default-post-language (citrus/react [:user :default-post-language])]
     [:div.column.ubuntu#publish-dialog
-     [:div.row1 {:style {:align-items "center"}}
-      [:h4 {:style {:margin-bottom "1em"}}
-       (if @skip?
-         (t :skip-group-selection)
-         (t :select-group))]
-      [:a {:on-click (fn []
-                       (if @skip?
-                         (reset! skip? false)
-                         (reset! skip? true))
-                       (citrus/dispatch! :post/clear-group))
-           :style {:margin-left 12
-                   :font-weight "600"
-                   :color (if @skip?
-                            (colors/primary)
-                            "rgb(127,127,127)")}}
-       (util/format "(%s)" (if @skip?
-                             (t :undo)
-                             (t :skip)))]]
-
-     (when-not @skip?
-       (let [c (count stared-groups)
-             cp (fn [groups]
-                  (for [[id group] groups]
-                    [:div {:key id}
-                     (select-group-item id form-data group)]))]
-         [:div#select-groups {:class "row"
-                              :style {:flex-wrap "wrap"}}
-
-          (if (<= c 8)
-            (cp stared-groups)
-            ;; select
-            (form/select (for [[id group] stared-groups]
-                         (cond-> {:value (:name group)
-                                  :text (:name group)}
-                           (= id (:group_id form-data))
-                           (assoc :selected "selected")))
-            {:on-change (fn [e]
-                          (let [group-name (util/ev e)
-                                group (some->> (vals stared-groups)
-                                               (filter #(= (:name %) group-name))
-                                               (first))]
-                            (citrus/dispatch! :citrus/set-post-form-data
-                                              {:group_id (:id group)
-                                               :group_name group-name})))
-             :style {:width 180
-                     :height 30
-                     :border "1px solid #aaa"
-                     :margin-bottom 12
-                     :font-size 16
-                     :background "transparent"
-                     :border-radius 4}}))]))
-
      (if images?
        [:div#set-cover
         [:h6 {:style {:margin-bottom "1em"}}
@@ -464,39 +371,13 @@
                      :on-click (fn []
                                  (reset! language-select-update? true))}
          (t :edit)]]
-       (select-language default-post-language form-data))
-
-     (add-canonical-url form-data)
-
-     (if (:non_tech form-data)
-       [:div.row1
-        (widgets/non-tech-label)
-
-        [:a.control {:style {:margin-left 12}
-                     :on-click (fn []
-                                 (citrus/dispatch! :citrus/set-post-form-data
-                                                   {:non_tech false}))}
-         (ui/icon {:type :close
-                   :color (colors/icon-color)})]]
-
-       [:a.control {:style {:font-size 15}
-                    :on-click (fn []
-                                (citrus/dispatch! :citrus/set-post-form-data
-                                                  {:non_tech true}))}
-        (t :this-is-non-tech)])]))
+       (select-language default-post-language form-data))]))
 
 (rum/defc publish-button < rum/reactive
   [form-data]
-  (let [loading? (citrus/react [:post :loading?])
-        choices (citrus/react [:post :form-data :choices])]
+  (let [loading? (citrus/react [:post :loading?])]
     (let [ok? (and (util/post-title? (:title form-data))
-                   (or (not (str/blank? (:body form-data)))
-                       (and (seq choices)
-                            (some->> (map :v choices)
-                                     (remove nil?)
-                                     (count)
-                                     (>= 2)))
-                       ))]
+                   (not (str/blank? (:body form-data))))]
       (ui/button {:class (str (if ok?
                                 " btn-primary "
                                 " disabled"))
@@ -511,73 +392,50 @@
           (t :publish))))))
 
 (rum/defcs publish-to < rum/reactive
-  (rum/local false ::skip?)
   [state]
-  (let [skip? (get state ::skip?)
-        form-data (citrus/react [:post :form-data])
+  (let [form-data (citrus/react [:post :form-data])
         modal? (citrus/react [:post :publish-modal?])
         current-user (citrus/react [:user :current])
-        current-group (citrus/react [:group :current])
         current-post (citrus/react [:post :current])
-        choices (citrus/react [:post :form-data :choices])
-        stared-groups (util/get-stared-groups current-user)
-        group-id (or (:group_id form-data)
-                     current-group
-                     (-> stared-groups ffirst))
-
-        initial-group (get stared-groups group-id)
-
         submit-fn (fn []
-                    (if (nil? (:lang form-data))
+                    (prn "hi"
+                         (:tags form-data)
+                         (str/blank? (:tags form-data)))
+                    (cond
+                      (str/blank? (:tags form-data))
+                      (citrus/dispatch! :citrus/set-post-form-data
+                                        {:tags-validated? false})
+
+                      (nil? (:lang form-data))
                       (citrus/dispatch! :citrus/default-update
                                         [:post :form-data :lang]
                                         nil)
+
+                      :else
                       (let [data (cond->
-                                 (merge {:id (:id current-post)
-                                         :is_draft false}
-                                        (select-keys form-data
-                                                     [:title :body :choices :body_format :lang :non_tech]))
+                                     (merge {:id (:id current-post)
+                                             :is_draft false}
+                                            (select-keys form-data
+                                                         [:title :body :body_format :lang :tags]))
 
-                                 (:group_id form-data)
-                                 (merge (select-keys form-data [:group_id :group_name]))
 
-                                 (:cover form-data)
-                                 (assoc :cover (:cover form-data))
-
-                                 (:tags form-data)
-                                 (assoc :tags (:tags form-data))
-
-                                 (and (:canonical_url form-data)
-                                      (re-find (re-pattern util/link-re) (:canonical_url form-data)))
-                                 (assoc :canonical_url (:canonical_url form-data)))
-                          data (if (nil? (:body_format data))
-                                 (assoc data :body_format :markdown)
-                                 data)
-                          data (util/map-remove-nil? data)
-                          data (if @skip?
-                                 (assoc data
-                                        :group_id nil
-                                        :group_name nil)
-                                 data)]
-                      (citrus/dispatch! :post/update data)
-                      (citrus/dispatch!
-                       :citrus/default-update
-                       [:post :publish-modal?]
-                       false)))
-                    )]
+                                   (:cover form-data)
+                                   (assoc :cover (:cover form-data)))
+                            data (if (nil? (:body_format data))
+                                   (assoc data :body_format :markdown)
+                                   data)
+                            data (util/map-remove-nil? data)]
+                        (citrus/dispatch! :post/update data)
+                        (citrus/dispatch!
+                         :citrus/default-update
+                         [:post :publish-modal?]
+                         false))))]
 
     (when-let [tags (:tags current-post)]
       (when (nil? (:tags form-data))
           (citrus/dispatch-sync! :citrus/set-post-form-data
                               {:tags (str/join "," (:tags current-post))})))
 
-    (when (and
-           (false? @skip?)
-           (or (nil? (:group_id form-data))
-               (nil? (:group_name form-data))))
-      (citrus/dispatch! :citrus/set-post-form-data
-                        {:group_id group-id
-                         :group_name (:name initial-group)}))
     [:div {:style {:display "flex"
                    :flex-direction "row"
                    :flex "0 1 1"
@@ -609,144 +467,7 @@
             :class "btn-primary"
             :on-click submit-fn}
            (t :publish))}
-        (select-group form-data stared-groups choices skip?)))]))
-
-(rum/defc choices-cp < rum/reactive
-  [{:keys [poll_choice poll_closed choices permalink] :as post} choices-style]
-  (when (seq choices)
-    (let [poll_choice (or poll_choice (citrus/react [:post :choices permalink]))]
-      [:div.column1 {:style (assoc choices-style :position "relative")}
-
-       (if poll_closed
-         [:a {:title (t :locked)}
-          (ui/icon {:type :lock
-                    :width 20
-                    :height 20
-                    :opts {:style {:position "absolute"
-                                   :right 0
-                                   :top 12}}})])
-
-       [:div.column
-        (for [{:keys [id v votes]} choices]
-          (let [chosen? (= id poll_choice)]
-            [:a.control.row1.no-decoration.scale
-             {:style {:margin-bottom 24
-                      :align-items "center"
-                      :color (if (nil? poll_choice)
-                               (colors/primary)
-                               (colors/shadow))}
-              :key id
-              :on-click (fn [e]
-                          (when-not (or poll_closed poll_choice)
-                            (util/stop e))
-                          (if (nil? poll_choice)
-                            (citrus/dispatch! :post/vote-choice
-                                              (:permalink post)
-                                              {:post_id (:id post)
-                                               :choice_id id})))}
-             (if chosen?
-               [:i {:class "fa fa-check-square-o"
-                    :style {:font-size 20
-                            :margin-right 12
-                            :color (colors/primary)}}]
-               [:span.radio-button {:style {:border-radius 10}}])
-             v
-             (let [votes (if votes votes 0)]
-               [:span.number {:style {:font-weight "600"
-                                      :margin-left 12
-                                      :color "#999"
-                                      :padding-top 4}}
-                votes])]))]])))
-
-(rum/defcs edit-choices < rum/reactive
-  (rum/local false ::expand?)
-  [state post choices]
-  (let [expand? (get state ::expand?)
-        locked? (get post :poll_closed)
-        edit? (boolean (seq choices))
-        choices (or (citrus/react [:post :form-data :choices]) choices)
-        choices (cond
-                  (and (= 1 (count choices))
-                       (seq choices))
-                  (vec (conj choices
-                             {:id (util/random-uuid)}))
-
-                  (seq choices)
-                  choices
-
-                  :else
-                  [{:id (util/random-uuid)}
-                   {:id (util/random-uuid)}])]
-    [:div.column1.choices {:style {:position "relative"}}
-     (for [[idx {:keys [id v]}] (util/indexed choices)]
-       [:div.row1 {:key id}
-        (ui/input (cond->
-                    {:class (if locked?
-                              "ant-input ant-input-disabled"
-                              "ant-input")
-                     :type "text"
-                     :autoComplete "off"
-                     :name id
-                     :style {:max-width 300
-                             :margin-bottom 12
-                             :padding "0 6px"}
-                     :placeholder (str (t :choice) " " (inc idx))
-                     :default-value (or v "")
-                     :on-change (fn [e]
-                                  (when-not locked?
-                                    (let [v (util/ev e)]
-                                      (when-not (str/blank? v)
-                                        (citrus/dispatch! :post/add-or-update-choice choices id v)))))}))
-        (if (and (not locked?)
-                 (> (count choices) 2))
-          [:a {:title (t :delete)
-               :style {:margin-left 12}
-               :on-click (fn []
-                           (citrus/dispatch! :post/delete-choice id))}
-           (ui/icon {:type "delete"
-                     :color "#999"
-                     :width 20})])])
-
-     (when-not locked?
-       [:a {:on-click (fn []
-                        (citrus/dispatch! :post/add-or-update-choice
-                                          choices
-                                          (util/random-uuid) nil))}
-        [:span (t :add-a-choice)]])
-
-     (when-not @expand?
-       [:a {:style {:position "absolute"
-                    :right 0
-                    :top 0}
-            :on-click #(reset! expand? true)}
-        (ui/icon {:type :more
-                  :color "#999"})])
-
-     (when (and (not locked?)
-                (not (:is_draft post))
-                @expand?)
-       [:a {:style {:position "absolute"
-                    :right 48
-                    :top 1}
-            :title (t :lock-this-poll)
-            :on-click (fn []
-                        (citrus/dispatch! :post/disable-poll
-                                          post))}
-        (ui/icon {:type :lock
-                  :color "#999"
-                  :width 22
-                  :height 22})])
-
-     (when @expand?
-       [:a {:style {:position "absolute"
-                    :right 0
-                    :top 0}
-            :title (t :delete-this-poll)
-            :on-click (fn []
-                        (citrus/dispatch! :post/delete-poll
-                                          post))}
-        (ui/icon {:type :delete
-                  :color "#999"})])]))
+        (publish-dialog form-data)))]))
 
 (rum/defc new < rum/reactive
   {:will-mount (fn [state]
@@ -764,7 +485,8 @@
                                        768)
                           :margin "0 auto"}}
      [:div.auto-padding {:style {:flex 1
-                                 :overflow "hidden"}}
+                                 :overflow "hidden"
+                                 :margin-top 48}}
 
       (new-post-title form-data nil true)
 
@@ -778,18 +500,15 @@
                    (bidi/url-encode #?(:cljs js/location.href
                                        :clj (util/post-link post)))
                    "&text="
-                   (bidi/url-encode (:title post))
-
-                   " #"
-                   (get-in post [:group :name]))]
+                   (bidi/url-encode (:title post)))]
       [:a {:title (t :tweet)
            :href url
            :target "_blank"
            :style {:margin-right 24}}
        (ui/icon {:type :twitter
-                 :width 21
-                 :height 21
-                 :color (colors/shadow)})])))
+                 :width 20
+                 :height 20
+                 :color "#1DA1F3"})])))
 
 (rum/defc ops-link
   [post]
@@ -852,7 +571,6 @@
     [:a {:style (if absolute?
                   {:position "absolute"
                    :right (if mobile? 12 0)
-                   :margin-right -2
                    :margin-top -2}
                   {:margin-top 2
                    :margin-right 12})
@@ -903,7 +621,7 @@
                                   (:id post))}
   rum/static
   rum/reactive
-  [state post show-avatar? show-group? opts]
+  [state post show-avatar? opts]
   (if post
     (let [current-path (citrus/react [:router :handler])
           width (citrus/react [:layout :current :width])
@@ -916,14 +634,16 @@
           self? (and current-user-id (= user-id current-user-id))
           user-link (str "/@" (:screen_name user))
 
-          group-name (get-in post [:group :name])
           user? (contains? #{:user :drafts :user-tag} current-path)
           drafts-path? (= current-path :drafts)
           post-link (if drafts-path?
                       (str "/p/" (:id post) "/edit")
                       post-link)
           {:keys [last_reply_at created_at]} post
-          self? (and current-user self?)]
+          self? (and current-user self?)
+          first-tag (if-let [tag (first (:tags post))]
+                      (str/capitalize tag)
+                      nil)]
       [:div.post-item.col-item {:style {:position "relative"}}
        (when user?
          (ops-menu post self? mobile? true "#666"))
@@ -944,14 +664,14 @@
                                :font-size 15}}
             (util/date-format (:created_at post))
 
-            (when group-name
+            (when first-tag
               [:span {:style {:margin "0 12px"}}
-               "/"])
+              "/"])
 
-            (when group-name
-              [:a.control {:href (str "/" group-name)
-                           :on-click (fn [e] (util/stop e))}
-               (util/original-name group-name)])])
+            (when first-tag
+              [:a.control {:href (str "/tag/" (first (:tags post)))
+                           :style {:margin-right 12}}
+               first-tag])])
 
          [:div.column {:style {:justify-content "center"}}
           [:div.space-between
@@ -982,12 +702,6 @@
                                          :margin-top 8
                                          :margin-bottom 6}}]])]
 
-         (when (:choices post)
-           [:div {:style {:margin-top 24
-                          :margin-left 6
-                          :margin-bottom -12}}
-            (choices-cp (update post :choices util/read-string) {:align-items "flex-start"})])
-
          (when-not user?
            [:div.space-between.ubuntu {:style {:align-items "center"
                                                :margin-top 12}}
@@ -997,16 +711,6 @@
 
             [:div.row1 {:style {:color "rgb(127,127,127)"
                                 :font-size 14}}
-             [:div.row1 {:style {:align-items "center"
-                                 :flex-wrap "wrap"
-                                 :margin-left 12}}
-              (when show-group?
-                [:a.control {:href (str "/" group-name)
-                             :style {:margin-right 12}
-                             :on-click (fn [e] (util/stop e))}
-
-                 (util/original-name group-name)])]
-
              (when-not mobile?
                (let [last-reply-by (:last_reply_by post)
                      frequent_posters (-> (remove (hash-set (:screen_name user) last-reply-by)
@@ -1025,6 +729,11 @@
                          (ui/avatar {:class "ant-avatar-sm"
                                      :src (util/cdn-image poster)})]))])))
 
+             (when first-tag
+               [:a.control {:href (str "/tag/" (first (:tags post)))
+                            :style {:margin-right 12}}
+                first-tag])
+
              (when-not mobile?
                (ops-menu post self? mobile? false "#999"))
 
@@ -1042,20 +751,19 @@
                                                 post-link)}
               (if last_reply_at
                 (util/time-ago (:last_reply_at post))
-                (util/time-ago created_at))]]
-            ])]]])))
+                (util/time-ago created_at))]]])]]])))
 
 (rum/defc posts-stream < rum/reactive
-  [posts show-avatar? show-group? end? opts loading?]
+  [posts show-avatar? end? opts loading?]
   (let [permalink-posts (citrus/react [:post :by-permalink])
         posts (mapv (fn [post]
-                      (->> (select-keys (get permalink-posts (:permalink post)) [:choices :tops :comments_count :poll_closed])
+                      (->> (select-keys (get permalink-posts (:permalink post)) [:tops :comments_count])
                            (util/map-remove-nil?)
                            (merge post)))
                     posts)]
     [:div.posts
      (inf/infinite-list (map (fn [post]
-                               (post-item post show-avatar? show-group? opts)) posts)
+                               (post-item post show-avatar? opts)) posts)
                         {:on-load
                          (if end?
                            identity
@@ -1073,10 +781,8 @@
   "Render a post list."
   [state {:keys [result end?]
           :as posts} opts & {:keys [empty-widget
-                                    show-avatar?
-                                    show-group?]
-                             :or {show-avatar? true
-                                  show-group? false}}]
+                                    show-avatar?]
+                             :or {show-avatar? true}}]
   (let [last-post (get state ::last-post)
         posts result
         current-filter (citrus/react [:post :filter])
@@ -1092,7 +798,6 @@
       (posts-stream
        posts
        show-avatar?
-       show-group?
        end?
        (assoc opts :last last-post)
        scroll-loading?)
@@ -1114,7 +819,6 @@
                {:user_id user-id
                 :merge-path posts-path}
                :show-avatar? false
-               :show-group? true
                :empty-widget
                [:div
                 [:h5.auto-padding {:style {:color (colors/shadow)}}
@@ -1137,35 +841,21 @@
       (when-let [interval (get state :post-auto-save)]
         (util/clear-interval interval)))
     (query/query
-      (let [{:keys [choices] :as post} (citrus/react [:post :current])
-            show-poll? (or (seq choices)
-                           (citrus/react [:post :poll?]))]
+      (let [post (citrus/react [:post :current])]
         (when (and post (nil? (:title form-data)))
           (citrus/dispatch! :citrus/set-post-form-data
                             (cond->
-                              (select-keys post [:title :body :choices :body_format :canonical_url :lang :non_tech])
-                              (:group post)
-                              (assoc :group_name (get-in post [:group :name])
-                                     :group_id (get-in post [:group :id]))
+                              (select-keys post [:title :body :body_format :canonical_url :lang :non_tech])
                               (:body form-data)
                               (assoc :body (:body form-data)))))
         [:div.column.center-area.auto-padding {:class "post-edit editor"
                                                :style (if (and preview? (> width 1024))
-                                                        {:max-width 1238}
-                                                        {})}
+                                                        {:max-width 1238
+                                                         :margin-top 48}
+                                                        {:margin-top 48})}
          (new-post-title form-data (or
                                     (:title form-data)
                                     (:title post)) (not (str/blank? (:title post))))
-
-         (if show-poll?
-           [:div.divider])
-
-         (if show-poll?
-           (edit-choices post (or (:choices form-data)
-                                  choices)))
-
-         (if show-poll?
-           [:div.divider])
 
          (new-post-body form-data
                         (:body post)
@@ -1280,13 +970,13 @@
   (let [permalink (util/encode-permalink (str "@" screen_name "/" permalink))
         current-user (citrus/react [:user :current])]
     (query/query
-      (let [post (citrus/react [:post :by-permalink permalink])
-            {:keys [admins]} (get post :group)]
+      (let [post (citrus/react [:post :by-permalink permalink])]
         (if post
-          (let [{:keys [group user choices]} post
+          (let [{:keys [user]} post
                 current-reply (citrus/react [:comment :reply])
                 avatar (util/cdn-image (:screen_name user))]
-            [:div.column.auto-padding {:key "post"}
+            [:div.column.auto-padding {:key "post"
+                                       :style {:margin-top (if (util/mobile?) 0 64)}}
              [:div {:style {:padding "12px 0"}}
               [:div.center-area {:style {:margin-bottom 64}}
                [:h1.post-page-title
@@ -1305,16 +995,11 @@
 
                 (if (or
                      (= (:id current-user) (:id user))
-                     (admins/admin? (and admins (map :screen_name admins)) (:screen_name current-user)))
+                     (admins/admin? (:screen_name current-user)))
                   [:a {:on-click (fn [e]
                                    (util/set-href! (str config/website "/p/" (:id post) "/edit")))
                        :style {:margin-left 12}}
-                   (t :edit)])
-
-                (if (:non_tech post)
-                  [:a {:href "/non-tech"
-                       :style {:margin-left 12}}
-                   (t :non-tech)])]]
+                   (t :edit)])]]
 
               [:div.post
                (when (:body post)
@@ -1330,16 +1015,8 @@
                                    (:body post)))]
 
               [:div.center-area
-               (when (seq (:choices post))
-                 [:div.hr])
-               [:div {:style {:margin "24px 0"}}
-                (choices-cp post {:align-items "center"})]
                (when (seq (:tags post))
                  [:div.row1 {:style {:margin "24px 0"}}
-                  (ui/icon {:type :label_outline
-                            :color "rgb(127,127,127)"
-                            :opts {:style {:margin-right 12
-                                           :margin-left -3}}})
                   (tags (:tags post)
                         nil
                         nil)])
@@ -1348,11 +1025,10 @@
 
                (quote-selection current-user)]
 
-              [:div {:style {:margin-top 24}}
+              [:div {:style {:margin-top 96}}
                (comment/comment-list post)]
 
-              (read-post post)]
-             ])
+              (read-post post)]])
 
           [:div.row {:style {:justify-content "center"}}
            (ui/donut)]
@@ -1363,37 +1039,19 @@
   []
   [:div.column {:style {:padding-bottom 48}}
 
-   (widgets/cover-nav nil)
-
    (let [posts (citrus/react [:posts :latest])]
      (query/query
        (post-list posts
-                  {:merge-path [:posts :latest]}
-                  :show-group? true)))])
-
-(rum/defc non-tech < rum/reactive
-  (mixins/query :non-tech)
-  []
-  [:div.column {:style {:padding-bottom 48}}
-
-   (widgets/cover-nav nil)
-
-   (let [posts (citrus/react [:posts :non-tech])]
-     (query/query
-       (post-list posts
-                  {:merge-path [:posts :non-tech]}
-                  :show-group? true)))])
+                  {:merge-path [:posts :latest]})))])
 
 (rum/defc sort-by-latest-reply < rum/reactive
   (mixins/query :latest-reply)
   []
   [:div.column {:style {:padding-bottom 48}}
-   (widgets/cover-nav nil)
    (let [posts (citrus/react [:posts :latest-reply])]
      (query/query
        (post-list posts
-                  {:merge-path [:posts :latest-reply]}
-                  :show-group? true)))])
+                  {:merge-path [:posts :latest-reply]})))])
 
 (rum/defc tag-posts < rum/reactive
   (mixins/query :tag)

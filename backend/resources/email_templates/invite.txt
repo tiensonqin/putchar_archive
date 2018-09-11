@@ -1,14 +1,12 @@
 Hi there,
 
-@{{who}} invited you to join the group of {{group-name}} on putchar.org!
+@{{who}} invited you to join https://putchar.org!
 
-Join group {{group-name}}  ( {{ group-link }} )
+{{invite-link}}.
 
 Thanks,
-The putchar.org Team
+The Putchar.org Team
 
 If you’re having trouble with the button above, copy and paste the URL below into your web browser.
-
-{{group-link}}
 
 © 2018 putchar.org. All rights reserved.

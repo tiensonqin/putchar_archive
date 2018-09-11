@@ -43,11 +43,6 @@
                        :on-click (on-click 1)}
              (nth reasons 1))
 
-           ;; (ui/button {:style {:margin-top 24
-           ;;                     :width 300}
-           ;;             :on-click (on-click 2)}
-           ;;   "It breaks group rules")
-
            (ui/button {:style {:margin-top 24
                                :margin-bottom 64
                                :width 300}
@@ -56,8 +51,7 @@
 
 ;; 1. delete post or comment
 ;; 2. disable user from post for 3 days
-;; 3. block user, remove user from group
-;; 3 blocks will delete this user.
+;; 3. block user
 (rum/defcs reports < rum/reactive
   (mixins/query :reports)
   [state params]
@@ -68,17 +62,11 @@
          reasons (dicts/reasons)]
      (if (seq reports)
        (for [{:keys [id object_type data kind created_at] :as report} reports]
-         (let [{:keys [group post comment user]} (util/keywordize data)]
+         (let [{:keys [post comment user]} (util/keywordize data)]
            [:div.col-item {:key id}
             [:div.row {:style {:align-items "center"
                                :justify-content "space-between"}}
              [:div.row {:style {:align-items "center"}}
-              ;; group
-              [:a {:title (str "Group: " (util/original-name (:name group)))
-                   :href (str "/" (:name group))}
-               (ui/avatar {:shape "circle"
-                           :src (util/group-logo (:name group))})]
-
               ;; post
               [:a {:key "post"
                    :style {:margin-left 12
@@ -181,7 +169,7 @@
                           :on-click (fn []
                                       (citrus/dispatch! :report/user-action {:report report
                                                                              :action :forever}))}
-                "Block this user from current group")
+                "Block this user")
 
               (ui/button {:style {:width 300
                                   :margin-bottom 48}

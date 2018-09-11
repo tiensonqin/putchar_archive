@@ -45,8 +45,10 @@ body {
     flex-direction: row;
     justify-content: space-between;
     height: 60px;
-    padding: 3px 15px;
+    padding: 3px 0;
     width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
     -webkit-transform: translate3d(0,0,0);
 }
 
@@ -90,7 +92,7 @@ a:hover {
 }
 
 .wrap {
-    max-width: 1104px;
+    max-width: 768px;
     margin: 0 auto;
 }
 
@@ -371,19 +373,6 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     transition: transform 200ms ease-in, -webkit-transform 200ms ease-in;
 }
 
-#joined_groups .is-active {
-    border: 1px solid currentColor;
-    border-radius: 4px;
-}
-
-#joined_groups button:hover {
-    cursor: pointer;
-}
-
-input#search_groups {
-    border: none;
-}
-
 .posts {
     display: flex;
     flex-direction: column;
@@ -477,9 +466,4 @@ span.active {
 @keyframes rotate {
     0%    { transform: rotate(0deg); }
     100%  { transform: rotate(360deg); }
-}
-
-a#quote-selection {
-    background: #2156a5;
-    color: #FFF;
 }

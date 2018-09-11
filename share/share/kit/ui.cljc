@@ -13,7 +13,6 @@
             #?(:cljs ["rc-dialog" :as rc-dialog])
             #?(:cljs ["rc-dropdown" :as rc-dropdown])
             ;; cdn
-            #?(:cljs ["sortablejs" :as sortable])
             #?(:cljs ["/web/caret_coordinates" :as caret-coordinates])
             [appkit.macros :refer [oget]]))
 
@@ -79,13 +78,6 @@
        [:span.btn-contents {:style font-style}
         text]
        text)]]))
-
-#?(:cljs
-   (defn new-sortable
-     [id opts]
-     (when-let [el (dommy/sel1 id)]
-       (.create sortable el
-                (clj->js opts)))))
 
 (rum/defc svg-loader
   []

@@ -8,7 +8,6 @@
             [share.components.home :as home]
             [share.components.about :as about]
             [share.components.user :as user]
-            [share.components.group :as group]
             [share.components.post :as post]
             [share.components.comment :as comment]
             [share.components.login :as login]
@@ -34,71 +33,59 @@
             #?(:cljs [appkit.macros :refer [oget]])))
 
 (def routes-map
-  (atom {:home          (fn [params current-user hot-groups]
+  (atom {:home          (fn [params current-user]
                           (home/home (assoc params :current-user current-user)))
-         :about         (fn [params current-user hot-groups]
+         :about         (fn [params current-user]
                           (about/about params))
-         :signup        (fn [params current-user hot-groups]
+         :signup        (fn [params current-user]
                           (user/signup params))
-         :login         (fn [params current-user hot-groups]
+         :login         (fn [params current-user]
                           (login/signin nil))
-         :profile       (fn [params current-user hot-groups]
+         :profile       (fn [params current-user]
                           (user/profile (atom current-user)))
-         :user          (fn [params current-user hot-groups]
+         :user          (fn [params current-user]
                           (user/user params))
-         :comments      (fn [params current-user hot-groups]
+         :comments      (fn [params current-user]
                           (user/comments params))
-         :tag           (fn [params current-user hot-groups]
+         :tag           (fn [params current-user]
                           (post/tag-posts params))
-         :user-tag      (fn [params current-user hot-groups]
+         :user-tag      (fn [params current-user]
                           (post/user-tag-posts params))
-         :new-group     (fn [params current-user hot-groups]
-                          (group/new))
-         :group         (fn [params current-user hot-groups]
-                          (group/group params))
-         :members       (fn [params current-user hot-groups]
-                          (group/members params))
-         :group-edit    (fn [params current-user hot-groups]
-                          (group/edit params))
-         :groups        (fn [params current-user hot-groups]
-                          (group/group-list params))
-         :new-post      (fn [params current-user hot-groups]
+         :new-post      (fn [params current-user]
                           (post/new))
-         :post          (fn [params current-user hot-groups]
+         :post          (fn [params current-user]
                           (post/post params))
-         :comment       (fn [params current-user hot-groups]
+         :comment       (fn [params current-user]
                           (post/post params))
-         :post-edit     (fn [params current-user hot-groups]
+         :post-edit     (fn [params current-user]
                           (post/post-edit params))
-         :search        (fn [params current-user hot-groups]
+         :search        (fn [params current-user]
                           (search/search))
-         :bookmarks     (fn [params current-user hot-groups]
+         :bookmarks     (fn [params current-user]
                           (user/bookmarks params))
-         :notifications (fn [params current-user hot-groups]
+         :notifications (fn [params current-user]
                           (notifications/notifications params))
-         :reports       (fn [params current-user hot-groups]
+         :reports       (fn [params current-user]
                           (report/reports params))
-         :moderation-logs       (fn [params current-user hot-groups]
+         :moderation-logs       (fn [params current-user]
                                   (logs/logs params))
-         :stats         (fn [params current-user hot-groups]
+         :stats         (fn [params current-user]
                           (stats/stats params))
-         :privacy       (fn [params current-user hot-groups]
+         :privacy       (fn [params current-user]
                           (docs/privacy))
-         :newest (fn [params current-user hot-groups]
+         :newest (fn [params current-user]
                    (post/sort-by-new))
-         :non-tech (fn [params current-user hot-groups]
-                     (post/non-tech))
-         :latest-reply (fn [params current-user hot-groups]
+         :latest-reply (fn [params current-user]
                 (post/sort-by-latest-reply))
 
-         :drafts       (fn [params current-user hot-groups]
+         :drafts       (fn [params current-user]
                          (user/drafts params))
          }))
 
 (rum/defc routes
-  [reconciler route params current-user hot-groups]
+  [reconciler route params current-user]
   (if-let [f (get @routes-map route)]
-    (f params current-user hot-groups)
+    (f params current-user)
     ;; TODO: 404
     ))
 
@@ -106,16 +93,12 @@
   [search-mode?]
   (let [q (citrus/react [:search :q])
         current-path (citrus/react [:router :handler])
-        groups? (= current-path :groups)
         search-fn (fn [q current-path]
                     (when (and (not (str/blank? q)) (>= (count q) 1))
-                      (if groups?
-                        (citrus/dispatch-sync! :search/search :group/search {:q {:group_name q}
-                                                                             :limit 20})
-                        (do
-                          (citrus/dispatch-sync! :search/search :post/search {:q {:post_title q}
-                                                                              :limit 20})
-                          (citrus/dispatch! :router/push {:handler :search} true)))))
+                      (do
+                        (citrus/dispatch-sync! :search/search :post/search {:q {:post_title q}
+                                                                            :limit 20})
+                        (citrus/dispatch! :router/push {:handler :search} true))))
         close-fn (fn []
                    (citrus/dispatch! :citrus/toggle-search-mode?)
                    (citrus/dispatch-sync! :search/reset)
@@ -134,10 +117,7 @@
                              :font-weight "600"}
                             (util/mobile?)
                             (assoc :max-width 300))
-                   :placeholder (case current-path
-                                  :groups
-                                  (t :search-groups)
-                                  (t :search-posts))
+                   :placeholder (t :search-posts)
                    :value (or q "")
                    :on-change (fn [e]
                                 (let [v (util/ev e)]
@@ -169,7 +149,7 @@
                  :color (colors/shadow)})]]]))
 
 (rum/defc modal-panel
-  <
+  < rum/reactive
   {:after-render (fn [state]
                    #?(:cljs (when-let [anchors (dommy/sel "#modal-panel a:not(.expand)")]
                               (doseq [anchor anchors]
@@ -178,7 +158,7 @@
                                                  (citrus/dispatch! :layout/close-panel))))))
                    state)
    }
-  [width mobile? unread? new-report? current-user groups group group-path?]
+  [width mobile? unread? new-report? current-user]
   [:div#modal-panel {:style {:width width
                              :padding 24
                              :z-index 999
@@ -195,15 +175,6 @@
         (ui/avatar {:shape "circle"
                     :src (util/cdn-image (:screen_name current-user))})])
 
-     (when group-path?
-       [:a {:href "/"
-            :title (t :go-to-home)
-            :style {:padding 12}}
-        (ui/icon {:type :home
-                  :color (colors/icon-color)
-                  :width 32
-                  :height 32})])
-
      (when current-user
        [:a {:href "/settings"}
         (ui/icon {:type :settings
@@ -211,8 +182,6 @@
                   :width 30
                   :height 30})])]
 
-
-    (group/stared-groups false groups group)
 
     (layout/right-footer)
 
@@ -223,36 +192,33 @@
 
 (rum/defcs head
   < rum/reactive
-  [state group-path? mobile? width current-user preview? groups group]
+  [state mobile? width current-user preview?]
   (let [show-panel? (citrus/react [:layout :show-panel?])
         last-scroll-top (citrus/react [:last-scroll-top (util/get-current-url)])
         search-mode? (citrus/react [:search-mode?])
         {:keys [handler route-params]} (citrus/react [:router])
         current-path handler
         params (citrus/react [:router :route-params])
-        group-name (:group-name params)
         new-post? (= :new-post current-path)
         post-edit? (= :post-edit current-path)
         post? (or new-post? post-edit?)
-        stared_groups (util/get-stared-groups current-user)
-        current-group-id (citrus/react [:group :current])
-        groups (citrus/react [:group :by-name])
-        current-group (or
-                       (and group-name (get groups group-name))
-                       (util/get-group-by-id groups current-group-id))
-
-        join-group? (and current-group (contains? (set (map first (seq stared_groups))) (:id current-group)))
         new-report? (citrus/react [:report :new?])
         unread? (:has-unread-notifications? current-user)
+        user-page? (contains? #{:user :drafts :comments :user-tag} handler)
+        post-edit-page? (contains? #{:new-post :post-edit} current-path)
+        padding (if mobile? 6 12)
 ]
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
       [:div#head {:key "head"
-                  :style (if mobile?
-                           {:position "fixed"
-                            :top 0
-                            :left 0}
-                           {})}
+                  :style (cond->
+                             (if mobile?
+                            {:position "fixed"
+                             :top 0
+                             :left 0}
+                            {})
+                           (and preview? (not mobile?))
+                           (assoc :max-width 1238))}
        [:div.row {:class "wrap"
                   :style {:justify-content "space-between"}}
         [:div.row1 {:style {:align-items "center"}}
@@ -262,173 +228,149 @@
                 :on-click (fn [] (citrus/dispatch! :router/back))}
             (ui/icon {:type :ios_back
                       :color (colors/primary)})])
-         (cond
-           (contains? #{:new-post :post-edit} current-path)
-           [:div.row1 {:style {:align-items "center"}}
-            (widgets/website-logo)
+         [:div.row1
+          (widgets/website-logo)
 
-            (when-not mobile?
-              [:span.ubuntu {:style {:margin-left 12
-                                     :font-weight "600"
-                                     :color (colors/icon-color)
-                                     :font-size 13}}
-               (t :draft)])]
-           (= current-path :groups)
-           (widgets/website-logo)
+          (if (and (not mobile?)
+                   post-edit-page?)
+            [:span.ubuntu {:style {:margin-left 12
+                                   :font-weight "600"
+                                   :color (colors/icon-color)
+                                   :font-size 13}}
+             (t :draft)])]]
 
-           group-path?
-           (group/group-logo join-group? current-group width mobile? true true)
+        (when-not (and user-page?
+                       (not mobile?))
+          [:div {:class "row1"
+                 :style {:align-items "center"}
+                 :id "right-head"}
 
-           :else
-           (widgets/website-logo))]
+           (when (and (not mobile?)
+                      (not post-edit-page?))
+             (ui/dropdown {:overlay
+                           [:div.menu {:style {:margin-top 12
+                                               :padding 12}}
+                            (layout/right-footer)]
+                           :animation "slide-up"}
+                          [:a {:style {:margin-right 12}}
+                           (ui/icon {:type :more
+                                     :color (colors/shadow)})]))
+           ;; search
+           (if (not post?)
+             [:a {:title (t :search)
+                  :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
+                  :style {:padding padding}}
+              (ui/icon {:type "search"
+                        :color (colors/icon-color)
+                        :width 22
+                        :height 22})])
 
-        [:div {:class "row1"
-               :style {:align-items "center"}
-               :id "right-head"}
+           ;; publish
+           (if post?
+             (rum/with-key (post/publish-to) "publish"))
 
-         (when (and (not mobile?) group-path?)
-           [:a {:href "/"
-                :title (t :go-to-home)
-                :style {:padding 12}}
-            (ui/icon {:type :home
-                      :color (colors/icon-color)})])
+           (when new-report?
+             [:a
+              {:title (t :reports)
+               :href "/reports"
+               :style {:padding padding}}
+              [:i {:class "fa fa-flag"
+                   :style {:font-size 20
+                           :color (colors/primary)}}]])
 
-         ;; search
-         (if (not post?)
-           [:a {:title (t :search)
-                :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
-                :style {:padding 12}}
-            (ui/icon {:type "search"
-                      :color (colors/icon-color)})])
+           ;; login or notification
+           (when-not post?
+             (if current-user
+               (when unread?
+                 [:a {:href "/notifications"
+                      :title (t :notifications)
+                      :style {:padding padding}}
+                  (ui/icon {:type "notifications"
+                            :color (colors/primary)})])
 
-         ;; publish
-         (if post?
-           (rum/with-key (post/publish-to) "publish"))
+               [:a {:on-click (fn []
+                                (citrus/dispatch! :user/show-signin-modal?))
+                    :style {:padding padding
+                            :font-weight "500"
+                            :font-size 15
+                            :color (colors/new-post-color)}}
+                (t :signin)]))
 
-         (when new-report?
-           [:a
-            {:title (t :reports)
-             :href "/reports"
-             :style {:padding 12}}
-            [:i {:class "fa fa-flag"
-                 :style {:font-size 20
-                         :color (colors/primary)}}]])
-
-         ;; login or notification
-         (when-not post?
-           (if current-user
-             (when unread?
-               [:a {:href "/notifications"
-                    :title (t :notifications)
-                    :style {:padding 12}}
-                (ui/icon {:type "notifications"
-                          :color (colors/primary)})])
-
-             (when-not group-path?
-               (ui/button {:on-click (fn []
-                                       (citrus/dispatch! :user/show-signin-modal?))
-                           :style {:margin-left 12
-                                   :margin-right 12}}
-                 (t :signin)))))
-
-         ;; new post
-         (when (and current-user
-                    (not (contains? #{:post-edit :new-post} current-path)))
-           (if mobile?
+           ;; new post
+           (when (and current-user
+                      (not (contains? #{:post-edit :new-post} current-path)))
              [:a {:href "/new-post"
-                  :style {:padding 8}}
+                  :title (t :write-new-post)
+                  :style {:padding padding}}
               (ui/icon {:type :edit
-                        :color (colors/icon-color)})]
-             [:a.ubuntu {:style {:margin-left 12
-                                 :font-size 16
-                                 :color (colors/new-post-color)}
-                         :href "/new-post"}
-              (t :write-new-post)]))
+                        :color (colors/icon-color)
+                        :width 21
+                        :height 21})])
 
-         (when (and (not post?)
-                    (not mobile?)
-                    current-user)
-           (ui/menu
-             [:a {:href (str "/@" (:screen_name current-user))
-                  :on-click (fn []
-                              (citrus/dispatch! :citrus/re-fetch
-                                                :user
-                                                {:screen_name (:screen_name current-user)}))
-                  :style {:margin-left 24}}
-              (ui/avatar {:shape "circle"
-                          :class "ant-avatar-mm"
-                          :src (util/cdn-image (:screen_name current-user))})]
-             [[:a.button-text {:href (str "/@" (:screen_name current-user))
-                               :on-click (fn []
-                                           (citrus/dispatch! :citrus/re-fetch
-                                                             :user
-                                                             {:screen_name (:screen_name current-user)}))
-                               :style {:font-size 14}}
-               (t :go-to-profile)]
+           (when (and (not post?)
+                      (not mobile?)
+                      current-user)
+             (ui/menu
+               [:a {:href (str "/@" (:screen_name current-user))
+                    :on-click (fn []
+                                (citrus/dispatch! :citrus/re-fetch
+                                                  :user
+                                                  {:screen_name (:screen_name current-user)}))
+                    :style {:margin-left 16}}
+                (ui/avatar {:shape "circle"
+                            :class "ant-avatar-mm"
+                            :src (util/cdn-image (:screen_name current-user))})]
+               [[:a.button-text {:href (str "/@" (:screen_name current-user))
+                                 :on-click (fn []
+                                             (citrus/dispatch! :citrus/re-fetch
+                                                               :user
+                                                               {:screen_name (:screen_name current-user)}))
+                                 :style {:font-size 14}}
+                 (t :go-to-profile)]
 
-              [:a.button-text {:href "/drafts"
-                               :on-click (fn []
-                                           (citrus/dispatch! :citrus/re-fetch :drafts nil))
-                               :style {:font-size 14}}
-               (t :drafts)]
+                [:a.button-text {:href "/drafts"
+                                 :on-click (fn []
+                                             (citrus/dispatch! :citrus/re-fetch :drafts nil))
+                                 :style {:font-size 14}}
+                 (t :drafts)]
 
-              [:a.button-text {:href "/bookmarks"
-                               :on-click (fn []
-                                           (citrus/dispatch! :citrus/re-fetch :bookmarks nil))
-                               :style {:font-size 14}}
-               (t :bookmarks)]
+                [:a.button-text {:href "/bookmarks"
+                                 :on-click (fn []
+                                             (citrus/dispatch! :citrus/re-fetch :bookmarks nil))
+                                 :style {:font-size 14}}
+                 (t :bookmarks)]
 
-              [:a.button-text {:href "/stats"
-                               :on-click (fn []
-                                           (citrus/dispatch! :citrus/re-fetch :stats nil))
-                               :style {:font-size 14}}
-               (t :stats)]
+                [:a.button-text {:href "/stats"
+                                 :on-click (fn []
+                                             (citrus/dispatch! :citrus/re-fetch :stats nil))
+                                 :style {:font-size 14}}
+                 (t :stats)]
 
-              [:a.button-text {:href "/settings"
-                               :style {:font-size 14}}
-               (t :settings)]
+                [:a.button-text {:href "/settings"
+                                 :style {:font-size 14}}
+                 (t :settings)]
 
-              [:a.button-text {:on-click (fn []
-                                           (citrus/dispatch! :user/logout))
-                               :style {:font-size 14}}
-               (t :sign-out)]]
+                [:a.button-text {:on-click (fn []
+                                             (citrus/dispatch! :user/logout))
+                                 :style {:font-size 14}}
+                 (t :sign-out)]]
 
-             {:menu-style {:margin-top 17}}))
+               {:menu-style {:margin-top 17}}))
 
-         (when (and (not post?)
-                    mobile?)
-           (ui/dropdown
-            {:trigger ["click"]
-             :visible show-panel?
-             :overlay (modal-panel width mobile? unread? new-report? current-user groups group group-path?)
-             :animation "slide-up"}
-            [:a {:style {:padding "12px 0 12px 12px"
-                         :margin-top 2}
-                 :on-click (fn []
-                             (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
-             (ui/icon {:type "menu"
-                       :color (colors/icon-color)})]))]]])))
-
-(rum/defc head-title
-  [mobile? title href]
-  [:div.head-title
-   [:a {:title (t :add-more-groups)
-        :style {:display "flex"
-                :flex-direction "row"
-                :justify-content "space-between"
-                :align-items "center"
-                :color (colors/icon-color)
-                :padding "0 12px 6px 12px"}
-        :href href}
-    [:span.title {:style {:font-weight "500"
-                          :font-size 18}}
-     title]
-    [:span {:key "dm-span"
-            :class "direct-message"
-            :style {:margin-top 16}}
-     (ui/icon {:key "plus-circle"
-               :type "add_circle_outline"
-               :style {:font-size 20}})]]])
+           (when (and (not post?)
+                      mobile?)
+             (ui/dropdown
+              {:trigger ["click"]
+               :visible show-panel?
+               :overlay (modal-panel width mobile? unread? new-report? current-user)
+               :animation "slide-up"}
+              [:a {:style {:padding padding
+                           :padding-right 0
+                           :margin-top 2}
+                   :on-click (fn []
+                               (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
+               (ui/icon {:type "menu"
+                         :color (colors/icon-color)})]))])]])))
 
 (defn attach-listeners
   [state]
@@ -465,14 +407,6 @@
                             (citrus/dispatch!
                              :citrus/toggle-preview))
                           )))
-
-       (mixins/listen state js/window :touchstart
-                      (fn [e]
-                        (citrus/dispatch! :citrus/touch-start e)))
-
-       (mixins/listen state js/window :touchend
-                      (fn [e]
-                        (citrus/dispatch! :citrus/touch-end e)))
 
        (mixins/listen state js/window :mousedown
                       (fn [e]
@@ -534,23 +468,12 @@
         {route :handler params :route-params} (citrus/react :router)
         current-user (citrus/react [:user :current])
         loading? (if current-user
-                   (citrus/react [:user :loading?])
-                   (citrus/react [:group :loading?]))
-        hot-groups (citrus/react [:group :hot])
-        stared-groups (util/get-stared-groups current-user)
-        groups (if current-user
-                 stared-groups
-                 (util/normalize hot-groups))
-        current-group-id (citrus/react [:group :current])
-        group (some->> (vals (citrus/react [:group :by-name]))
-                       (filter #(= (:id %) current-group-id))
-                       first)
+                   (citrus/react [:user :loading?]))
         mobile? (or (util/mobile?) (<= width 768))
         preview? (and
-                  (= route :post-edit)
+                  (contains? #{:new-post :post-edit} route)
                   (citrus/react [:post :form-data :preview?]))
         post-page? (= route :post)
-        group-path? (contains? #{:post :comment :group :group-edit    :group-hot-posts :group-new-posts :members} route)
         hide-github-connect? (contains? #{true "true"} (citrus/react [:hide-github-connect?]))
         theme (citrus/react [:theme])]
     [:div.column
@@ -558,11 +481,10 @@
 
       (notification)
 
-      (head group-path? mobile? width current-user preview?
-        groups group)
+      (head mobile? width current-user preview?)
 
       [:div.row {:class (cond
-                          (= route :post-edit)
+                          preview?
                           "bigger-wrap"
                           :else
                           "wrap")
@@ -571,51 +493,19 @@
        [:div#left {:key "left"
                    :class "row full-height"
                    :style {:margin-top (if mobile? 96
-                                           52)}}
-        (routes reconciler route params current-user hot-groups)]
+                                           12)}}
+        (routes reconciler route params current-user)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats} route)))
-         [:div#right {:key "right"
-                      :class "column1"
-                      :style {:margin-top (if mobile?
-                                            100
-                                            40)
-                              :margin-left 24
-                              :width 276}}
-          [:div.column
-           (group/stared-groups loading? groups group)
-
-           ;; (when (and
-           ;;        (not (:github_repo current-user))
-           ;;        (not hide-github-connect?))
-           ;;   [:div.ubuntu.fadein {:style {:padding 12
-           ;;                                :margin "12px 0"}}
-           ;;    [:div {:style {:padding "12px 12px 16px 12px"
-           ;;                   :border "1px solid #999"
-           ;;                   :border-radius 4}}
-           ;;     (widgets/transform-content (t :github-sync-text) nil)
-           ;;     (if current-user
-           ;;       (widgets/github-connect)
-           ;;       ;; github connect
-           ;;       (ui/button {:on-click (fn []
-           ;;                               #?(:cljs (cookie/cookie-set :setup-github-sync true))
-           ;;                               (util/set-href! (str config/website "/auth/github?sync=true")))}
-           ;;         [:div.row1 {:style {:align-items "center"}}
-           ;;          (ui/icon {:type :github
-           ;;                    :width 18
-           ;;                    :opts {:style {:margin-left -6}}})
-           ;;          [:span {:class "btn-contents"
-           ;;                  :style {:margin-left 16
-           ;;                          :font-weight "500"}}
-           ;;           (t :connect-github)]]))]
-
-           ;;    [:a.control {:style {:margin-top 12
-           ;;                         :font-size 13}
-           ;;                 :on-click (fn []
-           ;;                             #?(:cljs (citrus/dispatch! :citrus/hide-github-connect)))}
-           ;;     (t :close)]])
-
-           (layout/right-footer)]])]]
+       ;; (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats} route)))
+       ;;   [:div#right {:key "right"
+       ;;                :class "column1"
+       ;;                :style {:margin-top (if mobile?
+       ;;                                      100
+       ;;                                      40)
+       ;;                        :margin-left 24
+       ;;                        :width 276}}
+       ;;    (layout/right-footer)])
+       ]]
      (login/signin-modal mobile?)
      ;; report modal
      (report/report)

@@ -2,7 +2,6 @@
   (:require [rum.core :as rum]
             [share.kit.query :as query]
             [share.kit.ui :as ui]
-            [share.components.group :as group]
             [share.components.login :as login]
             [share.components.post :as post]
             [share.components.widgets :as widgets]
@@ -38,6 +37,20 @@
                                          :style {:font-size 14}}
 
      [:div.row1 {:style {:align-items "center"}}
+      [:a.control {:href "/newest"
+                   :on-click (fn []
+                               (citrus/dispatch! :citrus/re-fetch :newest {}))}
+       (t :new-created)]]
+
+     (theme)
+
+     [:a.control {:href "/moderation-logs"
+                  :style {:margin-top 16
+                          :display "block"}}
+      "Moderation logs"]
+
+     [:div.row1 {:style {:align-items "center"
+                         :margin-top 16}}
       [:a.control
        {:key "about"
         :href "/about"}
@@ -65,12 +78,7 @@
                    :style {:margin-right 24}}
        (t :bugs)]]
 
-     (theme)
 
-     [:a.control {:href "/moderation-logs"
-                  :style {:margin-top 12
-                          :display "block"}}
-      "Moderation logs"]
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"

@@ -46,7 +46,7 @@
    :user/login-ready
    (fn [state result]
      {:state {:loading? false
-              :current (update (:user result) :stared_groups util/normalize)
+              :current (:user result)
               }
       :dispatch [:user/close-signin-modal?]})
 
@@ -57,7 +57,7 @@
        (cond
          (and new? social?)
          {:state (-> state
-                     (assoc-in [:user :signup-step] :pick-groups)
+                     (assoc-in [:user :signup-step] :continue)
                      (assoc-in [:user :loading?] false)
                      (assoc-in [:user :temp] user))}
 
@@ -71,23 +71,8 @@
          :else
          {:state (-> state
                      (assoc-in [:user :loading?] false)
-                     (assoc-in [:user :current]
-                               (update user :stared_groups util/normalize)))
+                     (assoc-in [:user :current] user))
           :redirect {:handler :home}})))
-
-   :user/reset-group-orders
-   (fn [state groups-ids]
-     (if (:current state)
-       {:state {:loading? true}
-        :http  {:params   [:user/update {:stared_groups (mapv util/uuid groups-ids)}]
-                :on-load  :user/reset-group-orders-success}}
-       {:state state}))
-
-   :user/reset-group-orders-success
-   (fn [state result]
-     {:state (-> state
-                 (assoc :loading? false))
-      :dispatch [:notification/add :success (t :groups-order-saved)]})
 
    :user/update
    (fn [state data]
@@ -104,48 +89,9 @@
    (fn [state data result]
      {:state (-> state
                  (assoc :loading? false)
-                 (update :current merge result)
-                 (update-in [:current :stared_groups] util/normalize))
+                 (update :current merge result))
       :dispatch [:notification/add :success (t :profile-updated)]})
 
-   :user/star-group
-   (fn [state data]
-     (let [current-user (:current state)
-           type (:type current-user)]
-       (cond
-         (and current-user (>= (count (:stared_groups current-user)) 20))
-         {:state state
-          :dispatch [:notification/add :error (t :already-20-groups)]}
-
-         current-user
-         {:state {:loading? true}
-          :http {:params [:user/star data]
-                 :on-load [:citrus/star-group-success data]}}
-
-         :else
-         {:state {:signin-modal? true}})))
-
-   :citrus/star-group-success
-   (fn [state data result]
-     {:state (-> state
-                 (assoc-in [:user :loading?] false)
-                 (assoc-in [:user :current]
-                           (update (:current result) :stared_groups util/normalize))
-                 (assoc-in [:group :current] (:object_id data)))})
-
-   :user/unstar-group
-   (fn [state data]
-     {:state {:loading? true}
-      :http {:params [:user/unstar data]
-             :on-load [:citrus/unstar-group-success data]}})
-
-   :citrus/unstar-group-success
-   (fn [state data result]
-     {:state (-> state
-                 (assoc-in [:user :loading?] false)
-                 (assoc-in [:user :current]
-                           (update (:current result) :stared_groups util/normalize)))
-      :redirect {:handler :home}})
 
    :user/logout
    (fn [state]
@@ -154,28 +100,6 @@
       #(set! (.-location js/window) "/logout"))
      ;; unregister web worker
      {:state {:current nil}})
-
-   :user/signup-join-group
-   (fn [state group]
-     {:state {:signup-groups (vec (distinct (conj (:signup-groups state) group)))}})
-
-   :user/signup-leave-group
-   (fn [state group]
-     {:state {:signup-groups (->> (:signup-groups state)
-                                  (remove #(= % group))
-                                  (vec))}})
-
-   :user/signup-join-groups
-   (fn [state]
-     {:state {:loading? true}
-      :http {:params [:user/join-groups {:groups (:signup-groups state)}]
-             :on-load :user/signup-join-groups-success}})
-
-   :user/signup-join-groups-success
-   (fn [state result]
-     {:state {:loading? false
-              :current (:current result)}
-      :redirect {:handler :home}})
 
    :citrus/set-locale
    (fn [state locale]
@@ -228,8 +152,7 @@
 
        (and (:has-unread-reports? result)
             (not (get-in state [:report :new?])))
-       (assoc :dispatch [:citrus/re-fetch :reports {}])
-       ))
+       (assoc :dispatch [:citrus/re-fetch :reports {}])))
 
    :user/poll-failed
    (fn [state error]

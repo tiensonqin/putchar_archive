@@ -1,15 +1,12 @@
 User-agent: *
 
 Disallow: /new-post
-Disallow: /new-group
-Disallow: /new-item
-Disallow: /*/*/edit
 Disallow: /*/edit
 Disallow: /logout
 Disallow: /auth
 Disallow: /notifications
+Disallow: /stats
 Disallow: /settings
-Disallow: /votes
 Disallow: /search
 Disallow: /reports
 

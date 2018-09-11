@@ -1,7 +1,6 @@
 (ns api.services.email
   (:require [clojure.java.io :as io]
             [api.config :refer [config]]
-            [api.db.group :as group]
             [api.db.invite :as invite]
             [api.db.util :as du]
             [taoensso.timbre :as t]
@@ -78,46 +77,29 @@
                   :action-text (t :activate-your-account)}))))
 
 (defn send-invite
-  [db to {:keys [who
-                 group-name]
+  [db to {:keys [who]
           :as data}]
   (when (seq to)
-    (when-let [group (group/get db group-name)]
-      (let [stared-groups (du/query db {:select [:email :stared_groups]
-                                        :from [:users]
-                                        :where [:and
-                                                [:= :block false]
-                                                [:in :email to]]})
-            to (remove
-                (fn [email]
-                  (contains? (set (get-in (util/normalize :email stared-groups) [email :stared_groups]))
-                             (:id group)))
-                to)]
-        (when (seq to)
-          (let [name (util/original-name group-name)
-                token (:token (invite/create db group-name))
-                group-link (str "https://putchar.org/" group-name
-                                (if token (str "?token=" token)))
-                title (format "Invite to group %s on putchar.org!" name)]
-            (send-email to title
-                        (selmer/render (get-template "invite.txt")
-                          (merge data
-                                 {:group-link group-link
-                                  :group-name name}))
-                        (template/template
-                         title
-                         {:body [:div
-                                 [:p "Hi there,
+    (let [token (:token (invite/create db))
+          link (str "https://putchar.org" (if token (str "?token=" token)))
+          title (format "%s invited you to join Putchar.org!" who)]
+      (send-email to title
+                  (selmer/render (get-template "invite.txt")
+                    (merge data
+                           {:invite-link link}))
+                  (template/template
+                   title
+                   {:body [:div
+                           [:p "Hi there,
 "]
-                                 [:p [:a {:href (str "https://putchar.org/@" who)
-                                          :target "_blank"}
-                                      [:img {:src (str (:img-cdn config) "/" who ".jpg?w=40&h=40")
-                                             :style  "border-radius: 6px;margin-right:6px;"}]
-                                      [:span who]]
-                                  (format " invited you to join the group of %s on putchar.org!"
-                                          name)]]
-                          :action-link group-link
-                          :action-text (str "Join " name)}))))))))
+                           [:p [:a {:href (str "https://putchar.org/@" who)
+                                    :target "_blank"}
+                                [:img {:src (str (:img-cdn config) "/" who ".jpg")
+                                       :style  "border-radius: 6px;margin-right:6px;"}]
+                                [:span who]]
+                            " invited you to join Putchar.org!"]]
+                    :invite-link link
+                    :action-text (str "Join Putchar.org")})))))
 
 (defn send-comment
   [to-addresses {:keys [title post-title post_url screen_name body created_at comment_url] :as data

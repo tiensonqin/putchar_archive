@@ -4,10 +4,8 @@
             [api.db.util :as util]
             [api.db.cache :as cache]
             [api.db.user :as u]
-            [api.db.group :as group]
             [api.db.top :as top]
             [api.db.search :as search]
-            [api.db.choice :as choice]
             [clojure.string :as str]
             [api.util :as au]
             [taoensso.carmine :as car]
@@ -33,46 +31,31 @@
 (defonce ^:private table :posts)
 (defonce ^:private fields [:*])
 (def ^:private base-map {:select [:id :flake_id :user_id :user_screen_name
-                                  :group_id :group_name
                                   :title :tops
                                   :rank :comments_count :permalink
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
-                                  :canonical_url
                                   :lang
                                   :body :body_format :tags
-                                  :choices :cover :video]
+                                  :cover :video]
                          :from [table]})
 
 ;; user-screen-name => (map of tag * post-count)
 (def tags-k "post-user-tags")
 
-(defn with-group
-  [post]
-  (some-> post
-          (util/with :group_id (fn [_]
-                                 {:id (:group_id post)
-                                  :name (:group_name post)}))))
 
 (defn normalize
   [db post]
   (some-> post
-          (clojure.core/update :choices su/read-string)
-          (util/with :user_id #(u/get db % [:id :screen_name :name :bio :website]))
-          (util/with :group_id (fn [_]
-                                 (let [group (group/get db (:group_id post) [:stars :admins :purpose :type :created_at :related_groups])]
-                                   (merge
-                                    group
-                                    {:id (:group_id post)
-                                     :name (:group_name post)}))))))
+          (util/with :user_id #(u/get db % [:id :screen_name :name :bio :website]))))
 
-(defn with-user-group
+;; TODO: no need
+(defn with-user
   [post]
   (some-> post
           (util/with :user_id (fn [_]
                                 {:id (:user_id post)
                                  :screen_name (:user_screen_name post)}))
-          (with-group)
-          (dissoc :user_screen_name :group_name)))
+          (dissoc :user_screen_name)))
 
 (defn get
   ([db id-or-permalink]
@@ -102,11 +85,6 @@
    (#(str/replace % #"-+" "-"))
    (bidi.bidi/url-encode)
    (str "@" screen-name "/")))
-
-(defn choices->text
-  [choices]
-  (if (seq choices)
-    (pr-str choices)))
 
 (defn safe-trim
   [x]
@@ -145,8 +123,7 @@
   (let [m (-> data
               (clojure.core/update :body safe-trim)
               (clojure.core/update :title safe-trim)
-              (clojure.core/update :title su/capitalize-first-char)
-              (clojure.core/update :choices choices->text))
+              (clojure.core/update :title su/capitalize-first-char))
         tags (->tags (:tags m))
         m (assoc m :tags tags)
         screen-name (or
@@ -156,18 +133,6 @@
     (when (seq tags)
       (update-tags screen-name tags #{}))
     result))
-
-(defn- merge-choices
-  [new-choices db id ]
-  (let [{:keys [choices] :as old-post} (get db id)]
-    (if (seq choices)
-      (let [choices (su/normalize choices)]
-        (->>
-         (for [choice new-choices]
-           (assoc choice
-                  :votes (get-in choices [(:id choice) :votes])))
-         (into [])))
-      new-choices)))
 
 (defn update
   [db id m]
@@ -181,12 +146,6 @@
 
                   (:title m)
                   (clojure.core/update :title (comp su/capitalize-first-char safe-trim)))
-              m (if (and (:choices m) (coll? (:choices m)))
-                  (assoc m :choices
-                         (-> (:choices m)
-                             (merge-choices db id)
-                             (choices->text)))
-                  m)
               tags (->tags (:tags m))
               m (if tags
                   (assoc m :tags tags)
@@ -209,7 +168,7 @@
    (delete db id-or-permalink nil nil))
   ([db id-or-permalink moderator reason]
    (when-let [post (get db id-or-permalink)]
-     (let [{:keys [id flake_id group_id tags user_screen_name]} post]
+     (let [{:keys [id flake_id tags user_screen_name]} post]
        (util/delete db table id)
        (search/delete-post id)
 
@@ -250,21 +209,12 @@
   (->> (-> (assoc base-map :where where)
            (util/wrap-cursor cursor))
        (util/query db)
-       (map with-user-group)
+       (map with-user)
        (flatten-frequent-posters)))
-
-(defn get-non-tech
-  ([db cursor]
-   (get-non-tech db [:and
-                     [:= :is_draft false]
-                     [:= :non_tech true]] cursor))
-  ([db where cursor]
-   (get-posts db where cursor)))
 
 (def post-conditions
   [:and
-   [:= :is_draft false]
-   [:= :non_tech false]])
+   [:= :is_draft false]])
 
 (defn get-new
   ([db cursor]
@@ -322,19 +272,6 @@
                                 {:order-key order-key
                                  :order :desc})))))
 
-;; hot posts selected from user's joined groups
-(defn get-user-feed
-  [db user-id cursor]
-  (when-let [stared-groups (util/select-one-field db :users user-id :stared_groups)]
-    (let [data (-> base-map
-                   (assoc :where [:and
-                                  [:in :group_id stared-groups]])
-                   (util/wrap-cursor (assoc cursor
-                                            :order-key :rank)))]
-      (-> (util/query db data)
-          (util/with :user_id #(u/get db % [:id :screen_name]))
-          (util/with :group_id #(group/get db % [:name]))))))
-
 (defn get-toped
   ([db user-id cursor]
    (get-toped db user-id post-conditions cursor))
@@ -347,7 +284,7 @@
                   cursor)
          ids (cache/cursor key cursor)]
      (->> (util/get-by-ids db table ids {:where where})
-          (map with-user-group)
+          (map with-user)
           (flatten-frequent-posters)))))
 
 (defn get-bookmarked
@@ -362,7 +299,7 @@
                   cursor)
          ids (cache/cursor key cursor)]
      (->> (util/get-by-ids db table ids {:where where})
-          (map with-user-group)
+          (map with-user)
           (flatten-frequent-posters)))))
 
 (defn get-top
@@ -397,7 +334,6 @@
             data {:tops new-tops
                   :rank (au/ranking new-tops created_at)}]
         (update db id data)
-        (u/inc-karma db id)
         data))))
 
 (defn untop [db uid id]
@@ -408,7 +344,6 @@
       (update db id data)
       (top/untop db {:user_id uid
                      :post_id id})
-      (u/dec-karma db id)
       data)))
 
 (defn view [conn uid id]
@@ -439,28 +374,6 @@
       (star/unstar db m)
       (cache/wcar*
        (car/zrem (cache/redis-key "users" user-id "stared_posts") post-id)))))
-
-(defn- group-post-conditions
-  [id]
-  [:and
-   [:= :group_id id]
-   [:= :is_draft false]])
-
-(defn get-group-new
-  [db id cursor]
-  (get-new db (group-post-conditions id) cursor))
-
-(defn get-group-hot
-  [db id cursor]
-  (get-hot db (group-post-conditions id) cursor))
-
-(defn get-group-top
-  [db id cursor]
-  (get-top db (group-post-conditions id) cursor))
-
-(defn get-group-latest-reply
-  [db id cursor]
-  (get-latest-reply db (group-post-conditions id) cursor))
 
 (defn- user-post-conditions
   [id]
@@ -497,8 +410,7 @@
                                                                    :order? false})
                            results (-> (util/get-by-ids db :posts ids {:where where
                                                                        :order? false})
-                                       (util/with :user_id #(u/get db % [:id :screen_name]))
-                                       (util/with :group_id #(group/get db % [:name])))]
+                                       (util/with :user_id #(u/get db % [:id :screen_name])))]
                        (->>
                         (for [id ids]
                           (filter #(= (:id %) id) results))
@@ -518,22 +430,9 @@
 (defn ->rss
   [posts]
   (let [rfc822-format (tf/formatters :rfc822)]
-    (for [{:keys [title body body_format permalink user group tags created_at body_format]} posts]
+    (for [{:keys [title body body_format permalink user tags created_at body_format]} posts]
       {:title title
        :description (format "<![CDATA[ %s ]]>" (content/render body body_format))
        :link (str (:website-uri config) "/" permalink)
-       :category (str/join ", " (cons (su/original-name (:name group))
-                                      (map su/tag-decode tags)))
+       :category (str/join ", " (map su/tag-decode tags))
        :pubDate (tf/unparse rfc822-format (tc/to-date-time created_at))})))
-
-(defn poll-choose
-  [db {:keys [post_id choice_id] :as m}]
-  (when-not (choice/exists? db m)
-    (choice/create db m)
-    ;; inc votes
-    (let [{:keys [choices]} (get db post_id)]
-      (update db post_id {:choices (choices->text
-                                    (mapv (fn [x]
-                                            (if (= choice_id (:id x))
-                                              (clojure.core/update x :votes (fnil inc 0))
-                                              x)) choices))}))))

@@ -7,10 +7,10 @@
             [api.db.top :as top]
             [api.db.bookmark :as bookmark]
             [api.db.user :as u]
-            [api.db.group :as group]
             [api.db.report :as report]
             [api.db.invite :as invite]
             [api.services.slack :as slack]
+            [share.admins :as admins]
             [share.util :as su]
             [share.kit.colors :as colors]
             [clojure.string :as str]
@@ -32,16 +32,8 @@
         route-params (if (and (= handler :home) uid)
                        (assoc route-params :current-user current-user)
                        route-params)
-        hot-groups (if (or (nil? current-user)
-                           (= :groups handler))
-                     (query/get-hot-groups (:context req) {:limit 12}))
-        valid-invite? (and (= handler :group)
-                           (get-in req [:params :token])
-                           (= (invite/get-group-name db (get-in req [:params :token]))
-                              (:group-name route-params)))
-        admin-groups (if current-user
-                       (group/get-user-managed-ids db (:screen_name current-user))
-                       nil)
+        valid-invite? (and (get-in req [:params :token])
+                           (invite/exists? db {:token (get-in req [:params :token])}))
         state {:search-mode? false
                :router       (:ui/route req)
                :layout       {:show-panel? false
@@ -54,23 +46,14 @@
                :user         {:current current-user}
                :notification nil
                :image        {}
-               :group        (cond->
-                               {:loading? false
-                                :current nil
-                                :hot hot-groups
-                                :managed admin-groups}
-                               valid-invite?
-                               (assoc :invited-group (:group-name route-params)))
                :post         {:loading? false
                               :current nil
-                              :filter (if (= handler :home)
-                                        :hot
-                                        :latest-reply)
+                              :filter :hot
                               :toped (if uid (top/get-toped-posts uid) nil)
                               :bookmarked (if uid (bookmark/get-bookmarked-posts uid) nil)}
                :comment      nil
-               :report       {:new? (if (seq admin-groups)
-                                      (report/has-new? db (:screen_name current-user) admin-groups)
+               :report       {:new? (if (and current-user (admins/admin? (:screen_name current-user)))
+                                      (report/has-new? db (:screen_name current-user))
                                       false)}
                :search       nil}
         state (if q-fn

@@ -6,10 +6,6 @@
 
 (defonce ^:private table :invites)
 
-(defn get-group-name
-  [db token]
-  (util/select-one-field db table {:token token} :group_name))
-
 (defn exists?
   [db m]
   (util/exists? db table m))
@@ -24,10 +20,9 @@
        (uuid)))
 
 (defn create
-  [db group-name]
+  [db]
   (let [token (new-token)
-        m {:group_name group-name
-           :token token}]
+        m {:token token}]
     (if (exists? db {:token token})
-      (create db group-name)
+      (create db)
       (util/create db table m))))

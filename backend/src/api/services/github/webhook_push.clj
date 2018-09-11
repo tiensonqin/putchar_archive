@@ -7,7 +7,6 @@
             [share.dicts :as dicts]
             [api.db.user :as u]
             [api.db.post :as post]
-            [api.db.group :as group]
             [clojure.string :as str]
             [share.util :as util]))
 
@@ -80,15 +79,10 @@
                      (if (= encoding "base64")
                        (let [body (github/base64-decode
                                    (str/replace content "\n" ""))
-                             {:keys [title body group tags is_draft primary_lang canonical_url non_tech] :as spec} (extract-spec body)
-                             group (util/internal-name group)
-                             group (if group
-                                     (group/get db group))
+                             {:keys [title body tags is_draft primary_language] :as spec} (extract-spec body)
                              post-data (let [is_draft (if is_draft is_draft false)
                                              permalink (when-not is_draft
-                                                         (post/permalink (:screen_name user) title))
-                                             canonical_url (if canonical_url
-                                                             (re-find (re-pattern util/link-re) canonical_url))]
+                                                         (post/permalink (:screen_name user) title))]
                                          (cond->
                                            {:user_id (:id user)
                                             :user_screen_name (:screen_name user)
@@ -97,20 +91,10 @@
                                             :body_format body-format
                                             :tags tags
                                             :is_draft is_draft
-                                            :lang (get (util/kv-reverse dicts/langs) (or primary_lang "English"))}
-
-                                           group
-                                           (assoc :group_id (:id group)
-                                                  :group_name (:name group))
+                                            :lang (get (util/kv-reverse dicts/langs) (or primary_language "English"))}
 
                                            permalink
-                                           (assoc :permalink permalink)
-
-                                           canonical_url
-                                           (assoc :canonical_url canonical_url)
-
-                                           non_tech
-                                           (assoc :non_tech (boolean non_tech))))]
+                                           (assoc :permalink permalink)))]
                          (cond
                            (= status "renamed")
                            (when-let [id (get repo-map previous_filename)]

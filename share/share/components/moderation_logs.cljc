@@ -21,7 +21,7 @@
      (let [logs (citrus/react [:moderation-logs])
            reasons (dicts/reasons)]
        (if (seq logs)
-         (for [{:keys [id moderator group_name post_permalink comment_idx type data reason created_at] :as log} logs]
+         (for [{:keys [id moderator post_permalink comment_idx type data reason created_at] :as log} logs]
            [:div.col-item {:key id}
             [:div.space-between {:style {:align-items "center"
                                          :margin-bottom "1.5em"}}
@@ -34,9 +34,6 @@
             (when moderator
               [:p "Moderator: " [:a.control {:href (str "/@" moderator)}
                                  (str "@" moderator)]])
-            (when group_name
-              [:p "Group: " [:a.control {:href (str "/" group_name)}
-                             (util/original-name group_name)]])
             (when post_permalink
               [:p "Post: " [:a.control {:href (str "/" post_permalink)}
                             post_permalink]])

@@ -38,6 +38,11 @@ $btn-color: #214b75;
         color: #000;
     }
 
+    a#quote-selection {
+        background: $primary-color;
+        color: #FFF;
+    }
+
     .btn-primary {
         background-color: #3bb;
     }
@@ -61,18 +66,9 @@ $btn-color: #214b75;
         background: $main-color;
     }
 
-    input#search:focus, input#search:active, input#search_groups, input#search_groups:active{
+    input#search:focus, input#search:active {
         outline:none;
         color: #ddd;
-    }
-
-    input#search_groups:-ms-input-placeholder {
-        color: #bbb;
-        font-weight: 600;
-    }
-    input#search_groups::-webkit-input-placeholder {
-        color: #bbb;
-        font-weight: 600;
     }
 
     .divider {

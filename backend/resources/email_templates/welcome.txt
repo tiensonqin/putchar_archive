@@ -1,6 +1,6 @@
-Hi, welcome to Putchar!
+Hi, welcome to Putchar.org!
 
-Putchar is a open source community built to help people to connect with their favorite groups. You can join or create any groups to post, comment or vote.
+Putchar.org is a place for hackers to publish and discuss their thoughts. Everyone has a simple and free blog which supports multiple formats include Markdown and Asciidoctor.
 
 Click https://putchar.org/email_confirmation?code={{code}} to activate your account to receive email notifications.
 

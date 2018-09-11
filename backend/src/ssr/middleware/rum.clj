@@ -6,7 +6,6 @@
             [api.db.user :as u]
             [api.db.util :as du]
             [api.db.post :as post]
-            [api.db.group :as group]
             [api.db.token :as token]
             [ring.util.response :as resp]
             [api.config :as config]
@@ -268,6 +267,8 @@
                   (j/with-db-connection [conn datasource]
                     (post/->rss (post/get-hot conn {:limit 20}))))
 
+        ;; TODO: tag rss
+
         ;; user rss
         (= :user-latest-rss (:handler route))
         (j/with-db-connection [conn datasource]
@@ -279,48 +280,6 @@
                          :description (:bio u)}
                         (j/with-db-connection [conn datasource]
                           (post/->rss (post/get-user-new conn (:id u) {:limit 20}))))
-              {:status 404
-               :body (page/status-template 404)})))
-
-        ;; group rss
-        (= :group-latest-rss (:handler route))
-        (j/with-db-connection [conn datasource]
-          (let [group-name (get-in route [:route-params :group-name])
-                group (group/get conn group-name)]
-            (if group
-              (util/rss {:title group-name
-                         :link (website-path group-name)
-                         :description (:purpose group)}
-                        (j/with-db-connection [conn datasource]
-                          (post/->rss (post/get-group-new conn (:id group) {:limit 20}))))
-              {:status 404
-               :body (page/status-template 404)})))
-
-        ;; group rss
-        (= :group-hot-rss (:handler route))
-        (j/with-db-connection [conn datasource]
-          (let [group-name (get-in route [:route-params :group-name])
-                group (group/get conn group-name)]
-            (if group
-              (util/rss {:title group-name
-                         :link (website-path group-name)
-                         :description (:purpose group)}
-                        (j/with-db-connection [conn datasource]
-                          (post/->rss (post/get-group-hot conn (:id group) {:limit 20}))))
-              {:status 404
-               :body (page/status-template 404)})))
-
-        ;; group rss
-        (= :group-latest-reply-rss (:handler route))
-        (j/with-db-connection [conn datasource]
-          (let [group-name (get-in route [:route-params :group-name])
-                group (group/get conn group-name)]
-            (if group
-              (util/rss {:title group-name
-                         :link (website-path group-name)
-                         :description (:purpose group)}
-                        (j/with-db-connection [conn datasource]
-                          (post/->rss (post/get-group-latest-reply conn (:id group) {:limit 20}))))
               {:status 404
                :body (page/status-template 404)})))
 

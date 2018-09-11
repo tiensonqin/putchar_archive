@@ -3,7 +3,6 @@
   (:require [clojure.java.jdbc :as j]
             [api.util :as au]
             [api.db.util :as util]
-            [api.db.group :as group]
             [api.db.comment :as comment]
             [api.db.post :as post]
             [api.db.user :as u]
@@ -16,38 +15,17 @@
 
 (defonce ^:private table :reports)
 
-;; cache {:group-id pending-reports-number}
-(defn group-inc-report
-  [group-id number]
-  (cache/wcar*
-   (car/hincrby "groups_reports" group-id number)))
-
-(defn get-groups-reports
-  []
-  (when-let [result (cache/wcar*
-                     (car/hgetall "groups_reports"))]
-    ;; TODO: extract as common lib function
-    (let [result (partition 2 result)
-          ks (map first result)
-          vs (map (comp (fn [v] (Integer/parseInt v)) second) result)]
-      (zipmap ks vs))))
-
-
 (defn get-data
   [db {:keys [object_type object_id]}]
   (case object_type
     :post (when-let [post (post/get db object_id)]
-            {:group (:group post)
-             :post (dissoc post :group)
+            {:post post
              :user (:user post)})
     :comment (when-let [comment (comment/get db object_id)]
                (cond
                  (:post_id comment)
                  (let [post (post/get db (:post_id comment))]
-                   {:group (if-let [group-id (get-in post [:group :id])]
-                             (group/get db group-id)
-                             nil)
-                    :post post
+                   {:post post
                     :comment comment
                     :user (u/get db (:user_id comment) [:id :screen_name])})
                  :else
@@ -57,44 +35,26 @@
 (defn create
   [db m]
   (when-let [data (get-data db m)]
-    (let [group-id (get-in data [:group :id])
-          result (util/create db table (cond->
-                                         (assoc m :data data)
-                                         group-id
-                                         (assoc :group_id group-id)) :flake? true)]
-      (if group-id (group-inc-report group-id 1))
-      result)))
+    (util/create db table (assoc m :data data) :flake? true)))
 
 (defn delete
   [db report]
-  (util/delete db table (:id report))
-  (if (:group_id report)
-    (group-inc-report (:group_id report) -1)))
+  (util/delete db table (:id report)))
 
-(defn get-user-reports
+(defn get-reports
   [db user-id cursor]
   (let [user (u/get db user-id)
-        groups-ids (group/get-user-managed-ids db (:screen_name user))
-        admin? (contains? admins/admins (:screen-name user))]
-    (if (seq groups-ids)
-      (-> {:select [:*]
-           :from [:reports]
-           :where (if admin?
-                    [:and
-                     [:in :group_id groups-ids]
-                     [:= :status "pending"]]
-                    [:= :status "pending"])}
-          (util/wrap-cursor cursor)
-          (->> (util/query db))))))
+        admin? (admins/admin? (:screen-name user))]
+    (-> {:select [:*]
+         :from [:reports]
+         :where [:= :status "pending"]}
+        (util/wrap-cursor cursor)
+        (->> (util/query db)))))
 
 (defn has-new?
-  [db screen-name groups-ids]
+  [db screen-name]
   (util/exists? db table
-                (if (contains? admins/admins screen-name)
-                  [:= :status "pending"]
-                  [:and
-                   [:in :group_id groups-ids]
-                   [:= :status "pending"]])))
+                [:= :status "pending"]))
 
 (defn delete-object
   [db {:keys [object_type object_id data reason] :as report} moderator]
@@ -106,8 +66,6 @@
     (comment/delete db object_id moderator reason))
 
   (util/update db table (:id report) {:status "ok"})
-  (if (:group_id report)
-    (group-inc-report (:group_id report) -1))
 
   (notification/create (get-in data [:user :id])
                        {:type :post-or-comment-deleted
@@ -118,26 +76,22 @@
 
 (defn block-user
   [db uid report action]
-  (when (:group_id report)
-    (let [user-id (au/->uuid (get-in report [:data :user :id]))
-          user (u/get db user-id)
-          moderator (u/get db uid)]
-      (block/create db {:report_id (:id report)
-                        :user_id user-id
-                        :group_id (:group_id report)
-                        :action action
-                        :group_admin uid})
+  (let [user-id (au/->uuid (get-in report [:data :user :id]))
+        user (u/get db user-id)
+        moderator (u/get db uid)]
+    (block/create db {:report_id (:id report)
+                      :user_id user-id
+                      :action action})
 
 
-      (when moderator
-        (mlog/create db {:moderator (:screen_name moderator)
-                         :data {:screen_name (:screen_name user)}
-                         :type "User Block"
-                         :reason (:reason report)}))
+    (when moderator
+      (mlog/create db {:moderator (:screen_name moderator)
+                       :data {:screen_name (:screen_name user)}
+                       :type "User Block"
+                       :reason (:reason report)}))
 
 
-      (notification/create (get-in report [:data :user :id])
-                           {:type :group-blocked
-                            :group (get-in report [:data :group])
-                            :action action
-                            :created_at (util/sql-now)}))))
+    (notification/create (get-in report [:data :user :id])
+                         {:type :blocked
+                          :action action
+                          :created_at (util/sql-now)})))

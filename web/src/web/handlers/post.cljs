@@ -23,14 +23,9 @@
 (defn post-params
   [state params specific-user-id]
   (let [current-path (get-in state [:router :handler])
-        current-group-id (or (:group_id params)
-                             (get-in state [:group :current]))
         post-filter (cond
                       (= current-path :home)
                       :hot
-
-                      (= current-path :non-tech)
-                      :non-tech
 
                       (contains? #{:user} current-path)
                       :newest
@@ -46,11 +41,6 @@
         [params path] (cond
                         specific-user-id
                         [{:user_id specific-user-id}
-                         (:merge-path params)]
-
-                        current-group-id
-                        [{:group_id (when-not (map? current-group-id)
-                                      current-group-id)}
                          (:merge-path params)]
 
                         ;; home
@@ -108,15 +98,6 @@
                                              [:= :rank (:rank last-post)]
                                              [:< :flake_id (:flake_id last-post)]]]]}
 
-                                  :non-tech
-                                  {:after (:rank last-post)
-                                   :where [:and
-                                           [:or
-                                            [:< :rank (:rank last-post)]
-                                            [:and
-                                             [:= :rank (:rank last-post)]
-                                             [:< :flake_id (:flake_id last-post)]]]]}
-
                                   :newest
                                   {:after (:flake_id last-post)}
 
@@ -142,7 +123,7 @@
    :post/update
    (fn [state data]
      {:state {:loading? true}
-      :http {:params [:post/update (dissoc data :title-validated?)]
+      :http {:params [:post/update (dissoc data :title-validated? :tags-validated?)]
              :on-load :citrus/update-ready
              :on-error :post/update-failed}})
 
@@ -240,103 +221,12 @@
    (fn [state filter]
      {:state {:filter filter}})
 
-   :post/show-poll
-   (fn [state]
-     {:state {:poll? true}})
-
-   :post/close-poll
-   (fn [state]
-     {:state {:poll? false}})
-
-   :post/add-or-update-choice
-   (fn [state choices id v]
-     (if id
-       {:state (assoc-in state [:form-data :choices]
-                         (if (some #(= id (:id %)) choices)
-                           (mapv (fn [x]
-                                   (if (= id (:id x))
-                                     {:id id
-                                      :v v}
-                                     x))
-                                 choices)
-                           (vec (conj choices {:id id
-                                               :v v}))))}
-       {:state state}))
-
-   :post/delete-choice
-   (fn [state id]
-     {:state (update-in state [:form-data :choices]
-                        (fn [col]
-                          (vec (remove #(= id (:id %)) col))))})
-
-   :post/vote-choice
-   (fn [state permalink m]
-     (let [old-choices (get-in state [:by-permalink permalink :choices])
-           choices (mapv (fn [x]
-                           (if (= (:choice_id m) (:id x))
-                             (update x :votes inc)
-                             x))
-                         old-choices)
-           delta {:choices choices
-                  :poll_choice (:choice_id m)}]
-       {:state (-> state
-                   (update-in [:by-permalink permalink] merge delta)
-                   (assoc-in [:choices permalink]
-                             (:choice_id m)))
-        :http {:params [:post/vote-choice m]
-               :on-load :post/vote-choice-ready}
-        :dispatch [:citrus/update-cache :post (util/decode-permalink permalink)
-                   [:result :post]
-                   delta]
-        }))
-
-   :post/vote-choice-ready
-   (fn [state result]
-     {:state state
-      :dispatch [:notification/add :success (t :choice-saved)]})
-
-   :post/disable-poll
-   (fn [state post]
-     {:state {:saving? true}
-      :http {:params [:post/update {:id (:id post)
-                                    :poll_closed true}]
-             :on-load [:post/disable-poll-ready post]}})
-
-   :post/disable-poll-ready
-   (fn [state post result]
-     {:state (-> state
-                 (assoc :saving? false)
-                 (assoc-in [:by-permalink (:permalink post) :poll_closed] true)
-                 (assoc-in [:current :poll_closed] true))})
-
-   :post/delete-poll
-   (fn [state post]
-     {:state {:saving? true}
-      :http {:params [:post/update {:id (:id post)
-                                    :choices nil}]
-             :on-load [:post/delete-poll-ready post]}})
-
-   :post/delete-poll-ready
-   (fn [state post result]
-     {:state (-> state
-                 (assoc :saving? false)
-                 (assoc :poll? false)
-                 (assoc-in [:by-permalink (:permalink post) :choices] nil)
-                 (assoc-in [:current :choices] nil)
-                 (util/dissoc-in [:form-data :choices]))})
-
    :citrus/toggle-preview
    (fn [state]
      (let [post? (contains?
                   #{:post-edit :new-post}
                   (get-in state [:router :handler]))]
        {:state (update-in state [(if post? :post :comment) :form-data :preview?] not)}))
-
-   :post/clear-group
-   (fn [state]
-     {:state {:form-data (assoc (:form-data state)
-                                 :group_id nil
-                                 :group_name nil)}})
 
    :citrus/set-post-form-data
    set-post-form-data
@@ -345,7 +235,7 @@
    :post/new-draft
    (fn [state form-data]
      {:state {:saving? true}
-      :http {:params [:post/new-draft (select-keys form-data [:title :body :body_format :choices])]
+      :http {:params [:post/new-draft (select-keys form-data [:title :body :body_format])]
              :on-load :post/new-draft-ready
              :on-error :post/new-draft-failed}})
 
@@ -365,20 +255,14 @@
    :post/save
    (fn [state]
      (let [{:keys [images] :as form-data} (:form-data state)]
-       (if (seq (select-keys form-data [:title :body :choices]))
+       (if (seq (select-keys form-data [:title :body]))
          (let [first-image (and (= 1 (count images))
                                 (:url (second (first images))))
                remove-nil? (partial util/remove-v-nil? :v)]
            (if-let [current (:current state)]
-             (let [choices (if-let [choices (:choices form-data)]
-                             (remove-nil? choices))
-                   data (assoc (select-keys form-data
+             (let [data (assoc (select-keys form-data
                                             [:title :body])
                                :id (:id current))
-                   current-choices (:choices current)
-                   data (if (seq choices)
-                          (assoc data :choices choices)
-                          data)
                    data (if (and (nil? (:cover current))
                                  first-image)
                           (assoc data :cover first-image)
@@ -389,14 +273,11 @@
                         (not= (:title current) (:title form-data)))
                        (and
                         (:body form-data)
-                        (not= (:body current) (:body form-data)))
-
-                       (and
-                        (:choices data)
-                        (not= (remove-nil? (:choices current))
-                              (:choices data))))
+                        (not= (:body current) (:body form-data))))
                  {:state {:saving? true}
-                  :http {:params [:post/update (dissoc data :title-validated?)]
+                  :http {:params [:post/update (dissoc data
+                                                       :title-validated?
+                                                       :tags-validated?)]
                          :on-load :post/save-ready
                          :on-error :post/save-failed}}
                  {:state state}))

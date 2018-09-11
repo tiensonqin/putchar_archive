@@ -10,5 +10,4 @@
    (fn [state]
      (if (:ref state)
        (.focus (:ref state)))
-     {:state state})
-   })
+     {:state state})})

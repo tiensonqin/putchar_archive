@@ -3,7 +3,6 @@
             [api.config :as config]
             [api.util :as util]
             [api.db.user :as u]
-            [api.db.group :as group]
             [api.db.post :as post]
             [api.db.top :as top]
             [api.db.comment :as comment]
@@ -14,7 +13,6 @@
             [api.db.notification :as notification]
             [api.db.moderation-log :as mlog]
             [api.db.star :as star]
-            [api.db.choice :as choice]
             [api.db.stat :as stat]
             [bidi.bidi :as bidi]
             [api.jwt :as jwt]
@@ -54,11 +52,6 @@
         (-> user
             (assoc :has-unread-notifications? (notification/has-unread? uid)))))))
 
-(defn get-hot-groups
-  [{:keys [uid datasource]} data]
-  (j/with-db-connection [conn datasource]
-    (group/hot-groups conn data)))
-
 (defn get-notifications
   [{:keys [uid datasource]} data]
   (if uid
@@ -68,7 +61,7 @@
   [{:keys [uid datasource]} data]
   (if uid
     (j/with-db-connection [conn datasource]
-      (report/get-user-reports conn uid (:cursor data)))))
+      (report/get-reports conn uid (:cursor data)))))
 
 (defn get-moderation-logs
   [{:keys [uid datasource]} data]
@@ -94,34 +87,11 @@
     (assoc user :tags (post/get-user-tags (:screen_name user)))
     :not-found))
 
-(defn get-group
-  [{:keys [uid datasource]} data]
-  (->
-   (j/with-db-connection [conn datasource]
-     (cond
-       (:id data)
-       (group/get conn (:id data))
-
-       (:name data)
-       (group/get conn (str/lower-case (:name data)))
-
-       :else
-       nil))
-   set-not-found!))
-
 (defn get-members
   [{:keys [uid datasource]} data]
   (j/with-db-connection [conn datasource]
-    (star/get-group-members conn (:group_id data) (:cursor data))))
 
-(defn get-groups
-  [{:keys [uid datasource]} data]
-  (j/with-db-connection [conn datasource]
-    (let [f (case (:filter data)
-              :new
-              group/new-groups
-              group/hot-groups)]
-      (f conn (:cursor data)))))
+    ))
 
 ;; cache
 (defn get-post
@@ -133,15 +103,10 @@
      (j/with-db-connection [conn datasource]
        (let [post (post/get conn where)]
          (if post
-           (let [post (if uid
-                        (assoc post
-                              :poll_choice (choice/get-choice-id conn uid
-                                                                 (:id post)))
-                        post)]
-             (assoc post :body (if (:raw_body? data)
-                                 (:body post)
-                                 (content/render (:body post)
-                                  (:body_format post)))))
+           (assoc post :body (if (:raw_body? data)
+                               (:body post)
+                               (content/render (:body post)
+                                 (:body_format post))))
            post))))
    set-not-found!))
 
@@ -214,41 +179,6 @@
                      (:user-tag data)
                      (get-user-tag-posts conn data)
 
-                     (= :non-tech (:filter data))
-                     (post/get-non-tech conn
-                                   [:and
-                                    [:= :is_draft false]
-                                    [:= :non_tech true]
-                                    [:in :lang languages]]
-                                   cursor)
-
-                     (and (:group_id data) (= :hot (:filter data)))
-                     (post/get-hot conn
-                                   [:and
-                                    [:= :group_id (:group_id data)]
-                                    [:= :is_draft false]
-                                    [:= :non_tech false]
-                                    [:in :lang languages]]
-                                   cursor)
-
-                     (and (:group_id data) (= :newest (:filter data)))
-                     (post/get-new conn
-                                   [:and
-                                    [:= :group_id (:group_id data)]
-                                    [:= :is_draft false]
-                                    [:= :non_tech false]
-                                    [:in :lang languages]]
-                                   cursor)
-
-                     (and (:group_id data) (or (= :latest-reply (:filter data))
-                                               (nil? (:filter data))))
-                     (post/get-latest-reply conn
-                                   [:and
-                                    [:= :group_id (:group_id data)]
-                                    [:= :is_draft false]
-                                    [:in :lang languages]]
-                                   cursor)
-
                      (and (:user_id data) (= :newest (:filter data)))
                      (let [self? (= (:user_id data) uid)]
                        (post/get-user-new conn (:user_id data)
@@ -277,15 +207,7 @@
                                    [:and
                                     [:= :is_draft false]
                                     [:in :lang languages]]
-                                   cursor))
-            result result
-            choices-ids (when-let [post-ids (seq (map :id result))]
-                          (su/normalize :post_id (choice/get-choices-ids conn uid post-ids)))
-            result (mapv (fn [post]
-                           (if-let [choice-id (get-in choices-ids [(:id post) :choice_id])]
-                             (assoc post :poll_choice choice-id)
-                             post))
-                         result)]
+                                   cursor))]
         (wrap-end? result (get cursor :limit))))))
 
 (def resolvers
@@ -303,13 +225,6 @@
 
    :user-tag wrap-user-tag-posts
 
-   ;; get specific group
-   :group get-group
-
-   ;; get groups
-   ;; {:filter (enum :hot :new) :user_id ID}
-   :groups get-groups
-
    :members get-members
 
    ;; args {:user_id ID}
@@ -326,7 +241,7 @@
 
 (defn one-to-many?
   [field]
-  (contains? #{:posts :drafts :groups :members
+  (contains? #{:posts :drafts :members
                :comments
                :notifications :conversations} field))
 
@@ -423,9 +338,6 @@
   (def args {:user {:screen_name "tiensonqin"}})
   (query context q args)
 
-  ;; group
-  (def q {:group {:fields [:id :name]}})
-  (def args {:group {:name "云南"}})
   (query context q args)
 
   ;; relationship
@@ -433,30 +345,9 @@
   (def args {:post {:permalink "hello-1fa889ca716a49a48a30df2f522c9ddd"}})
   (query context q args)
 
-  ;; group
-  (def q {:group {:fields [:id :name
-                           [:user {:fields [:id :screen_name]}]]}})
-  (def args {:group {:name "Great"}})
-  (query context q args)
 
   (def q {:post {:fields [:id :title :permalink [:comments {:fields [:id :body :created_at], :cursor {:limit 100}}]]}})
   (def args {:post {:permalink "great-c112b34111be48798091ca555e756d41"}})
-  (query context q args)
-
-  ;; posts
-  (def q {:posts {:fields [:user_id]}})
-  (def args {:posts {
-                     ;; :cursor {:limit 5}
-                     :filter :hot
-                     ;; :group_id #uuid "e68df776-9342-4228-aa17-242d1ee91247"
-                     }})
-  (query context q args)
-
-
-  ;; groups
-  (def q {:groups {:fields [:id :name]}})
-  (def args {:groups {:cursor {:limit 5}
-                      :filter :hot}})
   (query context q args)
 
   ;; get user
@@ -471,21 +362,6 @@
   (def args nil)
   (query context q args)
 
-  (def q {
-          ;; :current-user {:fields [:id :name :email]},
-          :post
-          {:fields
-           [:id
-            :title
-            :body
-            :permalink
-            :created_at
-            [:group {:fields [:id :name]}]
-            [:comments
-             {:fields [:id :body :created_at]
-              :cursor {:limit 100}}]]}})
-  (def args {:post {:permalink "great-8036c607d6ae4383b6041f9c2c9a02fc"}})
-  (query context q args)
 
   (def q {:notifications {:fields [:*]}})
   (def args nil)

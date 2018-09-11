@@ -3,13 +3,7 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :group :title :rank :permalink :created_at :comments_count :tops :choices :poll_choice :poll_closed :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
-
-(defn group-fields
-  [post-filter]
-  [:id :name :purpose :rule :admins :stars :related_groups
-   [:posts {:fields post-fields
-            :filter post-filter}]])
+  [:id :flake_id :user :title :rank :permalink :created_at :comments_count :tops :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
 
 (defn- get-post-filter
   [state]
@@ -46,19 +40,11 @@
 
 (def members-query
   (fn [state args]
-    (let [group-name (str/lower-case (:group-name args))]
-      {:q    {:group {:fields [:id :name :purpose :admins :stars :related_groups
-                               [:members {:fields [:*]
-                                          :cursor {:limit 100}}]]}}
-       :args {:group {:name group-name}}})))
-
-(def group-query
-  (fn [state args]
-    (let [group-name (str/lower-case (:group-name args))
-          post-filter (or (keyword (:post-filter args)) :latest-reply)]
-      {:q     {:group {:fields (group-fields post-filter)}}
-       :args  {:group {:name group-name}}
-       :merge {:group-posts [:posts :by-group group-name post-filter]}})))
+    (let [tag-name (str/lower-case (:tag args))]
+      {:q    {:tag {:fields [:name
+                             [:members {:fields [:*]
+                                        :cursor {:limit 100}}]]}}
+       :args {:tag {:name tag-name}}})))
 
 (def post-query
   (fn [state args]
@@ -73,13 +59,7 @@
                             :last_reply_at
                             :tops
                             :comments_count
-                            :canonical_url
-                            :poll_choice
-                            :poll_closed
-                            :choices
-                            :non_tech
                             [:user {:fields [:id :screen_name :name :bio :website]}]
-                            [:group {:fields [:id :name :purpose :rule :admins :stars :related_groups :created_at]}]
                             [:comments {:fields [:*]
                                         :cursor {:limit 100}}]]}}
      :args {:post {:permalink (str "@"
@@ -97,14 +77,7 @@
                                     :lang
                                     :permalink
                                     :is_draft
-                                    :canonical_url
-                                    :tags
-                                    :poll_choice
-                                    :poll_closed
-                                    :choices
-                                    :non_tech
-                                    [:group {:fields [:id :name]}]
-                                    ]}}
+                                    :tags]}}
              :args {:post {:id id
                            :raw_body? true}}}]
       #?(:clj q
@@ -112,12 +85,6 @@
                  (when (or (not current)
                            (not= id (get current :id)))
                    q))))))
-
-(def groups-query
-  (fn [state args]
-    {:q {:groups {:fields [:id :name :purpose :stars]
-                  :filter :hot
-                  :cursor {:limit 100}}}}))
 
 (def notifications-query
   (fn [state args]
@@ -205,13 +172,7 @@
 
    :latest-reply latest-reply-posts-query
 
-   :group group-query
-
    :members members-query
-
-   :group-edit group-query
-
-   :groups groups-query
 
    :notifications notifications-query
 

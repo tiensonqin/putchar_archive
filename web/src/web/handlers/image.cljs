@@ -30,5 +30,4 @@
    (fn [state cb result]
      (if (:url result)
        (cb (:url result)))
-     {:state state})
-})
+     {:state state})})

@@ -35,7 +35,21 @@
                opts)])
 
 (rum/defcs transform-content < rum/reactive
-  {:after-render (fn [state]
+  {:init (fn [state props]
+           #?(:cljs
+              (let [ascii-loaded? (ascii/ascii-loaded?)
+                    adoc-format? (= :asciidoc (keyword (:body-format (second (:rum/args state)))))]
+                (when (and adoc-format? (not ascii-loaded?))
+                  (citrus/dispatch-sync! :citrus/default-update
+                                         [:ascii-loaded?]
+                                         false)
+                  (go
+                    (async/<! (ascii/load-ascii))
+                    (citrus/dispatch! :citrus/default-update
+                                      [:ascii-loaded?]
+                                      true)))))
+           state)
+   :after-render (fn [state]
                    (util/highlight!)
                    state)}
   [state body {:keys [style
@@ -44,25 +58,28 @@
                 on-mouse-up]
          :or {body-format :markdown}
                :as attrs}]
-  (let [body-format (keyword body-format)]
-    [:div.column
-     (cond->
-       {:class (str "editor " (name body-format))
-        :style (merge
-                {:word-wrap "break-word"}
-                style)
-        :dangerouslySetInnerHTML {:__html
-                                  (if (str/blank? body)
-                                    ""
-                                    (content/render body body-format))}}
-       on-mouse-up
-       (assoc :on-mouse-up on-mouse-up))]))
+  (let [ascii-loaded? (citrus/react [:ascii-loaded?])
+        body-format (keyword body-format)]
+    (if (false? ascii-loaded?)
+      [:div (t :loading)]
+      [:div.column
+      (cond->
+          {:class (str "editor " (name body-format))
+           :style (merge
+                   {:word-wrap "break-word"}
+                   style)
+           :dangerouslySetInnerHTML {:__html
+                                     (if (str/blank? body)
+                                       ""
+                                       (content/render body body-format))}}
+        on-mouse-up
+        (assoc :on-mouse-up on-mouse-up))])))
 
 (rum/defc user-card < rum/reactive
   [{:keys [id name screen_name bio website github_handle twitter_handle] :as user}]
   (let [mobile? (util/mobile?)
         current-user (citrus/react [:user :current])]
-    [:div.column1.auto-padding.user-card {:style {:padding-top "24px"
+    [:div.column1.auto-padding.user-card {:style {:padding-top (if mobile? 24 64)
                                                   :padding-bottom "24px"}}
      [:div.space-between
       [:div.column
@@ -107,7 +124,7 @@
            (ui/icon {:type :twitter
                      :width 21
                      :height 21
-                     :color "rgb(127,127,127)"})])
+                     :color "#1DA1F3"})])
 
         (if (and website (not mobile?))
           [:a {:style {:margin-left 24
@@ -124,11 +141,11 @@
                                   :height 100
                                   :width 100)
              :style {:border-radius "50%"
-                     :width "6rem"
-                     :height "6rem"}}]]
+                     :width 90
+                     :height 90}}]]
      (if bio
        (transform-content bio {:style {:margin-left 6
-                                       :margin-top 12}}))]
+                                       :margin-top 16}}))]
     ))
 
 (rum/defc posts-comments-header < rum/reactive
@@ -157,248 +174,6 @@
                    :style {:margin-left 24}
                    :href (str "/@" screen_name "/comments")}
        (t :latest-comments)]]]))
-
-(rum/defc rule
-  [group rule-expand?]
-  (if (and @rule-expand? (not (util/mobile?)))
-    (let [rule (:rule group)]
-      [:div.fadein {:style {:max-height 400}}
-       [:div.divider]
-       (transform-content rule {:body-format :markdown
-                                :style {:font-size 15}})
-       [:div.divider]])))
-
-(rum/defcs promote-dialog < rum/reactive
-  (rum/local false ::promote-user)
-  [state group promote?]
-  (let [promote-user (::promote-user state)
-        current-user (citrus/react [:user :current])
-        error (citrus/react [:group :error])]
-    (ui/dialog
-     {:on-close #(reset! promote? false)
-      :visible @promote?}
-     [:div {:key "input"
-            :style {:background "#FFF"
-                    :min-width 300}}
-      [:h3 {:style {:margin "0 0 1em 0"}}
-       (t :promote-member)]
-
-      [:input
-       {:class "ant-input"
-        :autoFocus true
-        :placeholder (str (t :username) "...")
-        :on-change (fn [e]
-                     (if error (citrus/dispatch! :group/clear-error))
-                     (reset! promote-user (util/ev e)))}]
-
-      (if error
-        [:div {:class "help is-danger"}
-         error])
-
-      (ui/button
-        {:class "btn-primary"
-         :style {:margin-top 24}
-         :on-click (fn []
-                     (when (and (not (str/blank? @promote-user))
-                                (not= @promote-user (:screen_name current-user)))
-                       (citrus/dispatch! :group/promote-user (:name group)
-                                         {:id (:id group)
-                                          :screen_name @promote-user}
-                                         promote?)))}
-        (t :promote))])))
-
-(rum/defc join-button < rum/reactive
-  [current-user group stared? width]
-  (cond
-    (and current-user stared?)
-    nil
-
-    :else
-    [:a.ubuntu {:style {:font-size 16}
-                :href (str "/" (:name group))
-                :on-click #(citrus/dispatch! :user/star-group {:object_type :group
-                                                        :object_id (:id group)})}
-     (t :join)]))
-
-(rum/defc sort-buttons < rum/reactive
-  [current-user group stared-group?]
-  (let [post-filter (citrus/react [:post :filter])
-        {:keys [handler route-params]} (citrus/react [:router])
-        zh-cn? (= (citrus/react [:locale]) :zh-cn)]
-    [:div.row1#sort-buttons.ubuntu {:style (cond->
-                                      {:flex-wrap "wrap"
-                                       :align-items "center"
-                                       :font-weight (if zh-cn? "500" "700")})}
-
-     (if group
-       (let [path (str "/" (:name group) "/")]
-         [:div.row1 {:style {:align-items "center"
-                             :margin-right 24}}
-          [:a.control {:key "latest-reply"
-                       :href (str path "latest-reply")
-                       :style {:font-size "1.125rem"}
-                       :class (if (= post-filter :latest-reply) "is-active")
-                       :on-click (fn []
-                                   (citrus/dispatch! :citrus/re-fetch :group {:group-name (:name group)
-                                                                              :post-filter post-filter}))}
-           (t :latest-reply)]
-          [:a.control {:key "hot"
-                       :href (str path "hot")
-                       :style {:font-size "1.125rem"
-                               :margin-left 24}
-                       :class (if (= post-filter :hot) "is-active")
-                       :on-click (fn []
-                                   (citrus/dispatch! :citrus/re-fetch :group {:group-name (:name group)
-                                                                              :post-filter post-filter}))}
-           (t :hot)]
-          [:a.control {:key "newest"
-                       :href (str path "newest")
-                       :style {:font-size "1.125rem"
-                               :margin-left 24}
-                       :class (if (= post-filter :newest) "is-active")
-                       :on-click (fn []
-                                   (citrus/dispatch! :citrus/re-fetch :group {:group-name (:name group)
-                                                                              :post-filter post-filter}))}
-           (t :new)]])
-       [:div.row1 {:style {:align-items "center"}}
-        [:a.control {:key "hot"
-                     :href "/"
-                     :style {:font-size "1.125rem"}
-                     :class (if (= handler :home) "is-active")
-                     :on-click (fn []
-                                 (citrus/dispatch! :citrus/reset-first-group)
-                                 (citrus/dispatch! :citrus/re-fetch :home {}))}
-         (t :hot)]
-        [:a.control {:key "newest"
-                     :href "/newest"
-                     :style {:font-size "1.125rem"
-                             :margin-left 24}
-                     :class (if (= handler :newest) "is-active")
-                     :on-click (fn []
-                                 (citrus/dispatch! :citrus/re-fetch :newest {}))}
-         (t :new-created)]
-
-        (if current-user
-          [:a.control {:key "bookmarks"
-                       :href "/bookmarks"
-                       :style {:font-size "1.125rem"
-                               :margin-left 24}
-                       :class (if (= handler :bookmarks) "is-active")
-                       :on-click (fn []
-                                   (citrus/dispatch! :citrus/re-fetch :bookmarks {}))}
-           (str/lower-case (t :bookmarks))])
-
-        [:a.control {:key "non-tech"
-                     :href "/non-tech"
-                     :style {:font-size "1.125rem"
-                             :margin-left 24}
-                     :class (if (= handler :non-tech) "is-active")
-                     :on-click (fn []
-                                 (citrus/dispatch! :citrus/re-fetch :non-tech {}))}
-         (str/lower-case (t :non-tech))]])
-
-     (when (and (util/mobile?) current-user group)
-       (join-button current-user group stared-group? 80))]))
-
-(rum/defcs cover-nav < rum/reactive
-  (rum/local false ::rule-expand?)
-  (rum/local false ::promote-modal?)
-  [state group]
-  (let [rule-expand? (::rule-expand? state)
-        promote? (::promote-modal? state)
-        current-path (citrus/react [:router :handler])
-        current-user (citrus/react [:user :current])
-        stared_groups (util/get-stared-groups current-user)
-        managed-groups (citrus/react [:group :managed])
-        stared-group? (contains? (set (keys stared_groups)) (:id group))
-        admin? (or (and group stared-group? (contains? managed-groups (:id group)))
-                   (util/me? current-user))
-        member? (contains? (set (keys stared_groups))
-                           (:id group))]
-    [:div.auto-padding.ubuntu
-     (if (contains? #{:home :newest :latest-reply :drafts :bookmarks :non-tech} current-path)
-       [:div {:style {:margin-bottom 12}}
-        [:div.space-between {:style {:align-items "center"}}
-         (sort-buttons current-user nil false)
-         (when (not (util/mobile?))
-           [:a {:target "_blank"
-                :title "RSS"
-                :href (str config/website "/hot.rss")}
-            (ui/icon {:type :rss
-                      :color "rgb(127,127,127)"})])]]
-
-       [:div {:style {:padding-bottom 8}}
-        [:div.space-between {:style {:flex-wrap "wrap"}}
-         [:h1.heading-1 {:style {:margin-top 0
-                                 :margin-bottom "16px"}}
-          (util/original-name (:name group))]
-
-         [:div.row1 {:style {:margin-top 3
-                             :margin-left 12
-                             :height 24}}
-          (if (:stars group)
-            [:a.control {:title (t :see-all)
-                         :href (str "/" (:name group) "/members")}
-             [:span {:style {:margin-right 12
-                             :font-size "16px"}}
-              (let [stars (:stars group)]
-                (if (= stars 0) 1 stars))
-              " "
-              (str/capitalize (t :members))]])
-
-          ;; rules
-          (when-not (util/mobile?)
-            [:a.control {:on-click (fn [] (swap! rule-expand? not))
-                         :style {:margin-right 12
-                                 :font-size "16px"}}
-             (t :rules)])
-
-          (when (not (util/mobile?))
-            [:a {:target "_blank"
-                 :href (str config/website
-                            (cond
-                              group
-                              (str "/" (:name group) "/newest.rss")
-                              :else
-                              "/hot.rss"))}
-             (ui/icon {:type :rss
-                       :color "rgb(127,127,127)"})])]
-         ]
-
-        (rule group rule-expand?)
-
-        [:div
-         (transform-content (:purpose group) {:style {:font-size "16px"}})]
-
-        [:div.space-between {:style {:flex-wrap "wrap"
-                                     :margin-top 12}}
-         (sort-buttons current-user group stared-group?)
-         (if current-user
-           (ui/menu
-            [:a {:on-click (fn [e])
-                 :style {:margin-left 24}}
-             (ui/icon {:type :more
-                       :color "rgb(127,127,127)"})]
-            [(if admin?
-               [:a.button-text {:href (str "/" (:name group) "/edit")
-                                :style {:font-size 14}}
-                (t :edit)])
-
-             (if admin?
-               [:a.button-text {:on-click (fn []
-                                            (reset! promote? true))
-                                :style {:font-size 14}}
-                (t :promote-member)])
-
-             (if member?
-               [:a.button-text {
-                                :on-click #(citrus/dispatch! :user/unstar-group {:object_type :group
-                                                                                 :object_id (:id group)})
-                                :style {:font-size 14}}
-                (t :leave-group)])]
-            {:menu-style {:width 200}}))]
-
-        (promote-dialog group promote?)])]))
 
 (rum/defc back-to-top < rum/reactive
   []
@@ -454,26 +229,11 @@
 (rum/defc website-logo < rum/reactive
   []
   (let [current-handler (citrus/react [:router :handler])]
-    [:a.row1.no-decoration {:href "/"
-                            :on-click (fn []
-                                        (citrus/dispatch! :citrus/reset-first-group)
-                                        (citrus/dispatch! :citrus/re-fetch :home {}))
-                            :style {:margin-left -2
-                                    :align-items "center"}}
-     [:div.row1 {:style {:align-items "center"}}
-      (ui/icon {:type :logo
-                :width 36
-                :height 36
-                :color (colors/icon-color)})
-
-      (when-not (or (util/mobile?)
-                    (contains? #{:new-post :post-edit} current-handler))
-        [:span.ubuntu {:style {:font-size 18
-                               :font-weight 600
-                               :color (colors/icon-color)
-                               :margin-top 2
-                               :margin-left 6}}
-         "Putchar (BETA)"])]]))
+    [:a {:href "/"
+         :on-click (fn []
+                     (citrus/dispatch! :citrus/re-fetch :home {}))}
+     (ui/icon {:type :logo
+               :width 70})]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]

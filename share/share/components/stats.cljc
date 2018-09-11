@@ -21,14 +21,11 @@
        (util/days-ago (inc idx))
        v (t :views) r (t :reads))])])
 
-(rum/defcs item-cp < rum/static
-  (rum/local false ::show?)
+(rum/defc item-cp < rum/static
   [state mobile? {:keys [post_id post_title stats views reads]}]
-  (let [show? (get state ::show?)
-        on-click-fn #(swap! show? not)
-        stats (if stats (util/read-string stats) stats)]
+  (let [stats (if stats (util/read-string stats) stats)]
     (if mobile?
-      [:div.column {:on-click on-click-fn}
+      [:div.column
        [:h4 post_title]
        [:div.row1
         [:span {:style {:font-weight "bold"
@@ -41,41 +38,31 @@
                         :margin-left 12}}
          reads]
         [:span {:style {:margin-left 6}}
-         (t :reads)]]
-
-       (when @show?
-         (stats-cp stats))
-
-       (when @show?
-         [:div.divider])]
+         (t :reads)]]]
       [:tr {:key post_id}
-      [:td
-       [:div
-        [:a.control {:on-click on-click-fn}
-         [:h4 post_title]]
-
-        (when @show?
-          (stats-cp stats))]]
-      [:td {:style {:text-align "right"}}
-       [:span {:style {:font-weight "bold"
-                       :color (colors/shadow)}}
-        views]]
-      [:td {:style {:text-align "right"}}
-       [:span {:style {:font-weight "bold"
-                       :color (colors/shadow)}}
-        reads]]])
-    ))
+       [:td
+        [:div
+         [:a.control
+          [:h4 post_title]]]]
+       [:td {:style {:text-align "right"}}
+        [:span {:style {:font-weight "bold"
+                        :color (colors/shadow)}}
+         views]]
+       [:td {:style {:text-align "right"}}
+        [:span {:style {:font-weight "bold"
+                        :color (colors/shadow)}}
+         reads]]])))
 
 (rum/defc stats < rum/reactive
   (mixins/query :stats)
   [params]
   (let [mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div.column.auto-padding.center#stats {:style {:max-width 1024}}
+    [:div.column.auto-padding.center#stats {:style {:width "100%"}}
      [:h1 (t :stats)]
      (query/query
        (let [stats (citrus/react [:stats])]
         (if (seq stats)
-          [:div.center
+          [:div.center {:style {:width "100%"}}
            (let [all-views (apply + (map :views stats))
                  all-reads (apply + (map :reads stats))]
              [:h5 {:style {:margin-top 48
@@ -93,7 +80,8 @@
 
            ;; header
            [:table {:style {:margin-top 12
-                            :margin-bottom 128}}
+                            :margin-bottom 128
+                            :width "100%"}}
             (when-not mobile?
               [:thead
                [:tr
