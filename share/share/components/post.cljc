@@ -734,7 +734,8 @@
                             :style {:margin-right 12}}
                 first-tag])
 
-             (when-not mobile?
+             (when (and (not mobile?)
+                        current-user)
                (ops-menu post self? mobile? false "#999"))
 
              [:a.no-decoration.control {:title (if last_reply_at

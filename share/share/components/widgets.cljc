@@ -228,13 +228,22 @@
 
 (rum/defc website-logo < rum/reactive
   []
-  (let [current-handler (citrus/react [:router :handler])]
-    [:a {:href "/"
-         :on-click (fn []
-                     (citrus/dispatch! :citrus/re-fetch :home {}))}
-     (ui/icon {:type :logo
-               :width 70
-               :color (colors/primary-text)})]))
+  (let [current-handler (citrus/react [:router :handler])
+        theme (citrus/react [:theme])]
+    (if (= theme "black")
+      [:a {:href "/"
+           :style {:font-weight "600"
+                   :font-size 15
+                   :letter-spacing "0.03em"}
+           :on-click (fn []
+                       (citrus/dispatch! :citrus/re-fetch :home {}))}
+       "PUTCHAR"]
+      [:a {:href "/"
+          :on-click (fn []
+                      (citrus/dispatch! :citrus/re-fetch :home {}))}
+       (ui/icon {:type :logo
+                 :width 70
+                 :color (colors/primary-text)})])))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]

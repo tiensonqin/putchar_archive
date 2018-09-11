@@ -293,6 +293,7 @@
                     :style {:padding padding
                             :font-weight "500"
                             :font-size 15
+                            :padding-right (if mobile? padding 0)
                             :color (colors/new-post-color)}}
                 (t :signin)]))
 

@@ -15,7 +15,7 @@
 (defn primary-text
   []
   (if (= @theme "black")
-    "#fff"
+    "#6dd"
     "#071839"))
 
 (defn shadow
