@@ -233,7 +233,8 @@
          :on-click (fn []
                      (citrus/dispatch! :citrus/re-fetch :home {}))}
      (ui/icon {:type :logo
-               :width 70})]))
+               :width 70
+               :color (colors/primary-text)})]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]

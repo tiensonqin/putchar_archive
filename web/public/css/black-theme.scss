@@ -14,7 +14,7 @@ $btn-color: #214b75;
     }
 
     a {
-        color: $primary-color;
+        color: #add8e6;
     }
 
     a:hover {
@@ -183,6 +183,10 @@ $btn-color: #214b75;
 
     .col-item:last-child {
         border-bottom: none;
+    }
+
+    .menu {
+        background: $main-color;
     }
 
     .menu-item:hover {

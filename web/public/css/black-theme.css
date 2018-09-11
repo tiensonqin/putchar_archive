@@ -6,7 +6,7 @@
   background: #1f364d;
 }
 .black-theme a {
-  color: #6dd;
+  color: #add8e6;
 }
 .black-theme a:hover {
   color: #55ceeb;
@@ -136,6 +136,9 @@
 }
 .black-theme .col-item:last-child {
   border-bottom: none;
+}
+.black-theme .menu {
+  background: #0e2439;
 }
 .black-theme .menu-item:hover {
   background: #ddd;

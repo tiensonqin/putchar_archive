@@ -12,6 +12,12 @@
     "#6dd"
     "#071839"))
 
+(defn primary-text
+  []
+  (if (= @theme "black")
+    "#fff"
+    "#071839"))
+
 (defn shadow
   []
   (if (= @theme "black")
