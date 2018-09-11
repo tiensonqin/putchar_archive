@@ -9,49 +9,36 @@
             [share.dicts :refer [t] :as dicts]
             [clojure.string :as str]))
 
-(rum/defc stats-cp < rum/static
-  [{:keys [views reads]}]
-  [:div {:style {:margin-top 24
-                 :margin-left 12}}
-   [:h6 (t :recent-7-days)]
-   (for [[idx [v r]] (util/indexed (reverse (zipmap views reads)))]
-     [:p
-      (util/format
-       "%s: %d %s, %d %s."
-       (util/days-ago (inc idx))
-       v (t :views) r (t :reads))])])
-
 (rum/defc item-cp < rum/static
-  [state mobile? {:keys [post_id post_title stats views reads]}]
-  (let [stats (if stats (util/read-string stats) stats)]
-    (if mobile?
-      [:div.column
-       [:h4 post_title]
-       [:div.row1
-        [:span {:style {:font-weight "bold"
-                        :color (colors/shadow)}}
-         views]
-        [:span {:style {:margin-left 6}}
-         (t :views)]
-        [:span {:style {:font-weight "bold"
-                        :color (colors/shadow)
-                        :margin-left 12}}
-         reads]
-        [:span {:style {:margin-left 6}}
-         (t :reads)]]]
-      [:tr {:key post_id}
-       [:td
-        [:div
-         [:a.control
-          [:h4 post_title]]]]
-       [:td {:style {:text-align "right"}}
-        [:span {:style {:font-weight "bold"
-                        :color (colors/shadow)}}
-         views]]
-       [:td {:style {:text-align "right"}}
-        [:span {:style {:font-weight "bold"
-                        :color (colors/shadow)}}
-         reads]]])))
+  [mobile? {:keys [post_id post_title stats views reads] :as item}]
+  (if mobile?
+    [:div.column
+     [:h4 post_title]
+     [:div.row1
+      [:span {:style {:font-weight "bold"
+                      :color (colors/shadow)}}
+       views]
+      [:span {:style {:margin-left 6}}
+       (t :views)]
+      [:span {:style {:font-weight "bold"
+                      :color (colors/shadow)
+                      :margin-left 12}}
+       reads]
+      [:span {:style {:margin-left 6}}
+       (t :reads)]]]
+    [:tr {:key post_id}
+     [:td
+      [:div
+       [:a.control
+        [:h4 post_title]]]]
+     [:td {:style {:text-align "right"}}
+      [:span {:style {:font-weight "bold"
+                      :color (colors/shadow)}}
+       views]]
+     [:td {:style {:text-align "right"}}
+      [:span {:style {:font-weight "bold"
+                      :color (colors/shadow)}}
+       reads]]]))
 
 (rum/defc stats < rum/reactive
   (mixins/query :stats)
@@ -61,7 +48,7 @@
      [:h1 (t :stats)]
      (query/query
        (let [stats (citrus/react [:stats])]
-        (if (seq stats)
+         (if (seq stats)
           [:div.center {:style {:width "100%"}}
            (let [all-views (apply + (map :views stats))
                  all-reads (apply + (map :reads stats))]
@@ -90,5 +77,6 @@
                 [:th {:style {:text-align "right"}} (str/capitalize (t :reads))]]])
             [:tbody
              (for [item stats]
-               (item-cp mobile? item))]]]
+               (rum/with-key (item-cp mobile? item)
+                 (:id (:post_id item))))]]]
           [:h2.ubuntu (t :no-stats-yet)])))]))
