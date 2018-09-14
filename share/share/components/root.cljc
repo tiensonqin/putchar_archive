@@ -291,7 +291,8 @@
                               (citrus/dispatch! :citrus/re-fetch
                                                 :user
                                                 {:screen_name (:screen_name current-user)}))
-                  :style {:margin-left 16}}
+                  :style {:margin-left 16
+                          :height 32}}
               (ui/avatar {:shape "circle"
                           :class "ant-avatar-mm"
                           :src (util/cdn-image (:screen_name current-user))})]

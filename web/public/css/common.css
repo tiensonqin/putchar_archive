@@ -286,9 +286,6 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     opacity: 0.3;
 }
 
-.disabled:hover {
-}
-
 .show-style li {
     list-style-type: disc;
 }

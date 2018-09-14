@@ -44,7 +44,6 @@
 
 (def like "#E0245E")
 
-
 (defn textarea
   []
   (if (= @theme "black")

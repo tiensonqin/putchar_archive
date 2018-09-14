@@ -44,7 +44,8 @@
   (mixins/query :stats)
   [params]
   (let [mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div.column.auto-padding.center#stats {:style {:width "100%"}}
+    [:div.column.auto-padding.center-area#stats {:style {:width "100%"
+                                                         :align-items "center"}}
      [:h1 (t :stats)]
      (query/query
        (let [stats (citrus/react [:stats])]

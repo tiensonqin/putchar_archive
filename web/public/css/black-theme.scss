@@ -225,6 +225,10 @@ $btn-color: #214b75;
         color: #FFF;
     }
 
+    .disabled:hover {
+        color: #FFF;
+    }
+
     .share-box textarea {
         background: $header-color;
     }

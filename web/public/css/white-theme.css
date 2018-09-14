@@ -194,5 +194,8 @@
   background: #3057a0;
   color: #FFF;
 }
+.white-theme .disabled:hover {
+  color: #FFF;
+}
 
 /*# sourceMappingURL=white-theme.css.map */

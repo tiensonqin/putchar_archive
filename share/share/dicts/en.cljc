@@ -306,4 +306,5 @@ So you can git commit a new post, and it will be automatically published on Putc
    :is-my-default-language-choice " is my default language choice, "
    :change-it-to "change it to "
    :privacy "Privacy"
-   :comments "comments"})
+   :comments "comments"
+   :share-news "Share news, papers or your favorite books ..."})

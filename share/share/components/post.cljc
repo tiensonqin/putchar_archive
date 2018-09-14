@@ -522,13 +522,13 @@
          (if (not @input?)
            [:input.row {:style {:height 45
                                 :border "none"
-                                :background "#FFF"
+                                :background (colors/textarea)
                                 :color (colors/primary)
                                 :font-size 16
 
                                 :padding 12
                                 :margin-left 12}
-                        :placeholder "Share news, papers or your favorite books ..."
+                        :placeholder (t :share-news)
                         :on-focus (fn []
                                 (reset! input? true))}]
 
@@ -559,7 +559,7 @@
                                            :white-space "pre-wrap"
                                            :overflow-wrap "break-word"
                                            :min-height 100}
-                                   :placeholder "Share news, papers, books ..."
+                                   :placeholder (t :share-news)
                                    :default-value (or body "")
                                    :on-change (fn [e]
                                                 (citrus/dispatch-sync!
@@ -586,14 +586,12 @@
                                          :is_article false
                                          :tags (:tags form-data)}
                                         input?))))
-                {:submit-text "PUT"
-                 :class (if ok? "btn-primary" "disabled")
+                {:class (if ok? "btn-primary" "disabled")
                  :submit-style {:margin-left 12
                                 :margin-top 10}
                  :cancel-icon? true
                  :loading? [:post :saving?]
                  :on-cancel (fn []
-                              (prn "cancel")
                               (reset! input? false)
                               (citrus/dispatch! :citrus/default-update
                                                 [:post :edit-put?]
