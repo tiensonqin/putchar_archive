@@ -503,6 +503,10 @@
 
       (new-post-body form-data nil nil false)]]))
 
+(defn- length-reminder
+  [body]
+  (- 512 (count body)))
+
 (rum/defcs put-box < rum/reactive
   (rum/local false ::input?)
   [state post disabled? expand?]
@@ -513,7 +517,9 @@
     (when current-user
       (let [form-data (citrus/react [:post :form-data])
             body (or (:body form-data) (:title post))
-            validated? (and body (util/post-body-validated? body))]
+            validated? (and body (util/post-body-validated? body))
+            reminder (and body (length-reminder body))]
+        (prn reminder)
         [:div.row1.share-box {:style {:padding 12}}
          [:a {:href (str "/@" (:screen_name current-user))
               :style {:height 45}}
@@ -533,7 +539,17 @@
                                 (reset! input? true))}]
 
 
-           [:div.column {:style {:padding-left 12}}
+           [:div.column {:style {:padding-left 12
+                                 :position "relative"}}
+            (if (< reminder 20)
+              [:div {:style {:position "absolute"
+                             :right 6
+                             :font-size 16
+                             :color (if (> reminder 0)
+                                      "darkorange"
+                                      "red")
+                             :bottom 43}}
+               reminder])
             (let [form-data (if (and (nil? (:tags form-data)) (:tags post))
                               (let [tags (str/join "," (:tags post))]
                                 (citrus/dispatch-sync! :citrus/set-post-form-data
@@ -555,7 +571,7 @@
                                            :font-size "16px"
                                            :width "100%"
                                            :resize "none"
-                                           :padding 12
+                                           :padding "12px 12px 24px 12px"
                                            :white-space "pre-wrap"
                                            :overflow-wrap "break-word"
                                            :min-height 100}
@@ -566,7 +582,8 @@
                                                  :citrus/set-post-form-data
                                                  {:body (util/ev e)}))})
             (let [ok? (and validated?
-                           (not (str/blank? (:tags form-data))))]
+                           (not (str/blank? (:tags form-data)))
+                           (>= reminder 0))]
               [:div.row {:style {:justify-content "flex-end"}}
                (form/submit
                 (fn []

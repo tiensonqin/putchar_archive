@@ -3,7 +3,7 @@
   color: #212529;
 }
 .white-theme #app {
-  background: #FFF;
+  background: #fefefe;
 }
 @media screen and (max-width: 768px) {
   .white-theme {
@@ -182,7 +182,7 @@
   color: initial;
 }
 .white-theme .right-footer {
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 .white-theme .share-box {
   background: #f0f0f0;
