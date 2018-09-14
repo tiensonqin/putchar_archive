@@ -21,7 +21,7 @@
                                   :margin-bottom 24}}
         (t :search-result)]
        (if loading?
-         [:div.row {:style {:justify-content "center"}}
+         [:div.center {:style {:margin "24px 0"}}
           [:div.spinner]]
          (post/post-list {:result result
                           :end? true}

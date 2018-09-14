@@ -24,6 +24,6 @@
      (let [opts (clj->js {:attributes {:showTitle false
                                        :hardbreaks true
                                        :icons "font"
-                                       :source-highlighter "highlightjs"}})]
+                                       :source-highlighter "pygments"}})]
        (when (ascii-loaded?)
          (.convert (js/window.Asciidoctor) str opts)))))

@@ -1,6 +1,6 @@
 User-agent: *
 
-Disallow: /new-post
+Disallow: /new-article
 Disallow: /*/edit
 Disallow: /logout
 Disallow: /auth

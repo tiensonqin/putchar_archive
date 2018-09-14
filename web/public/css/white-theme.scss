@@ -1,4 +1,4 @@
-$main-color: #FFF;
+$main-color: #fefefe;
 $primary-color: #071839;
 $header-color: #FFF;
 
@@ -22,11 +22,7 @@ $header-color: #FFF;
     }
 
     a {
-        color: $primary-color;
-    }
-
-    a:hover {
-        color: #08c;
+        color: #0366d6;
     }
 
     a.control {
@@ -56,7 +52,7 @@ $header-color: #FFF;
     }
 
     .btn-primary {
-        background-color: $primary-color;
+        background-color: #3057a0;
         color: #FFF;
     }
 
@@ -169,6 +165,10 @@ $header-color: #FFF;
         fill: $primary-color;
     }
 
+    a.like svg:hover {
+        fill: #E0245E;
+    }
+
     a.tag {
         background: #E3E3E3;
         color: $primary-color;
@@ -200,12 +200,22 @@ $header-color: #FFF;
         color: #000;
     }
 
-    .notifications .col-item, .comments .col-item, .reports .col-item, .moderation-logs .col-item {
+    .col-item:nth-child(1) {
+        border-top: 1px solid #efefef;
+    }
+
+    .home .col-item:nth-child(1) {
+        border-top: 0;
+    }
+
+    .col-item {
+        border-left: 1px solid #efefef;
+        border-right: 1px solid #efefef;
         border-bottom: 1px solid #efefef;
     }
 
-    .col-item:last-child {
-        border-bottom: none;
+    .col-item:hover {
+        background: #f5f8fa;
     }
 
     .menu {
@@ -225,5 +235,22 @@ $header-color: #FFF;
 
     .user-posts .post-title:visited {
         color: initial;
+    }
+
+    .right-footer {
+        background: #f7f7f7;
+    }
+
+    .share-box {
+        background: #f0f0f0;
+    }
+
+    .share-box textarea {
+        background: #FFFFFF;
+    }
+
+    .disabled {
+        background: #3057a0;
+        color: #FFF;
     }
 }

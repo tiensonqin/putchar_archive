@@ -1,5 +1,5 @@
 .white-theme body {
-  background: #FFF;
+  background: #fefefe;
   color: #212529;
 }
 .white-theme #app {
@@ -16,10 +16,7 @@
   }
 }
 .white-theme a {
-  color: #071839;
-}
-.white-theme a:hover {
-  color: #08c;
+  color: #0366d6;
 }
 .white-theme a.control {
   color: #666;
@@ -42,7 +39,7 @@
   color: #FFF;
 }
 .white-theme .btn-primary {
-  background-color: #071839;
+  background-color: #3057a0;
   color: #FFF;
 }
 .white-theme .divider {
@@ -90,7 +87,7 @@
   color: #071839;
 }
 .white-theme .ver_divider {
-  background: linear-gradient(to bottom, #FFF 0%, #ddd 53%, #FFF 100%);
+  background: linear-gradient(to bottom, #FFF 0%, #ddd 53%, #fefefe 100%);
 }
 .white-theme .mention {
   color: #071839;
@@ -123,10 +120,13 @@
   color: #000;
 }
 .white-theme #modal-panel {
-  background: #FFF;
+  background: #fefefe;
 }
 .white-theme svg:hover {
   fill: #071839;
+}
+.white-theme a.like svg:hover {
+  fill: #E0245E;
 }
 .white-theme a.tag {
   background: #E3E3E3;
@@ -152,11 +152,19 @@
 .white-theme *:not(pre) > code {
   color: #000;
 }
-.white-theme .notifications .col-item, .white-theme .comments .col-item, .white-theme .reports .col-item, .white-theme .moderation-logs .col-item {
+.white-theme .col-item:nth-child(1) {
+  border-top: 1px solid #efefef;
+}
+.white-theme .home .col-item:nth-child(1) {
+  border-top: 0;
+}
+.white-theme .col-item {
+  border-left: 1px solid #efefef;
+  border-right: 1px solid #efefef;
   border-bottom: 1px solid #efefef;
 }
-.white-theme .col-item:last-child {
-  border-bottom: none;
+.white-theme .col-item:hover {
+  background: #f5f8fa;
 }
 .white-theme .menu {
   -webkit-box-shadow: 0 1px 8px #ddd;
@@ -172,6 +180,19 @@
 }
 .white-theme .user-posts .post-title:visited {
   color: initial;
+}
+.white-theme .right-footer {
+  background: #f7f7f7;
+}
+.white-theme .share-box {
+  background: #f0f0f0;
+}
+.white-theme .share-box textarea {
+  background: #FFFFFF;
+}
+.white-theme .disabled {
+  background: #3057a0;
+  color: #FFF;
 }
 
 /*# sourceMappingURL=white-theme.css.map */

@@ -12,6 +12,7 @@
             #?(:cljs ["react" :as react])
             #?(:cljs ["rc-dialog" :as rc-dialog])
             #?(:cljs ["rc-dropdown" :as rc-dropdown])
+            #?(:cljs ["react-textarea-autosize" :as autosize-textarea])
             ;; cdn
             #?(:cljs ["/web/caret_coordinates" :as caret-coordinates])
             [appkit.macros :refer [oget]]))
@@ -46,7 +47,7 @@
 (rum/defc avatar
   [{:keys [src class style]}]
   [:span.item.round
-   {:style (merge style {:display "block"})
+   {:style style
     :class (str "ant-avatar"  " " class)}
    [:img {:src src}]])
 
@@ -123,6 +124,14 @@
   [comp opts]
   [:textarea (force-update-input comp opts)])
 
+(rum/defcc textarea-autosize
+  [comp opts]
+  #?(:clj
+     [:textarea opts]
+     :cljs
+     (let [autosize (r/adapt-class (oget autosize-textarea "default"))]
+       (autosize opts))))
+
 (rum/defcc input
   [comp opts]
   [:input (force-update-input comp opts)])
@@ -140,27 +149,29 @@
 
 ;; dropdown
 (rum/defc menu
-  [element items {:keys [menu-style item-style visible placement]
+  [element items {:keys [menu-style item-style visible placement other-attrs]
                   :or {placement "bottomRight"}}]
   (when (seq items)
     (dropdown
      (cond->
-         {:placement placement
-          :overlay [:ul.menu
-                    {:style (merge
-                             {:margin-top 12
-                              :width 276
-                              :font-weight 600
-                              :z-index 9}
-                             menu-style)}
-                    (for [item items]
-                      [:li.menu-item.row {:key (or (:id item)
-                                                   (util/random-uuid))
-                                          :style (merge
-                                                  {:justify-content "flex-end"}
-                                                  item-style)}
-                       item])]
-          :animation "slide-up"}
+         (merge
+          {:placement placement
+           :overlay [:ul.menu
+                     {:style (merge
+                              {:margin-top 12
+                               :width 276
+                               :font-weight 600
+                               :z-index 9}
+                              menu-style)}
+                     (for [item items]
+                       [:li.menu-item.row {:key (or (:id item)
+                                                    (util/random-uuid))
+                                           :style (merge
+                                                   {:justify-content "flex-end"}
+                                                   item-style)}
+                        item])]
+           :animation "slide-up"}
+          other-attrs)
        visible
        (assoc :visible visible))
      element)))

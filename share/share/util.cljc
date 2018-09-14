@@ -310,6 +310,13 @@
   #?(:cljs (js/parseInt x)
      :clj (Integer/parseInt x)))
 
+(defn post-body-validated?
+  [x]
+  (and x
+       (string? x)
+       (not (s/blank? x))
+       (> (count x) 24)))
+
 ;; TODO: [^\]]* not works
 (defn link?
   [s]
@@ -468,7 +475,7 @@
   [tag-name]
   (if tag-name
     (some->> (s/split tag-name #"-")
-             (map s/lower-case)
+             (map s/capitalize)
              (interpose " ")
              (apply str)
              (bidi/url-decode))))
@@ -578,13 +585,6 @@
 
 (defn stop [e]
   (doto e (.preventDefault) (.stopPropagation)))
-
-(defn highlight!
-  []
-  #?(:cljs
-     (if js/window.hljs
-       (doseq [x (dommy/sel "pre code")]
-         (js/window.hljs.highlightBlock x)))))
 
 (defn get-current-url
   []

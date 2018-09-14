@@ -97,7 +97,7 @@
    :post-body-placeholder "内容..."
    :publish "发布"
    :settings "设置"
-   :publish-to "发布: "
+   :publish-to "发布文章"
    :vote "顶"
    :unvote "取消"
    :down "踩"
@@ -267,7 +267,7 @@
    ;; post tags
    :tags "Tags"
    :add-tags-label "添加标签(最少 1 个):"
-   :add-tags "最多 5 个标签， 逗号分隔..."
+   :add-tags "最多 3 个标签， 逗号分隔..."
    :email-notification-settings "邮件通知"
    :email-notification-settings-text "当别人回复我或者提及我的用户名邮件通知我"
    :my-data "我的数据"
@@ -324,4 +324,5 @@
    :is-my-default-language-choice " 是我的默认文章语言, "
    :change-it-to "修改为 "
    :send-us-an-email-moderator "如果你有兴趣做管理员，可以在 Discord 里留言或者发送给我们邮件。"
+   :comments "条评论"
    })

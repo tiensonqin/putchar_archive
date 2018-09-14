@@ -48,10 +48,7 @@
                     (citrus/dispatch! :citrus/default-update
                                       [:ascii-loaded?]
                                       true)))))
-           state)
-   :after-render (fn [state]
-                   (util/highlight!)
-                   state)}
+           state)}
   [state body {:keys [style
                 body-format
                 render-opts
@@ -158,7 +155,6 @@
         zh-cn? (= :zh-cn (citrus/react [:locale]))]
     [:div.auto-padding.posts-headers {:style {:margin-top 12
                                               :margin-bottom 12}}
-     [:div.divider]
      [:div.row1.ubuntu.user-buttons {:style {:font-weight (if zh-cn? "500" "600")}}
       [:a.control {:class (if posts? "is-active" "")
                    :href (str "/@" screen_name)}
@@ -229,21 +225,24 @@
 (rum/defc website-logo < rum/reactive
   []
   (let [current-handler (citrus/react [:router :handler])
-        theme (citrus/react [:theme])]
-    (if (= theme "black")
-      [:a {:href "/"
-           :style {:font-weight "600"
-                   :font-size 15
-                   :letter-spacing "0.03em"}
-           :on-click (fn []
-                       (citrus/dispatch! :citrus/re-fetch :home {}))}
-       "PUTCHAR"]
-      [:a {:href "/"
-          :on-click (fn []
-                      (citrus/dispatch! :citrus/re-fetch :home {}))}
-       (ui/icon {:type :logo
-                 :width 70
-                 :color (colors/primary-text)})])))
+        theme (citrus/react [:theme])
+        mobile? (util/mobile?)]
+    [:a.row1.no-decoration {:href "/"
+                            :on-click (fn []
+                                        (citrus/dispatch! :citrus/re-fetch :home {}))}
+     (ui/icon {:type :logo
+               :color (colors/logo-background)})
+     (when-not mobile?
+       [:span {:style {:font-size 20
+                       :margin-top -6
+                       :font-weight "bold"
+                       :letter-spacing "0.05em"
+                       :color (colors/primary-text)}}
+        "utchar"])
+     [:span {:style {:margin-left 6
+                     :font-size 10
+                     :color (colors/logo-background)}}
+      "beta"]]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]
@@ -251,8 +250,7 @@
     [:div.row1 {:style {:align-items "center"}}
      (when-not (util/mobile?)
        (ui/dropdown
-        {:overlay (ui/button {:style {:margin-top 20}
-                              :on-click (fn []
+        {:overlay (ui/button {:on-click (fn []
                                           (let [format (if markdown? :asciidoc :markdown)]
                                             (citrus/dispatch-sync! :citrus/set-post-form-data
                                                                    {:body_format format})
@@ -304,8 +302,7 @@
       [:div#tags.auto-padding.ubuntu {:class "row1"
                                       :style {:flex-wrap "wrap"
                                               :align-items "center"
-                                              :margin-top 6
-                                              :margin-bottom 6}}
+                                              :margin-bottom 18}}
 
        (for [[tag count] tags]
          (let [this? (= current-tag (name tag))]

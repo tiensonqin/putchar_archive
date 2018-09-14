@@ -6,7 +6,8 @@
             [goog.object :as gobj]
             [web.scroll :as scroll]
             [web.md5 :as md5]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [appkit.macros :refer [oget oset!]]))
 
 (defn- add
   [state k id]
@@ -143,6 +144,38 @@
      (util/set-href! (str config/website "/" (:permalink result)))
      {:state state})
 
+   :post/update-put
+   (fn [state data input?]
+     {:state {:saving? true}
+      :http {:params [:post/update data]
+             :on-load [:citrus/update-put-ready data input?]
+             :on-error :post/update-put-failed}})
+
+   :post/update-put-failed
+   (fn [state result]
+     {:state state})
+
+   :citrus/update-put-ready
+   (fn [state data input? result]
+     (reset! input? false)
+     {:state (cond->
+                 (-> state
+                  (assoc-in [:post :edit-put?] nil)
+                  (assoc-in [:post :saving?] false)
+                  (assoc-in [:post :form-data :body] nil)
+                  (update-in [:posts :hot :result]
+                             (fn [posts]
+                               (mapv (fn [post]
+                                       (if (= (:id post) (:id data))
+                                         (assoc post :title (:title data))
+                                         post))
+                                     posts))))
+               (:permalink data)
+               (update-in [:post :by-permalink (:permalink data)]
+                          (fn [result]
+                            (if result
+                              (assoc result :title (:title data))))))})
+
    :post/delete
    (fn [state post]
      {:state {:loading? true}
@@ -231,11 +264,37 @@
    :citrus/set-post-form-data
    set-post-form-data
 
+   :post/new
+   (fn [state data input?]
+     {:state {:saving? true}
+      :http {:params [:post/new data]
+             :on-load [:citrus/post-new-ready input?]
+             :on-error :post/new-failed}})
+
+   :citrus/post-new-ready
+   (fn [state input? result]
+     (reset! input? false)
+     (when-let [ref (get-in state [:post :put-box-ref])]
+       (oset! ref "value" ""))
+     {:state (-> state
+                 (assoc-in [:post :edit-put?] nil)
+                 (assoc-in [:post :saving?] false)
+                 (assoc-in [:post :form-data :body] nil)
+                 (update-in [:posts :hot :result]
+                            (fn [posts]
+                              (vec (cons result posts)))))})
+
+   :post/new-failed
+   (fn [state result]
+     {:state {:saving? false}})
+
    ;; server will redirect to post-edit
    :post/new-draft
    (fn [state form-data]
      {:state {:saving? true}
-      :http {:params [:post/new-draft (select-keys form-data [:title :body :body_format])]
+      :http {:params [:post/new (-> (select-keys form-data [:title :body :body_format])
+                                    (assoc :is_draft true
+                                           :is_article true))]
              :on-load :post/new-draft-ready
              :on-error :post/new-draft-failed}})
 

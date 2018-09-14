@@ -36,7 +36,7 @@
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
                                   :lang
                                   :body :body_format :tags
-                                  :cover :video]
+                                  :cover :video :is_article]
                          :from [table]})
 
 ;; user-screen-name => (map of tag * post-count)
@@ -48,7 +48,6 @@
   (some-> post
           (util/with :user_id #(u/get db % [:id :screen_name :name :bio :website]))))
 
-;; TODO: no need
 (defn with-user
   [post]
   (some-> post
@@ -129,8 +128,17 @@
         screen-name (or
                      (:screen_name data)
                      (:screen_name (u/get db (:user_id m) [:screen_name])))
-        result (util/create db table (assoc m :user_screen_name screen-name) :flake? true)]
-    (when (seq tags)
+
+        result (util/create db table (assoc m :user_screen_name screen-name) :flake? true)
+        permalink (if (false? (:is_article data))
+                    (str "@" screen-name
+                         "/" (:id result)))
+        result (if permalink
+                 (do
+                   (util/update db table (:id result) {:permalink permalink})
+                   (get db (:id result)))
+                 result)]
+    (when (and (:is_article data) (seq tags))
       (update-tags screen-name tags #{}))
     result))
 
@@ -152,7 +160,7 @@
                   m)]
           (util/update db table id (assoc m
                                           :updated_at (util/sql-now)))
-          (if (seq tags)
+          (when (and (:is_article post) (seq tags))
             (let [s1 (set tags)
                   s2 (if (seq old-tags)
                        (set old-tags)
@@ -179,7 +187,7 @@
                           :reason reason}))
 
        ;; updated tags
-       (when (seq tags)
+       (when (and (:is_article post) (seq tags))
          (update-tags user_screen_name #{} (set tags)))))))
 
 (defn brief-body

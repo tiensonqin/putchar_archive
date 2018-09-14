@@ -3,7 +3,7 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :title :rank :permalink :created_at :comments_count :tops :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
+  [:id :flake_id :user :title :rank :permalink :created_at :comments_count :tops :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters :is_article])
 
 (defn- get-post-filter
   [state]
@@ -59,6 +59,7 @@
                             :last_reply_at
                             :tops
                             :comments_count
+                            :is_article
                             [:user {:fields [:id :screen_name :name :bio :website]}]
                             [:comments {:fields [:*]
                                         :cursor {:limit 100}}]]}}
@@ -77,6 +78,7 @@
                                     :lang
                                     :permalink
                                     :is_draft
+                                    :is_article
                                     :tags]}}
              :args {:post {:id id
                            :raw_body? true}}}]

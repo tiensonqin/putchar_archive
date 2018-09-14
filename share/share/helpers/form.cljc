@@ -7,7 +7,8 @@
             [appkit.citrus :as citrus]
             [share.helpers.image :as image]
             [share.dicts :refer [t]]
-            [share.util :as util])
+            [share.util :as util]
+            [share.kit.colors :as colors])
   #?(:cljs (:import goog.format.EmailAddress)))
 
 (defn required? [v]
@@ -237,7 +238,8 @@
                      on-cancel
                      loading?
                      cancel-icon?
-                     submit-style]
+                     submit-style
+                     class]
               :or {cancel-button? true
                    submit-text (t :submit)}
               :as opts}]
@@ -247,7 +249,7 @@
    (let [loading? (if loading? (citrus/react loading?) false)]
      (ui/button (merge {:tab-index 0
                         :on-click on-submit
-                        :class "btn btn-primary"
+                        :class (if class class "btn btn-primary")
                         :on-key-down (fn [e]
                                        (util/stop e)
                                        (when (= 13 (.-keyCode e))
@@ -265,7 +267,8 @@
                       (if on-cancel
                         (on-cancel)
                         (citrus/dispatch! :router/back)))}
-      (ui/icon {:type :close})]
+      (ui/icon {:type :close
+                :color (colors/shadow)})]
      :else
      (if cancel-button?
            (ui/button {

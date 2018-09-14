@@ -21,3 +21,4 @@ share/share/config.cljc
 backend/.lein-env
 fabfile.py
 web/report.html
+web/public/css/*.map

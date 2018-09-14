@@ -29,7 +29,7 @@
   color: #FFF;
 }
 .black-theme .btn-primary {
-  background-color: #3bb;
+  background-color: #0aa;
 }
 .black-theme .post-title {
   color: #ddd;
@@ -44,7 +44,11 @@
 }
 .black-theme .button-text {
   color: #ccc;
+  background: #1f364d;
+}
+.black-theme a.button-text:hover {
   background: #0e2439;
+  color: #ccc;
 }
 .black-theme input#search:focus, .black-theme input#search:active {
   outline: none;
@@ -67,9 +71,6 @@
 }
 .black-theme .ver_divider {
   background: linear-gradient(to bottom, #1f364d 0%, #999 53%, #0e2439 100%);
-}
-.black-theme .mention {
-  color: #6dd;
 }
 .black-theme .right-sub h5 {
   color: #aaa;
@@ -119,7 +120,7 @@
   background: #1f364d;
 }
 .black-theme #back-to-top {
-  background: #214b75;
+  background: #1f364d;
 }
 .black-theme pre > code, .black-theme .hljs {
   background: #1f364d;
@@ -131,14 +132,22 @@
 .black-theme .editor h1 a, .black-theme .editor h2 a, .black-theme .editor h3 a, .black-theme .editor h4 a, .black-theme .editor h5 a, .black-theme .editor h6 a {
   color: #ddd;
 }
-.black-theme .notifications .col-item, .black-theme .comments .col-item, .black-theme .reports .col-item, .black-theme .moderation-logs .col-item {
-  border-bottom: 1px solid #353535;
+.black-theme .col-item:nth-child(1) {
+  border-top: 1px solid #1f364d;
 }
-.black-theme .col-item:last-child {
-  border-bottom: none;
+.black-theme .home .col-item:nth-child(1) {
+  border-top: 0;
+}
+.black-theme .col-item {
+  border-left: 1px solid #172D44;
+  border-right: 1px solid #172D44;
+  border-bottom: 1px solid #1f364d;
+}
+.black-theme .col-item:hover {
+  background: #1f364d;
 }
 .black-theme .menu {
-  background: #0e2439;
+  background: #1f364d;
 }
 .black-theme .menu-item:hover {
   background: #ddd;
@@ -154,6 +163,19 @@
 }
 .black-theme table tr th, .black-theme table tr td {
   color: #ddd;
+}
+.black-theme .right-footer {
+  background: #1f364d;
+}
+.black-theme .share-box {
+  background: #172D44;
+}
+.black-theme .disabled {
+  background: #0aa;
+  color: #FFF;
+}
+.black-theme .share-box textarea {
+  background: #1f364d;
 }
 
 /*# sourceMappingURL=black-theme.css.map */

@@ -51,7 +51,7 @@
                           (post/tag-posts params))
          :user-tag      (fn [params current-user]
                           (post/user-tag-posts params))
-         :new-post      (fn [params current-user]
+         :new-post (fn [params current-user]
                           (post/new))
          :post          (fn [params current-user]
                           (post/post params))
@@ -206,7 +206,7 @@
         unread? (:has-unread-notifications? current-user)
         user-page? (contains? #{:user :drafts :comments :user-tag} handler)
         post-edit-page? (contains? #{:new-post :post-edit} current-path)
-        padding (if mobile? 6 12)
+        padding 12
 ]
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
@@ -239,139 +239,113 @@
                                    :font-size 13}}
              (t :draft)])]]
 
-        (when-not (and user-page?
-                       (not mobile?))
-          [:div {:class "row1"
-                 :style {:align-items "center"}
-                 :id "right-head"}
+        [:div {:class "row1"
+               :style {:align-items "center"}
+               :id "right-head"}
+         ;; search
+         (if (not post?)
+           [:a {:title (t :search)
+                :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
+                :style {:padding padding}}
+            (ui/icon {:type "search"
+                      :color (colors/icon-color)})])
 
-           (when (and (not mobile?)
-                      (not post-edit-page?))
-             (ui/dropdown {:overlay
-                           [:div.menu {:style {:margin-top 12
-                                               :padding 12}}
-                            (layout/right-footer)]
-                           :animation "slide-up"}
-                          [:a {:style {:margin-right 12}}
-                           (ui/icon {:type :more
-                                     :color (colors/shadow)})]))
-           ;; search
-           (if (not post?)
-             [:a {:title (t :search)
-                  :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
-                  :style {:padding padding}}
-              (ui/icon {:type "search"
-                        :color (colors/icon-color)
-                        :width 22
-                        :height 22})])
+         ;; publish
+         (if post?
+           (rum/with-key (post/publish-to) "publish"))
 
-           ;; publish
-           (if post?
-             (rum/with-key (post/publish-to) "publish"))
+         (when new-report?
+           [:a
+            {:title (t :reports)
+             :href "/reports"
+             :style {:padding padding}}
+            [:i {:class "fa fa-flag"
+                 :style {:font-size 20
+                         :color (colors/primary)}}]])
 
-           (when new-report?
-             [:a
-              {:title (t :reports)
-               :href "/reports"
-               :style {:padding padding}}
-              [:i {:class "fa fa-flag"
-                   :style {:font-size 20
-                           :color (colors/primary)}}]])
+         ;; login or notification
+         (when-not post?
+           (if current-user
+             (when unread?
+               [:a {:href "/notifications"
+                    :title (t :notifications)
+                    :style {:padding padding}}
+                (ui/icon {:type "notifications"
+                          :color (colors/primary)})])
 
-           ;; login or notification
-           (when-not post?
-             (if current-user
-               (when unread?
-                 [:a {:href "/notifications"
-                      :title (t :notifications)
-                      :style {:padding padding}}
-                  (ui/icon {:type "notifications"
-                            :color (colors/primary)})])
+             [:a {:on-click (fn []
+                              (citrus/dispatch! :user/show-signin-modal?))
+                  :style {:padding padding
+                          :font-weight "500"
+                          :font-size 15
+                          :padding-right 0
+                          :color (colors/new-post-color)}}
+              (t :signin)]))
 
-               [:a {:on-click (fn []
-                                (citrus/dispatch! :user/show-signin-modal?))
-                    :style {:padding padding
-                            :font-weight "500"
-                            :font-size 15
-                            :padding-right (if mobile? padding 0)
-                            :color (colors/new-post-color)}}
-                (t :signin)]))
+         (when (and (not post?)
+                    (not mobile?)
+                    current-user)
+           (ui/menu
+             [:a {:href (str "/@" (:screen_name current-user))
+                  :on-click (fn []
+                              (citrus/dispatch! :citrus/re-fetch
+                                                :user
+                                                {:screen_name (:screen_name current-user)}))
+                  :style {:margin-left 16}}
+              (ui/avatar {:shape "circle"
+                          :class "ant-avatar-mm"
+                          :src (util/cdn-image (:screen_name current-user))})]
+             [[:a.button-text {:href (str "/@" (:screen_name current-user))
+                               :on-click (fn []
+                                           (citrus/dispatch! :citrus/re-fetch
+                                                             :user
+                                                             {:screen_name (:screen_name current-user)}))
+                               :style {:font-size 14}}
+               (t :go-to-profile)]
 
-           ;; new post
-           (when (and current-user
-                      (not (contains? #{:post-edit :new-post} current-path)))
-             [:a {:href "/new-post"
-                  :title (t :write-new-post)
-                  :style {:padding padding}}
-              (ui/icon {:type :edit
-                        :color (colors/icon-color)
-                        :width 21
-                        :height 21})])
+              [:a.button-text {:href "/drafts"
+                               :on-click (fn []
+                                           (citrus/dispatch! :citrus/re-fetch :drafts nil))
+                               :style {:font-size 14}}
+               (t :drafts)]
 
-           (when (and (not post?)
-                      (not mobile?)
-                      current-user)
-             (ui/menu
-               [:a {:href (str "/@" (:screen_name current-user))
-                    :on-click (fn []
-                                (citrus/dispatch! :citrus/re-fetch
-                                                  :user
-                                                  {:screen_name (:screen_name current-user)}))
-                    :style {:margin-left 16}}
-                (ui/avatar {:shape "circle"
-                            :class "ant-avatar-mm"
-                            :src (util/cdn-image (:screen_name current-user))})]
-               [[:a.button-text {:href (str "/@" (:screen_name current-user))
-                                 :on-click (fn []
-                                             (citrus/dispatch! :citrus/re-fetch
-                                                               :user
-                                                               {:screen_name (:screen_name current-user)}))
-                                 :style {:font-size 14}}
-                 (t :go-to-profile)]
+              [:a.button-text {:href "/bookmarks"
+                               :on-click (fn []
+                                           (citrus/dispatch! :citrus/re-fetch :bookmarks nil))
+                               :style {:font-size 14}}
+               (t :bookmarks)]
 
-                [:a.button-text {:href "/drafts"
-                                 :on-click (fn []
-                                             (citrus/dispatch! :citrus/re-fetch :drafts nil))
-                                 :style {:font-size 14}}
-                 (t :drafts)]
+              [:a.button-text {:href "/stats"
+                               :on-click (fn []
+                                           (citrus/dispatch! :citrus/re-fetch :stats nil))
+                               :style {:font-size 14}}
+               (t :stats)]
 
-                [:a.button-text {:href "/bookmarks"
-                                 :on-click (fn []
-                                             (citrus/dispatch! :citrus/re-fetch :bookmarks nil))
-                                 :style {:font-size 14}}
-                 (t :bookmarks)]
+              [:a.button-text {:href "/settings"
+                               :style {:font-size 14}}
+               (t :settings)]
 
-                [:a.button-text {:href "/stats"
-                                 :on-click (fn []
-                                             (citrus/dispatch! :citrus/re-fetch :stats nil))
-                                 :style {:font-size 14}}
-                 (t :stats)]
+              [:a.button-text {:on-click (fn []
+                                           (citrus/dispatch! :user/logout))
+                               :style {:font-size 14}}
+               (t :sign-out)]]
 
-                [:a.button-text {:href "/settings"
-                                 :style {:font-size 14}}
-                 (t :settings)]
+             {:menu-style {:margin-top 17}}))
 
-                [:a.button-text {:on-click (fn []
-                                             (citrus/dispatch! :user/logout))
-                                 :style {:font-size 14}}
-                 (t :sign-out)]]
-
-               {:menu-style {:margin-top 17}}))
-
-           (when (and (not post?)
-                      mobile?)
-             (ui/dropdown
-              {:trigger ["click"]
-               :visible show-panel?
-               :overlay (modal-panel width mobile? unread? new-report? current-user)
-               :animation "slide-up"}
-              [:a {:style {:padding padding
-                           :padding-right 0
-                           :margin-top 2}
-                   :on-click (fn []
-                               (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
-               (ui/icon {:type "menu"
-                         :color (colors/icon-color)})]))])]])))
+         (when (and (not post?)
+                    mobile?)
+           (ui/dropdown
+            {:trigger ["click"]
+             :visible show-panel?
+             :overlay (modal-panel width mobile? unread? new-report? current-user)
+             :animation "slide-up"}
+            [:a {:style {:padding padding
+                         :padding-right 0
+                         :margin-top 2}
+                 :on-click (fn []
+                             (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
+             (ui/icon {:type "menu"
+                       :color (colors/icon-color)})]))]]])))
 
 (defn attach-listeners
   [state]
@@ -494,18 +468,18 @@
        [:div#left {:key "left"
                    :class "row full-height"
                    :style {:margin-top (if mobile? 96
-                                           12)}}
+                                           0)}}
         (routes reconciler route params current-user)]
 
-       ;; (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats} route)))
-       ;;   [:div#right {:key "right"
-       ;;                :class "column1"
-       ;;                :style {:margin-top (if mobile?
-       ;;                                      100
-       ;;                                      40)
-       ;;                        :margin-left 24
-       ;;                        :width 276}}
-       ;;    (layout/right-footer)])
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats} route)))
+         [:div#right {:key "right"
+                      :class "column1"
+                      :style {:margin-top (if mobile?
+                                            100
+                                            0)
+                              :margin-left 12
+                              :width 276}}
+          (layout/right-footer)])
        ]]
      (login/signin-modal mobile?)
      ;; report modal

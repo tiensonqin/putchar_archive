@@ -11,7 +11,7 @@
     padding: 12;
 }
 
-.comment-list textarea:focus, .editor textarea:focus, .editor input:focus{
+.editor textarea:focus, .editor input:focus{
     outline: none;
 }
 
@@ -156,8 +156,14 @@ code {
     max-width: 100%;
     display: block;
     margin: 0 auto;
-    margin-top: 64px;
-    margin-bottom: 64px;
+    margin-top: 48px;
+    margin-bottom: 48px;
+}
+
+.home .editor img {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    max-height: 300px;
 }
 
 .editor img.emoji, .post-item-content img.emoji {
@@ -214,10 +220,6 @@ span.logo {
     display: flex;
 }
 
-.user-posts .post-title {
-    font-size: 1.6em;
-}
-
 .joined {
     border: 4px solid #999;
     border-radius: 8px;
@@ -230,6 +232,13 @@ span.logo {
 .comment h1, .comment h2, .comment h3, .comment h4, .comment h1, .comment h5, .comment h6 {
     margin: 6px 0;
     font-weight: 600;
+}
+
+.post-item h1, .post-item h2, .post-item h3, .post-item h4, .post-item h1, .post-item h5, .post-item h6 {
+    margin: 0;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 label {
@@ -389,9 +398,14 @@ a.delete {
     font-size: 230%;
 }
 
+.col-item {
+    padding: 12px;
+}
+
 @media screen and (min-width: 768px) {
-    .col-item {
-        padding: 15px 0;
+
+    #head {
+        height: 80px;
     }
 
     .heading-1 {
@@ -405,7 +419,8 @@ a.delete {
 
 @media screen and (max-width: 768px) {
     #head {
-        padding: 3px 15px;
+        padding: 3px 12px;
+        height: 60px;
     }
 
     .heading-1 {
@@ -424,12 +439,8 @@ a.delete {
     }
 
     .auto-padding {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    .col-item {
-        padding: 15px;
+        padding-left: 12px;
+        padding-right: 12px;
     }
 
     .posts-headers {
@@ -441,12 +452,8 @@ a.delete {
     }
 }
 
-.col-item:nth-child(1) {
-    padding-top: 15px;
-}
-
 .comments .col-item {
-    padding: 24px 0;
+    padding: 24px 12px;
 }
 
 .ubuntu {
@@ -518,10 +525,10 @@ a.delete {
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-.markdown blockquote, .comment-box .quoteblock, .comment .quoteblock {
+.markdown blockquote, .comment-box .quoteblock, .comment .quoteblock, .home .quoteblock, .home blockquote {
     margin: 0.5em 0;
-    border-left: 4px solid #ccc;
-    padding: 12px;
+    border-left: 5px solid #999;
+    padding: 6px 12px;
 }
 
 .comment-box .concate, .comment .concate {
@@ -529,7 +536,7 @@ a.delete {
 }
 
 .comment-box .quoteblock blockquote, .comment-box .quoteblock blockquote p, .comment .quoteblock blockquote, .comment .quoteblock blockquote p {
-    font-size: 15px;
+    font-size: 12px;
     font-style: normal;
 }
 
@@ -569,3 +576,7 @@ a.delete {
 }
 
 #stats table tr.even, #stats table tr.alt, #stats table tr:nth-of-type(even) { background: none; }
+
+.post-page a:hover {
+    text-decoration: underline;
+}

@@ -44,7 +44,7 @@ $btn-color: #214b75;
     }
 
     .btn-primary {
-        background-color: #3bb;
+        background-color: #0aa;
     }
 
     .post-title {
@@ -63,7 +63,12 @@ $btn-color: #214b75;
 
     .button-text {
         color: #ccc;
+        background: $header-color;
+    }
+
+    a.button-text:hover {
         background: $main-color;
+        color: #ccc;
     }
 
     input#search:focus, input#search:active {
@@ -93,10 +98,6 @@ $btn-color: #214b75;
 
     .ver_divider {
         background: linear-gradient(to bottom, $header-color 0%, #999 53%, $main-color 100%) /* W3C */
-    }
-
-    .mention {
-        color: $primary-color;
     }
 
     .right-sub h5 {
@@ -161,7 +162,7 @@ $btn-color: #214b75;
     }
 
     #back-to-top {
-        background: $btn-color;
+        background: $header-color;
     }
 
     pre > code, .hljs {
@@ -177,16 +178,23 @@ $btn-color: #214b75;
         color: #ddd;
     }
 
-    .notifications .col-item, .comments .col-item, .reports .col-item, .moderation-logs .col-item {
-        border-bottom: 1px solid #353535;
+    .col-item:nth-child(1) {
+        border-top: 1px solid $header-color;
     }
-
-    .col-item:last-child {
-        border-bottom: none;
+    .home .col-item:nth-child(1) {
+        border-top: 0;
+    }
+    .col-item {
+        border-left: 1px solid #172D44;
+        border-right: 1px solid #172D44;
+        border-bottom: 1px solid $header-color;
+    }
+    .col-item:hover {
+        background: $header-color;
     }
 
     .menu {
-        background: $main-color;
+        background: $header-color;
     }
 
     .menu-item:hover {
@@ -203,4 +211,21 @@ $btn-color: #214b75;
 
     table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { color: #ddd; }
     table tr th, table tr td { color: #ddd; }
+
+    .right-footer {
+        background: $header-color;
+    }
+
+    .share-box {
+        background: #172D44;
+    }
+
+    .disabled {
+        background: #0aa;
+        color: #FFF;
+    }
+
+    .share-box textarea {
+        background: $header-color;
+    }
 }

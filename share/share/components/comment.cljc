@@ -73,7 +73,7 @@
      (cond
        (nil? current-user)
        [:div.column1 {:style {:height 120
-                              :border "1px solid #777"
+                              :border "1px solid #999"
                               :border-radius 4
                               :align-items "center"
                               :justify-content "center"}}
@@ -82,13 +82,13 @@
 
        :else
        (if disabled?
-         [:div {:style {:border "1px solid rgb(169,169,169)"
+         [:div {:style {:border "1px solid #999"
                         :border-radius 4
                         :font-size 16
                         :background "#fff"
                         :width "100%"
                         :padding 12
-                        :min-height 150}}]
+                        :min-height 100}}]
          [:div.column
          (post-box/post-box
           :comment
@@ -109,7 +109,7 @@
                    :padding 12
                    :white-space "pre-wrap"
                    :overflow-wrap "break-word"
-                   :min-height 150}
+                   :min-height 100}
 
            :other-attrs {:auto-focus (if current-reply true false)
                          :ref (fn [v]
@@ -124,7 +124,7 @@
          (if preview?
            [:div.column
             [:div.divider {:style {:margin-bottom 12}}]
-            (post-preview body :asciidoc {:font-size 18})])]))
+            (post-preview body :markdown {:font-size 18})])]))
 
      ;; submit button
      [:div.row {:style {:align-items "center"
@@ -158,6 +158,7 @@
 
            :else
            (ui/button {:id "comment-box-btn"
+                       :class "btn-primary"
                        :style {:width 138}
                        :on-key-down (fn [e]
                                       (when (= 13 (.-keyCode e))
@@ -186,28 +187,28 @@
            :entity-id id}
         body (or (citrus/react [:comment :drafts k]) body)]
     [:div.comment-box {:style {:margin-bottom 48}}
-     (ui/textarea {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
-                                                        [:comment :refs k] v))
-                   :auto-focus true
-                   :style {:border-radius 4
-                           :background "transparent"
-                           :font-size "16px"
-                           :line-height "1.7"
-                           :resize "none"
-                           :width "100%"
-                           :padding 12
-                           :white-space "pre-wrap"
-                           :overflow-wrap "break-word"
-                           :min-height 150}
-                   :default-value body
-                   :on-change (fn [e]
-                                (let [v (util/ev e)]
-                                  (citrus/dispatch! :comment/save-local k v)))})
+     (ui/textarea-autosize {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
+                                                                 [:comment :refs k] v))
+                            :auto-focus true
+                            :style {:border-radius 4
+                                    :background "transparent"
+                                    :font-size "16px"
+                                    :line-height "1.7"
+                                    :resize "none"
+                                    :width "100%"
+                                    :padding 12
+                                    :white-space "pre-wrap"
+                                    :overflow-wrap "break-word"
+                                    :min-height 100}
+                            :default-value body
+                            :on-change (fn [e]
+                                         (let [v (util/ev e)]
+                                           (citrus/dispatch! :comment/save-local k v)))})
 
      (when preview?
        [:div.column
         [:div.divider {:style {:margin-bottom 12}}]
-        (post-preview body :asciidoc nil)]
+        (post-preview body :markdown nil)]
 )
      ;; submit button
      [:div.row1 {:style {:justify-content "flex-end"
@@ -226,10 +227,9 @@
                                                 [table fk])
                               (citrus/dispatch! :comment/clear-item k)
                               (if show? (reset! show? false)))))]
-         (ui/button {:class (str "btn"
-                                 (if (not (str/blank? body))
-                                   ""
-                                   " disabled"))
+         (ui/button {:class (if (str/blank? body)
+                              "disabled"
+                              "btn-primary")
                      :style {:margin-left 24
                              :margin-top 6
                              :width 138}
@@ -289,7 +289,7 @@
         [:a.control.row1 {:on-click #(swap! expand-replies? not)
                           :style {:align-items "flex-end"
                                   :font-size 14}}
-         [:span {:style {:font-weight "600"}}
+         [:span {:style {:font-weight "500"}}
           (str replies-count)]
          [:span {:style {:margin-left 4
                          :margin-right 4}}
@@ -308,14 +308,13 @@
                            "favorite"
                            "favorite_border")
                    :color (if liked?
-                            (colors/primary)
+                            colors/like
                             (colors/shadow))
                    :width 20
                    :height 20})]
 
-
         [:span.number {:style {:margin-left 6
-                               :font-size "15px"
+                               :font-size 14
                                :color (colors/shadow)
                                :font-weight "600"}}
          likes]]
@@ -450,7 +449,7 @@
            (if @edit-mode?
              (update-comment-box comment edit-mode? [table fk])
              (widgets/transform-content body
-                                        {:body-format :asciidoc
+                                        {:body-format :markdown
                                          :on-mouse-up (fn [e]
                                                        (let [text (util/get-selection-text)]
                                                          (when-not (str/blank? text)
@@ -482,7 +481,8 @@
                                                :id (:id entity)
                                                :last (last comments)})))})
      (when loading?
-       [:div.center [:div.spinner]])]))
+       [:div.center {:style {:margin "24px 0"}}
+        [:div.spinner]])]))
 
 (rum/defc comment-list < rum/reactive
   {:after-render (fn [state]

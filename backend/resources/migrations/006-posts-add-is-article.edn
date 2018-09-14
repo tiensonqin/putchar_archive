@@ -1,0 +1,2 @@
+{:up ["alter table posts add column is_article boolean default false"]
+ :down ["alter table posts drop column is_article"]}

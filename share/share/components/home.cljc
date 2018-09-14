@@ -3,14 +3,16 @@
             [share.kit.query :as query]
             [share.kit.ui :as ui]
             [share.components.post :as post]
-            [share.components.widgets :as widgets]
             [share.kit.mixins :as mixins]
+            [share.util :as util]
             [appkit.citrus :as citrus]))
 
 (rum/defc home < rum/reactive
   (mixins/query :home)
   [params]
-  [:div.column {:style {:padding-bottom 48}}
+  [:div.column.home {:style {:padding-bottom 48}}
+   (let [edit-put? (citrus/react [:post :edit-put?])]
+     (post/put-box nil (if edit-put? true) false))
    (let [posts (citrus/react [:posts :hot])]
      (query/query
        (post/post-list posts

@@ -44,10 +44,8 @@ body {
     user-select: none;
     flex-direction: row;
     justify-content: space-between;
-    height: 60px;
-    padding: 3px 0;
     width: 100%;
-    max-width: 768px;
+    max-width: 1104px;
     margin: 0 auto;
     -webkit-transform: translate3d(0,0,0);
 }
@@ -84,15 +82,15 @@ a {
 }
 
 a:hover {
-    text-decoration: none;
+    text-decoration: underline;
 }
 
-.header a:hover, .btn:hover, .logo-area a:hover, a.comments_count:hover, .empty-posts a:hover, a.no-decoration, a.no-decoration:hover {
+a.control:hover, .header a:hover, .btn:hover, a.comments_count:hover, .empty-posts a:hover, a.no-decoration, a.no-decoration:hover {
     text-decoration: none;
 }
 
 .wrap {
-    max-width: 768px;
+    max-width: 1104px;
     margin: 0 auto;
 }
 
@@ -285,16 +283,10 @@ ul.no-bullet { list-style: none; }
 ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
 
 .disabled {
-    background-color: #eee;
-    opacity: 1;
-    color: rgba(0, 0, 0, 0.25);
+    opacity: 0.3;
 }
 
 .disabled:hover {
-    border-color: #e6d8d8;
-    background-color: #eee;
-    opacity: 1;
-    color: rgba(0, 0, 0, 0.25);
 }
 
 .show-style li {
@@ -322,7 +314,7 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     border-radius: 50%;
 }
 
-.menu-item:hover {
+.menu-item:hover, .post-item:hover {
     cursor: pointer;
 }
 
@@ -333,7 +325,6 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
 
 .post-item .editor p {
     margin-bottom: 0;
-    font-size: 15px;
 }
 
 .post-item .imageblock, .post-item .literalblock, .post-item .listingblock, .post-item .verseblock, .post-item .videoblock {
@@ -382,8 +373,10 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     /* margin-top: -8px; */
 }
 
+.col-item {
+    overflow: hidden;
+}
 .post-title {
-    font-size: 18px;
     word-break: break-word;
 }
 
@@ -427,7 +420,7 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     }
 }
 
-.tag {
+a.tag {
     padding: 3px 6px;
     margin: 12px 12px 12px 0;
     border-radius: 3px;
@@ -466,4 +459,14 @@ span.active {
 @keyframes rotate {
     0%    { transform: rotate(0deg); }
     100%  { transform: rotate(360deg); }
+}
+
+a.dot-seperator:before {
+    content:'\00B7';
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+textarea, input {
+    outline: none;
 }

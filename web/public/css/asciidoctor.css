@@ -140,8 +140,6 @@ img { -ms-interpolation-mode: bicubic; }
 
 .antialiased, body { -webkit-font-smoothing: antialiased; }
 
-textarea { height: auto; min-height: 50px; }
-
 select { width: 100%; }
 
 p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }

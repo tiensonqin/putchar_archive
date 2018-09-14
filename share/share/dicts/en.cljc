@@ -93,7 +93,7 @@
    :post-body-placeholder "Write your thoughts..."
    :publish "Publish"
    :settings "Settings"
-   :publish-to "Publish to: "
+   :publish-to "Publish an article"
    :vote "Vote"
    :unvote "Unvote"
    :down "Down"
@@ -119,7 +119,7 @@
    :search "Search"
    :search-posts "Search posts..."
    :reports "Reports"
-   :write-new-post "Write new post"
+   :write-new-post "Write an article"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
    :root-title "Putchar - The repo of programmers' thoughts."
    :root-description "Putchar is a place for hackers to publish and discuss their thoughts. Everyone has a simple and free blog which supports multiple formats include Markdown and Asciidoctor."
@@ -255,7 +255,7 @@ So you can git commit a new post, and it will be automatically published on Putc
    :delete-this-comment "Delete this comment"
    :tags "Tags"
    :add-tags-label "Add tags (at least 1 tag):"
-   :add-tags "Up to 5 tags, seperated by commas..."
+   :add-tags "Up to 3 tags, seperated by commas..."
    :email-notification-settings "Email notification settings"
    :email-notification-settings-text "Email me when someone replies to my post or mentions my @username."
    :my-data "My Data"
@@ -305,4 +305,5 @@ So you can git commit a new post, and it will be automatically published on Putc
    :post-primary-language "Post primary language"
    :is-my-default-language-choice " is my default language choice, "
    :change-it-to "change it to "
-   :privacy "Privacy"})
+   :privacy "Privacy"
+   :comments "comments"})

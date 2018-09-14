@@ -236,12 +236,11 @@
       (stat/create conn post-id "read" (:remote-addr request))
       (util/ok {:read true}))))
 
-(defmethod handle :post/new-draft [[{:keys [uid datasource redis]} data]]
+(defmethod handle :post/new [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (if (block/examine conn uid)
       (when-let [post (post/create conn (assoc data
-                                               :user_id uid
-                                               :is_draft true))]
+                                               :user_id uid))]
         (util/ok post))
       (util/bad "Sorry your account is disabled for now."))))
 

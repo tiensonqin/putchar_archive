@@ -15,7 +15,7 @@
 (defn primary-text
   []
   (if (= @theme "black")
-    "#6dd"
+    "#ddd"
     "#071839"))
 
 (defn shadow
@@ -39,12 +39,14 @@
 (defn logo-background
   []
   (if (= @theme "black")
-    "#FFF"
-    "#000"))
+    "#6dd"
+    "#071839"))
 
-(defn logo-text-background
+(def like "#E0245E")
+
+
+(defn textarea
   []
   (if (= @theme "black")
-    "#000"
-    "#FFF"
-    ))
+    "#1f364d"
+    "#FFF"))

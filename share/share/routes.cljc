@@ -28,7 +28,7 @@
         ["search"                                                 :search]
         ["reports"                                                :reports]
         ["moderation-logs"                                                :moderation-logs]
-        ["new-post"                                                    :new-post]
+        ["new-article"                                                    :new-post]
         ["privacy"                                                :privacy]
         [["@" :screen_name "/comments"]   :comments]
 
