@@ -26,7 +26,8 @@
             [api.services.slack :as slack]
             [clojure.set :as set]
             [api.db.moderation-log :as mlog]
-            [share.content :as content]))
+            [share.content :as content]
+            [api.services.opengraph :as opengraph]))
 
 (defonce ^:private table :posts)
 (defonce ^:private fields [:*])
@@ -34,7 +35,7 @@
                                   :title :tops
                                   :rank :comments_count :permalink
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
-                                  :lang
+                                  :lang :data
                                   :body :body_format :tags
                                   :cover :video :is_article]
                          :from [table]})
@@ -117,12 +118,22 @@
     (cache/wcar*
      (car/hset tags-k screen-name new-tags))))
 
+(defn query-opengraph
+  "Get last url from post title and query it's open graph metadata."
+  [db post]
+  (when-let [url (first (su/get-links (:title post)))]
+    (opengraph/query url
+      (fn [data]
+        (util/update db table (:id post) {:data (pr-str data)}))
+      (fn [e]
+        (slack/error (str "Parse url: % failed, post-id: %s." url (:id post))
+         e)))))
+
 (defn create
   [db data]
   (let [m (-> data
               (clojure.core/update :body safe-trim)
-              (clojure.core/update :title safe-trim)
-              (clojure.core/update :title su/capitalize-first-char))
+              (clojure.core/update :title safe-trim))
         tags (->tags (:tags m))
         m (assoc m :tags tags)
         screen-name (or
@@ -132,15 +143,16 @@
         result (util/create db table (assoc m :user_screen_name screen-name) :flake? true)
         permalink (if (false? (:is_article data))
                     (str "@" screen-name
-                         "/" (:id result)))
-        result (if permalink
-                 (do
-                   (util/update db table (:id result) {:permalink permalink})
-                   (get db (:id result)))
-                 result)]
+                         "/" (:id result)))]
     (when (and (:is_article data) (seq tags))
       (update-tags screen-name tags #{}))
-    result))
+    (when permalink
+      (util/update db table (:id result) {:permalink permalink})
+      result)
+    (when (and (false? (:is_draft result))
+               (false? (:is_article result)))
+      (query-opengraph db result))
+    (get db (:id result))))
 
 (defn update
   [db id m]
@@ -153,7 +165,7 @@
                   (clojure.core/update :body safe-trim)
 
                   (:title m)
-                  (clojure.core/update :title (comp su/capitalize-first-char safe-trim)))
+                  (clojure.core/update :title safe-trim))
               tags (->tags (:tags m))
               m (if tags
                   (assoc m :tags tags)

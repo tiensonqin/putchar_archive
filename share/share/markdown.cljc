@@ -9,10 +9,13 @@
                    com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension
                    com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension
                    com.vladsch.flexmark.ext.tables.TablesExtension
+                   com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension
                    com.vladsch.flexmark.ext.youtube.embedded.YouTubeLinkExtension
                    com.vladsch.flexmark.html.HtmlRenderer
                    com.vladsch.flexmark.parser.Parser
                    com.vladsch.flexmark.util.options.MutableDataSet
+                   com.vladsch.flexmark.ext.definition.DefinitionExtension
+                   com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension
                    java.util.ArrayList)))
 
 #?(:clj
@@ -26,7 +29,11 @@
                           (StrikethroughExtension/create)
                           (TocExtension/create)
                           (TablesExtension/create)
-                          (YouTubeLinkExtension/create)])))))
+                          (YouTubeLinkExtension/create)
+                          (TaskListExtension/create)
+                          (DefinitionExtension/create)
+                          (AbbreviationExtension/create)
+                          ])))))
 
 #?(:clj
    (defn parser-builder
@@ -57,3 +64,12 @@
      ;; TODO: add toc extension
      (marked str)
      ))
+
+;; AST
+#?(:clj
+   (defn node-children [n]
+     (loop [c (.getFirstChild n)
+            acc []]
+       (if (some? c)
+         (recur (.getNext c) (conj acc c))
+         acc))))

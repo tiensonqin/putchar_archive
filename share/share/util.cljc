@@ -305,6 +305,10 @@
        "]*"))
 (def direct-link-re #"(?![^<]*</)(https?://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|])")
 
+(defn get-links
+  [s]
+  (re-seq (re-pattern link-re) s))
+
 (defn parse-int
   [x]
   #?(:cljs (js/parseInt x)

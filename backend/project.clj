@@ -44,7 +44,8 @@
                  [compojure "1.6.0"]
                  [tongue "0.2.4"]
                  [http-kit "2.2.0"]
-                 [selmer "1.11.6"]]
+                 [selmer "1.11.6"]
+                 [enlive "1.1.6"]]
 
   :source-paths ["src" "../share"]
   :jvm-opts ["-Duser.timezone=UTC" "-Dclojure.spec.check-asserts=true"]
@@ -68,7 +69,6 @@
 
   :profiles {:dev {:dependencies [[org.clojure/tools.nrepl "0.2.13"]
                                   [reloaded.repl "0.2.3"]
-                                  [enlive "1.1.6"]
                                   [expound "0.6.0"]]
                    :source-paths ["dev"]}
              ;; :uberjar {:main backend.application

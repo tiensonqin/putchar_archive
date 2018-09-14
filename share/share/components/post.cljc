@@ -560,11 +560,14 @@
               (add-tags form-data
                         {:padding 12
                          :background (colors/textarea)}
-                        (if post false true)))
+                        (if (or post form-data)
+                          false
+                          true)))
 
             (ui/textarea-autosize {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
                                                                         [:post :put-box-ref] v))
-                                   :auto-focus (if (nil? post)
+                                   :auto-focus (if (and (nil? post)
+                                                        (nil? form-data))
                                                  false
                                                  true)
                                    :style {:border "none"
@@ -802,8 +805,33 @@
                                               :margin-right 6}}
                     "<img src=\"https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png?v8\" style=\"width:24px;height:24px\" class=\"emoji\" data-reactroot=\"\">")
                    (:title post)]
-                  (widgets/transform-content (:title post)
-                                             {}))]
+                  [:div
+                   (widgets/transform-content (:title post)
+                                              {})
+                   (when (:data post)
+                     (let [{:keys [url title description image] :as data} (util/read-string (:data post))]
+
+                       [:a.no-decoration.row1 {:href url
+                                               :target "_blank"
+                                               :on-click #?(:cljs
+                                                            (fn [e]
+                                                              (.stopPropagation e))
+                                                            :clj
+                                                            identity)
+                                               :style {:align-items "center"
+                                                       :color (colors/icon-color)
+                                                       :margin-top 6}}
+                        (if image
+                          [:img {:src image
+                                 :style {:margin-right 12}}])
+                        (if (or title description)
+                          [:div.column1
+                           (when title
+                             [:p {:style {:font-size 15}}
+                              title])
+                           (when description
+                             [:p {:style {:font-size 14}}
+                              description])])]))])]
 
                [:a.control {:href post-link
                             :title (str (:comments_count post)
