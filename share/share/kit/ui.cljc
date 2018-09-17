@@ -159,7 +159,7 @@
            :overlay [:ul.menu
                      {:style (merge
                               {:margin-top 12
-                               :width 276
+                               :width 246
                                :font-weight 600
                                :z-index 9}
                               menu-style)}

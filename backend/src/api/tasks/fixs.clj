@@ -124,3 +124,10 @@
   (let [images (read-string (slurp "/home/tienson/images"))]
     (doseq [image images]
      (shell/sh "wget" "-P" "/home/tienson/photos" ))))
+
+(defn links
+  [db]
+  (let [posts (j/query db ["select * from posts"])]
+    (doseq [{:keys [id body] :as post} posts]
+      (if-let [link (post/extract-link body)]
+        (post/update db id {:link link})))))

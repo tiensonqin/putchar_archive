@@ -280,9 +280,6 @@
              (t :cancel))))])
 
 (rum/defcs render < (rum/local nil ::form-data)
-  {:after-render (fn [state]
-                  (util/scroll-to-element)
-                  state)}
   [state {:keys [init-state
                  title
                  fields

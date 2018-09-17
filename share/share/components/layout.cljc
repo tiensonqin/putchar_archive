@@ -33,8 +33,8 @@
   []
   (let [locale (citrus/react :locale)
         zh-cn? (= locale :zh-cn)]
-    [:div.ubuntu.shadow.right-sub {:class "column1"
-                                   :style {:font-size 14}}
+    [:div.ubuntu.right-sub {:class "column1"
+                            :style {:font-size 14}}
 
      [:div.row1 {:style {:align-items "center"}}
       [:a.control {:href "/newest"

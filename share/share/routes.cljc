@@ -2,7 +2,9 @@
   (:require [clojure.string :as str]
             [bidi.bidi :as bidi]
             [share.util :as util]
-            [share.config :as config]))
+            [share.config :as config]
+            #?(:cljs [web.scroll :as scroll])
+            #?(:cljs [goog.dom :as gdom])))
 
 (def routes
   ["/" [[""                                                       :home]

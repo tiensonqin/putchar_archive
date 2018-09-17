@@ -1,8 +1,6 @@
 (ns web.pushy
   (:require [goog.events :as events]
-            [clojure.string]
-            [goog.dom :as gdom]
-            [web.scroll :as scroll])
+            [clojure.string])
   (:import goog.History
            goog.history.Html5History
            goog.history.Html5History.TokenTransformer
@@ -96,10 +94,7 @@
                                 (let [token (.-token e)]
                                   (when-let [match (-> token match-fn identity-fn)]
                                     (dispatch-fn match)
-
-                                    (when-let [hash js/window.location.hash]
-                                      (when-let [element (gdom/getElement (subs hash 1))]
-                                        (scroll/into-view element))))))))
+)))))
 
         ;; Dispatch on initialization
         (when-let [match (-> (get-token this) match-fn identity-fn)]

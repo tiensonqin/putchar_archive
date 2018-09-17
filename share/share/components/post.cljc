@@ -602,26 +602,27 @@
            [:div.column {:style {:justify-content "center"}}
             [:div.space-between
              (let [link (:link post)]
-               [:a.post-title.no-decoration.row1 (if link
-                                                   {:style {:margin-right 6
-                                                            :align-items "center"}
-                                                    :on-click (fn [e]
-                                                                (.stopPropagation e))
-                                                    :href link
-                                                    :target "_blank"}
+               [:a.post-title.no-decoration (if link
+                                              {:style {:margin-right 6}
+                                               :on-click (fn [e]
+                                                           (.stopPropagation e))
+                                               :href link
+                                               :target "_blank"}
 
-                                                   {:style {:margin-right 6}
-                                                    :on-click util/stop
-                                                    :href post-link})
+                                              {:style {:margin-right 6}
+                                               :on-click util/stop
+                                               :href post-link})
                 (:title post)
                 (if link
                   (ui/icon {:type :link
                             :width 20
                             :height 20
-                            :color (colors/primary)
-                            :opts {:style {:margin-left 6}}}))])
+                            :color (colors/shadow)
+                            :opts {:style {:margin-left 6
+                                           :display "inline-block"
+                                           :vertical-align "middle"}}}))])
 
-             [:a.control {:href post-link
+             [:a.control {:href (str post-link "#comments")
                           :title (str (:comments_count post)
                                       " "
                                       (t :replies))
@@ -982,7 +983,7 @@
 
                (quote-selection current-user)]
 
-              [:div {:style {:margin-top 96}}
+              [:div#comments {:style {:margin-top 96}}
                (comment/comment-list post)]
 
               (read-post post)]])

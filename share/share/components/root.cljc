@@ -436,23 +436,20 @@
                  state)
    :after-render (fn [state]
                    #?(:cljs
-                      (do
-                        (util/scroll-to-element)
-
-                        (let [reconciler (-> state :rum/args first)
-                              router (bidi/match-route share.routes/routes
-                                                       js/window.location.pathname)
-                              current-handler (:handler router)]
-                          (when (not= current-handler :comment)
+                      (let [reconciler (-> state :rum/args first)
+                            router (bidi/match-route share.routes/routes
+                                                     js/window.location.pathname)
+                            current-handler (:handler router)]
+                        (when (not= current-handler :comment)
+                          (if-let [hash js/window.location.hash]
+                            (util/scroll-to-element hash)
                             (when-let [last-position (get-in @reconciler
                                                              [:last-scroll-top (util/get-current-url)])]
-                              (.scrollTo js/window 0 last-position)))
+                              (.scrollTo js/window 0 last-position))))
 
-                          (.addEventListener js/window "popstate"
-                                             (fn [e]
-                                               (citrus/dispatch-sync! :query/into-back-mode))))
-
-                        (scroll/open!)))
+                        (.addEventListener js/window "popstate"
+                                           (fn [e]
+                                             (citrus/dispatch-sync! :query/into-back-mode)))))
                    state)}
   [reconciler]
   (let [show-panel? (citrus/react [:layout :show-panel?])
@@ -496,7 +493,7 @@
                                             3)
                               :margin-left 24
                               :margin-right 3
-                              :width 256}}
+                              :width 240}}
           (layout/right-footer)])
        ]]
      (login/signin-modal mobile?)
