@@ -5,6 +5,11 @@
 .black-theme #head {
   background: #1f364d;
 }
+@media screen and (max-width: 768px) {
+  .black-theme .col-item:hover {
+    background: #1f364d;
+  }
+}
 .black-theme a {
   color: #add8e6;
 }
@@ -132,19 +137,8 @@
 .black-theme .editor h1 a, .black-theme .editor h2 a, .black-theme .editor h3 a, .black-theme .editor h4 a, .black-theme .editor h5 a, .black-theme .editor h6 a {
   color: #ddd;
 }
-.black-theme .col-item:nth-child(1) {
-  border-top: 1px solid #1f364d;
-}
-.black-theme .home .col-item:nth-child(1) {
-  border-top: 0;
-}
 .black-theme .col-item {
-  border-left: 1px solid #172D44;
-  border-right: 1px solid #172D44;
   border-bottom: 1px solid #1f364d;
-}
-.black-theme .col-item:hover {
-  background: #1f364d;
 }
 .black-theme .menu {
   background: #1f364d;
@@ -166,12 +160,7 @@
 }
 .black-theme .shadow {
   border-radius: 4px;
-  -webkit-box-shadow: 0 1px 8px #0e2439;
-  box-shadow: 0 1px 8px #0e2439;
-  display: block;
-}
-.black-theme .share-box {
-  background: #172D44;
+  background: #162d43;
 }
 .black-theme .disabled {
   background: #0aa;
@@ -179,9 +168,6 @@
 }
 .black-theme .disabled:hover {
   color: #FFF;
-}
-.black-theme .share-box textarea {
-  background: #1f364d;
 }
 
 /*# sourceMappingURL=black-theme.css.map */

@@ -179,12 +179,6 @@
   box-shadow: 0 1px 8px #ddd;
   display: block;
 }
-.white-theme .share-box {
-  background: #f0f0f0;
-}
-.white-theme .share-box textarea {
-  background: #FFFFFF;
-}
 .white-theme .disabled {
   background: #3057a0;
   color: #FFF;

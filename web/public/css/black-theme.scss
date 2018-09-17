@@ -13,6 +13,12 @@ $btn-color: #214b75;
         background: $header-color;
     }
 
+    @media screen and (max-width: 768px) {
+        .col-item:hover {
+            background: $header-color;
+        }
+    }
+
     a {
         color: #add8e6;
     }
@@ -178,19 +184,8 @@ $btn-color: #214b75;
         color: #ddd;
     }
 
-    .col-item:nth-child(1) {
-        border-top: 1px solid $header-color;
-    }
-    .home .col-item:nth-child(1) {
-        border-top: 0;
-    }
     .col-item {
-        border-left: 1px solid #172D44;
-        border-right: 1px solid #172D44;
         border-bottom: 1px solid $header-color;
-    }
-    .col-item:hover {
-        background: $header-color;
     }
 
     .menu {
@@ -214,14 +209,7 @@ $btn-color: #214b75;
 
     .shadow {
         border-radius: 4px;
-        -webkit-box-shadow: 0 1px 8px $main-color;
-        box-shadow: 0 1px 8px $main-color;
-        display: block;
-    }
-
-
-    .share-box {
-        background: #172D44;
+        background: #162d43;
     }
 
     .disabled {
@@ -231,9 +219,5 @@ $btn-color: #214b75;
 
     .disabled:hover {
         color: #FFF;
-    }
-
-    .share-box textarea {
-        background: $header-color;
     }
 }

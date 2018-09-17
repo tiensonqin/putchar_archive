@@ -247,15 +247,16 @@
            (if mobile?
              [:a {:style {:padding-right 12}
                   :href "/new-article"}
-              (ui/icon {:type :edit})]
+              (ui/icon {:type :edit
+                        :color (colors/shadow)})]
              [:a.row1.no-decoration {:style {:align-items "center"
-                                            :color (colors/primary-text)
-                                            :padding-right 12}
-                                    :href "/new-article"}
-             (widgets/raw-html {:style {:display "inline"
-                                        :margin-right 6}}
-                               "<img src=\"https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png?v8\" style=\"width:24px;height:24px\" class=\"emoji\" data-reactroot=\"\">")
-             (t :write-new-post)]))
+                                             :color (colors/primary-text)
+                                             :padding-right 12}
+                                     :href "/new-article"}
+              (widgets/raw-html {:style {:display "inline"
+                                         :margin-right 6}}
+                                "<img src=\"https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png?v8\" style=\"width:24px;height:24px\" class=\"emoji\" data-reactroot=\"\">")
+              (t :write-new-post)]))
 
          ;; search
          (if (not post?)
