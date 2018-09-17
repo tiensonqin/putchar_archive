@@ -65,11 +65,10 @@
    :replies "条评论"
    :invite "邀请朋友"
    :signin "登录"
-   :slogan "Hacker's thoughts."
+   :slogan "The repo of programmers' thoughts."
    :members "成员"
    :admins "管理员"
    :support "支持"
-   :github-sync "Github 同步"
    :contact "联系我们"
    :privacy "隐私"
    :code-of-conduct "社区规则"
@@ -108,7 +107,6 @@
    :no-posts-yet "暂时没有文章。"
    :no-comments-yet "暂时没有评论。"
    :no-drafts-yet "暂时没有草稿。"
-   :no-bookmarks-yet "暂时没有收藏。"
    :link "链接"
    :close "关闭"
    :post-permalink-copied "文章链接已复制!"
@@ -124,8 +122,8 @@
    :reports "举报"
    :write-new-post "写文章"
    :new-post-description "写一篇新的文章。"
-   :root-title "Hacker's thoughts - Putchar"
-   :root-description "Putchar 是一个纯粹的技术文章分享社区。文章格式支持 Markdown 和 Asciidoctor, 支持 Github 同步。"
+   :root-title "The repo of programmers' thoughts. - Putchar"
+   :root-description "Putchar 是一个纯粹的技术文章分享社区。文章格式支持 Markdown 和 Asciidoctor。"
    :go-to-profile "文章"
    :profile-updated "已保存!"
    :sign-out "注销"
@@ -197,11 +195,6 @@
    :invites-sent "邀请已发送!"
    :twitter-handle "Twitter 用户名"
    :github-handle "Github 用户名"
-
-   :connect-github "设置 Github 同步"
-   :github-repo-link-placeholder "你的仓库地址"
-   :your-github-repo "你的 Github 仓库: "
-
    :public "公开"
    :description "简介"
    :upload-a-cover "上传封面"
@@ -236,29 +229,12 @@
    :website-name "Putchar"
    :popular "热门话题"
    :new-created "最新"
-   :bookmark "收藏"
-   :unbookmark "取消收藏"
-   :bookmarks "收藏"
    :welcome-to-putchar "欢迎来到 Putchar!"
    :activate-your-account "登录"
    :last-reply-by "最近回复: "
    :frequent-poster "最多讨论: "
    :posted-by "提交: "
    :email-login-placeholder "你的邮箱地址"
-   :github-connect-text "[NOTE]
-====
-你可以 git 提交一篇文章到指定的仓库, 这篇文章将会自动发布到 Putchar。
-同样你也可以在网站上创建或者编辑某篇文章, 所有修改将会自动提交到你的仓库里。
-====
-
-.步骤
-****
-. 你赋予我们 `public_repo` 权限。
-
-. 我们会创建一个默认仓库 *putchar-blog*, 你可以后续修改名字。
-
-. 我们会在该仓库上添加一个 push hook, 用来监听该仓库所有的提交。
-****"
    :report-this-post "举报"
    :delete-this-post "删除"
    :report-this-comment "举报"
@@ -271,16 +247,13 @@
    :email-notification-settings "邮件通知"
    :email-notification-settings-text "当别人回复我或者提及我的用户名邮件通知我"
    :my-data "我的数据"
-   :about-description "Putchar 是一个纯粹的技术文章分享社区。文章格式支持 Markdown 和 Asciidoctor, 支持 Github 同步。"
+   :about-description "Putchar 是一个纯粹的技术文章分享社区。文章格式支持 Markdown 和 Asciidoctor。"
    :about-text "
 === 功能
 
 
 * 一个简单免费的博客。
   支持标签和多种格式包括 Markdown, Asciidoctor。
-
-* 可以用 *Git* 来发布文章, Putchar 网站和 Github 自动同步。:tada:
-  你可以 Git commit 一篇文章，这篇文章将会自动发布到 Putchar， 同样你也可以在网站上创建或者编辑某篇文章, 所有修改将会自动提交到你的仓库里。
 
 === FAQ
 

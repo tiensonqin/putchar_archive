@@ -76,10 +76,8 @@
 
    :user/update
    (fn [state data]
-     {:state {:loading? (if (or (contains? (set (keys data))
-                                           :email_notification)
-                                (contains? (set (keys data))
-                                           :github_repo))
+     {:state {:loading? (if (contains? (set (keys data))
+                                       :email_notification)
                           false
                           true)}
       :http  {:params   [:user/update data]

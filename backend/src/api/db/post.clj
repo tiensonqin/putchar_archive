@@ -33,11 +33,11 @@
 (defonce ^:private fields [:*])
 (def ^:private base-map {:select [:id :flake_id :user_id :user_screen_name
                                   :title :tops
-                                  :rank :comments_count :permalink
+                                  :rank :comments_count :permalink :link
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
                                   :lang :data
                                   :body :body_format :tags
-                                  :cover :video :is_article]
+                                  :cover :video]
                          :from [table]})
 
 ;; user-screen-name => (map of tag * post-count)
@@ -118,6 +118,13 @@
     (cache/wcar*
      (car/hset tags-k screen-name new-tags))))
 
+(defn extract-link
+  "Extract first link from body."
+  [body]
+  (let [pattern (re-pattern (str "^" su/link-re))]
+    (when-let [body (safe-trim body)]
+     (re-find pattern body))))
+
 (defn query-opengraph
   "Get last url from post title and query it's open graph metadata."
   [db post]
@@ -140,18 +147,9 @@
                      (:screen_name data)
                      (:screen_name (u/get db (:user_id m) [:screen_name])))
 
-        result (util/create db table (assoc m :user_screen_name screen-name) :flake? true)
-        permalink (if (false? (:is_article data))
-                    (str "@" screen-name
-                         "/" (:id result)))]
-    (when (and (:is_article data) (seq tags))
+        result (util/create db table (assoc m :user_screen_name screen-name) :flake? true)]
+    (when (seq tags)
       (update-tags screen-name tags #{}))
-    (when permalink
-      (util/update db table (:id result) {:permalink permalink})
-      result)
-    (when (and (false? (:is_draft result))
-               (false? (:is_article result)))
-      (query-opengraph db result))
     (get db (:id result))))
 
 (defn update
@@ -169,10 +167,14 @@
               tags (->tags (:tags m))
               m (if tags
                   (assoc m :tags tags)
-                  m)]
-          (util/update db table id (assoc m
-                                          :updated_at (util/sql-now)))
-          (when (and (:is_article post) (seq tags))
+                  m)
+              link (if (:body m)
+                     (extract-link (:body m)))]
+          (util/update db table id (cond->
+                                       (assoc m :updated_at (util/sql-now))
+                                     link
+                                     (assoc :link link)))
+          (when (seq tags)
             (let [s1 (set tags)
                   s2 (if (seq old-tags)
                        (set old-tags)
@@ -199,7 +201,7 @@
                           :reason reason}))
 
        ;; updated tags
-       (when (and (:is_article post) (seq tags))
+       (when (seq tags)
          (update-tags user_screen_name #{} (set tags)))))))
 
 (defn brief-body
@@ -300,21 +302,6 @@
          after (clojure.core/get cursor :after)
          cursor (if after
                   (assoc cursor :after (util/select-one-field db :tops {:user_id user-id
-                                                                        :post_id after} :flake_id))
-                  cursor)
-         ids (cache/cursor key cursor)]
-     (->> (util/get-by-ids db table ids {:where where})
-          (map with-user)
-          (flatten-frequent-posters)))))
-
-(defn get-bookmarked
-  ([db user-id cursor]
-   (get-bookmarked db user-id post-conditions cursor))
-  ([db user-id where cursor]
-   (let [key (cache/redis-key "users" user-id "bookmarked_posts")
-         after (clojure.core/get cursor :after)
-         cursor (if after
-                  (assoc cursor :after (util/select-one-field db :bookmarks {:user_id user-id
                                                                         :post_id after} :flake_id))
                   cursor)
          ids (cache/cursor key cursor)]

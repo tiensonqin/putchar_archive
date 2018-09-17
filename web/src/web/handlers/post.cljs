@@ -31,8 +31,8 @@
                       (contains? #{:user} current-path)
                       :newest
 
-                      (= current-path :bookmarks)
-                      :bookmarked
+                      (= current-path :votes)
+                      :voted
 
                       :else
                       (or
@@ -109,7 +109,7 @@
                                     {:after (:flake_id last-post)
                                      :where [[:< :flake_id (:flake_id last-post)]]})
 
-                                  :bookmarked
+                                  :voted
                                   {:after (:id last-post)})}
                        (merge params))]
        {:state (-> state
@@ -217,28 +217,6 @@
    (fn [state id result]
      {:state state})
 
-   :post/bookmark
-   (fn [state id]
-     {:state (-> state
-                 (add :bookmarked id))
-      :http {:params [:post/bookmark {:id id}]
-             :on-load [:post/bookmark-ready id]}})
-
-   :post/bookmark-ready
-   (fn [state id result]
-     {:state state})
-
-   :post/unbookmark
-   (fn [state id]
-     {:state (-> state
-                 (delete :bookmarked id))
-      :http {:params [:post/unbookmark {:id id}]
-             :on-load [:post/unbookmark-ready id]}})
-
-   :post/unbookmark-ready
-   (fn [state id result]
-     {:state state})
-
    :post/open-delete-dialog?
    (fn [state post]
      {:state {:delete-dialog? true
@@ -264,37 +242,12 @@
    :citrus/set-post-form-data
    set-post-form-data
 
-   :post/new
-   (fn [state data input?]
-     {:state {:saving? true}
-      :http {:params [:post/new data]
-             :on-load [:citrus/post-new-ready input?]
-             :on-error :post/new-failed}})
-
-   :citrus/post-new-ready
-   (fn [state input? result]
-     (reset! input? false)
-     (when-let [ref (get-in state [:post :put-box-ref])]
-       (oset! ref "value" ""))
-     {:state (-> state
-                 (assoc-in [:post :edit-put?] nil)
-                 (assoc-in [:post :saving?] false)
-                 (assoc-in [:post :form-data :body] nil)
-                 (update-in [:posts :hot :result]
-                            (fn [posts]
-                              (vec (cons result posts)))))})
-
-   :post/new-failed
-   (fn [state result]
-     {:state {:saving? false}})
-
    ;; server will redirect to post-edit
    :post/new-draft
    (fn [state form-data]
      {:state {:saving? true}
       :http {:params [:post/new (-> (select-keys form-data [:title :body :body_format])
-                                    (assoc :is_draft true
-                                           :is_article true))]
+                                    (assoc :is_draft true))]
              :on-load :post/new-draft-ready
              :on-error :post/new-draft-failed}})
 

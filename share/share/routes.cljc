@@ -14,7 +14,7 @@
         ["settings"                                               :profile]
         [["@" :screen_name]                                       :user]
         ["votes"                                                  :votes]
-        ["bookmarks"                                              :bookmarks]
+        ["votes"                                              :votes]
         ["stats"                                                  :stats]
         ["newest"                                                 :newest]
         ["non-tech"                                               :non-tech]

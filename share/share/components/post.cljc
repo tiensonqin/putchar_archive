@@ -54,45 +54,6 @@
                               :color "rgb(127,127,127)"}}
         tops])]))
 
-(rum/defcs bookmark-text < rum/reactive
-  [state post]
-  (let [ bookmarked-posts (set (citrus/react [:post :bookmarked]))
-        bookmarked? (and (set? bookmarked-posts)
-                         (bookmarked-posts (:id post)))]
-    [:a.button-text {:style {:font-size 14}
-                     :on-click (fn [e]
-                                 (util/stop e)
-                                 (citrus/dispatch! (if bookmarked? :post/unbookmark :post/bookmark)
-                                                   (:id post)))}
-     (if bookmarked? (t :unbookmark) (t :bookmark))]))
-
-(rum/defcs bookmark < rum/reactive
-  (rum/local 0 ::init-bookmarks)
-  [state post icon-attrs]
-  (let [init-bookmarks (get state ::init-bookmarks)
-        bookmarked-posts (set (citrus/react [:post :bookmarked]))
-        bookmarked? (and (set? bookmarked-posts)
-                         (bookmarked-posts (:id post)))
-        bookmarks (-> (if (:bookmarks post) (:bookmarks post) 0)
-                      (+ @init-bookmarks))]
-    [:a.row1.no-decoration
-     {:style {:margin-right 15
-              :margin-left -6}
-      :title (if bookmarked? (t :unbookmark) (t :bookmark))
-      :on-click  (fn [e]
-                   (util/stop e)
-                   (citrus/dispatch! (if bookmarked? :post/unbookmark :post/bookmark)
-                                     (:id post))
-                   (swap! init-bookmarks (if bookmarked? dec inc)))}
-     (ui/icon (merge
-               {:type (if bookmarked?
-                        "bookmark"
-                        "bookmark_border")
-                :color (if bookmarked?
-                         (colors/primary)
-                         (colors/shadow))}
-               icon-attrs))]))
-
 (rum/defc edit-toolbox < rum/reactive
   []
   (let [form-data (citrus/react [:post :form-data])
@@ -127,7 +88,6 @@
               :style {:margin-left margin}}
           (ui/icon {:type :photo
                     :color (colors/shadow)})]))
-
      [:input
       {:id "photo_upload"
        :multiple true
@@ -139,11 +99,9 @@
        :hidden true}]]))
 
 (rum/defcs new-post-title < rum/reactive
-  (rum/local false ::fullscreen?)
   [state form-data init auto-focus?]
-  (let [fullscreen? (get state ::fullscreen?)
-        title-exists? (citrus/react [:post :post-title-exists?])]
-    [:div.new-post-title {:style {:position "relative"}}
+  (let [title-exists? (citrus/react [:post :post-title-exists?])]
+    [:div.new-post-title
      [:input.ubuntu {:type "text"
                      :class "header-text"
                      :autoComplete "off"
@@ -170,30 +128,7 @@
 
      (if title-exists?
        [:p {:class "help is-danger"} (str (:title form-data)
-                                          " already exists!")])
-
-     (when-not (util/mobile?)
-       [:a {:title (if @fullscreen?
-                     (t :back)
-                     (t :go-to-fullscreen))
-            :style {:position "absolute"
-                    :right 12}
-            :on-click (fn []
-                        #?(:cljs
-                           (if @fullscreen?
-                             (let [head (dommy/sel1 "#head")]
-                               (dommy/remove-class! head "hidden")
-                               (dommy/add-class! head "box")
-                               (reset! fullscreen? false))
-                             (let [head (dommy/sel1 "#head")]
-                               (dommy/remove-class! head "box")
-                               (dommy/add-class! head "hidden")
-                               (reset! fullscreen? true))
-                             )))}
-        (ui/icon {:type "fullscreen"
-                  :color (if @fullscreen?
-                           (colors/primary)
-                           "#666")})])]))
+                                          " already exists!")])]))
 
 (rum/defcs new-post-body <
   rum/reactive
@@ -503,124 +438,6 @@
 
       (new-post-body form-data nil nil false)]]))
 
-(defn- length-reminder
-  [body]
-  (- 512 (count body)))
-
-(rum/defcs put-box < rum/reactive
-  (rum/local false ::input?)
-  [state post disabled? expand?]
-  (let [input? (get state ::input?)
-        current-user (citrus/react [:user :current])]
-    (when (and (not @input?) expand?)
-      (reset! input? true))
-    (when current-user
-      (let [form-data (citrus/react [:post :form-data])
-            body (or (:body form-data) (:title post))
-            validated? (and body (util/post-body-validated? body))
-            reminder (and body (length-reminder body))]
-        (prn reminder)
-        [:div.row1.share-box {:style {:padding 12}}
-         [:a {:href (str "/@" (:screen_name current-user))
-              :style {:height 45}}
-          (ui/avatar {:src (util/cdn-image (:screen_name current-user))
-                      :shape "circle"})]
-         (if (not @input?)
-           [:input.row {:style {:height 45
-                                :border "none"
-                                :background (colors/textarea)
-                                :color (colors/primary)
-                                :font-size 16
-
-                                :padding 12
-                                :margin-left 12}
-                        :placeholder (t :share-news)
-                        :on-focus (fn []
-                                (reset! input? true))}]
-
-
-           [:div.column {:style {:padding-left 12
-                                 :position "relative"}}
-            (if (< reminder 20)
-              [:div {:style {:position "absolute"
-                             :right 6
-                             :font-size 16
-                             :color (if (> reminder 0)
-                                      "darkorange"
-                                      "red")
-                             :bottom 43}}
-               reminder])
-            (let [form-data (if (and (nil? (:tags form-data)) (:tags post))
-                              (let [tags (str/join "," (:tags post))]
-                                (citrus/dispatch-sync! :citrus/set-post-form-data
-                                                       {:tags tags})
-                                (assoc form-data :tags tags))
-                              form-data)]
-
-              (add-tags form-data
-                        {:padding 12
-                         :background (colors/textarea)}
-                        (if (or post form-data)
-                          false
-                          true)))
-
-            (ui/textarea-autosize {:input-ref (fn [v] (citrus/dispatch! :citrus/default-update
-                                                                        [:post :put-box-ref] v))
-                                   :auto-focus (if (and (nil? post)
-                                                        (nil? form-data))
-                                                 false
-                                                 true)
-                                   :style {:border "none"
-                                           :font-size "16px"
-                                           :width "100%"
-                                           :resize "none"
-                                           :padding "12px 12px 24px 12px"
-                                           :white-space "pre-wrap"
-                                           :overflow-wrap "break-word"
-                                           :min-height 100}
-                                   :placeholder (t :share-news)
-                                   :default-value (or body "")
-                                   :on-change (fn [e]
-                                                (citrus/dispatch-sync!
-                                                 :citrus/set-post-form-data
-                                                 {:body (util/ev e)}))})
-            (let [ok? (and validated?
-                           (not (str/blank? (:tags form-data)))
-                           (>= reminder 0))]
-              [:div.row {:style {:justify-content "flex-end"}}
-               (form/submit
-                (fn []
-                  (when ok?
-                    (if post
-                      (citrus/dispatch! :post/update-put
-                                        {:id (:id post)
-                                         :permalink (:permalink post)
-                                         :title body
-                                         :is_draft false
-                                         :is_article false
-                                         :tags (:tags form-data)}
-                                        input?)
-                      (citrus/dispatch! :post/new
-                                        {:title body
-                                         :is_draft false
-                                         :is_article false
-                                         :tags (:tags form-data)}
-                                        input?))))
-                {:class (if ok? "btn-primary" "disabled")
-                 :submit-style {:margin-left 12
-                                :margin-top 10}
-                 :cancel-icon? true
-                 :loading? [:post :saving?]
-                 :on-cancel (fn []
-                              (reset! input? false)
-                              (citrus/dispatch! :citrus/default-update
-                                                [:post :edit-put?]
-                                                nil)
-                              (citrus/dispatch! :citrus/default-update
-                                                [:post :form-data]
-                                                nil))})])])]))))
-
-
 (rum/defc ops-twitter
   [post zh-cn?]
   (when-not zh-cn?
@@ -694,7 +511,7 @@
       (:title post)]])))
 
 (rum/defc ops-menu
-  [post self? mobile? article?]
+  [post self? mobile?]
   (ui/menu
     [:a {:style {:margin-top 2
                  :margin-right 12}
@@ -710,12 +527,7 @@
        [:a.button-text {:style {:font-size 14}
                         :on-click (fn [e]
                                     (util/stop e)
-                                    (if article?
-                                      (util/set-href! (str config/website "/p/" (:id post) "/edit"))
-                                      (citrus/dispatch!
-                                       :citrus/default-update
-                                       [:post :edit-put? (:id post)]
-                                       true)))}
+                                    (util/set-href! (str config/website "/p/" (:id post) "/edit")))}
         (t :edit)])
 
      ;; delete
@@ -725,9 +537,6 @@
                                     (util/stop e)
                                     (citrus/dispatch! :post/open-delete-dialog? post))}
         (t :delete)])
-
-     ;; bookmark
-     (bookmark-text post)
 
      ;; report
      (when (not self?)
@@ -755,155 +564,131 @@
   rum/reactive
   [state post show-avatar? opts]
   (if post
-    (let [edit? (citrus/react [:post :edit-put? (:id post)])
-          user (:user post)
-          article? (:is_article post)]
-      (if (and (not article?) edit?)
-        (put-box post false true)
-        (let [current-path (citrus/react [:router :handler])
-             width (citrus/react [:layout :current :width])
-             mobile? (or (util/mobile?) (<= width 768))
-             current-user (citrus/react [:user :current])
-             current-user-id (:id current-user)
-             user-id (or (:id user) (:user_id post))
-             self? (and current-user-id (= user-id current-user-id))
-             user-link (str "/@" (:screen_name user))
-             drafts-path? (= current-path :drafts)
-             [post-link router] (if drafts-path?
-                                  [(str "/p/" (:id post) "/edit")
-                                   {:handler :post-edit
-                                    :route-params {:post-id (str (:id post))}}]
-                                  [(str "/" (:permalink post))
-                                   {:handler :post
-                                    :route-params (util/decode-permalink (:permalink post))}])
+    (let [user (:user post)]
+      (let [current-path (citrus/react [:router :handler])
+            width (citrus/react [:layout :current :width])
+            mobile? (or (util/mobile?) (<= width 768))
+            current-user (citrus/react [:user :current])
+            current-user-id (:id current-user)
+            user-id (or (:id user) (:user_id post))
+            self? (and current-user-id (= user-id current-user-id))
+            user-link (str "/@" (:screen_name user))
+            drafts-path? (= current-path :drafts)
+            [post-link router] (if drafts-path?
+                                 [(str "/p/" (:id post) "/edit")
+                                  {:handler :post-edit
+                                   :route-params {:post-id (str (:id post))}}]
+                                 [(str "/" (:permalink post))
+                                  {:handler :post
+                                   :route-params (util/decode-permalink (:permalink post))}])
 
-             {:keys [last_reply_at created_at]} post
-             self? (and current-user self?)
-             first-tag (if-let [tag (first (:tags post))]
-                         (str/capitalize tag)
-                         nil)]
-          [:div.post-item.col-item {:style {:position "relative"}
-                                    :on-click (fn [e]
-                                                (citrus/dispatch! :router/push router true))}
-           [:div.row
-            [:a {:href user-link
-                 :on-click util/stop
-                 :title (str (t :posted-by) (:screen_name user))
-                 :style {:margin-right 12
-                         :padding-top 5}}
-             (ui/avatar {:src (util/cdn-image (:screen_name user))
-                         :shape "circle"})]
-            [:div.column
-             [:div.column {:style {:justify-content "center"}}
-              [:div.space-between
-               [:div
-                (if article?
-                  [:a.post-title.row1 {:style {:margin-right 6}
-                                       :on-click util/stop
-                                       :href post-link}
-                   (widgets/raw-html {:style {:display "inline"
-                                              :margin-right 6}}
-                    "<img src=\"https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png?v8\" style=\"width:24px;height:24px\" class=\"emoji\" data-reactroot=\"\">")
-                   (:title post)]
-                  [:div
-                   (widgets/transform-content (:title post)
-                                              {})
-                   (when (:data post)
-                     (let [{:keys [url title description image] :as data} (util/read-string (:data post))]
+            {:keys [last_reply_at created_at]} post
+            self? (and current-user self?)
+            first-tag (if-let [tag (first (:tags post))]
+                        (str/capitalize tag)
+                        nil)]
+        [:div.post-item.col-item {:style {:position "relative"}
+                                  :on-click (fn [e]
+                                              (citrus/dispatch! :router/push router true))}
+         [:div.row
+          [:a {:href user-link
+               :on-click util/stop
+               :title (str (t :posted-by) (:screen_name user))
+               :style {:margin-right 12
+                       :padding-top 5}}
+           (ui/avatar {:src (util/cdn-image (:screen_name user))
+                       :shape "circle"})]
+          [:div.column
+           [:div.column {:style {:justify-content "center"}}
+            [:div.space-between
+             (let [link (:link post)]
+               [:a.post-title.no-decoration.row1 (if link
+                                                   {:style {:margin-right 6
+                                                            :align-items "center"}
+                                                    :on-click (fn [e]
+                                                                (.stopPropagation e))
+                                                    :href link
+                                                    :target "_blank"}
 
-                       [:a.no-decoration.row1 {:href url
-                                               :target "_blank"
-                                               :on-click #?(:cljs
-                                                            (fn [e]
-                                                              (.stopPropagation e))
-                                                            :clj
-                                                            identity)
-                                               :style {:align-items "center"
-                                                       :color (colors/icon-color)
-                                                       :margin-top 6}}
-                        (if image
-                          [:img {:src image
-                                 :style {:margin-right 12}}])
-                        (if (or title description)
-                          [:div.column1
-                           (when title
-                             [:p {:style {:font-size 15}}
-                              title])
-                           (when description
-                             [:p {:style {:font-size 14}}
-                              description])])]))])]
+                                                   {:style {:margin-right 6}
+                                                    :on-click util/stop
+                                                    :href post-link})
+                (:title post)
+                (if link
+                  (ui/icon {:type :link
+                            :width 20
+                            :height 20
+                            :color (colors/primary)
+                            :opts {:style {:margin-left 6}}}))])
 
-               [:a.control {:href post-link
-                            :title (str (:comments_count post)
-                                        " "
-                                        (t :replies))
-                            :on-click util/stop
-                            :style {:margin-left 24}}
-                [:span.number {:style {:font-weight "600"
-                                       :font-size 18}}
-                 (:comments_count post)]]]
+             [:a.control {:href post-link
+                          :title (str (:comments_count post)
+                                      " "
+                                      (t :replies))
+                          :on-click util/stop
+                          :style {:margin-left 24}}
+              [:span.number {:style {:font-weight "600"
+                                     :font-size 18}}
+               (:comments_count post)]]]
 
-              (if-let [cover (:cover post)]
-                [:a {:href post-link
-                     :on-click util/stop}
-                 [:img.hover-shadow {:src (str cover "?w=" 200)
-                                     :style {:max-width 200
-                                             :border-radius 4
-                                             :margin-top 8
-                                             :margin-bottom 6}}]])]
+            (if-let [cover (:cover post)]
+              [:a {:href post-link
+                   :on-click util/stop}
+               [:img.hover-shadow {:src (str cover "?w=" 200)
+                                   :style {:max-width 200
+                                           :border-radius 4
+                                           :margin-top 8
+                                           :margin-bottom 6}}]])]
 
-             [:div.space-between.ubuntu {:style {:align-items "center"
-                                                 :margin-top 8}}
-              [:div.row1 {:style {:align-items "center"}}
-               (vote post)]
+           [:div.space-between.ubuntu {:style {:align-items "center"
+                                               :margin-top 8}}
+            [:div.row1 {:style {:align-items "center"}}
+             (vote post)]
 
 
-              [:div.row1 {:style {:color "rgb(127,127,127)"
-                                  :font-size 14}}
-               (when-not mobile?
-                 (let [last-reply-by (:last_reply_by post)
-                       frequent_posters (-> (remove (hash-set (:screen_name user) last-reply-by)
-                                                    (:frequent_posters post))
-                                            (conj last-reply-by))
-                       frequent_posters (->> (remove nil? frequent_posters)
-                                             (take 5))]
-                   (when (seq frequent_posters)
-                     [:div.row1 {:style {:margin-right 6}}
-                      (for [poster frequent_posters]
-                        (if poster
-                          [:a {:href (str "/@" poster)
-                               :key (str "frequent-poster-" poster)
-                               :title (str (t :frequent-poster) poster)
-                               :on-click util/stop
-                               :style {:margin-right 6}}
-                           (ui/avatar {:class "ant-avatar-sm"
-                                       :src (util/cdn-image poster)})]))])))
+            [:div.row1 {:style {:color "rgb(127,127,127)"
+                                :font-size 14}}
+             (when-not mobile?
+               (let [last-reply-by (:last_reply_by post)
+                     frequent_posters (-> (remove (hash-set (:screen_name user) last-reply-by)
+                                                  (:frequent_posters post))
+                                          (conj last-reply-by))
+                     frequent_posters (->> (remove nil? frequent_posters)
+                                           (take 5))]
+                 (when (seq frequent_posters)
+                   [:div.row1 {:style {:margin-right 6}}
+                    (for [poster frequent_posters]
+                      (if poster
+                        [:a {:href (str "/@" poster)
+                             :key (str "frequent-poster-" poster)
+                             :title (str (t :frequent-poster) poster)
+                             :on-click util/stop
+                             :style {:margin-right 6}}
+                         (ui/avatar {:class "ant-avatar-sm"
+                                     :src (util/cdn-image poster)})]))])))
 
-               (when first-tag
-                 [:a.control {:href (str "/tag/" (first (:tags post)))
-                              :style {:margin-right 12}
-                              :on-click util/stop}
-                  first-tag])
+             (when first-tag
+               [:a.control {:href (str "/tag/" (first (:tags post)))
+                            :style {:margin-right 12}
+                            :on-click util/stop}
+                first-tag])
 
-               (when current-user
-                 (ops-menu post self? mobile? article?))
-
-               [:a.no-decoration.control {:title (if last_reply_at
-                                                   (str
-                                                    (t :created-at) ": " (util/date-format created_at)
-                                                    "\n"
-                                                    (t :last-reply-at) ": " (util/date-format last_reply_at)
-                                                    "\n"
-                                                    "By: " (:last_reply_by post))
-                                                   (str
-                                                    (t :created-at) ": " (util/date-format created_at)))
-                                          :on-click util/stop
-                                          :href (if-let [last-reply-idx (:last_reply_idx post)]
-                                                  (str post-link "/" last-reply-idx)
-                                                  post-link)}
-                (if last_reply_at
-                  (util/time-ago (:last_reply_at post))
-                  (util/time-ago created_at))]]]]]])))))
+             [:a.no-decoration.control {:title (if last_reply_at
+                                                 (str
+                                                  (t :created-at) ": " (util/date-format created_at)
+                                                  "\n"
+                                                  (t :last-reply-at) ": " (util/date-format last_reply_at)
+                                                  "\n"
+                                                  "By: " (:last_reply_by post))
+                                                 (str
+                                                  (t :created-at) ": " (util/date-format created_at)))
+                                        :on-click util/stop
+                                        :href (if-let [last-reply-idx (:last_reply_idx post)]
+                                                (str post-link "/" last-reply-idx)
+                                                post-link)}
+              (if last_reply_at
+                (util/time-ago (:last_reply_at post))
+                (util/time-ago created_at))]]]]]]))))
 
 (rum/defc posts-stream < rum/reactive
   [posts show-avatar? end? opts loading?]
@@ -965,7 +750,8 @@
        (if empty-widget
          empty-widget
          [:a.auto-padding {:href "/new-article"
-                                :style {:margin-top 24}}
+                           :style {:margin-top 24
+                                   :color (colors/primary-text)}}
           [:span.ubuntu {:style {:margin-top 3}}
            (t :be-the-first)]])])))
 
@@ -992,6 +778,9 @@
   (mixins/interval-mixin :post-auto-save
                          5000
                          (fn [] (citrus/dispatch! :post/save)))
+  {:will-unmount (fn [state]
+                   (citrus/dispatch! :post/reset-form-data)
+                   state)}
   [state params]
   (let [form-data (citrus/react [:post :form-data])
         clear-interval? (citrus/react [:post :clear-interval?])
@@ -1045,8 +834,6 @@
      (if (util/mobile?)
        (ops-link post)
        (ops-twitter post zh-cn?))
-
-     (bookmark post nil)
 
      (ui/menu
        [:a {:on-click (fn [])}
@@ -1133,84 +920,43 @@
       (let [post (citrus/react [:post :by-permalink permalink])]
         (if post
           (let [{:keys [user]} post
-                edit? (citrus/react [:post :edit-put? (:id post)])
                 current-reply (citrus/react [:comment :reply])
-                avatar (util/cdn-image (:screen_name user))
-                article? (:is_article post)]
+                avatar (util/cdn-image (:screen_name user))]
             [:div.column.auto-padding {:key "post"}
              [:div {:style {:padding "12px 0"
                             :margin-top (cond
                                           (util/mobile?)
                                           0
-                                          article?
-                                          64
                                           :else
-                                          24)}}
-              (if article?
-                [:div.center-area {:style {:margin-bottom 64}}
-                 [:h1.post-page-title
-                  (:title post)]
+                                          64)}}
+              [:div.center-area {:style {:margin-bottom 64}}
+               [:h1.post-page-title
+                (:title post)]
 
-                 [:div#post-user {:style {:text-align "center"
-                                          :font-style "italic"
-                                          :font-size "1.1em"}}
-                  [:a {:href (str "/@" (:screen_name user))
-                       :style {:display "block"
-                               :margin-bottom 12}}
-                   (ui/avatar {:src (util/cdn-image (:screen_name user))
-                               :shape "circle"})]
+               [:div#post-user {:style {:text-align "center"
+                                        :font-style "italic"
+                                        :font-size "1.1em"}}
+                [:a {:href (str "/@" (:screen_name user))
+                     :style {:display "block"
+                             :margin-bottom 12}}
+                 (ui/avatar {:src (util/cdn-image (:screen_name user))
+                             :shape "circle"})]
 
-                  [:a {:href (str "/@" (:screen_name user))}
-                   (if (:name user)
-                     (:name user)
-                     (str "@" (:screen_name user)))]
+                [:a {:href (str "/@" (:screen_name user))}
+                 (if (:name user)
+                   (:name user)
+                   (str "@" (:screen_name user)))]
 
-                  [:span {:style {:margin-left 12}}
-                   (util/date-format (:created_at post))]
+                [:span {:style {:margin-left 12}}
+                 (util/date-format (:created_at post))]
 
-                  (if (or
-                       (= (:id current-user) (:id user))
-                       (admins/admin? (:screen_name current-user)))
-                    [:a {:on-click (fn [e]
-                                     (util/set-href! (str config/website "/p/" (:id post) "/edit")))
-                         :style {:margin-left 12}}
-                     (t :edit)])]]
-
-                [:div.column.center-area
-                 [:div#post-user {:style {:text-align "center"
-                                          :font-style "italic"
-                                          :font-size "1."
-}}
-                  [:a {:href (str "/@" (:screen_name user))
-                       :style {:display "block"
-                               :margin-bottom 12}}
-                   (ui/avatar {:src (util/cdn-image (:screen_name user))
-                               :shape "circle"})]
-                  [:a {:href (str "/@" (:screen_name user))}
-                   (if (:name user)
-                     (:name user)
-                     (str "@" (:screen_name user)))]
-
-                  [:span {:style {:margin-left 12}}
-                   (util/date-format (:created_at post))]
-
-                  (if (or
-                       (= (:id current-user) (:id user))
-                       (admins/admin? (:screen_name current-user)))
-                    [:a {:on-click (fn [e]
-                                     (citrus/dispatch!
-                                      :citrus/default-update
-                                      [:post :edit-put? (:id post)]
-                                      true))
-                         :style {:margin-left 12}}
-                     (t :edit)])]
-
-                 [:div.divider]
-
-                 (if edit?
-                   (put-box post false true)
-                   (widgets/transform-content (:title post)
-                                             {:style {:text-align "center"}}))])
+                (if (or
+                     (= (:id current-user) (:id user))
+                     (admins/admin? (:screen_name current-user)))
+                  [:a {:on-click (fn [e]
+                                   (util/set-href! (str config/website "/p/" (:id post) "/edit")))
+                       :style {:margin-left 12}}
+                   (t :edit)])]]
 
               [:div.post
                (when (:body post)

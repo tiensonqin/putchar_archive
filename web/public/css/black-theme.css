@@ -164,8 +164,11 @@
 .black-theme table tr th, .black-theme table tr td {
   color: #ddd;
 }
-.black-theme .right-footer {
-  background: #1f364d;
+.black-theme .shadow {
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 8px #0e2439;
+  box-shadow: 0 1px 8px #0e2439;
+  display: block;
 }
 .black-theme .share-box {
   background: #172D44;

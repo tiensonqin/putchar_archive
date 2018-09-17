@@ -105,8 +105,7 @@
 (rum/defc signup < rum/reactive
   [{:keys [email] :as params}]
   (let [signup-step (citrus/react [:user :signup-step])
-        temp-user (citrus/react [:user :temp])
-        setup-github-sync? (citrus/react [:setup-github-sync?])]
+        temp-user (citrus/react [:user :temp])]
     [:div.signup.row
      (case signup-step
       :add-avatar
@@ -136,8 +135,7 @@
                                        @form-data
                                        {:avatar github-avatar}
                                        {:github_id (str (:id user))
-                                        :github_handle (:login temp-user)
-                                        :setup-github-sync? setup-github-sync?})]
+                                        :github_handle (:login temp-user)})]
                              (citrus/dispatch! :user/new data form-data)))})
            (form/render
              {:title (t :welcome)
@@ -190,56 +188,6 @@
           :style {:font-size 20
                   :margin-right 12}}]]
     (t :email-notification-settings-text)]])
-
-(def github-repo-fields
-  {:link {:validators [util/link?]
-          :placeholder (t :github-repo-link-placeholder)}})
-
-(rum/defcs github-repo < rum/reactive
-  (rum/local false ::expand?)
-  [state user]
-  (let [expand? (get state ::expand?)]
-    [:div#github-repo {:style {:padding "24px 12px"}}
-     [:h3 {:style {:margin-bottom 24}}
-      (t :github-sync)]
-
-     (cond
-       (and (:github_repo @user)
-            (:github_handle @user))
-       [:div.row {:style {:align-items "center"
-                          :justify-content "space-between"}}
-        [:div.row1 {:style {:align-items "center"}}
-         (ui/icon {:type "github"})
-         [:a {:style {:margin-left 12
-                      :font-weight "500"}
-              :href (:github_repo @user)}
-          (util/get-github-repo-name (:github_repo @user))]]
-
-        [:a {:title (t :edit)
-             :on-click #(reset! expand? true)}
-         (ui/icon {:type "edit"
-                   :color "#999"})]]
-
-       :else
-       [:div.column1
-        (widgets/github-connect)
-
-        (widgets/transform-content
-         (t :github-connect-text)
-         {:style {:margin-top 24}
-          :body-format "asciidoc"})])
-
-     (if @expand?
-       [:div {:style {:margin-top 24}}
-        (form/render
-          {:fields github-repo-fields
-           :cancel-button? false
-           :on-submit (fn [form-data]
-                        (citrus/dispatch! :user/update {:github_repo (:link @form-data)})
-                        (reset! expand? false))
-           :style {:padding 0}
-           :loading? [:user :loading?]
-           :submit-on-enter? true})])]))
 
 (rum/defcs languages-settings <
   (rum/local nil ::languages)
@@ -359,9 +307,6 @@
      ;; email notification settings
      (email-notification-settings user)
 
-     ;; connect with github
-     (github-repo user)
-
      (languages-settings @user)
 
      (misc-settings)
@@ -479,34 +424,17 @@ The posts and comments that you have posted will not be deleted, in order to pre
 (rum/defc votes < rum/reactive
   (mixins/query :votes)
   [params]
-  (let [post-filter :voted
-        path [:posts :current-user post-filter]
-        user (citrus/react [:user :current])
-        posts (citrus/react path)
-        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div.column.center-area {:class "user-posts"
-                              :style {:margin-bottom 48}}
-     ;; posts
-     [:h2 {:style (cond-> {:margin "0 0 24px 0"}
-                    mobile?
-                    (assoc :padding-left 12))}
-      (str (t :votes) ":")]
-     (query/query
-       (post/post-list posts {:filter post-filter
-                              :merge-path path}
-                       :show-avatar? true))]))
-
-(rum/defc bookmarks < rum/reactive
-  (mixins/query :bookmarks)
-  [params]
-  (let [post-filter :bookmarked
+  (let [post-filter :toped
         path [:posts :current-user post-filter]
         user (citrus/react [:user :current])
         posts (citrus/react path)]
     [:div.column {:style {:margin-bottom 48}}
+     [:h2.auto-padding {:style {:margin-top 0
+                                :margin-bottom 24}}
+      (str (t :votes) ":")]
      (query/query
        (post/post-list posts {:filter post-filter
                               :merge-path path}
                        :show-avatar? true
                        :empty-widget [:h5.auto-padding
-                                      (t :no-bookmarks-yet)]))]))
+                                      (t :no-votes-yet)]))]))

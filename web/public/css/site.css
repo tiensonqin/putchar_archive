@@ -398,10 +398,6 @@ a.delete {
     font-size: 230%;
 }
 
-.col-item {
-    padding: 12px;
-}
-
 @media screen and (min-width: 768px) {
 
     #head {
@@ -415,6 +411,15 @@ a.delete {
     .posts-headers {
         font-size: 1.125rem;
     }
+
+    .col-item {
+        padding: 12px 0;
+    }
+
+    .home .col-item:nth-child(1) {
+        padding-top: 0;
+    }
+
 }
 
 @media screen and (max-width: 768px) {
@@ -436,6 +441,10 @@ a.delete {
 
     .right-sub h5 {
         font-size: 1.25em;
+    }
+
+    .col-item {
+        padding: 12px;
     }
 
     .auto-padding {

@@ -18,10 +18,6 @@
             [ssr.sitemap :as sitemap]
             [api.services.rss.export :as rss]
             [api.services.slack :as slack]
-            [api.services.stripe :as stripe]
-            [api.services.github.webhook-push :as push]
-            [api.db.repo :as db-repo]
-            [api.services.github.user :as github-user]
             [share.components.root :as root]
             [api.db.task :as task]
             [cheshire.core :refer [generate-string]]
@@ -77,73 +73,11 @@
           (-> (resp/redirect (:website-uri config/config))
               (assoc :cookies cookie/delete-token)))
 
-        (= "/stripe_webhook" (:uri req))
-        (let [params (:params req)]
-          (slack/debug params)
-          ;; (cond
-          ;;   (= (:type params) "source.chargeable")
-          ;;   (let [{:keys [amount type status id livemode metadata]} (get-in params [:data :object])]
-          ;;     (when (and (= type "alipay")
-          ;;                (= status "chargeable"))
-          ;;       (slack/error (stripe/create-customer {:plan "pro-member"
-          ;;                                             :source id
-          ;;                                             :email (:email metadata)}))))
-
-          ;;   (= (:type params) "charge.succeeded")
-          ;;   (do
-          ;;     ;; TODO: send email
-          ;;     nil)
-
-          ;;   :else
-          ;;   nil)
-          {:status 200
-           :body "ok"})
-
-        ;; github push events
-        (= "/github/push" (:uri req))
-        (do
-          (j/with-db-connection [conn datasource]
-            (push/handle conn req))
-          {:status 200
-           :body "ok"})
-
-        (= "/github/setup-sync" (:uri req))
-        (let [uid (get-in req [:context :uid])]
-          (cond
-            (nil? uid)
-            {:status 400
-             :body {:message "Please login first."}}
-
-            :else
-            (let [{:keys [app-key app-secret]} (get-in config/config [:oauth :github])
-                  tt (social/make-social :github app-key app-secret
-                                         (str (get-in config/config
-                                                      [:oauth :github :redirect-uri])
-                                              "?ask_public_repo=true&referer=" (get-in req [:headers "referer"] ""))
-                                         :state (str (util/uuid))
-                                         :scope "public_repo")
-                  url (social/getAuthorizationUrl tt)]
-              (resp/redirect url))))
-
         ;; github login
         (= "/auth/github" (:uri req))
         (let [uid (get-in req [:context :uid])
-              params (:params req)
-              sync? (= (:sync params) "true")]
+              params (:params req)]
           (cond
-            ;; granted public repo permission
-            ;; extract this
-            (and uid
-                 (:code (:params req))
-                 (:state (:params req))
-                 (get-in req [:params :ask_public_repo]))
-            (let [info (auth/github (:context req) (:params req))
-                  [github_id github_handle] (if (uuid? (:id info))
-                                              [(get info :github_id) (get info :github_handle)]
-                                              [(str (:id info)) (:login info)])]
-              (j/with-db-connection [conn datasource]
-               (db-repo/setup! req conn uid github_id github_handle false)))
-
             ;; login
             (and uid
                  (:code (:params req))
@@ -156,10 +90,10 @@
                 (u/update conn uid {:github_id id
                                     :github_handle handle}))
               (-> {:status 302}
-                  (resp/header "Location" (or (let [url (get-in req [:params :referer])]
-                                                (if url
-                                                  (str url "#github-repo")))
-                                              ""))))
+                  (resp/header "Location" (let [url (get-in req [:params :referer])]
+                                            (if url
+                                              url
+                                              "")))))
 
             (and (:code (:params req))
                  (:state (:params req)))
@@ -176,39 +110,23 @@
                                (u/generate-tokens conn user))
                              :status 302)
                       (resp/header "Location" (get-referer req))))
-                (let [
-                      ;; user (if (:email user)
-                      ;;        user
-                      ;;        (let [token (j/with-db-connection [conn datasource]
-                      ;;                      (token/get-token conn (str (:id user))))
-                      ;;              emails (github-user/get-emails {:oauth-token token})]
-                      ;;          (prn emails)
-                      ;;          user))
-                      user user]
-                  (-> req
-                      (assoc-in [:ui/route :handler] :signup)
-                      (render resolver ui-root render-page (handler req)
-                        (fn [state]
-                          (-> state
-                              (assoc-in [:user :temp] user)
-                              (assoc-in [:router :handler] :signup))))))))
+                (-> req
+                    (assoc-in [:ui/route :handler] :signup)
+                    (render resolver ui-root render-page (handler req)
+                      (fn [state]
+                        (-> state
+                            (assoc-in [:user :temp] user)
+                            (assoc-in [:router :handler] :signup)))))))
 
             :else
             (let [{:keys [app-key app-secret]} (get-in config/config [:oauth :github])
-                  tt (if sync?
-                       (social/make-social :github app-key app-secret
-                                           (str (get-in config/config
-                                                        [:oauth :github :redirect-uri])
-                                                "?referer=" (get-in req [:headers "referer"] ""))
-                                           :state (str (util/uuid))
-                                           :scope "public_repo")
-                       (social/make-social :github app-key app-secret
-                                          (str (get-in config/config
-                                                       [:oauth :github :redirect-uri])
-                                               "?referer=" (get-in req [:headers "referer"] ""))
-                                          :state (str (util/uuid))
-                                          ;; :scope "public_repo"
-                                          ))
+                  tt (social/make-social :github app-key app-secret
+                                         (str (get-in config/config
+                                                      [:oauth :github :redirect-uri])
+                                              "?referer=" (get-in req [:headers "referer"] ""))
+                                         :state (str (util/uuid))
+                                         ;; :scope "public_repo"
+                                         )
                   url (social/getAuthorizationUrl tt)]
               (resp/redirect url))))
 

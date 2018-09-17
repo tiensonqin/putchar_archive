@@ -212,9 +212,13 @@ $btn-color: #214b75;
     table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { color: #ddd; }
     table tr th, table tr td { color: #ddd; }
 
-    .right-footer {
-        background: $header-color;
+    .shadow {
+        border-radius: 4px;
+        -webkit-box-shadow: 0 1px 8px $main-color;
+        box-shadow: 0 1px 8px $main-color;
+        display: block;
     }
+
 
     .share-box {
         background: #172D44;

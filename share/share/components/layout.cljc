@@ -31,19 +31,10 @@
   []
   (let [locale (citrus/react :locale)
         zh-cn? (= locale :zh-cn)]
-    [:div.ubuntu.right-footer.right-sub {:class "column1"
-                                         :style {:font-size 14}}
-     [:a.row1 {:style {:align-items "center"
-                       :font-size 18
-                       :color (colors/primary-text)}
-               :href "/new-article"}
-      (widgets/raw-html {:style {:display "inline"
-                                 :margin-right 6}}
-                        "<img src=\"https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png?v8\" style=\"width:24px;height:24px\" class=\"emoji\" data-reactroot=\"\">")
-      (t :write-new-post)]
+    [:div.ubuntu.shadow.right-sub {:class "column1"
+                                   :style {:font-size 14}}
 
-     [:div.row1 {:style {:align-items "center"
-                         :margin-top 16}}
+     [:div.row1 {:style {:align-items "center"}}
       [:a.control {:href "/newest"
                    :on-click (fn []
                                (citrus/dispatch! :citrus/re-fetch :newest {}))}

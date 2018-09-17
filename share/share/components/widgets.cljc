@@ -228,21 +228,22 @@
         theme (citrus/react [:theme])
         mobile? (util/mobile?)]
     [:a.row1.no-decoration {:href "/"
+                            :style {:margin-left -3}
                             :on-click (fn []
                                         (citrus/dispatch! :citrus/re-fetch :home {}))}
      (ui/icon {:type :logo
                :color (colors/logo-background)})
+     [:span {:style {:font-size 20
+                     :margin-top -6
+                     :font-weight "bold"
+                     :letter-spacing "0.05em"
+                     :color (colors/primary-text)}}
+      "utchar"]
      (when-not mobile?
-       [:span {:style {:font-size 20
-                       :margin-top -6
-                       :font-weight "bold"
-                       :letter-spacing "0.05em"
-                       :color (colors/primary-text)}}
-        "utchar"])
-     [:span {:style {:margin-left 6
-                     :font-size 10
-                     :color (colors/logo-background)}}
-      "beta"]]))
+       [:span {:style {:margin-left 6
+                      :font-size 10
+                      :color (colors/logo-background)}}
+       "beta"])]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]
@@ -301,8 +302,7 @@
                  tags)]
       [:div#tags.auto-padding.ubuntu {:class "row1"
                                       :style {:flex-wrap "wrap"
-                                              :align-items "center"
-                                              :margin-bottom 18}}
+                                              :align-items "center"}}
 
        (for [[tag count] tags]
          (let [this? (= current-tag (name tag))]

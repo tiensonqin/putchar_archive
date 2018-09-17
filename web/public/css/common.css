@@ -45,7 +45,7 @@ body {
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
-    max-width: 1104px;
+    max-width: 1024px;
     margin: 0 auto;
     -webkit-transform: translate3d(0,0,0);
 }
@@ -85,12 +85,12 @@ a:hover {
     text-decoration: underline;
 }
 
-a.control:hover, .header a:hover, .btn:hover, a.comments_count:hover, .empty-posts a:hover, a.no-decoration, a.no-decoration:hover {
+a.control:hover, .header a:hover, .btn:hover, a.comments_count:hover, a.no-decoration, a.no-decoration:hover {
     text-decoration: none;
 }
 
 .wrap {
-    max-width: 1104px;
+    max-width: 1024px;
     margin: 0 auto;
 }
 
@@ -373,6 +373,7 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
 .col-item {
     overflow: hidden;
 }
+
 .post-title {
     word-break: break-word;
 }
@@ -466,4 +467,8 @@ a.dot-seperator:before {
 
 textarea, input {
     outline: none;
+}
+
+.post-title {
+    font-size: 17px;
 }

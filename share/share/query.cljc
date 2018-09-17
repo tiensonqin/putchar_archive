@@ -3,7 +3,7 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :title :rank :permalink :created_at :comments_count :tops :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters :is_article :data])
+  [:id :flake_id :user :title :rank :permalink :link :created_at :comments_count :tops :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
 
 (defn- get-post-filter
   [state]
@@ -59,8 +59,6 @@
                             :last_reply_at
                             :tops
                             :comments_count
-                            :is_article
-                            :data
                             [:user {:fields [:id :screen_name :name :bio :website]}]
                             [:comments {:fields [:*]
                                         :cursor {:limit 100}}]]}}
@@ -79,7 +77,6 @@
                                     :lang
                                     :permalink
                                     :is_draft
-                                    :is_article
                                     :tags]}}
              :args {:post {:id id
                            :raw_body? true}}}]
@@ -132,15 +129,7 @@
 
 (def votes-query
   (fn [state args]
-    (let [post-filter :voted]
-      {:q {:current-user {:fields [:id :screen_name :name :bio :website :github_handle :twitter_handle
-                                   [:posts {:fields post-fields}]]}}
-       :args {:posts {:filter post-filter}}
-       :merge {:my-posts [:posts :current-user post-filter]}})))
-
-(def bookmarks-query
-  (fn [state args]
-    (let [post-filter :bookmarked]
+    (let [post-filter :toped]
       {:q {:current-user {:fields [:id :screen_name :name :bio :website :github_handle :twitter_handle
                                    [:posts {:fields post-fields}]]}}
        :args {:posts {:filter post-filter}}
@@ -196,8 +185,6 @@
    :comments comments-query
 
    :votes votes-query
-
-   :bookmarks bookmarks-query
 
    :tag tag-posts-query
 

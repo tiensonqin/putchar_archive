@@ -5,7 +5,6 @@
             [share.merge :as merge]
             [api.util :as util]
             [api.db.top :as top]
-            [api.db.bookmark :as bookmark]
             [api.db.user :as u]
             [api.db.report :as report]
             [api.db.invite :as invite]
@@ -49,8 +48,7 @@
                :post         {:loading? false
                               :current nil
                               :filter :hot
-                              :toped (if uid (top/get-toped-posts uid) nil)
-                              :bookmarked (if uid (bookmark/get-bookmarked-posts uid) nil)}
+                              :toped (if uid (top/get-toped-posts uid) nil)}
                :comment      nil
                :report       {:new? (if (and current-user (admins/admin? (:screen_name current-user)))
                                       (report/has-new? db (:screen_name current-user))

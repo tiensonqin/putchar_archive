@@ -1,0 +1,5 @@
+{:up ["alter table posts add column link text default null"
+      "alter table posts drop column is_article"
+      "alter table posts drop column data"]
+ :down ["alter table posts drop column link"
+        "alter table posts add column is_article boolean default false"]}

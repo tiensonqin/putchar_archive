@@ -192,8 +192,8 @@
                                              [:in :lang languages]])
                                          cursor))
 
-                     (= :bookmarked (:filter data))
-                     (post/get-bookmarked conn uid cursor)
+                     (= :toped (:filter data))
+                     (post/get-toped conn uid cursor)
 
                      (= :hot (:filter data))
                      (post/get-hot conn

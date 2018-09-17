@@ -61,8 +61,8 @@
                           (post/post-edit params))
          :search        (fn [params current-user]
                           (search/search))
-         :bookmarks     (fn [params current-user]
-                          (user/bookmarks params))
+         :votes     (fn [params current-user]
+                          (user/votes params))
          :notifications (fn [params current-user]
                           (notifications/notifications params))
          :reports       (fn [params current-user]
@@ -242,6 +242,21 @@
         [:div {:class "row1"
                :style {:align-items "center"}
                :id "right-head"}
+
+         (when-not post?
+           (if mobile?
+             [:a {:style {:padding-right 12}
+                  :href "/new-article"}
+              (ui/icon {:type :edit})]
+             [:a.row1.no-decoration {:style {:align-items "center"
+                                            :color (colors/primary-text)
+                                            :padding-right 12}
+                                    :href "/new-article"}
+             (widgets/raw-html {:style {:display "inline"
+                                        :margin-right 6}}
+                               "<img src=\"https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png?v8\" style=\"width:24px;height:24px\" class=\"emoji\" data-reactroot=\"\">")
+             (t :write-new-post)]))
+
          ;; search
          (if (not post?)
            [:a {:title (t :search)
@@ -310,11 +325,11 @@
                                :style {:font-size 14}}
                (t :drafts)]
 
-              [:a.button-text {:href "/bookmarks"
+              [:a.button-text {:href "/votes"
                                :on-click (fn []
-                                           (citrus/dispatch! :citrus/re-fetch :bookmarks nil))
+                                           (citrus/dispatch! :citrus/re-fetch :votes nil))
                                :style {:font-size 14}}
-               (t :bookmarks)]
+               (t :votes)]
 
               [:a.button-text {:href "/stats"
                                :on-click (fn []
@@ -477,9 +492,10 @@
                       :class "column1"
                       :style {:margin-top (if mobile?
                                             100
-                                            0)
-                              :margin-left 12
-                              :width 276}}
+                                            3)
+                              :margin-left 24
+                              :margin-right 3
+                              :width 256}}
           (layout/right-footer)])
        ]]
      (login/signin-modal mobile?)

@@ -22,7 +22,3 @@
     ".your-domain"))
 
 (def img-cdn "https://your-img-cdn")
-
-(def stripe-publishable-key (if development?
-                              "pk_test_************************"
-                              "pk_live_************************"))

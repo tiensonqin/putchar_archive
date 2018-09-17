@@ -64,11 +64,10 @@
    :replies "replies"
    :hot-posts "Hot posts"
    :signin "Sign In"
-   :slogan "Hacker's thoughts."
+   :slogan "The repo of programmers' thoughts."
    :members "members"
    :admins "Moderators"
    :support "support"
-   :github-sync "Github Sync"
    :contact "Contact"
    :terms "Terms"
    :code-of-conduct "Code of Conduct"
@@ -105,7 +104,6 @@
    :no-comments-yet "No comments yet."
    :no-drafts-yet "No drafts yet."
    :no-links-yet "No links yet."
-   :no-bookmarks-yet "No bookmarks yet."
    :link "Link"
    :close "Close"
    :post-permalink-copied "Post permalink copied!"
@@ -192,10 +190,6 @@
    :twitter-handle "Twitter Handle"
    :github-handle "Github Handle"
 
-   :connect-github "Setup Github Sync"
-   :github-repo-link-placeholder "Your repo link"
-   :your-github-repo "Github repo: "
-
    :public "Public"
    :description "Description"
    :upload-a-cover "Upload a cover"
@@ -227,28 +221,12 @@
    :website-name "Putchar"
    :popular "Popular"
    :new-created "Recent posts"
-   :bookmark "Bookmark"
-   :unbookmark "Unbookmark"
-   :bookmarks "Bookmarks"
    :welcome-to-putchar "Welcome to Putchar!"
    :activate-your-account "Sign In"
    :last-reply-by "Last reply by: "
    :frequent-poster "Frequent poster: "
    :posted-by "Posted by: "
    :email-login-placeholder "Enter your email address"
-   :github-connect-text "[NOTE]
-====
-So you can git commit a new post, and it will be automatically published on Putchar, and vice versa.
-====
-
-.Steps
-****
-. You grant us with the `public_repo` permission.
-
-. We create a repo called *putchar-blog* for syncing, you can change its name later.
-
-. We add a webhook to listen for all push events of that repo.
-****"
    :report-this-post "Report this post"
    :delete-this-post "Delete this post"
    :report-this-comment "Report this comment"
@@ -265,7 +243,6 @@ So you can git commit a new post, and it will be automatically published on Putc
 
 * A simple and free blog for everyone.
 * It supports multiple formats include Markdown and Asciidoctor, Org-mode is coming…​
-* You can optionally setup Github Sync with your articles, then you can just publish directly in your favorite editor.
 * No ads except for possibly future community sponsors.
 
 === FAQ

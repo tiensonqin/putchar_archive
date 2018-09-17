@@ -8,7 +8,6 @@
             [api.db.post :as post]
             [api.db.comment :as comment]
             [api.db.report :as report]
-            [api.db.repo :as repo]
             [api.db.util :as du]
             [api.db.refresh-token :as refresh-token]
             [api.db.token :as token]
@@ -16,7 +15,6 @@
             [api.db.cache :as cache]
             [api.db.stat :as stat]
             [api.db.notification :as notification]
-            [api.db.bookmark :as bookmark]
             [api.handler.query :as query]
             [api.services.s3 :as s3]
             [api.cookie :as cookie]
@@ -28,12 +26,6 @@
             [ring.util.response :as resp]
             [api.services.email :as email]
             [api.services.slack :as slack]
-            [api.services.stripe :as stripe]
-            [api.services.github :as github]
-            [api.services.github.commit :as commit]
-            [api.services.github.contents :as contents]
-            [api.services.github.sync :as sync]
-            [api.services.commits :as commits]
             [api.db.block :as block]
             [api.db.task :as task]
             [api.db.moderation-log :as mlog]
@@ -129,25 +121,23 @@
 (defmethod handle :user/new [[{:keys [datasource redis]} data req]]
   (let [locale (name (su/get-locale req))]
     (j/with-db-transaction [conn datasource]
-     (let [github-sync? (:setup-github-sync? data)
-           data (dissoc data :setup-github-sync?)]
-       (cond
-         (and (:screen_name data)
-              (du/exists? conn :users {:screen_name (:screen_name data)}))
-         (util/bad :username-exists)
+      (cond
+        (and (:screen_name data)
+             (du/exists? conn :users {:screen_name (:screen_name data)}))
+        (util/bad :username-exists)
 
-         (and (:email data)
-              (du/exists? conn :users {:email (:email data)}))
-         (util/bad :email-exists)
+        (and (:email data)
+             (du/exists? conn :users {:email (:email data)}))
+        (util/bad :email-exists)
 
-         (not (form/email? (:email data)))
-         (util/bad :invalid-email)
+        (not (form/email? (:email data)))
+        (util/bad :invalid-email)
 
-         :else
-         (let [languages (vec (set ["en" locale]))]
-           (when-let [user (u/create conn (-> data
-                                              (assoc :languages languages)
-                                              (dissoc :avatar)))]
+        :else
+        (let [languages (vec (set ["en" locale]))]
+          (when-let [user (u/create conn (-> data
+                                             (assoc :languages languages)
+                                             (dissoc :avatar)))]
             ;; upload social avatar to s3
             (future
               (let [avatar (or (let [avatar (:avatar data)]
@@ -163,16 +153,9 @@
             (future
               (slack/new (str "New user: " user)))
 
-            (when github-sync?
-              (future
-                (j/with-db-connection [conn datasource]
-                  (repo/setup! nil conn (:id user)
-                               (:github_id data)
-                               (:github_handle data)
-                               true))))
             {:status 200
              :body {:user user}
-             :cookies (u/generate-tokens conn user)})))))))
+             :cookies (u/generate-tokens conn user)}))))))
 
 (defmethod handle :user/update [[{:keys [uid datasource redis]} data]]
   (j/with-db-connection [conn datasource]
@@ -286,62 +269,13 @@
 
                 (j/with-db-connection [conn datasource]
                   (let [post (post/get conn id)
-                        {:keys [github_id github_repo]} (u/get conn uid)
-                        repo-map (some-> (du/select-one-field conn :users uid :github_repo_map)
-                                         (read-string))]
+                        {:keys [github_id]} (u/get conn uid)]
 
                     (if publish?
                       (slack/new (str "New post: "
                                       "Title: " (:title data)
                                       ", Link: <" (str "https://putchar.org/" (:permalink post))
-                                      ">.")))
-
-                    (when (and github_id github_repo)
-                      (when-let [token (token/get-token conn github_id)]
-                        (let [[github_handle github_repo] (su/get-github-handle-repo github_repo)
-                              body-format (or (:body_format post) "asciidoc")
-                              markdown? (= "markdown" body-format)
-                              [type path] (if-let [path (u/get-github-path conn uid (:id post))]
-                                            [:update path]
-                                            [:new (str
-                                                   (:title post)
-                                                   (if markdown? ".md" ".adoc"))])]
-                          (do
-                            (when (:title data)
-                              (let [old-title (:title old-post)]
-                                (when (and old-title (not= (:title data) old-title))
-                                  (let [old-path (str
-                                                  old-title
-                                                  (if (= "markdown" (or (:body_format old-post) "asciidoc"))
-                                                    ".md"
-                                                    ".adoc"))
-                                        result (commit/delete github_handle github_repo
-                                                              old-path
-                                                              (str "Delete post: " (:title post))
-                                                              {:oauth-token token})]
-                                    (when-let [commit-id (get-in result [:commit "sha"])]
-                                      (commits/add-commit commit-id)
-                                      (if repo-map
-                                        (u/github-delete-path conn uid repo-map old-path)))))))
-
-                            (let [commit (commit/auto-commit github_handle github_repo
-                                                             path
-                                                             (str
-                                                              (if markdown? "# " "= ")
-                                                              (:title post)
-                                                              "\n\n"
-
-                                                              (:body post))
-                                                             "utf-8"
-                                                             (str (if (= type :update)
-                                                                    "Update"
-                                                                    "New")
-                                                                  " post: " (:title post))
-                                                             {:oauth-token token})]
-                              (commits/add-commit (:sha commit))
-
-                              (u/github-add-path conn uid repo-map path (:id post))))))))
-                  ))
+                                      ">."))))))
 
               (or (:title data) (:body data))
               (future (search/update-post post))
@@ -355,24 +289,6 @@
     (reject-not-owner-or-admin? conn uid :posts (:id data)
                                 (fn [moderator]
                                   (post/delete conn (:id data) moderator nil)
-
-                                  (future
-                                    (j/with-db-connection [conn datasource]
-                                      (let [post (post/get conn (:id data))
-                                            {:keys [github_handle github_id github_repo]} (u/get conn uid)]
-                                        (when (and github_id github_repo)
-                                          (when-let [token (token/get-token conn github_id)]
-                                            (let [[github_handle github_repo] (su/get-github-handle-repo github_repo)
-                                                  repo-map (du/select-one-field conn :users uid :github_repo_map)
-                                                  path (u/get-github-path conn uid (:id post))
-                                                  result (commit/delete github_handle github_repo
-                                                                        path
-                                                                        (str "Delete post: " (:title post))
-                                                                        {:oauth-token token})]
-                                              (slack/debug "delete result: " result)
-                                              (when-let [commit-id (get-in result [:commit "sha"])]
-                                                (commits/add-commit commit-id)
-                                                (u/github-delete-path conn uid repo-map path))))))))
                                   (util/ok {:result true})))))
 
 (defmethod handle :post/top [[{:keys [uid datasource redis]} data]]
@@ -382,18 +298,6 @@
 (defmethod handle :post/untop [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (util/ok (if-let [result (post/untop conn uid (:id data))]
-               result
-               {}))))
-
-(defmethod handle :post/bookmark [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (util/ok (bookmark/bookmark conn {:user_id uid
-                                      :post_id (:id data)}))))
-
-(defmethod handle :post/unbookmark [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (util/ok (if-let [result (bookmark/unbookmark conn {:user_id uid
-                                                        :post_id (:id data)})]
                result
                {}))))
 

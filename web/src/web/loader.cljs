@@ -17,7 +17,3 @@
 (defn load-math
   []
   (load "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"))
-
-(defn load-stripe-checkout
-  []
-  (load "https://checkout.stripe.com/checkout.js"))
