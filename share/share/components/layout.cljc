@@ -17,15 +17,17 @@
   []
   (let [theme (citrus/react [:theme])
         black? (= theme "black")]
-    [:a.control {:style {:margin-left 24}
+    [:a.control {:style {:margin-top 16
+                         :display "block"}
                  :on-click (fn [e]
                              (util/stop e)
                              (citrus/dispatch! :citrus/set-theme (if black?
                                                                    "white"
                                                                    "black")))}
-     (if black?
-       (t :light-theme)
-       (t :dark-theme))]))
+     (str (t :switch-to)
+          (if black?
+            (t :light-theme)
+            (t :dark-theme)))]))
 
 (rum/defc right-footer < rum/reactive
   []
@@ -39,13 +41,11 @@
                    :on-click (fn []
                                (citrus/dispatch! :citrus/re-fetch :newest {}))}
        (t :new-created)]
+      [:a.control {:href "/moderation-logs"
+                   :style {:margin-left 24}}
+       "Moderation logs"]]
 
-      (theme)]
-
-     [:a.control {:href "/moderation-logs"
-                  :style {:margin-top 16
-                          :display "block"}}
-      "Moderation logs"]
+     (theme)
 
      [:div.row1 {:style {:align-items "center"
                          :margin-top 16}}
