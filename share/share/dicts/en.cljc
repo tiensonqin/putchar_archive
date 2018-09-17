@@ -117,7 +117,7 @@
    :search "Search"
    :search-posts "Search posts..."
    :reports "Reports"
-   :write-new-post "Write an article"
+   :write-new-post "Write new post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
    :root-title "Putchar - The repo of programmers' thoughts."
    :root-description "Putchar is a place for hackers to publish and discuss their thoughts. Everyone has a simple and free blog which supports multiple formats include Markdown and Asciidoctor."
@@ -284,4 +284,7 @@
    :change-it-to "change it to "
    :privacy "Privacy"
    :comments "comments"
-   :share-news "Share news, papers or your favorite books ..."})
+   :share-news "Share news, papers or your favorite books ..."
+   :name "Name"
+   :authors "Authors"
+   :authors-placeholder "Author1's name, https://author1's link\nAuthor2's name, https://author2's link"})

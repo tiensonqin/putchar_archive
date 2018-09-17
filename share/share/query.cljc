@@ -24,12 +24,6 @@
      :args  nil
      :merge {:posts [:posts :latest]}}))
 
-(def non-tech-posts-query
-  (fn [state args]
-    {:q     {:posts {:fields post-fields
-                     :filter :non-tech}}
-     :args  nil
-     :merge {:posts [:posts :non-tech]}}))
 
 (def latest-reply-posts-query
   (fn [state args]
@@ -69,7 +63,7 @@
 
 (def post-edit-query
   (fn [state args]
-    (let [id (util/uuid (:post-id args))
+    (let [id (:post-id args)
           q {:q    {:post {:fields [:id
                                     :title
                                     :body
@@ -112,6 +106,46 @@
                                     :filter post-filter}]]}}
        :args {:user {:screen_name (:screen_name args)}}
        :merge {:user-posts [:posts :by-screen-name (:screen_name args) post-filter]}})))
+
+(def book-query
+  (fn [state args]
+    (let [post-filter :latest-reply]
+      {:q {:book {:fields [:id :object_id :object_type :screen_name :name :authors :description :cover :tags :created_at :updated_at
+                           [:posts {:fields post-fields
+                                    :filter post-filter}]]}}
+       :args {:book {:id (:book-id args)}}
+       :merge {:book-posts [:books :by-id (:book-id args) post-filter]}})))
+
+(def book-edit-query
+  (fn [state args]
+    {:q {:book {:fields [:id :object_id :object_type :screen_name :name :authors :description :cover :tags :created_at :updated_at]}}
+     :args {:book {:id (:book-id args)}}}))
+
+(def books-query
+  (fn [state args]
+    {:q {:books {:fields [:id :name :description :stars :cover
+                          :object_id :created_at]
+                 :filter :hot}}}))
+
+(def paper-query
+  (fn [state args]
+    (let [post-filter :latest-reply]
+      {:q {:paper {:fields [:id :object_id :object_type :screen_name :name :authors :description :cover :tags :created_at :updated_at
+                           [:posts {:fields post-fields
+                                    :filter post-filter}]]}}
+       :args {:paper {:id (:paper-id args)}}
+       :merge {:paper-posts [:papers :by-id (:paper-id args) post-filter]}})))
+
+(def paper-edit-query
+  (fn [state args]
+    {:q {:paper {:fields [:id :object_id :object_type :screen_name :name :authors :description :cover :tags :created_at :updated_at]}}
+     :args {:paper {:id (:paper-id args)}}}))
+
+(def papers-query
+  (fn [state args]
+    {:q {:groups {:fields [:id :name :description :stars :cover
+                           :object_id :created_at]
+                  :filter :hot}}}))
 
 (def drafts-query
   (fn [state args]
@@ -160,8 +194,6 @@
 
    :newest newest-posts-query
 
-   :non-tech non-tech-posts-query
-
    :latest-reply latest-reply-posts-query
 
    :members members-query
@@ -179,6 +211,14 @@
    :post-edit post-edit-query
 
    :user user-query
+
+   :book book-query
+
+   :books books-query
+
+   :paper paper-query
+
+   :papers papers-query
 
    :drafts drafts-query
 

@@ -136,12 +136,17 @@
       first))
 
 (defn update
-  [db table id m]
+  [db table id-or-where m]
   (try
-    (-> (j/update! db table m ["id = ?" id])
-        first)
+    (->
+     (execute! db
+               {:update table
+                :set m
+                :where (build-where id-or-where)})
+     first)
     ;; TODO why not throw DuplicateException
     (catch java.sql.BatchUpdateException e
+      (prn e)
       [:error :duplicated])))
 
 (defn delete

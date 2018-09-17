@@ -7,7 +7,10 @@
 
 (defn star
   [db m]
-  (util/create db table m :flake? true))
+  (try
+    (util/create db table m :flake? true)
+    (catch Exception e
+      nil)))
 
 (defn unstar
   [db m]

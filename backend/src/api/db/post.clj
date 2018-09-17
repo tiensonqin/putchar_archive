@@ -91,16 +91,6 @@
   (if x
     (str/trim x)))
 
-(defn ->tags
-  [tags]
-  (some->> tags
-           (su/split-tags)
-           (remove str/blank?)
-           (distinct)
-           (map su/tag-encode)
-           (take 3)
-           (seq)))
-
 (defn update-tags
   [screen-name add-tags remove-tags]
   (let [tags-cache (cache/wcar*
@@ -141,7 +131,7 @@
   (let [m (-> data
               (clojure.core/update :body safe-trim)
               (clojure.core/update :title safe-trim))
-        tags (->tags (:tags m))
+        tags (su/->tags (:tags m))
         m (assoc m :tags tags)
         screen-name (or
                      (:screen_name data)
@@ -164,7 +154,7 @@
 
                   (:title m)
                   (clojure.core/update :title safe-trim))
-              tags (->tags (:tags m))
+              tags (su/->tags (:tags m))
               m (if tags
                   (assoc m :tags tags)
                   m)

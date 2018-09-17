@@ -9,6 +9,7 @@
             [api.db.report :as report]
             [api.db.util :as du]
             [api.db.refresh-token :as refresh-token]
+            [api.db.resource :as resource]
             [api.db.search :as search]
             [api.db.notification :as notification]
             [api.db.moderation-log :as mlog]
@@ -190,7 +191,23 @@
                                              [:= :user_id (:user_id data)]
                                              [:= :is_draft false]
                                              [:in :lang languages]])
-                                         cursor))
+                                          cursor))
+
+                     ;; book
+                     (and (:book_id data) (= :latest-reply (:filter data)))
+                     (post/get-latest-reply conn
+                                            [:and
+                                             [:= :book_id (:book_id data)]
+                                             [:= :is_draft false]]
+                                   cursor)
+
+                     ;; paper
+                     (and (:paper_id data) (= :latest-reply (:filter data)))
+                     (post/get-latest-reply conn
+                                            [:and
+                                             [:= :paper_id (:paper_id data)]
+                                             [:= :is_draft false]]
+                                            cursor)
 
                      (= :toped (:filter data))
                      (post/get-toped conn uid cursor)
@@ -209,6 +226,51 @@
                                     [:in :lang languages]]
                                    cursor))]
         (wrap-end? result (get cursor :limit))))))
+
+(defn- expose-object-id
+  [entity]
+  (assoc entity
+         :_id (:id entity)
+         :id (:object_id entity)))
+
+;; books
+(defn get-book
+  [{:keys [uid datasource]} data]
+  (if-let [book (j/with-db-connection [conn datasource]
+                  (resource/get conn {:object_type "book"
+                                      :object_id (:id data)}))]
+    (expose-object-id book)
+    :not-found))
+
+(defn get-books
+  [{:keys [uid datasource]} data]
+  (let [result (j/with-db-connection [conn datasource]
+                 (resource/get-resources conn
+                                         "book"
+                                         (:cursor data)))
+        result (if (seq result)
+                 (mapv expose-object-id result)
+                 result)]
+    (wrap-end? result (get (:cursor data) :limit 10))))
+
+(defn get-paper
+  [{:keys [uid datasource]} data]
+  (if-let [paper (j/with-db-connection [conn datasource]
+                  (resource/get conn {:object_type "paper"
+                                      :object_id (:id data)}))]
+    (expose-object-id paper)
+    :not-found))
+
+(defn get-papers
+  [{:keys [uid datasource]} data]
+  (let [result (j/with-db-connection [conn datasource]
+                 (resource/get-resources conn
+                                         "paper"
+                                         (:cursor data)))
+        result (if (seq result)
+                 (mapv expose-object-id result)
+                 result)]
+    (wrap-end? result (get (:cursor data) :limit 10))))
 
 (def resolvers
   {
@@ -237,7 +299,13 @@
    :posts get-posts
    :drafts get-drafts
 
-   :comments get-comments})
+   :comments get-comments
+
+   :book get-book
+   :books get-books
+   :paper get-paper
+   :papers get-papers
+   })
 
 (defn one-to-many?
   [field]

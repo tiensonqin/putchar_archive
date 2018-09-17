@@ -750,9 +750,9 @@
       [:div.empty-posts
        (if empty-widget
          empty-widget
-         [:a.auto-padding {:href "/new-article"
-                           :style {:margin-top 24
-                                   :color (colors/primary-text)}}
+         [:a {:href "/new-post"
+              :style {:margin-top 24
+                      :color (colors/primary-text)}}
           [:span.ubuntu {:style {:margin-top 3}}
            (t :be-the-first)]])])))
 
@@ -766,13 +766,7 @@
                {:user_id user-id
                 :merge-path posts-path}
                :show-avatar? false
-               :empty-widget
-               [:div
-                [:h5.auto-padding {:style {:color (colors/shadow)}}
-                 "Empty."]
-                [:a {:title "Typewriter"
-                     :href "https://xkcd.com/477/"}
-                 [:img {:src "https://imgs.xkcd.com/comics/typewriter.png"}]]])))
+               :empty-widget (widgets/empty-posts))))
 
 (rum/defcs post-edit < rum/reactive
   (mixins/query :post-edit)

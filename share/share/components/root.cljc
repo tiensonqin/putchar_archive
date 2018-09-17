@@ -19,6 +19,7 @@
             [share.components.docs :as docs]
             [share.components.widgets :as widgets]
             [share.components.layout :as layout]
+            [share.components.book :as book]
             [share.helpers.image :as image]
             [share.util :as util]
             [share.dommy :as dommy]
@@ -80,6 +81,12 @@
 
          :drafts       (fn [params current-user]
                          (user/drafts params))
+         :books         (fn [params current-user]
+                          (book/books params))
+         :book          (fn [params current-user]
+                          (book/book params))
+         :new-book      (fn [params current-user]
+                          (book/new-book params))
          }))
 
 (rum/defc routes
@@ -246,13 +253,13 @@
          (when-not post?
            (if mobile?
              [:a {:style {:padding-right 12}
-                  :href "/new-article"}
+                  :href "/new-post"}
               (ui/icon {:type :edit
                         :color (colors/shadow)})]
              [:a.row1.no-decoration {:style {:align-items "center"
                                              :color (colors/primary-text)
                                              :padding-right 12}
-                                     :href "/new-article"}
+                                     :href "/new-post"}
               (widgets/raw-html {:style {:display "inline"
                                          :margin-right 6}}
                                 "<img src=\"https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png?v8\" style=\"width:24px;height:24px\" class=\"emoji\" data-reactroot=\"\">")
@@ -485,7 +492,7 @@
                                            0)}}
         (routes reconciler route params current-user)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats :books :book :book-edit} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top (if mobile?

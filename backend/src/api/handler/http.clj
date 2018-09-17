@@ -8,6 +8,7 @@
             [api.db.post :as post]
             [api.db.comment :as comment]
             [api.db.report :as report]
+            [api.db.resource :as resource]
             [api.db.util :as du]
             [api.db.refresh-token :as refresh-token]
             [api.db.token :as token]
@@ -176,6 +177,38 @@
                    :post (post/unstar conn (:object_id data) uid)
                    (slack/error "unstar wrong type: " (:object_type data) uid))]
       (util/ok {:current (u/get conn uid)}))))
+
+(defmethod handle :resource/new [[{:keys [uid datasource redis]} data]]
+  (j/with-db-transaction [conn datasource]
+    (if (block/examine conn uid)
+      (let [user (u/get conn uid)]
+        (if (resource/exists? conn (select-keys data [:object_type
+                                                      :name]))
+          (util/bad :resource-name-exists)
+          (do
+            (future (slack/new (str "New resource: "
+                                    "Data: " data
+                                    ".")))
+            (util/ok
+             (resource/create conn (assoc data
+                                          :user_id (:id user)
+                                          :screen_name (:screen_name user)))))))
+      (util/bad "Sorry your account is disabled for now."))))
+
+(defmethod handle :resource/update [[{:keys [uid datasource]} data]]
+  (j/with-db-transaction [conn datasource]
+    (reject-not-owner-or-admin? conn uid :resources (:id data)
+                                (fn [moderator]
+                                  (resource/update conn (select-keys data [:object_id :object_type])
+                                                   (dissoc data :object_id :object_type))
+                                  (util/ok data)))))
+
+(defmethod handle :resource/delete [[{:keys [uid datasource]} data]]
+  (j/with-db-transaction [conn datasource]
+    (reject-not-owner-or-admin? conn uid :resources (:id data)
+                                (fn [moderator]
+                                  (resource/delete conn (:id data))
+                                  (util/ok data)))))
 
 (defmethod handle :report/new [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]

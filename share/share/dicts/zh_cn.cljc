@@ -299,4 +299,6 @@
    :send-us-an-email-moderator "如果你有兴趣做管理员，可以在 Discord 里留言或者发送给我们邮件。"
    :comments "条评论"
    :share-news "分享文章，论文或者你正在读的书..."
+   :name "名称"
+   :authors "作者"
    })

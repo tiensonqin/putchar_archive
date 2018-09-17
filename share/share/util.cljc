@@ -199,7 +199,7 @@
 
 (defn non-blank? [v]
   (and (string? v)
-       (not (s/blank? v))))
+       (not (s/blank? (s/trim v)))))
 
 (defn optional-non-blank?
   [s]
@@ -805,6 +805,16 @@
   [tags-string]
   (if tags-string
     (s/split tags-string #"[,，]+[\s]*")))
+
+(defn ->tags
+  [tags]
+  (some->> tags
+           (split-tags)
+           (remove s/blank?)
+           (distinct)
+           (map tag-encode)
+           (take 3)
+           (seq)))
 
 (defn ios? []
   (if (re-find #"iPhone|iPad|iPod" #?(:cljs js/navigator.userAgent

@@ -19,7 +19,6 @@
         ["votes"                                              :votes]
         ["stats"                                                  :stats]
         ["newest"                                                 :newest]
-        ["non-tech"                                               :non-tech]
         ["latest-reply"                                           :latest-reply]
         ;; rss
         ["newest.rss"                                             :new-rss]
@@ -30,7 +29,7 @@
         ["search"                                                 :search]
         ["reports"                                                :reports]
         ["moderation-logs"                                                :moderation-logs]
-        ["new-article"                                                    :new-post]
+        ["new-post"                                                    :new-post]
         ["privacy"                                                :privacy]
         [["@" :screen_name "/comments"]   :comments]
 
@@ -41,7 +40,19 @@
         ["drafts"                                                 :drafts]
         [["p/" :post-id "/edit"]                                              :post-edit]
         [["@" :screen_name "/" [#"[^\/]+" :permalink]]                        :post]
-        [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]        :comment]]])
+        [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]        :comment]
+
+        ;; books
+        ["books"                                                 :books]
+        [["book/" [ #"\d+" :book-id ]]                                      :book]
+        ["new-book"                                                 :new-book]
+        [["book/" [ #"\d+" :book-id ] "/edit"]                              :book-edit]
+
+        ;; papers
+        ["papers"                                                 :papers]
+        [["paper/" [ #"\d+" :paper-id ]]                                     :paper]
+        ["new-paper"                                                 :new-paper]
+        [["paper/" [ #"\d+" :paper-id ] "/edit"]                             :paper-edit]]])
 
 (defn match-route-with-query-params
   [path & {:as options}]
@@ -49,12 +60,25 @@
         result (bidi/match-route routes path)]
     (update result :route-params
             (fn [params]
-              (cond-> params
-                (:tag params)
-                (update :tag bidi/url-decode)
-
-                (seq query-params)
-                (merge query-params))))))
+              (let [params (if (:tag params)
+                             (update params :tag bidi/url-decode)
+                             params)
+                    params (if (seq query-params)
+                             (merge params query-params)
+                             params)
+                    params (if (:paper-id params)
+                             (update params :paper-id util/parse-int)
+                             params)
+                    params (if (:book-id params)
+                             (update params :book-id util/parse-int)
+                             params)
+                    params (if (:comment-idx params)
+                             (update params :comment-idx util/parse-int)
+                             params)
+                    params (if (:post-id params)
+                             (update params :post-id util/uuid)
+                             params)]
+                params)))))
 
 (def login-routes
   #{:me :notifications :profile

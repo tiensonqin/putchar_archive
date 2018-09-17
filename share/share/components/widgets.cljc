@@ -336,10 +336,11 @@
          :else
          nil)])))
 
-(rum/defc non-tech-label
+(defn empty-posts
   []
-  [:span {:style {:padding "2px 6px"
-                  :border "1px solid"
-                  :border-radius "3px"
-                  :font-size 13}}
-   (t :non-tech)])
+  [:div
+   [:h5.auto-padding {:style {:color (colors/shadow)}}
+    "Empty."]
+   [:a {:title "Typewriter"
+        :href "https://xkcd.com/477/"}
+    [:img {:src "https://imgs.xkcd.com/comics/typewriter.png"}]]])

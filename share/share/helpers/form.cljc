@@ -134,7 +134,7 @@
   (rum/local false ::uploading?)
   (rum/local false ::undo?)
   (rum/local nil ::local-form)
-  [state form name {:keys [text png? filename before before-id after on-uploaded show-undo? initial-value icon style button-class show-result? result-cb loading]
+  [state form name {:keys [text png? filename on-uploaded show-undo? style button-class show-result? result-cb loading]
                     :or {png? false
                          show-undo? true
                          show-result? true
@@ -158,13 +158,6 @@
        @uploading?
        (ui/donut)
 
-       (and src after)
-       (after src)
-
-       (and initial-value after)
-       [:a {:on-click on-click}
-        (after initial-value)]
-
        (and src show-result? result-cb)
        (result-cb form src)
 
@@ -180,21 +173,10 @@
                            (swap! form assoc name nil))}
            (ui/icon {:type "close"})])]
 
-       before
-       [:a (cond-> {:on-click on-click}
-             before-id
-             (assoc :id before-id))
-        before]
-
-
-       text
-       (ui/button {:on-click on-click
-                   :class button-class}
-         text)
-
-       icon
-       [:a {:on-click on-click}
-        icon])
+       :else
+       [:div.pointer.shadow.center {:on-click on-click
+                                    :style {:height 64}}
+        [:span (or text "Upload cover")]])
 
      [:input
       {:id id

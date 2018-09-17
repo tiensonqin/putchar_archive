@@ -472,3 +472,12 @@ textarea, input {
 .post-title {
     font-size: 17px;
 }
+
+.page-header {
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.pointer:hover {
+    cursor: pointer;
+}

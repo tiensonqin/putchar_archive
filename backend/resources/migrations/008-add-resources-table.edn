@@ -1,0 +1,27 @@
+{:up ["drop table bookmarks"
+      "CREATE TABLE resources (
+    id UUID DEFAULT uuid_generate_v4() primary key,
+    flake_id bigint not null,
+    object_id int not null default 1,
+    object_type text not null,
+    user_id UUID not null,
+    screen_name text NOT NULL,
+    name text NOT NULL,
+    authors text NOT NULL,
+    description text default null,
+    cover text default null,
+    tags text[],
+    stars integer NOT NULL default 0,
+    del boolean default false,
+    created_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC'),
+    updated_at timestamp with time zone NOT NULL default (current_timestamp AT TIME ZONE 'UTC')
+    );
+  ALTER TABLE resources ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
+  ALTER TABLE resources ADD CONSTRAINT updated_at_chk CHECK (EXTRACT(TIMEZONE from updated_at) = '0');
+  ALTER TABLE resources ADD CONSTRAINT resources_object_id_object_type UNIQUE (object_id, object_type);
+  ALTER TABLE resources ADD CONSTRAINT resources_name_object_type UNIQUE (name, object_type);
+"
+      "alter table posts add column book_id integer default null"
+      "alter table posts add column paper_id integer default null"
+      ]
+ :down ["drop table resources"]}
