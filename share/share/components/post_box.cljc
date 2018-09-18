@@ -11,7 +11,8 @@
             [share.dommy :as dommy]
             [share.util :as util]
             [share.dicts :refer [t] :as dicts]
-            [appkit.macros :refer [oget oset!]]))
+            [appkit.macros :refer [oget oset!]]
+            [share.components.widgets :as widgets]))
 
 ;; don't support image uploading on comment
 (defn upload-images
@@ -35,124 +36,67 @@
                                {:url url
                                 :file file}))))))))
 
-(defonce current-idx (atom nil))
-(defonce tab-pressed? (atom false))
-(defonce enter-pressed? (atom false))
-(defonce show-autocomplete? (atom true))
-
-(defn attach-listeners
-  [state]
+(defn- get-complete-coords
+  [cursor-position width]
   #?(:cljs
-     (do
-       (mixins/listen state js/window :keydown
-                      (fn [e]
-                        (let [code (.-keyCode e)]
-                          (when (contains? #{9 38 40 13 27} code)
-                            (util/stop e)
-                            (case code
-                              9         ; confirmation
-                              (reset! tab-pressed? true)
-                              13
-                              (reset! enter-pressed? true)
-                              38        ; up
-                              (if (>= @current-idx 1)
-                                (swap! current-idx dec))
-                              40        ; down
-                              (if (nil? @current-idx)
-                                (reset! current-idx 1)
-                                (swap! current-idx inc))
-                              27        ; esc
-                              (reset! show-autocomplete? false)))))))))
-
-;; tab or enter for confirmation, up/down to navigate
-(rum/defcs autocomplete-cp < rum/reactive
-  (mixins/event-mixin attach-listeners)
-  (mixins/disable-others-tabindex "a:not(.complete-item)")
-  {:will-mount (fn [state]
-                 (reset! current-idx 0)
-                 (reset! tab-pressed? false)
-                 (reset! enter-pressed? false)
-                 state)
-   :will-unmount (fn [state]
-                   (reset! current-idx 0)
-                   (reset! tab-pressed? false)
-                   (reset! enter-pressed? false)
-                   (reset! show-autocomplete? true)
-                   state)}
-  [state col item-cp on-select]
-  #?(:cljs
-     (let [show? (rum/react show-autocomplete?)]
-       (when show?
-        (let [width (citrus/react [:layout :current :width])
-              tab-pressed? (rum/react tab-pressed?)
-              enter-pressed? (rum/react enter-pressed?)
-              current-idx (or (rum/react current-idx) 0)
-              cursor-position (citrus/react [:post-box :cursor-position])]
-          (when (seq col)
-            (when tab-pressed?
-              (on-select (first col)))
-            (when enter-pressed?
-              (on-select (nth col current-idx)))
-            (let [c-idx (if current-idx (min current-idx (dec (count col))))
-                  textarea (dommy/sel1 "#post-box")
-                  coordinates (ui/get-caret-coordinates textarea cursor-position)
-                  top (+ (oget coordinates "top")
-                         12)
-                  left (if (> width 768)
-                         (+ 180 (oget coordinates "left"))
-                         (oget coordinates "left"))]
-              (ui/menu [:span {:style
-                               {:position "absolute"
-                                :top top
-                                :left left}}]
-                (for [[idx item] (util/indexed col)]
-                  (item-cp item (= idx c-idx)))
-                {:visible true
-                 :placement "bottomRight"
-                 :menu-style {:width 180}}))))))))
+     (let [textarea (dommy/sel1 "#post-box")
+           coordinates (ui/get-caret-coordinates textarea cursor-position)
+           top (+ (oget coordinates "top")
+                  12)
+           left (if (> width 768)
+                  (+ 180 (oget coordinates "left"))
+                  (oget coordinates "left"))]
+       {:top top
+        :left left})))
 
 (rum/defc mentions-cp < rum/reactive
   [type id mentions]
-  (let [on-select (fn [item] (citrus/dispatch! :citrus/add-mention type id item))]
-    (autocomplete-cp mentions
-                    (fn [screen-name focus?]
-                      (let [add-mention-fn (fn []
-                                             (citrus/dispatch! :citrus/add-mention type id screen-name))]
-                        [:a.button-text.row1.complete-item {:key (str "mention-" screen-name)
-                                                            :tab-index 0
-                                                            :style {:padding 12}
-                                                            :class (if focus? "active" "")
-                                                            :on-click add-mention-fn
-                                                            :on-key-down (fn [e]
-                                                                           (when (= 13 (.-keyCode e))
-                                                                             (add-mention-fn)))}
-                         (ui/avatar {:class "ant-avatar-sm"
-                                     :src (util/cdn-image screen-name)})
-                         [:span {:style {:margin-left 12
-                                         :font-weight "500"}}
-                          screen-name]]))
-                    on-select)))
+  #?(:clj [:div]
+     :cljs
+     (let [on-select (fn [item] (citrus/dispatch! :citrus/add-mention type id item))
+           width (citrus/react [:layout :current :width])
+           cursor-position (citrus/react [:post-box :cursor-position])
+           element [:span {:style
+                           (merge {:position "absolute"}
+                                  (get-complete-coords cursor-position width))}]]
+       (widgets/autocomplete
+        mentions
+        (fn [screen-name]
+          [:div.row1
+           (ui/avatar {:class "ant-avatar-sm"
+                       :src (util/cdn-image screen-name)})
 
-(rum/defc emojis-cp < rum/static
+           [:span {:style {:margin-left 12
+                           :font-weight "500"}}
+            screen-name]])
+        element
+        on-select
+        {:placement "bottomRight"
+         :menu-style {:width 180}
+         :item-style {:justify-content "flex-start"}}))))
+
+(rum/defc emojis-cp < rum/reactive
   [type id emojis]
-  (let [on-select (fn [[keyword unicode-or-src]] (citrus/dispatch! :citrus/add-emoji type id keyword))]
-    (autocomplete-cp emojis
-                     (fn [[keyword unicode-or-src] focus?]
-                      (let [add-emoji-fn (fn [] (on-select [keyword unicode-or-src]))]
-                        [:a.button-text.row1.complete-item {:key (str "emoji-" keyword)
-                                                            :tab-index 0
-                                                            :style {:padding 12}
-                                                            :class (if focus? "active" "")
-                                                            :on-click add-emoji-fn
-                                                            :on-key-down (fn [e]
-                                                                           (when (= 13 (.-keyCode e))
-                                                                             (add-emoji-fn)))}
-                         (content/emoji keyword "lg")
+  (let [on-select (fn [[keyword unicode-or-src]] (citrus/dispatch! :citrus/add-emoji type id keyword))
+        width (citrus/react [:layout :current :width])
+        cursor-position (citrus/react [:post-box :cursor-position])
+        element [:span {:style
+                        (merge {:position "absolute"}
+                               (get-complete-coords cursor-position width))}]]
+    (widgets/autocomplete
+     emojis
+     (fn [[keyword unicode-or-src]]
+       [:div.row1
+        (content/emoji keyword "lg")
 
-                         [:span {:style {:margin-left 12
-                                         :font-weight "500"}}
-                          keyword]]))
-                    on-select)))
+        [:span {:style {:margin-left 12
+                        :font-weight "500"}}
+         keyword]])
+     element
+     on-select
+     {:placement "bottomRight"
+      :menu-style {:width 180}
+      :item-style {:justify-content "flex-start"}})))
 
 (rum/defc post-box < rum/reactive
   {:after-render (fn [state]
@@ -168,7 +112,7 @@
    }
   [type id {:keys [placeholder style on-change value other-attrs]}]
   (let [{:keys [width height]} (citrus/react [:layout :current])
-        mentions (citrus/react [:search :result])
+        mentions (citrus/react [:search :result :mentions])
         emojis (citrus/react [:search :emojis-result])]
     [:div {:key "post-box"
            :style {:display "flex"

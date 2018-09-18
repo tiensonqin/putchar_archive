@@ -23,7 +23,7 @@
        (if loading?
          [:div.center {:style {:margin "24px 0"}}
           [:div.spinner]]
-         (post/post-list {:result result
+         (post/post-list {:result (:posts result)
                           :end? true}
                          {}
                          :empty-widget [:div (t :empty-search-result)]))])))

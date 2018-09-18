@@ -23,8 +23,6 @@
         uid (get-in req [:context :uid])
         q-fn (get queries handler)
         _ (reset! su/user-agent (get-in req [:headers "user-agent"]))
-        theme (get-in req [:cookies "theme" :value] "white")
-        _ (reset! colors/theme theme)
         mobile? (su/mobile?)
         db (:datasource (:context req))
         current-user (query/get-current-user (:context req) nil)
@@ -40,7 +38,6 @@
                                         :height (if mobile? 400 1024)}}
                :locale       (keyword locale)
                :hide-votes?  (= (get-in req [:cookies "hide-votes" :value]) "true")
-               :theme theme
                :hide-github-connect? (= (get-in req [:cookies "hide-github-connect" :value]) "true")
                :user         {:current current-user}
                :notification nil

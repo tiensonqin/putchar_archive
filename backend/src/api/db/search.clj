@@ -5,10 +5,11 @@
             [api.config :as config]
             [share.util :as util])
   (:import
-   (org.apache.lucene.index Term)
+   (org.apache.lucene.index Term IndexWriter IndexWriterConfig)
    (org.apache.lucene.search TermQuery
                              BooleanQuery BooleanClause PrefixQuery
-                             BooleanClause$Occur FuzzyQuery)))
+                             BooleanClause$Occur FuzzyQuery)
+   ))
 
 (defonce analyzer (lucene-ana/standard-analyzer))
 (defonce index-store (atom nil))
@@ -17,6 +18,21 @@
   (if (nil? @index-store)
     (reset! index-store
             (lucene-store/disk-store (get-in config/config [:search :index-path])))))
+
+(defn create-idx-writer-config []
+  (let [iwc (IndexWriterConfig. analyzer)]
+    (.setRAMBufferSizeMB iwc 256.0)
+    iwc))
+
+(defn delete-all
+  []
+  (let [dir @index-store
+        iwc (create-idx-writer-config)
+        writer (IndexWriter. dir iwc)]
+    (doto writer
+      (.deleteAll)
+      (.commit)
+      (.close writer))))
 
 (defn add-user [user]
   (let [user {:screen_name (:screen_name user)}]
@@ -29,6 +45,54 @@
   (lucene/delete! @index-store
                   :screen_name
                   screen-name
+                  analyzer))
+
+(defn add-book [book]
+  (let [book {:book_id (:object_id book)
+              :book_title (:title book)}]
+    (lucene/add! @index-store
+                 [book]
+                 [:book_id :book_title]
+                 analyzer)))
+
+(defn update-book [book]
+  (when (:title book)
+    (let [book {:book_title (:title book)}]
+      (lucene/update! @index-store
+                      book
+                      [:book_title]
+                      :book_id
+                      (:object_id book)
+                      analyzer))))
+
+(defn delete-book [book-title]
+  (lucene/delete! @index-store
+                  :book-title
+                  book-title
+                  analyzer))
+
+(defn add-paper [paper]
+  (let [paper {:paper_id (:object_id paper)
+              :paper_title (:title paper)}]
+    (lucene/add! @index-store
+                 [paper]
+                 [:paper_id :paper_title]
+                 analyzer)))
+
+(defn update-paper [paper]
+  (when (:title paper)
+    (let [paper {:paper_title (:title paper)}]
+      (lucene/update! @index-store
+                      paper
+                      [:paper_title]
+                      :paper_id
+                      (:object_id paper)
+                      analyzer))))
+
+(defn delete-paper [paper-title]
+  (lucene/delete! @index-store
+                  :paper-title
+                  paper-title
                   analyzer))
 
 (defn add-post [post]
@@ -58,6 +122,8 @@
 
 (defn search
   [q & {:keys [limit]}]
+  (prn {:q q
+        :limit limit})
   (let [limit (if limit limit 5)]
     (lucene/search @index-store
                    q

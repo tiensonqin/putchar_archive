@@ -134,7 +134,7 @@
   (rum/local false ::uploading?)
   (rum/local false ::undo?)
   (rum/local nil ::local-form)
-  [state form name {:keys [text png? filename on-uploaded show-undo? style button-class show-result? result-cb loading]
+  [state form name {:keys [text png? filename on-uploaded show-undo? style button-class show-result? result-cb loading before]
                     :or {png? false
                          show-undo? true
                          show-result? true
@@ -172,6 +172,10 @@
                :on-click (fn []
                            (swap! form assoc name nil))}
            (ui/icon {:type "close"})])]
+
+       before
+       [:a {:on-click on-click}
+        before]
 
        :else
        [:div.pointer.shadow.center {:on-click on-click
@@ -250,7 +254,7 @@
                         (on-cancel)
                         (citrus/dispatch! :router/back)))}
       (ui/icon {:type :close
-                :color (colors/shadow)})]
+                :color colors/shadow})]
      :else
      (if cancel-button?
            (ui/button {

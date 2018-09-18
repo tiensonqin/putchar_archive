@@ -165,7 +165,8 @@
 (defmethod handle :user/star [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (case (:object_type data)
-      :post (post/star conn (:object_id data) uid)
+      "book" (resource/star conn "book" (:object_id data) uid)
+      "paper" (resource/star conn "paper" (:object_id data) uid)
       (slack/error "star wrong type: " (:object_type data) uid)))
   (j/with-db-connection [conn datasource]
     (let [user (u/get conn uid)]
@@ -174,7 +175,8 @@
 (defmethod handle :user/unstar [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (let [result (case (:object_type data)
-                   :post (post/unstar conn (:object_id data) uid)
+                   "book" (resource/unstar conn "book" (:object_id data) uid)
+                   "paper" (resource/unstar conn "paper" (:object_id data) uid)
                    (slack/error "unstar wrong type: " (:object_type data) uid))]
       (util/ok {:current (u/get conn uid)}))))
 
@@ -183,8 +185,8 @@
     (if (block/examine conn uid)
       (let [user (u/get conn uid)]
         (if (resource/exists? conn (select-keys data [:object_type
-                                                      :name]))
-          (util/bad :resource-name-exists)
+                                                      :title]))
+          (util/bad :resource-title-exists)
           (do
             (future (slack/new (str "New resource: "
                                     "Data: " data
@@ -196,6 +198,7 @@
       (util/bad "Sorry your account is disabled for now."))))
 
 (defmethod handle :resource/update [[{:keys [uid datasource]} data]]
+  (prn data)
   (j/with-db-transaction [conn datasource]
     (reject-not-owner-or-admin? conn uid :resources (:id data)
                                 (fn [moderator]
@@ -245,6 +248,10 @@
   (j/with-db-connection [conn datasource]
     (util/ok (search/prefix-search (:q data)
                                    (dissoc data :q)))))
+
+(defmethod handle :search/search [[{:keys [uid datasource redis]} data]]
+  (j/with-db-connection [conn datasource]
+    (util/ok (search/search {:q (:q data)} :limit (:limit data)))))
 
 (defmethod handle :post/read [[{:keys [uid datasource redis]} data request]]
   (j/with-db-transaction [conn datasource]

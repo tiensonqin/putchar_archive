@@ -92,7 +92,7 @@
    :post-body-placeholder "Write your thoughts..."
    :publish "Publish"
    :settings "Settings"
-   :publish-to "Publish an article"
+   :publish-to "Publish"
    :vote "Vote"
    :unvote "Unvote"
    :down "Down"
@@ -287,4 +287,6 @@
    :share-news "Share news, papers or your favorite books ..."
    :name "Name"
    :authors "Authors"
-   :authors-placeholder "Author1's name, https://author1's link\nAuthor2's name, https://author2's link"})
+   :authors-placeholder "Markdown links are supported..."
+   :change "Change"
+   :show-all "Show all"})

@@ -57,12 +57,4 @@
      {:state (assoc state :hide-votes? false)
       :cookie [:set-forever "hide-votes" false]})
 
-   :citrus/set-theme
-   (fn [state value]
-     (reset! colors/theme value)
-     (let [html (dommy/sel1 "html")
-           black? (= (name value) "black")]
-       (dommy/remove-class! html (if black? "white-theme" "black-theme"))
-       (dommy/add-class! html (str value "-theme")))
-     {:state (assoc state :theme value)
-      :cookie [:set-forever "theme" value]})})
+   })

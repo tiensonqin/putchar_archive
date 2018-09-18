@@ -29,7 +29,7 @@
                            :margin-bottom 0}}
               type]
              [:span {:style {:font-size 14
-                             :color (colors/shadow)}}
+                             :color colors/shadow}}
               (util/date-format created_at "yyyy-MM-dd HH:mm:ss")]]
             (when moderator
               [:p "Moderator: " [:a.control {:href (str "/@" moderator)}

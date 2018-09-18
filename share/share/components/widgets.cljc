@@ -11,6 +11,7 @@
             [share.helpers.form :as form]
             [share.content :as content]
             [bidi.bidi :as bidi]
+            [share.kit.mixins :as mixins]
             #?(:cljs [goog.dom :as gdom])
             #?(:cljs [appkit.macros :refer [oget]])
             #?(:cljs [cljs.core.async :as async]))
@@ -84,15 +85,15 @@
         (if name
           [:span {:style {:font-size (if mobile? 24 33)
                           :font-weight "600"
-                          :color (colors/new-post-color)
-                          :margin-right 12}}
+                          :margin-right 12
+                          :color "#222"}}
            name])
         [:a.control {:href (str "/@" screen_name)
                      :style {:margin-top (if mobile? 8 17)}}
          [:span {:style (if name
                           {}
                           {:font-size 24
-                           :color (colors/new-post-color)})}
+                           :color "#222"})}
           (str "@" screen_name)]]]
 
        [:div.row1 {:style {:margin-left 3
@@ -191,7 +192,7 @@
                            :right 64
                            :z-index 9999}}
         (ui/icon {:type "notifications"
-                  :color (colors/primary)})])
+                  :color colors/primary})])
 
 
      (when (and alert? new-report?)
@@ -203,7 +204,7 @@
           :href "/reports"}
          [:i {:class "fa fa-flag"
               :style {:font-size 20
-                      :color (colors/primary)}}]]])
+                      :color colors/primary}}]]])
 
      (if (and last-scroll-top (> last-scroll-top 200))
        [:a#back-to-top.fadein
@@ -228,21 +229,20 @@
         theme (citrus/react [:theme])
         mobile? (util/mobile?)]
     [:a.row1.no-decoration {:href "/"
-                            :style {:margin-left -3}
                             :on-click (fn []
                                         (citrus/dispatch! :citrus/re-fetch :home {}))}
      (ui/icon {:type :logo
-               :color (colors/logo-background)})
+               :color colors/primary})
      [:span {:style {:font-size 20
                      :margin-top -6
                      :font-weight "bold"
                      :letter-spacing "0.05em"
-                     :color (colors/primary-text)}}
+                     :color colors/primary}}
       "utchar"]
      (when-not mobile?
        [:span {:style {:margin-left 6
-                      :font-size 10
-                      :color (colors/logo-background)}}
+                       :font-size 10
+                       :color colors/primary}}
        "beta"])]))
 
 (rum/defc preview < rum/reactive
@@ -264,7 +264,8 @@
          :animation "slide-up"}
         [:a.no-decoration.control.ubuntu {:style {:padding 12
                                                   :font-size 14
-                                                  :color (colors/icon-color)}}
+                                                  ;; :color (colors/icon-color)
+                                                  }}
          (if markdown?
            "Markdown"
            "Asciidoc")]))
@@ -278,7 +279,7 @@
                       [:post :form-data :preview?]
                       (not (:preview? form-data))))}
      (ui/icon {:type "visibility"
-               :color (if (:preview? form-data) (colors/primary) (colors/shadow))})]]))
+               :color (if (:preview? form-data) colors/primary colors/shadow)})]]))
 
 (rum/defc github-connect
   []
@@ -339,8 +340,85 @@
 (defn empty-posts
   []
   [:div
-   [:h5.auto-padding {:style {:color (colors/shadow)}}
+   [:h5.auto-padding {:style {:color colors/shadow}}
     "Empty."]
    [:a {:title "Typewriter"
         :href "https://xkcd.com/477/"}
     [:img {:src "https://imgs.xkcd.com/comics/typewriter.png"}]]])
+
+(defonce current-idx (atom nil))
+(defonce tab-pressed? (atom false))
+(defonce enter-pressed? (atom false))
+(defonce show-autocomplete? (atom true))
+
+(defn attach-listeners
+  [state]
+  #?(:cljs
+     (do
+       (mixins/listen state js/window :keydown
+                      (fn [e]
+                        (let [code (.-keyCode e)]
+                          (when (contains? #{9 38 40 13 27} code)
+                            (util/stop e)
+                            (case code
+                              9         ; confirmation
+                              (reset! tab-pressed? true)
+                              13
+                              (reset! enter-pressed? true)
+                              38        ; up
+                              (if (>= @current-idx 1)
+                                (swap! current-idx dec))
+                              40        ; down
+                              (if (nil? @current-idx)
+                                (reset! current-idx 1)
+                                (swap! current-idx inc))
+                              27        ; esc
+                              (reset! show-autocomplete? false)))))))))
+
+;; tab or enter for confirmation, up/down to navigate
+(rum/defcs autocomplete < rum/reactive
+  (mixins/event-mixin attach-listeners)
+  (mixins/disable-others-tabindex "a:not(.complete-item)")
+  {:will-mount (fn [state]
+                 (reset! current-idx 0)
+                 (reset! tab-pressed? false)
+                 (reset! enter-pressed? false)
+                 state)
+   :will-unmount (fn [state]
+                   (reset! current-idx 0)
+                   (reset! tab-pressed? false)
+                   (reset! enter-pressed? false)
+                   (reset! show-autocomplete? true)
+                   state)}
+  [state col item-cp element on-select menu-opts]
+  #?(:cljs
+     (let [show? (rum/react show-autocomplete?)]
+       (when show?
+        (let [width (citrus/react [:layout :current :width])
+              tab-pressed? (rum/react tab-pressed?)
+              enter-pressed? (rum/react enter-pressed?)
+              current-idx (or (rum/react current-idx) 0)]
+          (prn {:tab tab-pressed?
+                :enter enter-pressed?})
+          (when (seq col)
+            (when tab-pressed?
+              (on-select (first col)))
+            (when enter-pressed?
+              (on-select (nth col current-idx)))
+            (let [c-idx (if current-idx (min current-idx (dec (count col))))]
+              (ui/menu
+                element
+                (for [[idx item] (util/indexed col)]
+                  [:a.button-text.row1.complete-item
+                   {:key idx
+                    :tab-index 0
+                    :class (if (= c-idx idx) "active" "")
+                    :style {:padding 12
+                            :display "block"}
+                    :on-click #(on-select item)
+                    :on-key-down (fn [e]
+                                   (when (= 13 (.-keyCode e))
+                                     (on-select item)))}
+                   (item-cp item)])
+                (merge {:visible true}
+                       menu-opts)))))))))

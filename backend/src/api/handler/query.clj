@@ -13,7 +13,6 @@
             [api.db.search :as search]
             [api.db.notification :as notification]
             [api.db.moderation-log :as mlog]
-            [api.db.star :as star]
             [api.db.stat :as stat]
             [bidi.bidi :as bidi]
             [api.jwt :as jwt]

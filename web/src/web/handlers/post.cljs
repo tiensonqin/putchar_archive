@@ -303,17 +303,16 @@
 
    :post/save-failed
    (fn [state result]
-     ;; TODO: clear interval
      {:state (merge
-              {:saving? false
-               :clear-interval? true}
+              {:saving? false}
               (cond
                 (and (= (:status result) 400)
                      (= (get-in result [:body :message]) ":post-title-exists"))
                 {:post-title-exists? true}
 
                 :else
-                state))})
+                (assoc state
+                       :clear-interval? true)))})
 
    :post/reset-form-data
    (fn [state]

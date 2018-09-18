@@ -71,7 +71,16 @@
 
   (let [users (clojure.java.jdbc/query db ["select * from users"])]
     (doseq [user users]
-      (api.db.search/add-user user))))
+      (api.db.search/add-user user)))
+  (let [resources (clojure.java.jdbc/query db ["select * from resources where del is false"])]
+    (doseq [resource resources]
+      (cond
+        (= (:object_type resource) "book")
+        (api.db.search/add-book resource)
+        (= (:object_type resource) "paper")
+        (api.db.search/add-paper resource)
+        :else
+        nil))))
 
 (defn stars-screen-name
   [db]

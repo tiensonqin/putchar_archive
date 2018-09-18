@@ -320,10 +320,6 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     margin-bottom: 0;
 }
 
-.post-item .editor p {
-    margin-bottom: 0;
-}
-
 .post-item .imageblock, .post-item .literalblock, .post-item .listingblock, .post-item .verseblock, .post-item .videoblock {
     margin-bottom: 0.25em;
 }
@@ -344,7 +340,7 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     text-align: left;
     outline: none;
     z-index: 99999;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 16px;
     padding: 12px 16px;
     display: flex;
@@ -480,4 +476,8 @@ textarea, input {
 
 .pointer:hover {
     cursor: pointer;
+}
+
+.book-authors .editor p, .post-item .editor p {
+    margin-bottom: 0;
 }

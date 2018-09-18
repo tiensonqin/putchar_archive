@@ -52,7 +52,7 @@
 
          mention
          {:state state
-          :dispatch [:search/search :user/search {:q {:screen_name mention}}]}
+          :dispatch [:search/search :user/search {:q {:screen_name mention}} :mentions]}
 
          emoji
          {:state state

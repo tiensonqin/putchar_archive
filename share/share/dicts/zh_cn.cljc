@@ -301,4 +301,6 @@
    :share-news "分享文章，论文或者你正在读的书..."
    :name "名称"
    :authors "作者"
-   })
+   :authors-placeholder "支持 Markdown"
+   :change "修改"
+   :show-all "显示所有"})

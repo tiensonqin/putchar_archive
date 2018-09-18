@@ -621,11 +621,12 @@
   #?(:cljs (oset! js/document "title" title)))
 
 (defn scroll-to-element
-  [hash]
+  [hash-part]
   #?(:cljs
-     (when-not (s/blank? hash)
-       (when-let [element (gdom/getElement (subs hash 1))]
-         (scroll/into-view element)))))
+     (when hash-part
+       (when-not (s/blank? hash-part)
+        (when-let [element (gdom/getElement (subs hash-part 1))]
+          (scroll/into-view element))))))
 
 ;; TODO: remove this
 (defn me?

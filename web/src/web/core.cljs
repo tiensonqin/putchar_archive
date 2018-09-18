@@ -63,7 +63,6 @@
                 (assoc-in [:last-scroll-top (util/get-current-url)] (util/scroll-top))
                 (assoc :locale locale
                        :hide-votes? hide-votes?
-                       :theme (or (cookie/cookie-get :theme) "white")
                        :setup-github-sync? setup-github-sync?)
                 (assoc-in [:comment :liked-comments]
                           (storage/get :liked-comments))

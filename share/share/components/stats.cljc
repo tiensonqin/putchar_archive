@@ -16,12 +16,12 @@
      [:h4 post_title]
      [:div.row1
       [:span {:style {:font-weight "bold"
-                      :color (colors/shadow)}}
+                      :color colors/shadow}}
        views]
       [:span {:style {:margin-left 6}}
        (t :views)]
       [:span {:style {:font-weight "bold"
-                      :color (colors/shadow)
+                      :color colors/shadow
                       :margin-left 12}}
        reads]
       [:span {:style {:margin-left 6}}
@@ -33,11 +33,11 @@
         [:h4 post_title]]]]
      [:td {:style {:text-align "right"}}
       [:span {:style {:font-weight "bold"
-                      :color (colors/shadow)}}
+                      :color colors/shadow}}
        views]]
      [:td {:style {:text-align "right"}}
       [:span {:style {:font-weight "bold"
-                      :color (colors/shadow)}}
+                      :color colors/shadow}}
        reads]]]))
 
 (rum/defc stats < rum/reactive
@@ -55,7 +55,7 @@
                  all-reads (apply + (map :reads stats))]
              [:h5 {:style {:margin-top 48
                            :margin-bottom 12
-                           :color (colors/shadow)}}
+                           :color colors/shadow}}
               (str (str/capitalize (t :views)) " ")
               [:span {:style {:margin-left 6}}
                all-views]

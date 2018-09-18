@@ -64,7 +64,11 @@
 
 (defmethod mergef :book [state route-handler q {:keys [book] :as result} _k]
   (-> state
+      (assoc-in [:book :current] book)
       (update-merge [:book :by-id (:id book)] book)))
+
+(defmethod mergef :book-edit [state route-handler q {:keys [book] :as result} _k]
+  (mergef state :book q result :book))
 
 (defmethod mergef :books [state route-handler q {:keys [books] :as result} _k]
   (-> state
@@ -85,8 +89,11 @@
 
 (defmethod mergef :paper [state route-handler q {:keys [paper] :as result} _k]
   (-> state
+      (assoc-in [:paper :current] paper)
       (update-merge [:paper :by-id (:id paper)] paper)))
 
+(defmethod mergef :paper-edit [state route-handler q {:keys [paper] :as result} _k]
+  (mergef state :paper q result :paper))
 
 (defmethod mergef :comments [state route-handler q {:keys [comments] :as result} _k]
   (update-in state (get-in q [:merge :comments])

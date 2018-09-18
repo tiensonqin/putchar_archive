@@ -29,7 +29,7 @@
                                                    [:comment :form-data :preview?]
                                                    (if preview? false true)))}
      (ui/icon {:type "visibility"
-               :color (if preview? (colors/primary) (colors/shadow))
+               :color (if preview? colors/primary colors/shadow)
                :width 20})]))
 
 (rum/defcs default-select-input <
@@ -309,13 +309,13 @@
                            "favorite_border")
                    :color (if liked?
                             colors/like
-                            (colors/shadow))
+                            colors/shadow)
                    :width 20
                    :height 20})]
 
         [:span.number {:style {:margin-left 6
                                :font-size 14
-                               :color (colors/shadow)
+                               :color colors/shadow
                                :font-weight "600"}}
          likes]]
 
@@ -323,7 +323,7 @@
          [:a {:on-click (fn [])
               :style {:margin-right 24}}
           (ui/icon {:type :more
-                    :color (colors/shadow)})]
+                    :color colors/shadow})]
          [(if (:permalink entity)
             [:a.button-text {:style {:font-size 14}
                              :on-click (fn []
@@ -352,7 +352,7 @@
                                            (citrus/dispatch! :comment/reply comment)
                                            (reset! show-comment-box? true))}
         (ui/icon {:type "reply"
-                  :color (colors/shadow)})]]]
+                  :color colors/shadow})]]]
 
      (when @show-link?
        [:div.row1 {:style {:margin-top 12
@@ -564,7 +564,7 @@
    (if (seq result)
      (map (partial user-comment-item user-id) result)
      [:div
-      [:h5.auto-padding {:style {:color (colors/shadow)}}
+      [:h5.auto-padding {:style {:color colors/shadow}}
        "Empty."]
       [:a {:title "Real Programmers"
            :href "https://xkcd.com/378/"}

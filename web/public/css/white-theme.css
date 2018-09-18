@@ -1,189 +1,235 @@
-.white-theme body {
+body {
   background: #fefefe;
   color: #212529;
 }
-.white-theme #app {
+
+#app {
   background: #fefefe;
 }
+
 @media screen and (max-width: 768px) {
-  .white-theme {
-    background: #ffffff;
-  }
-  .white-theme #head {
+  #head {
     background: #FFF;
     -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   }
-  .white-theme .col-item:hover {
-    background: #f5f8fa;
-  }
 }
-.white-theme a {
+a {
   color: #0366d6;
 }
-.white-theme a.control {
+
+a.control {
   color: #666;
 }
-.white-theme a.control:hover {
+
+a.control:hover {
   color: #071839;
 }
-.white-theme a.is-active, .white-theme .user-buttons a.is-active {
+
+a.is-active, .user-buttons a.is-active {
   color: #000;
 }
-.white-theme .btn {
+
+.btn {
   background-color: #fff;
   color: #555;
 }
-.white-theme .btn:hover {
+
+.btn:hover {
   color: #333;
 }
-.white-theme a#quote-selection {
+
+a#quote-selection {
   background: #071839;
   color: #FFF;
 }
-.white-theme .btn-primary {
+
+.btn-primary {
   background-color: #3057a0;
   color: #FFF;
 }
-.white-theme .divider {
+
+.divider {
   color: rgba(0, 0, 0, 0.65);
 }
-.white-theme label {
+
+label {
   color: #666;
 }
-.white-theme .radio-button {
+
+.radio-button {
   background: #fff;
   border: 1px solid #999;
 }
-.white-theme #back-to-top {
+
+#back-to-top {
   background: #aaa;
 }
-.white-theme .post-title {
+
+.post-title {
   color: #071839;
 }
-.white-theme .post-title:visited {
+
+.post-title:visited {
   color: #666;
 }
-.white-theme .post-title:hover {
+
+.post-title:hover {
   color: #000;
 }
-.white-theme #post-user, .white-theme #post-user a {
+
+#post-user, #post-user a {
   color: #071839;
 }
-.white-theme #post-user a:hover {
+
+#post-user a:hover {
   color: #071839;
 }
-.white-theme .button-text {
+
+.button-text {
   color: #666;
 }
-.white-theme input#search:focus, .white-theme input#search:active {
+
+input#search:focus, input#search:active {
   outline: none;
   color: #000;
 }
-.white-theme span.logo {
+
+span.logo {
   color: #071839;
 }
-.white-theme .icon-button i {
+
+.icon-button i {
   color: #999;
 }
-.white-theme .icon-button:hover i {
+
+.icon-button:hover i {
   color: #071839;
 }
-.white-theme .ver_divider {
+
+.ver_divider {
   background: linear-gradient(to bottom, #FFF 0%, #ddd 53%, #fefefe 100%);
 }
-.white-theme .mention {
+
+.mention {
   color: #071839;
 }
-.white-theme .right-sub h5 {
+
+.right-sub h5 {
   color: #666;
 }
-.white-theme .post-page-title {
+
+.post-page-title {
   color: #071839;
 }
-.white-theme .hr-divider {
+
+.hr-divider {
   background-color: lightgray;
 }
-.white-theme .divider-text:after {
+
+.divider-text:after {
   color: #7f7f7f;
   background-color: #FFF;
 }
-.white-theme .rc-dialog-content {
+
+.rc-dialog-content {
   background-color: #ffffff;
 }
-.white-theme .rc-dialog-close {
+
+.rc-dialog-close {
   color: #000;
 }
-.white-theme .rc-dialog-header {
+
+.rc-dialog-header {
   color: #666;
   border-bottom: 1px solid #e9e9e9;
 }
-.white-theme input#search {
+
+input#search {
   background: #FFF;
   color: #000;
 }
-.white-theme #modal-panel {
+
+#modal-panel {
   background: #fefefe;
 }
-.white-theme svg:hover {
+
+svg:hover {
   fill: #071839;
 }
-.white-theme a.like svg:hover {
+
+a.like svg:hover {
   fill: #E0245E;
 }
-.white-theme a.tag {
+
+a.tag {
   background: #E3E3E3;
   color: #071839;
 }
-.white-theme a.tag:hover {
+
+a.tag:hover {
   background: #D3D3D3;
 }
-.white-theme a.tag.active {
+
+a.tag.active {
   background: #071839;
   color: #FFF;
 }
-.white-theme .radio-button {
+
+.radio-button {
   background: #fff;
   border: 1px solid #999;
 }
-.white-theme .highlight-area {
+
+.highlight-area {
   background: #F5F5DC;
 }
-.white-theme .editor h1 a, .white-theme .editor h2 a, .white-theme .editor h3 a, .white-theme .editor h4 a, .white-theme .editor h5 a, .white-theme .editor h6 a {
+
+.editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .editor h6 a {
   color: #071839;
 }
-.white-theme *:not(pre) > code {
+
+*:not(pre) > code {
   color: #000;
 }
-.white-theme .col-item {
+
+.col-item {
   border-bottom: 1px solid #efefef;
 }
-.white-theme .menu {
+
+.menu {
   -webkit-box-shadow: 0 1px 8px #ddd;
   box-shadow: 0 1px 8px #ddd;
   display: block;
   background: #FFF;
 }
-.white-theme .menu-item:hover {
+
+.menu-item:hover {
   background: #FFF;
 }
-.white-theme .menu a:hover {
+
+.menu a:hover {
   color: #071839;
 }
-.white-theme .user-posts .post-title:visited {
+
+.user-posts .post-title:visited {
   color: initial;
 }
-.white-theme .shadow {
+
+.shadow {
   border-radius: 4px;
   -webkit-box-shadow: 0 1px 8px #ddd;
   box-shadow: 0 1px 8px #ddd;
   margin-left: 3px;
+  margin-top: 3px;
 }
-.white-theme .disabled {
+
+.disabled {
   background: #3057a0;
   color: #FFF;
 }
-.white-theme .disabled:hover {
+
+.disabled:hover {
   color: #FFF;
 }
 

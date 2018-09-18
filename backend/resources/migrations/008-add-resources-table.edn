@@ -6,10 +6,11 @@
     object_type text not null,
     user_id UUID not null,
     screen_name text NOT NULL,
-    name text NOT NULL,
+    title text NOT NULL,
     authors text NOT NULL,
     description text default null,
     cover text default null,
+    link text default null,
     tags text[],
     stars integer NOT NULL default 0,
     del boolean default false,
@@ -19,9 +20,15 @@
   ALTER TABLE resources ADD CONSTRAINT created_at_chk CHECK (EXTRACT(TIMEZONE from created_at) = '0');
   ALTER TABLE resources ADD CONSTRAINT updated_at_chk CHECK (EXTRACT(TIMEZONE from updated_at) = '0');
   ALTER TABLE resources ADD CONSTRAINT resources_object_id_object_type UNIQUE (object_id, object_type);
-  ALTER TABLE resources ADD CONSTRAINT resources_name_object_type UNIQUE (name, object_type);
+  ALTER TABLE resources ADD CONSTRAINT resources_title_object_type UNIQUE (title, object_type);
 "
       "alter table posts add column book_id integer default null"
+      "alter table posts add column book_title text default null"
       "alter table posts add column paper_id integer default null"
-      ]
+      "alter table posts add column paper_title text default null"
+      "alter table users add column stared_books integer[] default null"
+      "alter table users add column stared_papers integer[] default null"
+      "alter table stars drop column object_id"
+      "alter table stars add column object_id integer default null"
+      "ALTER TABLE stars ADD CONSTRAINT user_id_object UNIQUE (user_id, object_type, object_id)"]
  :down ["drop table resources"]}

@@ -11,7 +11,6 @@
             [taoensso.carmine :as car]
             [honeysql.core :as sql]
             [honeysql.helpers :as sql-helpers]
-            [api.db.star :as star]
             [pinyin4clj.core :refer [ascii-pinyin]]
             [api.config :refer [config]]
             [share.config :as sc]
@@ -37,6 +36,8 @@
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
                                   :lang
                                   :body :body_format :tags
+                                  :book_id :book_title
+                                  :paper_id :paper_title
                                   :cover :video]
                          :from [table]})
 
@@ -218,6 +219,8 @@
 
 (defn get-posts
   [db where cursor]
+  (prn (-> (assoc base-map :where where)
+           (util/wrap-cursor cursor)))
   (->> (-> (assoc base-map :where where)
            (util/wrap-cursor cursor))
        (util/query db)
@@ -348,29 +351,6 @@
                  {:update table
                   :where [:= :id id]
                   :inc :views}))
-
-(defn star
-  [db post-id user-id]
-  (when-let [user (u/get db user-id)]
-    (let [m {:user_id user-id
-             :screen_name (:screen_name user)
-             :object_type "post"
-             :object_id post-id}]
-      (when-not (util/exists? db :stars m)
-        (let [result (star/star db m)]
-          (cache/wcar*
-           (car/zadd (cache/redis-key "users" user-id "stared_posts") (:flake_id result) post-id))
-          result)))))
-
-(defn unstar
-  [db post-id user-id]
-  (let [m {:user_id user-id
-           :object_type "post"
-           :object_id post-id}]
-    (when (util/exists? db :stars m)
-      (star/unstar db m)
-      (cache/wcar*
-       (car/zrem (cache/redis-key "users" user-id "stared_posts") post-id)))))
 
 (defn- user-post-conditions
   [id]

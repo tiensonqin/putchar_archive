@@ -60,7 +60,7 @@
    (widgets/transform-content (t :agree-text)
                               {:style {:font-size 14
                                        :margin-top 24
-                                       :color (colors/shadow)
+                                       :color colors/shadow
                                        :width 250}})])
 
 (rum/defc signin-modal < rum/reactive

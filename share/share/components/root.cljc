@@ -18,8 +18,9 @@
             [share.components.stats :as stats]
             [share.components.docs :as docs]
             [share.components.widgets :as widgets]
-            [share.components.layout :as layout]
+            [share.components.right :as right]
             [share.components.book :as book]
+            [share.components.paper :as paper]
             [share.helpers.image :as image]
             [share.util :as util]
             [share.dommy :as dommy]
@@ -87,6 +88,16 @@
                           (book/book params))
          :new-book      (fn [params current-user]
                           (book/new-book params))
+         :book-edit     (fn [params current-user]
+                          (book/book-edit params))
+         :papers         (fn [params current-user]
+                          (paper/papers params))
+         :paper          (fn [params current-user]
+                          (paper/paper params))
+         :new-paper      (fn [params current-user]
+                          (paper/new-paper params))
+         :paper-edit     (fn [params current-user]
+                          (paper/paper-edit params))
          }))
 
 (rum/defc routes
@@ -104,7 +115,8 @@
                     (when (and (not (str/blank? q)) (>= (count q) 1))
                       (do
                         (citrus/dispatch-sync! :search/search :post/search {:q {:post_title q}
-                                                                            :limit 20})
+                                                                            :limit 20}
+                                               :posts)
                         (citrus/dispatch! :router/push {:handler :search} true))))
         close-fn (fn []
                    (citrus/dispatch! :citrus/toggle-search-mode?)
@@ -148,12 +160,12 @@
            :style {:margin-right 24
                    :margin-top 12}}
        (ui/icon {:type "search"
-                 :color (colors/shadow)})]
+                 :color colors/shadow})]
 
       [:a {:on-click close-fn
            :style {:margin-top 12}}
        (ui/icon {:type "close"
-                 :color (colors/shadow)})]]]))
+                 :color colors/shadow})]]]))
 
 (rum/defc modal-panel
   < rum/reactive
@@ -190,7 +202,7 @@
                   :height 30})])]
 
 
-    (layout/right-footer)
+    (right/right)
 
     (if current-user
       (ui/button {:on-click #(citrus/dispatch! :user/logout)
@@ -234,7 +246,7 @@
            [:a {:style {:margin-right 12}
                 :on-click (fn [] (citrus/dispatch! :router/back))}
             (ui/icon {:type :ios_back
-                      :color (colors/primary)})])
+                      :color colors/primary})])
          [:div.row1
           (widgets/website-logo)
 
@@ -255,9 +267,9 @@
              [:a {:style {:padding-right 12}
                   :href "/new-post"}
               (ui/icon {:type :edit
-                        :color (colors/shadow)})]
+                        :color colors/shadow})]
              [:a.row1.no-decoration {:style {:align-items "center"
-                                             :color (colors/primary-text)
+                                             :color colors/primary
                                              :padding-right 12}
                                      :href "/new-post"}
               (widgets/raw-html {:style {:display "inline"
@@ -284,7 +296,7 @@
              :style {:padding padding}}
             [:i {:class "fa fa-flag"
                  :style {:font-size 20
-                         :color (colors/primary)}}]])
+                         :color colors/primary}}]])
 
          ;; login or notification
          (when-not post?
@@ -294,7 +306,7 @@
                     :title (t :notifications)
                     :style {:padding padding}}
                 (ui/icon {:type "notifications"
-                          :color (colors/primary)})])
+                          :color colors/primary})])
 
              [:a {:on-click (fn []
                               (citrus/dispatch! :user/show-signin-modal?))
@@ -302,7 +314,7 @@
                           :font-weight "500"
                           :font-size 15
                           :padding-right 0
-                          :color (colors/new-post-color)}}
+                          :color "#222"}}
               (t :signin)]))
 
          (when (and (not post?)
@@ -448,8 +460,8 @@
                                                      js/window.location.pathname)
                             current-handler (:handler router)]
                         (when (not= current-handler :comment)
-                          (if-let [hash js/window.location.hash]
-                            (util/scroll-to-element hash)
+                          (if-let [hash-part js/window.location.hash]
+                            (util/scroll-to-element hash-part)
                             (when-let [last-position (get-in @reconciler
                                                              [:last-scroll-top (util/get-current-url)])]
                               (.scrollTo js/window 0 last-position))))
@@ -489,19 +501,20 @@
        [:div#left {:key "left"
                    :class "row full-height"
                    :style {:margin-top (if mobile? 96
-                                           0)}}
+                                           0)
+                           :padding-bottom 100}}
         (routes reconciler route params current-user)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats :books :book :book-edit} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats :books :book :book-edit :new-book :papers :paper :paper-edit :new-paper} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top (if mobile?
                                             100
-                                            3)
-                              :margin-left 24
+                                            0)
+                              :margin-left 12
                               :margin-right 3
-                              :width 240}}
-          (layout/right-footer)])
+                              :width 243}}
+          (right/right)])
        ]]
      (login/signin-modal mobile?)
      ;; report modal

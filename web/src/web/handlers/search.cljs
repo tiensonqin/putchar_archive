@@ -10,20 +10,22 @@
      {:state {:q q}})
 
    :search/search
-   (fn [state api-path q]
+   (fn [state api-path q k]
      {:state {:loading? true
               :q (let [q (:q q)]
                    (or (:post_title q)
-                       (:screen_name q)))
+                       (:screen_name q)
+                       (:book_name q)
+                       (:paper_name q)))
               :result nil}
       :http {:params [api-path q]
-             :on-load :search/ready}})
+             :on-load [:search/ready k]}})
 
    :search/ready
-   (fn [state result]
+   (fn [state k result]
      {:state (-> state
                  (assoc :loading? false)
-                 (assoc :result result))})
+                 (assoc-in [:result k] result))})
 
    :search/reset
    (fn [state]
