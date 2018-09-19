@@ -457,12 +457,18 @@
                             router (bidi/match-route share.routes/routes
                                                      js/window.location.pathname)
                             current-handler (:handler router)]
-                        (when (not= current-handler :comment)
-                          (if-let [hash-part js/window.location.hash]
+                        (let [hash-part js/window.location.hash]
+                          (if (and hash-part (not (str/blank? (str/trim hash-part))))
                             (util/scroll-to-element hash-part)
-                            (when-let [last-position (get-in @reconciler
-                                                             [:last-scroll-top (util/get-current-url)])]
-                              (.scrollTo js/window 0 last-position))))
+                            (when (not= current-handler :comment)
+                              (let [last-position (get-in @reconciler
+                                                              [:last-scroll-top (util/get-current-url)])]
+                                (prn last-position)
+                                (if (nil? last-position)
+                                  (.scrollTo js/window 0 0)
+                                  (.scrollTo js/window 0 last-position))
+                               ))
+                            ))
 
                         (.addEventListener js/window "popstate"
                                            (fn [e]

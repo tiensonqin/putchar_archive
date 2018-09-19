@@ -7,6 +7,10 @@ body {
   background: #F4F1EA;
 }
 
+#head {
+  background: #F4F1EA;
+}
+
 @media screen and (max-width: 768px) {
   #head {
     -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
@@ -104,10 +108,6 @@ span.logo {
 
 .icon-button:hover i {
   color: #071839;
-}
-
-.ver_divider {
-  background: linear-gradient(to bottom, #FFF 0%, #ddd 53%, #F4F1EA 100%);
 }
 
 .mention {

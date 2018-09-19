@@ -102,13 +102,13 @@
        :rel "apple-touch-icon"}]
 
      [:link
-      {:href "/favicon-32x32.png?v=3",
+      {:href "/favicon-32x32.png?v=4",
        :sizes "32x32",
        :type "image/png",
        :rel "icon"}]
 
      [:link
-      {:href "/favicon-16x16.png?v=3",
+      {:href "/favicon-16x16.png?v=4",
        :sizes "16x16",
        :type "image/png",
        :rel "icon"}]
@@ -150,13 +150,13 @@
          :rel "apple-touch-icon"}]
 
        [:link
-        {:href "/favicon-32x32.png?v=3",
+        {:href "/favicon-32x32.png?v=4",
          :sizes "32x32",
          :type "image/png",
          :rel "icon"}]
 
        [:link
-        {:href "/favicon-16x16.png?v=3",
+        {:href "/favicon-16x16.png?v=4",
          :sizes "16x16",
          :type "image/png",
          :rel "icon"}]

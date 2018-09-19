@@ -27,8 +27,8 @@
   (citrus/dispatch-sync! :router/setup-pushy-history
                          (routes/start! reconciler))
 
-  (when (and js/history js/history.scrollRestoration)
-    (set! (.-scrollRestoration js/history) "manual"))
+  ;; (when (and js/history js/history.scrollRestoration)
+  ;;   (set! (.-scrollRestoration js/history) "manual"))
 
   (citrus/dispatch-sync! :citrus/cache-server-first-reply)
 

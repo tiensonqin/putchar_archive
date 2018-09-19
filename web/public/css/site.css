@@ -347,7 +347,8 @@ a.delete {
 }
 
 .ver_divider {
-        width: 3px!important;
+    width: 3px!important;
+    background: #ddd;
 }
 
 .mention {
