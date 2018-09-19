@@ -432,9 +432,9 @@
 
        (.addEventListener js/window "scroll"
                           (fn []
-                            (when @scroll/on-scroll-switch
-                              (let [scroll-top (util/scroll-top)]
-                                (citrus/dispatch! :citrus/set-scroll-top (util/get-current-url) scroll-top))))))
+                            (let [scroll-top (util/scroll-top)]
+                              (prn "current scroll top: " scroll-top)
+                              (citrus/dispatch! :citrus/set-scroll-top (util/get-current-url) scroll-top)))))
      :clj nil))
 
 (def rendered? (atom false))
@@ -463,12 +463,10 @@
                             (when (not= current-handler :comment)
                               (let [last-position (get-in @reconciler
                                                               [:last-scroll-top (util/get-current-url)])]
-                                (prn last-position)
                                 (if (nil? last-position)
                                   (.scrollTo js/window 0 0)
                                   (.scrollTo js/window 0 last-position))
-                               ))
-                            ))
+                                ))))
 
                         (.addEventListener js/window "popstate"
                                            (fn [e]
