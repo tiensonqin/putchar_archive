@@ -4,7 +4,6 @@
             [appkit.citrus :as citrus]
             [share.helpers.form :as form]
             [share.components.widgets :as widgets]
-            [share.components.resource :as resource]
             [share.components.post :as post]
             [share.config :as config]
             [share.util :as util]
@@ -12,48 +11,70 @@
             [share.kit.colors :as colors]
             [clojure.string :as s]
             [share.kit.query :as query]
-            [share.kit.mixins :as mixins]))
+            [share.kit.mixins :as mixins]
+            [share.kit.infinite-list :as inf]))
+
+(rum/defc paper-item
+  [paper]
+  (let [link (str "/paper/" (:id paper))]
+    [:div.column1 {:style {:margin-bottom 24}
+                   :key (:id paper)}
+
+     [:div.row1 {:style {:flex-wrap "wrap"
+                         :align-items "center"}}
+      [:a {:key (:id paper)
+           :href link
+           :style {:color colors/primary
+                   :font-size 18
+                   :margin-right 12}}
+       (:title paper)]
+
+      (for [tag (:tags paper)]
+        [:a.tag {:id tag
+                 :style {:margin "0 12px 0 0"}
+                 :key tag}
+         tag])]
+     [:div {:style {:margin-top 6}}
+      (widgets/transform-content (:authors paper) nil)]]))
+
+(rum/defc papers-stream < rum/reactive
+  [papers end?]
+  (let [current-path (citrus/react [:router :handler])
+        loading? (citrus/react [:query :scroll-loading? current-path])]
+    [:div.column
+     (inf/infinite-list (map (fn [paper]
+                               (paper-item paper)) papers)
+                        {:on-load
+                         (if end?
+                           identity
+                           (fn []
+                             (citrus/dispatch! :citrus/load-more-papers
+                                               {:last (last papers)})))})
+     (when loading?
+       [:div.center {:style {:margin "24px 0"}}
+        [:div.spinner]])]))
 
 (rum/defc papers < rum/reactive
   (mixins/query :papers)
   [params]
-  [:div#papers.auto-padding.column.center-area {:style {:padding-bottom 64}}
+  [:div#papers.auto-padding.column.center-area
    [:h1 {:style {:margin "24px 0"}}
-    "Papers"]
+    (t :papers)]
 
    [:a.row1 {:style {:margin "24px 0"
                      :color colors/primary
                      :font-size 17}
              :href "/new-paper"}
     (ui/icon {:type :add})
-    "Add new paper"]
+    (t :add-a-paper)]
 
    [:div.divider]
 
    (query/query
-     (let [papers (citrus/react [:papers :hot :result])]
-       [:div.column
-        (for [paper papers]
-          (let [link (str "/paper/" (:id paper))]
-            [:div.column1 {:style {:margin-bottom 24}
-                           :key (:id paper)}
-
-             [:div.row1 {:style {:flex-wrap "wrap"
-                                 :align-items "center"}}
-              [:a {:key (:id paper)
-                   :href link
-                   :style {:color colors/primary
-                           :font-size 18
-                           :margin-right 12}}
-               (:title paper)]
-
-              (for [tag (:tags paper)]
-                [:a.tag {:id tag
-                         :style {:margin "0 12px 0 0"}
-                         :key tag}
-                 tag])]
-             [:div {:style {:margin-top 6}}
-              (widgets/transform-content (:authors paper) nil)]]))]))])
+     (let [{:keys [result end?]} (citrus/react [:papers :latest])
+           mobile? (util/mobile?)]
+       (when (seq result)
+         (papers-stream result end?))))])
 
 (rum/defc paper < rum/reactive
   (mixins/query :paper)
@@ -78,17 +99,21 @@
                     :width "100%"
                     :position "relative"}}
            (let [stared? (contains? (set (map :object_id (:stared_papers current-user))) (:id paper))]
-             [:a {:style {:position "absolute"
-                          :left 12
-                          :top 53}
-                  :on-click (fn []
-                              (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                {:object_type "paper"
-                                                 :object_id (:id paper)}))}
-              (ui/icon (if stared?
-                         {:type :star
-                          :color "#D95653"}
-                         {:type :star-border}))])
+             [:a.control {:style {:position "absolute"
+                                  :top 12
+                                  :right 12}
+                          :on-click (fn []
+                                      (citrus/dispatch! (if stared? :user/unstar :user/star)
+                                                        {:object_type "paper"
+                                                         :object_id (:id paper)}))}
+              [:div.row1
+               (ui/icon (if stared?
+                          {:type :star
+                           :color "#D95653"}
+                          {:type :star-border}))
+
+               [:span {:style {:margin-left 3}}
+                (:stars paper)]]])
            [:div.column1
             [:h1 {:style {:margin 0}} title]
             (when-let [authors (:authors paper)]
@@ -98,7 +123,7 @@
                (widgets/transform-content authors {:style {:margin 0}})])
             (when-let [link (:link paper)]
               [:span {:style {:margin-top 24}}
-               "Website: "
+               (str (t :website) ": ")
                [:a {:href link
                     :target "_blank"
                     :style {:color colors/primary}}
@@ -106,7 +131,7 @@
             [:div.row1 {:style {:align-items "center"
                                 :flex-wrap "wrap"
                                 :margin-top 6}}
-             "Posted by: "
+             (t :posted-by)
              [:a {:href (str "/@" screen_name)
                   :style {:margin-left 4
                           :color colors/primary}}
@@ -143,7 +168,7 @@
                   :type :textarea
                   :style {:height 80
                           :resize "none"}}
-   :link         {:label (str (t :link) ": *")
+   :link         {:label (str (t :website) ": *")
                   :validators [util/link? util/non-blank?]}
    :tags         {:label (t :tags)}
    :description  {:label (t :description)
@@ -154,7 +179,7 @@
 (rum/defc new-paper
   [params]
   [:div.column.auto-padding {:style {:margin-top 24}}
-   (form/render {:title "Add a paper"
+   (form/render {:title (t :add-a-paper)
                  :fields (paper-fields)
                  :on-submit (fn [form-data]
                               (citrus/dispatch! :resource/new
@@ -198,7 +223,7 @@
                    tags
                    (assoc :tags (s/join ", " tags)))]
        (if paper
-         (form/render {:title "Edit"
+         (form/render {:title (t :edit)
                        :fields (paper-edit-fields (atom paper))
                        :on-submit (fn [form-data]
                                     (citrus/dispatch! :resource/update

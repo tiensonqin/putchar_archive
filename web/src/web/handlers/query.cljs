@@ -73,7 +73,7 @@
            new-state (mergef q new-state route-handler result)]
 
        ;; set title
-       (let [[title description canonical-url picture] (seo/seo-title-content route-handler
+       (let [[title description picture] (seo/seo-title-content route-handler
                                                                 (get-in state [:router :route-params])
                                                                 new-state)]
          (util/set-title! title))

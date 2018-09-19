@@ -317,7 +317,11 @@ a.set-cover {
     display: block;
 }
 
-.comment .editor p {
+.user-posts {
+    max-width: 600px;
+}
+
+.user-card .editor p, .comment .editor p {
     margin-bottom: 0;
 }
 
@@ -339,7 +343,7 @@ a.set-cover {
 
 a.delete {
     text-decoration: none;
-    color: #666;
+    color: #696969;
 }
 
 .logo svg:hover {
@@ -395,12 +399,8 @@ a.delete {
     font-size: 230%;
 }
 
-.col-item {
-    padding: 12px;
-}
-
-.col-item:hover {
-    background: #f5f8fa;
+.user-posts .col-item {
+    border-bottom: none;
 }
 
 @media screen and (min-width: 768px) {
@@ -416,9 +416,29 @@ a.delete {
     .posts-headers {
         font-size: 1.125rem;
     }
+
+    .user-posts .posts {
+        box-shadow: none;
+    }
+
+    .user-posts .post-title {
+        font-size: 1.125rem;
+    }
+    .col-item {
+        padding: 12px 0;
+    }
 }
 
 @media screen and (max-width: 768px) {
+
+    .col-item {
+        padding: 12px;
+    }
+
+    .col-item:hover {
+        background: #f5f8fa;
+    }
+
     #head {
         padding: 3px 12px;
         height: 60px;

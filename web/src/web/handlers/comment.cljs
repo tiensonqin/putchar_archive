@@ -200,4 +200,5 @@
                                     :cursor {:after (:flake_id last)}}}
                   :merge {:comments [:comment table id]}}
                  true]})
+
 })

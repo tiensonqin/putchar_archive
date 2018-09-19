@@ -64,11 +64,11 @@
   ([db id-or-permalink fields]
    (when id-or-permalink
      (some->> (util/get db {:select fields
-                           :from [table]}
-                       (if (string? id-or-permalink)
-                         {:permalink id-or-permalink}
-                         id-or-permalink))
-             (normalize db)))))
+                            :from [table]}
+                        (if (string? id-or-permalink)
+                          {:permalink id-or-permalink}
+                          id-or-permalink))
+              (normalize db)))))
 
 (defn get-permalink-by-id
   [db id]
@@ -219,8 +219,6 @@
 
 (defn get-posts
   [db where cursor]
-  (prn (-> (assoc base-map :where where)
-           (util/wrap-cursor cursor)))
   (->> (-> (assoc base-map :where where)
            (util/wrap-cursor cursor))
        (util/query db)

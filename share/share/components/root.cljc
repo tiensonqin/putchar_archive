@@ -16,7 +16,6 @@
             [share.components.report :as report]
             [share.components.moderation-logs :as logs]
             [share.components.stats :as stats]
-            [share.components.docs :as docs]
             [share.components.widgets :as widgets]
             [share.components.right :as right]
             [share.components.book :as book]
@@ -73,8 +72,6 @@
                                   (logs/logs params))
          :stats         (fn [params current-user]
                           (stats/stats params))
-         :privacy       (fn [params current-user]
-                          (docs/privacy))
          :newest (fn [params current-user]
                    (post/sort-by-new))
          :latest-reply (fn [params current-user]

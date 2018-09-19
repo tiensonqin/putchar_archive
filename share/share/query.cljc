@@ -54,7 +54,7 @@
                             :tops
                             :comments_count
                             :book_id :book_title :paper_id :paper_title
-                            [:user {:fields [:id :screen_name :name :bio :website]}]
+                            [:user {:fields [:id :screen_name :name :bio]}]
                             [:comments {:fields [:*]
                                         :cursor {:limit 100}}]]}}
      :args {:post {:permalink (str "@"
@@ -103,7 +103,7 @@
 (def user-query
   (fn [state args]
     (let [post-filter :newest]
-      {:q {:user {:fields [:id :screen_name :name :bio :website :github_handle :twitter_handle :tags
+      {:q {:user {:fields [:id :screen_name :name :bio :github_handle :tags
                            [:posts {:fields post-fields
                                     :filter post-filter}]]}}
        :args {:user {:screen_name (:screen_name args)}}
@@ -112,11 +112,11 @@
 (def book-query
   (fn [state args]
     (let [post-filter :latest-reply]
-      {:q {:book {:fields [:id :object_id :object_type :screen_name :title :authors :description :cover :tags :link :created_at :updated_at
+      {:q {:book {:fields [:id :object_id :object_type :screen_name :title :authors :description :cover :tags :link :stars :created_at :updated_at
                            [:posts {:fields post-fields
                                     :filter post-filter}]]}}
        :args {:book {:id (:book-id args)}}
-       :merge {:book-posts [:books :by-id (:book-id args) post-filter]}})))
+       :merge {:book-posts [:posts :by-book-id (:book-id args) post-filter]}})))
 
 (def book-edit-query
   (fn [state args]
@@ -126,17 +126,16 @@
 (def books-query
   (fn [state args]
     {:q {:books {:fields [:id :title :description :stars :cover :authors
-                          :object_id :created_at :tags]
-                 :filter :hot}}}))
+                          :object_id :created_at :tags]}}}))
 
 (def paper-query
   (fn [state args]
     (let [post-filter :latest-reply]
-      {:q {:paper {:fields [:id :object_id :object_type :screen_name :title :authors :description :tags :link :created_at :updated_at
+      {:q {:paper {:fields [:id :object_id :object_type :screen_name :title :authors :description :tags :link :stars :created_at :updated_at
                            [:posts {:fields post-fields
                                     :filter post-filter}]]}}
        :args {:paper {:id (:paper-id args)}}
-       :merge {:paper-posts [:papers :by-id (:paper-id args) post-filter]}})))
+       :merge {:paper-posts [:posts :by-paper-id (:paper-id args) post-filter]}})))
 
 (def paper-edit-query
   (fn [state args]
@@ -146,18 +145,17 @@
 (def papers-query
   (fn [state args]
     {:q {:papers {:fields [:id :title :description :stars :authors
-                          :object_id :created_at :tags]
-                 :filter :hot}}}))
+                           :object_id :created_at :tags]}}}))
 
 (def drafts-query
   (fn [state args]
-    {:q {:current-user {:fields [:id :screen_name :name :bio :website :github_handle :twitter_handle
+    {:q {:current-user {:fields [:id :screen_name :name :bio  :github_handle
                          [:drafts {:fields [:*]}]]}}
      :args nil}))
 
 (def comments-query
   (fn [state args]
-    {:q {:user {:fields [:id :screen_name :name :bio :website :github_handle :twitter_handle
+    {:q {:user {:fields [:id :screen_name :name :bio :github_handle
                          [:comments {:fields [:*]
                                      :cursor {:limit 20}}]]}}
      :args {:user {:screen_name (:screen_name args)}}
@@ -166,7 +164,7 @@
 (def votes-query
   (fn [state args]
     (let [post-filter :toped]
-      {:q {:current-user {:fields [:id :screen_name :name :bio :website :github_handle :twitter_handle
+      {:q {:current-user {:fields [:id :screen_name :name :bio :github_handle
                                    [:posts {:fields post-fields}]]}}
        :args {:posts {:filter post-filter}}
        :merge {:my-posts [:posts :current-user post-filter]}})))
@@ -185,7 +183,7 @@
           screen_name (str/lower-case (:screen_name args))
           idx {:screen_name screen_name
                :tag tag}]
-      {:q     {:user-tag {:fields [:id :screen_name :name :bio :website :tags :github_handle :twitter_handle
+      {:q     {:user-tag {:fields [:id :screen_name :name :bio  :tags :github_handle
                                    [:posts {:fields post-fields}]]}}
        :args  {:user-tag idx}
        :merge {:user-tag [:posts :by-user-tag idx]}})))

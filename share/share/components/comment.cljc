@@ -545,7 +545,8 @@
                          :flex-direction "column"
                          :flex 1}}
            [:div.space-between
-            [:a {:href (str "/" (:post_permalink comment) "/" idx)}
+            [:a {:href (str "/" (:post_permalink comment) "/" idx)
+                 :style {:color colors/primary}}
              (:post_permalink comment)]
             [:span {:style {:color "#999"
                             :font-size "0.9em"}}

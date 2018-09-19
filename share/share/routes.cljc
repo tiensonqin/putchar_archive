@@ -30,7 +30,6 @@
         ["reports"                                                :reports]
         ["moderation-logs"                                                :moderation-logs]
         ["new-post"                                                    :new-post]
-        ["privacy"                                                :privacy]
         [["@" :screen_name "/comments"]   :comments]
 
         [["tag/" [#"[^\/]+" :tag]]                                             :tag]

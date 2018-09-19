@@ -30,5 +30,11 @@
       "alter table users add column stared_papers integer[] default null"
       "alter table stars drop column object_id"
       "alter table stars add column object_id integer default null"
-      "ALTER TABLE stars ADD CONSTRAINT user_id_object UNIQUE (user_id, object_type, object_id)"]
+      "ALTER TABLE stars ADD CONSTRAINT user_id_object UNIQUE (user_id, object_type, object_id)"
+      "ALTER TABLE users drop column twitter_handle"
+      "ALTER TABLE users drop column website"
+      "ALTER TABLE users drop column github_repo"
+      "ALTER TABLE users drop column github_repo_map"
+      "ALTER TABLE users drop column type"
+      ]
  :down ["drop table resources"]}

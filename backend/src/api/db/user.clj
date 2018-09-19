@@ -19,8 +19,8 @@
             [api.db.util :as du]))
 
 (defonce ^:private table :users)
-(def ^:private fields [:id :name :screen_name :email :language :languages :website :bio :type :stared_books :stared_papers
-                       :github_id :created_at :github_handle :github_repo :twitter_handle :last_seen_at :email_notification])
+(def ^:private fields [:id :name :screen_name :email :language :languages :bio :stared_books :stared_papers
+                       :github_id :created_at :github_handle :last_seen_at :email_notification])
 
 (def ^:private base-map {:select fields
                          :from [table]})

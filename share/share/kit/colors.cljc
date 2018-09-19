@@ -4,7 +4,7 @@
 
 (def primary "#071839")
 
-(def shadow "#666")
+(def shadow "#696969")
 
 (defn icon-color
   []

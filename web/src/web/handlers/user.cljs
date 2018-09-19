@@ -177,8 +177,7 @@
 
    :user/star
    (fn [state data]
-     (let [current-user (:current state)
-           type (:type current-user)]
+     (let [current-user (:current state)]
        (cond
          current-user
          {:state {:loading? true}
@@ -197,8 +196,7 @@
 
    :user/unstar
    (fn [state data]
-     (let [current-user (:current state)
-           type (:type current-user)]
+     (let [current-user (:current state)]
        (cond
          current-user
          {:state {:loading? true}

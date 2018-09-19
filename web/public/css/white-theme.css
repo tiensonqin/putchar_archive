@@ -19,7 +19,7 @@ a {
 }
 
 a.control {
-  color: #666;
+  color: #696969;
 }
 
 a.control:hover {
@@ -54,7 +54,7 @@ a#quote-selection {
 }
 
 label {
-  color: #666;
+  color: #696969;
 }
 
 .radio-button {
@@ -66,28 +66,28 @@ label {
   background: #aaa;
 }
 
+.user-posts .post-title:visited {
+  color: initial;
+}
+
 .post-title {
-  color: #071839;
-}
-
-.post-title:visited {
-  color: #666;
-}
-
-.post-title:hover {
   color: #000;
 }
 
-#post-user, #post-user a {
+.post-title:visited {
+  color: #696969;
+}
+
+.post-title:hover {
   color: #071839;
 }
 
-#post-user a:hover {
-  color: #071839;
+.user-posts .post-title:hover {
+  text-decoration: underline;
 }
 
 .button-text {
-  color: #666;
+  color: #696969;
 }
 
 input#search:focus, input#search:active {
@@ -116,7 +116,7 @@ span.logo {
 }
 
 .right-sub h5 {
-  color: #666;
+  color: #696969;
 }
 
 .post-page-title {
@@ -141,7 +141,7 @@ span.logo {
 }
 
 .rc-dialog-header {
-  color: #666;
+  color: #696969;
   border-bottom: 1px solid #e9e9e9;
 }
 
@@ -212,14 +212,10 @@ a.tag.active {
   color: #071839;
 }
 
-.user-posts .post-title:visited {
-  color: initial;
-}
-
 .shadow {
   border-radius: 4px;
-  -webkit-box-shadow: 0 1px 8px #ddd;
-  box-shadow: 0 1px 8px #ddd;
+  -webkit-box-shadow: 0 1px 8px #ccc;
+  box-shadow: 0 1px 8px #ccc;
   margin-left: 3px;
   margin-top: 3px;
 }

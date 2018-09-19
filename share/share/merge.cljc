@@ -21,12 +21,14 @@
 (defmethod mergef :post [state route-handler q {:keys [post] :as result} _k]
   (let [permalink (:permalink post)
         post-id (:id post)]
-    (-> state
-        (update-merge [:post :by-permalink permalink] (dissoc post :comments))
-        (update-merge [:post :current] (dissoc post :comments))
-        (assoc-in [:comment :posts post-id] (if (:comments post)
-                                              (update (:comments post) :result util/normalize)
-                                              (:comments post))))))
+    (if (map? post)
+      (-> state
+         (update-merge [:post :by-permalink permalink] (dissoc post :comments))
+         (update-merge [:post :current] (dissoc post :comments))
+         (assoc-in [:comment :posts post-id] (if (:comments post)
+                                               (update (:comments post) :result util/normalize)
+                                               (:comments post))))
+      state)))
 
 (defmethod mergef :post-edit [state route-handler q {:keys [post] :as result} _k]
   (mergef state :post-edit q result :post))
@@ -72,11 +74,11 @@
 
 (defmethod mergef :books [state route-handler q {:keys [books] :as result} _k]
   (-> state
-      (assoc-in [:books :hot] books)))
+      (assoc-in [:books :latest] books)))
 
 (defmethod mergef :papers [state route-handler q {:keys [papers] :as result} _k]
   (-> state
-      (assoc-in [:papers :hot] papers)))
+      (assoc-in [:papers :latest] papers)))
 
 (defmethod mergef :paper-posts [state route-handler q {:keys [paper] :as result} _k]
   (let [q (let [m (get-in q [:merge :paper-posts])]

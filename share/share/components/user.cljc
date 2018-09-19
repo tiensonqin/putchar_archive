@@ -116,7 +116,6 @@
             user (-> user
                      (assoc :bio (or (:bio temp-user) (:description temp-user)))
                      (assoc :screen_name (or (:screen_name temp-user) (:login temp-user)))
-                     (assoc :website (or (:website temp-user) (:blog temp-user)))
                      (util/map-remove-nil?))
             username-taken? (citrus/react [:user :username-taken?])
             email-taken? (citrus/react [:user :email-taken?])]
@@ -160,18 +159,13 @@
                    :warning (t :invalid-email)
                    :value (:email @form-data)
                    :validators [form/email?]}
-   :website       {:label (t :website)
-                   :placeholder (t :website-placeholder)
-                   :value (:website @form-data)}
-   :twitter_handle {:label (t :twitter-handle)
-                    :value (:twitter_handle @form-data)}
    :github_handle {:label (t :github-handle)
                    :value (:github_handle @form-data)}
    :bio           {:label (t :bio)
                    :type :textarea
                    :placeholder (t :bio-placeholder)
                    :style {:resize "none"
-                           :height "150px"}
+                           :height "96px"}
                    :value (:bio @form-data)}})
 
 (rum/defc email-notification-settings
@@ -360,13 +354,11 @@ The posts and comments that you have posted will not be deleted, in order to pre
         user (citrus/react [:user :by-screen-name screen-name])
         posts (citrus/react posts-path)]
     (if user
-      (let [{:keys [id name screen_name bio website]} user
+      (let [{:keys [id name screen_name bio]} user
             avatar (util/cdn-image screen_name)]
         [:div.column.center-area {:class "user-posts"
                                   :style {:margin-bottom 48}}
          (widgets/user-card user)
-
-         (widgets/posts-comments-header screen_name)
 
          ;; posts
          [:div
@@ -384,13 +376,11 @@ The posts and comments that you have posted will not be deleted, in order to pre
   (if-let [user (citrus/react [:user :current])]
     (if user
       (let [posts (citrus/react [:drafts])]
-        (let [{:keys [id name screen_name bio website]} user
+        (let [{:keys [id name screen_name bio]} user
               avatar (util/cdn-image screen_name)]
           [:div.column.center-area {:class "user-posts"
                                     :style {:margin-bottom 48}}
            (widgets/user-card user)
-
-           (widgets/posts-comments-header screen_name)
 
            ;; posts
            [:div
@@ -408,13 +398,11 @@ The posts and comments that you have posted will not be deleted, in order to pre
         user (citrus/react [:user :by-screen-name screen-name])
         comments (citrus/react comments-path)]
     (if user
-      (let [{:keys [id name screen_name bio website]} user
+      (let [{:keys [id name screen_name bio]} user
             avatar (util/cdn-image screen_name)]
         [:div.column.center-area {:class "user-posts"
                                   :style {:margin-bottom 48}}
          (widgets/user-card user)
-
-         (widgets/posts-comments-header screen_name)
 
          (query/query
            (comment/user-comments-list id comments))])

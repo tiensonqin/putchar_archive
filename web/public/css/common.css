@@ -370,10 +370,6 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     overflow: hidden;
 }
 
-.post-title {
-    word-break: break-word;
-}
-
 .fadein {
     animation: fadein 2s;
     -moz-animation: fadein 2s; /* Firefox */
@@ -466,6 +462,7 @@ textarea, input {
 }
 
 .post-title {
+    word-break: break-word;
     font-size: 17px;
 }
 

@@ -98,7 +98,7 @@
   [{:keys [uid datasource]} data]
   (->
    (let [where (if (:id data)
-                 {:id (:id data)}
+                 (:id data)
                  {:permalink (su/encode-permalink (:permalink data))})]
      (j/with-db-connection [conn datasource]
        (let [post (post/get conn where)]

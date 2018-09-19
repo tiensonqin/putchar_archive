@@ -33,7 +33,7 @@
 (defonce debug-state (atom nil))
 
 (defn head
-  [req handler zh-cn? seo-content seo-title seo-image canonical-url theme]
+  [req handler zh-cn? seo-content seo-title seo-image theme]
   (let [post? (= handler :post)]
     [:head
      [:meta {:charset "utf-8"}]
@@ -85,10 +85,6 @@
      [:title seo-title]
      [:meta {:name "description"
              :content seo-content}]
-     (when (and post? canonical-url)
-       [:link {:rel "canonical"
-               :href canonical-url}])
-
      [:link {:rel "alternate"
              :type "application/rss+xml"
              :title "Hot posts"
@@ -200,12 +196,12 @@
     (let [locale (:locale state)
          {:keys [handler route-params]} (:ui/route req)
          current-user (get-in state [:user :current])
-         [seo-title seo-content canonical-url seo-image] (seo/seo-title-content handler route-params state)
+         [seo-title seo-content seo-image] (seo/seo-title-content handler route-params state)
           zh-cn? (= locale :zh-cn)
           theme (str (get state :theme) "-theme")]
       (h/html5
        {:class theme}
-       (head req handler zh-cn? seo-content seo-title seo-image canonical-url theme)
+       (head req handler zh-cn? seo-content seo-title seo-image theme)
        [:body
         [:div#app
          content]

@@ -7,13 +7,17 @@
             [share.kit.mixins :as mixins]
             [share.kit.query :as query]
             [share.dicts :refer [t] :as dicts]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [share.kit.colors :as colors]))
 
 (rum/defc item-cp < rum/static
-  [mobile? {:keys [post_id post_title stats views reads] :as item}]
+  [mobile? {:keys [post_id post_title post_permalink stats views reads] :as item}]
+  (prn item)
   (if mobile?
     [:div.column
-     [:h4 post_title]
+     [:a {:style {:color colors/primary}
+          :href (str "/" post_permalink)}
+      [:h4 post_title]]
      [:div.row1
       [:span {:style {:font-weight "bold"
                       :color colors/shadow}}
@@ -29,7 +33,8 @@
     [:tr {:key post_id}
      [:td
       [:div
-       [:a.control
+       [:a {:style {:color colors/primary}
+            :href (str "/" post_permalink)}
         [:h4 post_title]]]]
      [:td {:style {:text-align "right"}}
       [:span {:style {:font-weight "bold"

@@ -4,7 +4,6 @@
             [appkit.citrus :as citrus]
             [share.helpers.form :as form]
             [share.components.widgets :as widgets]
-            [share.components.resource :as resource]
             [share.components.post :as post]
             [share.config :as config]
             [share.util :as util]
@@ -12,42 +11,66 @@
             [share.kit.colors :as colors]
             [clojure.string :as str]
             [share.kit.query :as query]
-            [share.kit.mixins :as mixins]))
+            [share.kit.mixins :as mixins]
+            [share.kit.infinite-list :as inf]))
+
+(rum/defc book-item
+  [book]
+  (let [link (str "/book/" (:id book))
+        mobile? (util/mobile?)]
+    [:a.column1 {:key (:id book)
+                 :href link
+                 :style {:padding (if mobile?
+                                    "24px 0"
+                                    "12px 24px 12px 0")
+                         :color colors/primary}}
+     (if (:cover book)
+       (let [style (if mobile?
+                     {:width "100%"}
+                     {:max-width 230
+                      :max-height 300
+                      :min-height 121})]
+         [:div {:style style}
+          [:img.hover-shadow {:src (:cover book)
+                              :style (merge
+                                      {:object-fit "contain"}
+                                      style)}]]))]))
+
+(rum/defc books-stream < rum/reactive
+  [books end?]
+  (let [current-path (citrus/react [:router :handler])
+        loading? (citrus/react [:query :scroll-loading? current-path])]
+    [:div.row.books {:style {:flex-wrap "wrap"}}
+     (inf/infinite-list (map (fn [book]
+                               (book-item book)) books)
+                        {:on-load
+                         (if end?
+                           identity
+                           (fn []
+                             (citrus/dispatch! :citrus/load-more-books
+                                               {:last (last books)})))})
+     (when loading?
+       [:div.center {:style {:margin "24px 0"}}
+        [:div.spinner]])]))
 
 (rum/defc books < rum/reactive
   (mixins/query :books)
   [params]
   [:div#books.auto-padding {:style {:padding-bottom 64}}
    [:h1 {:style {:margin "24px 0"}}
-    "Books"]
+    (t :books)]
 
    [:a.row1 {:style {:margin "24px 0"
                 :color colors/primary
                 :font-size 17}
              :href "/new-book"}
     (ui/icon {:type :add})
-    "Add new book"]
-
+    (t :add-a-book)]
    (query/query
-     (let [books (citrus/react [:books :hot :result])]
-       [:div.row {:style {:flex-wrap "wrap"}}
-        (for [book books]
-          (let [link (str "/book/" (:id book))]
-            [:a.column {:key (:id book)
-                        :href link
-                        :style {:padding "12px 24px 12px 0"
-                                :color colors/primary}}
-             (if (:cover book)
-               [:img {:src (:cover book)
-                      :style {:max-width 200
-                              :max-height 200
-                              :object-fit "contain"}}])
-             [:div {:style {:margin-top 8
-                            :width 192
-                            :text-overflow "ellipsis"
-                            :white-space "nowrap"
-                            :overflow "hidden"}}
-              (:title book)]]))]))])
+     (let [{:keys [result end?]} (citrus/react [:books :latest])
+           mobile? (util/mobile?)]
+       (when (seq result)
+         (books-stream result end?))))])
 
 (rum/defc book < rum/reactive
   (mixins/query :book)
@@ -69,8 +92,9 @@
                     :background "#efefef"
                     :background-image "radial-gradient(at 1% 100%, #ADC0CF, #FFF)"
                     :align-items "center"
-                    :width "100%"}}
-           [:div {:style {:position "relative"}}
+                    :width "100%"
+                    :position "relative"}}
+           [:div
             [:a.cover {:href (:link book)
                        :target "_blank"}
              [:img.box {:src cover
@@ -79,16 +103,21 @@
                                 :margin-right 12
                                 :object-fit "contain"}}]]
             (let [stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
-              [:a {:style {:position "absolute"
-                          :top 0}
+              [:a.control {:style {:position "absolute"
+                                   :top 12
+                                   :right 12}
                    :on-click (fn []
                                (citrus/dispatch! (if stared? :user/unstar :user/star)
                                                  {:object_type "book"
                                                   :object_id (:id book)}))}
-               (ui/icon (if stared?
-                          {:type :star
-                           :color "#D95653"}
-                          {:type :star-border}))])]
+               [:div.row1
+                (ui/icon (if stared?
+                           {:type :star
+                            :color "#D95653"}
+                           {:type :star-border}))
+
+                [:span {:style {:margin-left 3}}
+                 (:stars book)]]])]
            [:div.column1
             [:h1 {:style {:margin 0}} title]
             (when-let [authors (:authors book)]
@@ -98,7 +127,7 @@
                (widgets/transform-content authors {:style {:margin 0}})])
             (when-let [link (:link book)]
               [:span {:style {:margin-top 24}}
-               "Website: "
+               (str (t :website) ": ")
                [:a {:href link
                     :target "_blank"
                     :style {:color colors/primary}}
@@ -106,7 +135,7 @@
             [:div.row1 {:style {:align-items "center"
                                 :flex-wrap "wrap"
                                 :margin-top 6}}
-             "Posted by: "
+             (t :posted-by)
              [:a {:href (str "/@" screen_name)
                   :style {:margin-left 4
                           :color colors/primary}}
@@ -125,10 +154,14 @@
          ;;   (widgets/transform-content description {}))
 
 
-         [:div.center-area.auto-padding
+         [:div {:style {:margin "0 auto"
+                        :max-width 768
+                        :margin-top 24
+                        :width "100%"}}
           (post/post-list posts
                           {:book_id id
-                           :merge-path posts-path})]]
+                           :merge-path posts-path})]
+         ]
        [:div.auto-padding
         [:h1 "404 NOT FOUND"]]))))
 
@@ -142,7 +175,7 @@
                   :type :textarea
                   :style {:height 80
                           :resize "none"}}
-   :link         {:label (str (t :link) ": *")
+   :link         {:label (str (t :website) ": *")
                   :validators [util/link? util/non-blank?]}
    :cover        {:label (t :cover)
                   :type :image}})
@@ -151,7 +184,7 @@
   [params]
   [:div.auto-padding.column {:style {:margin-top 24
                                      :padding-bottom 48}}
-   (form/render {:title "Add a book"
+   (form/render {:title (t :add-a-book)
                  :fields (book-fields)
                  :on-submit (fn [form-data]
                               (citrus/dispatch! :resource/new
@@ -201,7 +234,7 @@
                   (assoc book :tags (str/join ", " tags))
                   book)]
        (if book
-         (form/render {:title "Edit"
+         (form/render {:title (t :edit)
                        :fields (book-edit-fields (atom book))
                        :on-submit (fn [form-data]
                                     (citrus/dispatch! :resource/update

@@ -74,103 +74,93 @@
         (assoc :on-mouse-up on-mouse-up))])))
 
 (rum/defc user-card < rum/reactive
-  [{:keys [id name screen_name bio website github_handle twitter_handle] :as user}]
+  [{:keys [id name screen_name bio github_handle] :as user}]
   (let [mobile? (util/mobile?)
-        current-user (citrus/react [:user :current])]
-    [:div.column1.auto-padding.user-card {:style {:padding-top (if mobile? 24 64)
-                                                  :padding-bottom "24px"}}
-     [:div.space-between
+        current-user (citrus/react [:user :current])
+        current-path (citrus/react [:router :handler])
+        drafts? (= current-path :drafts)
+        comments? (= current-path :comments)]
+    [:div.column1.auto-padding.user-card {:style (if mobile?
+                                                   {:margin-top 24
+                                                    :margin-bottom 24
+                                                    :padding 12}
+                                                   {:margin-top 64
+                                                    :margin-bottom 64
+                                                    :padding 24})
+                                          :class (if mobile?
+                                                   ""
+                                                   "shadow")}
+     [:div {:class (if mobile? "column" "space-between")}
+      [:a {:href (str "/@" screen_name)
+           :style (if mobile?
+                    {:text-align "center"
+                     :margin-bottom 24}
+                    {:margin-right 24})}
+       [:img {:src (util/cdn-image screen_name
+                                   :height 100
+                                   :width 100)
+              :style {:border-radius "50%"
+                      :width 90
+                      :height 90}}]]
       [:div.column
-       [:div.row1 {:style {:flex-wrap "wrap"}}
+       [:div.row1 {:style {:flex-wrap "wrap"
+                           :align-items "center"}}
         (if name
-          [:span {:style {:font-size (if mobile? 24 33)
-                          :font-weight "600"
-                          :margin-right 12
-                          :color "#222"}}
+          [:span {:style {:font-size 18
+                          :font-weight "500"
+                          :margin-right 6
+                          :color "#000"}}
            name])
-        [:a.control {:href (str "/@" screen_name)
-                     :style {:margin-top (if mobile? 8 17)}}
+        [:a.control {:href (str "/@" screen_name)}
          [:span {:style (if name
                           {}
-                          {:font-size 24
-                           :color "#222"})}
-          (str "@" screen_name)]]]
-
-       [:div.row1 {:style {:margin-left 3
-                           :flex-wrap "wrap"
-                           :margin-top 12}}
-        (let [url (str config/website "/@" screen_name "/newest.rss")]
-          [:a.ubuntu {:href url
-                      :target "_blank"}
-           (ui/icon {:type :rss
-                     :color "rgb(127,127,127)"})])
-
+                          {:font-weight "500"
+                           :font-size 18
+                           :color "#000"
+                           :margin-right 6})}
+          (str "@" screen_name)]]
         (if github_handle
           [:a {:href (str "https://github.com/" github_handle)
-               :style {:margin-left 20
-                       :margin-top 1}
+               :style {:margin-left 12}
                :target "_blank"}
            (ui/icon {:type :github
                      :color "rgb(127,127,127)"
-                     :width 19})])
+                     :width 18})])]
 
-        (if twitter_handle
-          [:a {:href (str "https://twitter.com/" twitter_handle)
-               :target "_blank"
-               :style {:margin-left 24
-                       :margin-top 3}}
-           (ui/icon {:type :twitter
-                     :width 21
-                     :height 21
-                     :color "#1DA1F3"})])
+       (if bio
+         (transform-content bio {:style {:margin-top 6
+                                         :margin-left 1}}))
 
-        (if (and website (not mobile?))
-          [:a {:style {:margin-left 24
-                       :font-size "18px"}
-                       :href website}
-           website])]
-
-       (when (and website mobile?)
-         [:a {:style {:font-size "18px"
-                      :margin-top 12}
-              :href website}
-          website])]
-      [:img {:src (util/cdn-image screen_name
-                                  :height 100
-                                  :width 100)
-             :style {:border-radius "50%"
-                     :width 90
-                     :height 90}}]]
-     (if bio
-       (transform-content bio {:style {:margin-left 6
-                                       :margin-top 16}}))]
-    ))
-
-(rum/defc posts-comments-header < rum/reactive
-  [screen_name]
-  (let [current-path (citrus/react [:router :handler])
-        current-user? (= screen_name (citrus/react [:user :current :screen_name]))
-        posts? (= current-path :user)
-        drafts? (= current-path :drafts)
-        comments? (= current-path :comments)
-        zh-cn? (= :zh-cn (citrus/react [:locale]))]
-    [:div.auto-padding.posts-headers {:style {:margin-top 12
-                                              :margin-bottom 12}}
-     [:div.row1.ubuntu.user-buttons {:style {:font-weight (if zh-cn? "500" "600")}}
-      [:a.control {:class (if posts? "is-active" "")
-                   :href (str "/@" screen_name)}
-       (t :latest-posts)]
-
-      (if current-user?
-        [:a.control {:class (if drafts? "is-active" "")
-                     :href "/drafts"
-                     :style {:margin-left 24}}
-         (t :drafts)])
-
-      [:a.control {:class (if comments? "is-active" "")
-                   :style {:margin-left 24}
-                   :href (str "/@" screen_name "/comments")}
-       (t :latest-comments)]]]))
+       (let [url (str config/website "/@" screen_name "/newest.rss")
+             ]
+         [:div.row1 {:style {:margin-top 12}}
+          [:a.tag.row1 {:href url
+                        :target "_blank"
+                        :style {:align-items "center"
+                                :width 95
+                                :margin 0
+                                :padding "0 6px"}}
+           (ui/icon {:type :rss
+                     :width 18})
+           [:span {:style {:margin-left 3}}
+            "Subscribe"]]
+          [:a.tag.row1 {:href "/drafts"
+                        :class (if drafts? "active" "")
+                        :style {:align-items "center"
+                                :margin 0
+                                :margin-left 12
+                                :padding "0 6px"}}
+           [:span
+            (t :drafts)]]
+          [:a.tag.row1 {:href (str "/@" screen_name "/comments")
+                        :class (if comments? "active" "")
+                        :style {:align-items "center"
+                                :margin 0
+                                :margin-left 12
+                                :padding "0 6px"}}
+           [:span
+            (t :latest-comments)]]])]]
+     ]))
 
 (rum/defc back-to-top < rum/reactive
   []

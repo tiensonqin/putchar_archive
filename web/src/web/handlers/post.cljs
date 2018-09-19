@@ -28,6 +28,9 @@
                       (= current-path :home)
                       :hot
 
+                      (contains? #{:book :paper} current-path)
+                      :latest-reply
+
                       (contains? #{:user} current-path)
                       :newest
 
@@ -42,6 +45,14 @@
         [params path] (cond
                         specific-user-id
                         [{:user_id specific-user-id}
+                         (:merge-path params)]
+
+                        (:book_id params)
+                        [{:book_id (:book_id params)}
+                         (:merge-path params)]
+
+                        (:paper_id params)
+                        [{:paper_id (:paper_id params)}
                          (:merge-path params)]
 
                         ;; home
@@ -124,7 +135,7 @@
    :post/update
    (fn [state data]
      {:state {:loading? true}
-      :http {:params [:post/update (dissoc data :title-validated? :tags-validated?)]
+      :http {:params [:post/update data]
              :on-load :citrus/update-ready
              :on-error :post/update-failed}})
 
@@ -143,38 +154,6 @@
    (fn [state result]
      (util/set-href! (str config/website "/" (:permalink result)))
      {:state state})
-
-   :post/update-put
-   (fn [state data input?]
-     {:state {:saving? true}
-      :http {:params [:post/update data]
-             :on-load [:citrus/update-put-ready data input?]
-             :on-error :post/update-put-failed}})
-
-   :post/update-put-failed
-   (fn [state result]
-     {:state state})
-
-   :citrus/update-put-ready
-   (fn [state data input? result]
-     (reset! input? false)
-     {:state (cond->
-                 (-> state
-                  (assoc-in [:post :edit-put?] nil)
-                  (assoc-in [:post :saving?] false)
-                  (assoc-in [:post :form-data :body] nil)
-                  (update-in [:posts :hot :result]
-                             (fn [posts]
-                               (mapv (fn [post]
-                                       (if (= (:id post) (:id data))
-                                         (assoc post :title (:title data))
-                                         post))
-                                     posts))))
-               (:permalink data)
-               (update-in [:post :by-permalink (:permalink data)]
-                          (fn [result]
-                            (if result
-                              (assoc result :title (:title data))))))})
 
    :post/delete
    (fn [state post]
@@ -254,6 +233,7 @@
    ;; TODO: add to drafts
    :post/new-draft-ready
    (fn [state result]
+     (prn result)
      {:state {:saving? false
               :current result}
       :redirect {:handler :post-edit
@@ -288,8 +268,7 @@
                         (not= (:body current) (:body form-data))))
                  {:state {:saving? true}
                   :http {:params [:post/update (dissoc data
-                                                       :title-validated?
-                                                       :tags-validated?)]
+                                                       :title-validated?)]
                          :on-load :post/save-ready
                          :on-error :post/save-failed}}
                  {:state state}))

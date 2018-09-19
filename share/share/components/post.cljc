@@ -245,7 +245,7 @@
    [:span {:style {:margin-right 12
                    :color colors/shadow
                    :font-weight "600"}}
-    (str (t :tags) ) ": * "]
+    (str (t :tags) ) ":"]
    [:div
     (ui/input {:class "ant-input ubuntu"
                :type "text"
@@ -253,10 +253,7 @@
                :auto-focus auto-focus?
                :name "tags"
                :style {:border "none"
-                       :border-bottom (str
-                                       (if (false? (get form-data :tags-validated?))
-                                         "1px solid red"
-                                         "1px solid #aaa"))
+                       :border-bottom "1px solid #aaa"
                        :border-radius 0
                        :padding 0
                        :color colors/primary
@@ -267,17 +264,9 @@
                :on-change (fn [value]
                             #?(:cljs
                                (let [value (util/ev value)]
-                                 (citrus/dispatch! :citrus/set-post-form-data
-                                                  {:tags value
-                                                   :tags-validated? (if (str/blank? value)
-                                                                      false
-                                                                      true)}))))
-               :on-blur (fn [e]
-                          #?(:cljs
-                             (let [v (util/ev e)]
-                               (if (str/blank? v)
-                                 (citrus/dispatch! :citrus/set-post-form-data
-                                                   {:tags-validated? false})))))})]])
+                                 (when-not (str/blank? value)
+                                   (citrus/dispatch! :citrus/set-post-form-data
+                                                     {:tags value})))))})]])
 
 (rum/defc assoc-book < rum/reactive
   [form-data style current-book]
@@ -464,35 +453,25 @@
         current-book (citrus/react [:book :current])
         current-paper (citrus/react [:paper :current])
         submit-fn (fn []
-                    (cond
-                      (str/blank? (:tags form-data))
-                      (citrus/dispatch! :citrus/set-post-form-data
-                                        {:tags-validated? false})
-
-                      (nil? (:lang form-data))
-                      (citrus/dispatch! :citrus/default-update
-                                        [:post :form-data :lang]
-                                        nil)
-
-                      :else
-                      (let [data (cond->
-                                     (merge {:id (:id current-post)
-                                             :is_draft false}
-                                            (select-keys form-data
-                                                         [:title :body :body_format :lang :tags :book_id :book_title :paper_id :paper_title]))
+                    (prn "submit form-data: " form-data)
+                    (let [data (cond->
+                                   (merge {:id (:id current-post)
+                                           :is_draft false}
+                                          (select-keys form-data
+                                                       [:title :body :body_format :lang :tags :book_id :book_title :paper_id :paper_title]))
 
 
-                                   (:cover form-data)
-                                   (assoc :cover (:cover form-data)))
-                            data (if (nil? (:body_format data))
-                                   (assoc data :body_format :markdown)
-                                   data)
-                            data (util/map-remove-nil? data)]
-                        (citrus/dispatch! :post/update data)
-                        (citrus/dispatch!
-                         :citrus/default-update
-                         [:post :publish-modal?]
-                         false))))]
+                                 (:cover form-data)
+                                 (assoc :cover (:cover form-data)))
+                          data (if (nil? (:body_format data))
+                                 (assoc data :body_format :markdown)
+                                 data)
+                          data (util/map-remove-nil? data)]
+                      (citrus/dispatch! :post/update data)
+                      (citrus/dispatch!
+                       :citrus/default-update
+                       [:post :publish-modal?]
+                       false)))]
 
     (let [tags (:tags current-post)
           data (cond-> {}
@@ -699,6 +678,9 @@
             self? (and current-user-id (= user-id current-user-id))
             user-link (str "/@" (:screen_name user))
             drafts-path? (= current-path :drafts)
+            user-draft? (contains? #{:user :drafts} current-path)
+            paper? (= current-path :paper)
+            book? (= current-path :book)
             [post-link router] (if drafts-path?
                                  [(str "/p/" (:id post) "/edit")
                                   {:handler :post-edit
@@ -716,124 +698,154 @@
                                   :on-click (fn [e]
                                               (citrus/dispatch! :router/push router true))}
          (cond
-           (and (:book_id post)
+           (and (not book?)
+                (:book_id post)
                 (:book_title post))
-           [:a.control {:href (str "/book/" (:book_id post))
-                        :on-click util/stop
-                        :style {:margin-right 12
-                                :font-size 14
-                                :margin-bottom 6
-                                :display "block"}}
+           [:a {:href (str "/book/" (:book_id post))
+                :on-click util/stop
+                :style {:margin-right 12
+                        :font-size 14
+                        :margin-bottom 6
+                        :color colors/primary
+                        :display "block"}}
             (:book_title post)]
-           (and (:paper_id post)
+           (and (not paper?)
+                (:paper_id post)
                 (:paper_title post))
-           [:a.control {:href (str "/paper/" (:paper_id post))
-                        :on-click util/stop
-                        :style {:margin-right 12
-                                :font-size 14
-                                :margin-bottom 6
-                                :display "block"}}
+           [:a {:href (str "/paper/" (:paper_id post))
+                :on-click util/stop
+                :style {:margin-right 12
+                        :font-size 14
+                        :margin-bottom 6
+                        :color colors/primary
+                        :display "block"}}
             (:paper_title post)])
-         [:div.row
-          (if show-avatar?
-            [:a {:href user-link
-                 :on-click util/stop
-                 :title (str (t :posted-by) (:screen_name user))
-                 :style {:margin-right 12
-                         :padding-top 5}}
-             (ui/avatar {:src (util/cdn-image (:screen_name user))
-                         :shape "circle"})])
-          [:div.column
-           [:div.column {:style {:justify-content "center"}}
-            [:div.space-between
-             (let [link (:link post)]
-               [:a.post-title.no-decoration (if link
-                                              {:style {:margin-right 6}
-                                               :on-click (fn [e]
-                                                           (.stopPropagation e))
-                                               :href link
-                                               :target "_blank"}
+         (if user-draft?
+           [:div.space-between {:style {:flex-wrap "wrap"
+                                        :align-items "center"}}
+            (let [link (:link post)]
+                 [:a.post-title.no-decoration (if link
+                                                {:style {:margin-right 6}
+                                                 :on-click (fn [e]
+                                                             (.stopPropagation e))
+                                                 :href link
+                                                 :target "_blank"}
 
-                                              {:style {:margin-right 6}
-                                               :on-click util/stop
-                                               :href post-link})
-                (:title post)
-                (if link
-                  (ui/icon {:type :link
-                            :width 16
-                            :height 16
-                            :color colors/shadow
-                            :opts {:style {:margin-left 6
-                                           :display "inline-block"}}}))])
+                                                {:style {:margin-right 6}
+                                                 :on-click util/stop
+                                                 :href post-link})
+                  (:title post)
+                  (if link
+                    (ui/icon {:type :link
+                              :width 16
+                              :height 16
+                              :color colors/shadow
+                              :opts {:style {:margin-left 6}}}))])
+            [:span {:style {:color colors/shadow
+                            :font-size 13
+                            :font-weight 400}}
+             (util/date-format (:created_at post) "M/dd")]]
+           [:div.row
+            (if show-avatar?
+              [:a {:href user-link
+                   :on-click util/stop
+                   :title (str (t :posted-by) (:screen_name user))
+                   :style {:margin-right 12
+                           :padding-top 5}}
+               (ui/avatar {:src (util/cdn-image (:screen_name user))
+                           :shape "circle"})])
+            [:div.column
+             [:div.column {:style {:justify-content "center"}}
+              [:div.space-between
+               (let [link (:link post)]
+                 [:a.post-title.no-decoration (if link
+                                                {:style {:margin-right 6}
+                                                 :on-click (fn [e]
+                                                             (.stopPropagation e))
+                                                 :href link
+                                                 :target "_blank"}
 
-             [:a.control {:href (str post-link "#comments")
-                          :title (str (:comments_count post)
-                                      " "
-                                      (t :replies))
-                          :on-click util/stop
-                          :style {:margin-left 24}}
-              [:span.number {:style {:font-weight "600"
-                                     :font-size 18}}
-               (:comments_count post)]]]
+                                                {:style {:margin-right 6}
+                                                 :on-click util/stop
+                                                 :href post-link})
+                  (:title post)
+                  (if link
+                    (ui/icon {:type :link
+                              :width 16
+                              :height 16
+                              :color colors/shadow
+                              :opts {:style {:margin-left 6
+                                             :display "inline-block"}}}))])
 
-            (if-let [cover (:cover post)]
-              [:a {:href post-link
-                   :on-click util/stop}
-               [:img.hover-shadow {:src (str cover "?w=" 200)
-                                   :style {:max-width 200
-                                           :border-radius 4
-                                           :margin-top 8
-                                           :margin-bottom 6}}]])]
+               [:a.control {:href (str post-link "#comments")
+                            :title (str (:comments_count post)
+                                        " "
+                                        (t :replies))
+                            :on-click util/stop
+                            :style {:margin-left 24}}
+                [:span.number {:style {:font-weight "600"
+                                       :font-size 18}}
+                 (:comments_count post)]]]
 
-           [:div.space-between.ubuntu {:style {:align-items "center"
-                                               :margin-top 8}}
-            [:div.row1 {:style {:align-items "center"}}
-             (vote post)]
+              (if-let [cover (:cover post)]
+                [:a {:href post-link
+                     :on-click util/stop}
+                 [:img.hover-shadow {:src (str cover "?w=" 200)
+                                     :style {:max-width 200
+                                             :border-radius 4
+                                             :margin-top 8
+                                             :margin-bottom 6}}]])]
+
+             [:div.space-between.ubuntu {:style {:align-items "center"
+                                                 :margin-top 8}}
+              [:div.row1 {:style {:align-items "center"}}
+               (vote post)]
 
 
-            [:div.row1 {:style {:color "rgb(127,127,127)"
-                                :font-size 14}}
-             (when-not mobile?
-               (let [last-reply-by (:last_reply_by post)
-                     frequent_posters (-> (remove (hash-set (:screen_name user) last-reply-by)
-                                                  (:frequent_posters post))
-                                          (conj last-reply-by))
-                     frequent_posters (->> (remove nil? frequent_posters)
-                                           (take 5))]
-                 (when (seq frequent_posters)
-                   [:div.row1 {:style {:margin-right 6}}
-                    (for [poster frequent_posters]
-                      (if poster
-                        [:a {:href (str "/@" poster)
-                             :key (str "frequent-poster-" poster)
-                             :title (str (t :frequent-poster) poster)
-                             :on-click util/stop
-                             :style {:margin-right 6}}
-                         (ui/avatar {:class "ant-avatar-sm"
-                                     :src (util/cdn-image poster)})]))])))
+              [:div.row1 {:style {:color "rgb(127,127,127)"
+                                  :font-size 14}}
+               (when-not mobile?
+                 (let [last-reply-by (:last_reply_by post)
+                       frequent_posters (-> (remove (hash-set (:screen_name user) last-reply-by)
+                                                    (:frequent_posters post))
+                                            (conj last-reply-by))
+                       frequent_posters (->> (remove nil? frequent_posters)
+                                             (take 5))]
+                   (when (seq frequent_posters)
+                     [:div.row1 {:style {:margin-right 6}}
+                      (for [poster frequent_posters]
+                        (if poster
+                          [:a {:href (str "/@" poster)
+                               :key (str "frequent-poster-" poster)
+                               :title (str (t :frequent-poster) poster)
+                               :on-click util/stop
+                               :style {:margin-right 6}}
+                           (ui/avatar {:class "ant-avatar-sm"
+                                       :src (util/cdn-image poster)})]))])))
 
-             (when first-tag
-               [:a.control {:href (str "/tag/" (first (:tags post)))
-                            :style {:margin-right 12}
-                            :on-click util/stop}
-                first-tag])
+               (when first-tag
+                 [:a.control {:href (str "/tag/" (first (:tags post)))
+                              :style {:margin-right 12}
+                              :on-click util/stop}
+                  first-tag])
 
-             [:a.no-decoration.control {:title (if last_reply_at
-                                                 (str
-                                                  (t :created-at) ": " (util/date-format created_at)
-                                                  "\n"
-                                                  (t :last-reply-at) ": " (util/date-format last_reply_at)
-                                                  "\n"
-                                                  "By: " (:last_reply_by post))
-                                                 (str
-                                                  (t :created-at) ": " (util/date-format created_at)))
-                                        :on-click util/stop
-                                        :href (if-let [last-reply-idx (:last_reply_idx post)]
-                                                (str post-link "/" last-reply-idx)
-                                                post-link)}
-              (if last_reply_at
-                (util/time-ago (:last_reply_at post))
-                (util/time-ago created_at))]]]]]]))))
+               [:a.no-decoration.control {:title (if last_reply_at
+                                                   (str
+                                                    (t :created-at) ": " (util/date-format created_at)
+                                                    "\n"
+                                                    (t :last-reply-at) ": " (util/date-format last_reply_at)
+                                                    "\n"
+                                                    "By: " (:last_reply_by post))
+                                                   (str
+                                                    (t :created-at) ": " (util/date-format created_at)))
+                                          :on-click util/stop
+                                          :href (if-let [last-reply-idx (:last_reply_idx post)]
+                                                  (str post-link "/" last-reply-idx)
+                                                  post-link)}
+                (if last_reply_at
+                  (util/time-ago (:last_reply_at post))
+                  (util/time-ago created_at))]]]]])]))))
+
 
 (rum/defc posts-stream < rum/reactive
   [posts show-avatar? end? opts loading?]
@@ -843,7 +855,7 @@
                            (util/map-remove-nil?)
                            (merge post)))
                     posts)]
-    [:div.posts.shadow
+    [:div.posts
      (inf/infinite-list (map (fn [post]
                                (post-item post show-avatar? opts)) posts)
                         {:on-load
@@ -932,7 +944,7 @@
       (when (and post (nil? (:title form-data)))
         (citrus/dispatch! :citrus/set-post-form-data
                           (cond->
-                              (select-keys post [:title :body :body_format :canonical_url :lang :book_id :book_title :paper_id :paper_title])
+                              (select-keys post [:title :body :body_format :lang :book_id :book_title :paper_id :paper_title])
                             (:body form-data)
                             (assoc :body (:body form-data)))))
       [:div.column.center-area.auto-padding {:class "post-edit editor"
@@ -1060,14 +1072,14 @@
           (let [{:keys [user]} post
                 current-reply (citrus/react [:comment :reply])
                 avatar (util/cdn-image (:screen_name user))]
-            [:div.column.auto-padding {:key "post"}
+            [:div.column.auto-padding.center-area {:key "post"}
              [:div {:style {:padding "12px 0"
                             :margin-top (cond
                                           (util/mobile?)
                                           0
                                           :else
                                           64)}}
-              [:div.center-area {:style {:margin-bottom 64}}
+              [:div {:style {:margin-bottom 64}}
                [:h1.post-page-title
                 (:title post)]
 
@@ -1075,26 +1087,42 @@
                                         :font-style "italic"
                                         :font-size "1.1em"}}
                 [:a {:href (str "/@" (:screen_name user))
-                     :style {:display "block"
-                             :margin-bottom 12}}
-                 (ui/avatar {:src (util/cdn-image (:screen_name user))
-                             :shape "circle"})]
-
-                [:a {:href (str "/@" (:screen_name user))}
+                     :style {:color colors/primary}}
                  (if (:name user)
                    (:name user)
                    (str "@" (:screen_name user)))]
 
-                [:span {:style {:margin-left 12}}
+                [:span {:style {:margin-left 12
+                                :color colors/primary}}
                  (util/date-format (:created_at post))]
 
                 (if (or
                      (= (:id current-user) (:id user))
                      (admins/admin? (:screen_name current-user)))
-                  [:a {:on-click (fn [e]
-                                   (util/set-href! (str config/website "/p/" (:id post) "/edit")))
-                       :style {:margin-left 12}}
-                   (t :edit)])]]
+                  [:a {:style {:color colors/primary
+                               :margin-left 12}
+                       :on-click (fn [e]
+                                   (util/set-href! (str config/website "/p/" (:id post) "/edit")))}
+                   (t :edit)])
+]]
+
+              (cond
+                (and (:book_id post)
+                     (:book_title post))
+                [:a {:href (str "/book/" (:book_id post))
+                     :style {:color colors/primary
+                             :font-size 14
+                             :display "block"
+                             :margin-bottom 12}}
+                 (:book_title post)]
+                (and (:paper_id post)
+                     (:paper_title post))
+                [:a {:href (str "/paper/" (:paper_id post))
+                     :style {:color colors/primary
+                             :font-size 14
+                             :display "block"
+                             :margin-bottom 12}}
+                 (:paper_title post)])
 
               [:div.post
                (when (:body post)
@@ -1177,8 +1205,6 @@
                                 :style {:margin-bottom 48}}
 
        (widgets/user-card user)
-
-       (widgets/posts-comments-header screen_name)
 
        [:div
         (widgets/tags screen_name (:tags user) tag)

@@ -254,7 +254,6 @@
 
                    :else
                    [[order-key order]])]
-    ;; (prn {:order-by order-by})
     (-> (wrap-where honey-map ts-cursor)
         (assoc :order-by order-by)
         (assoc :limit limit))))

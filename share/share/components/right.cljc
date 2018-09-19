@@ -126,13 +126,7 @@
       [:a.control
        {:style {:margin-left 24}
         :href "mailto:tiensonqin@gmail.com"}
-       (t :contact-us)]
-
-      [:a.control {:href "/privacy"
-                   :style {:margin-left 24}
-                   :on-click (fn []
-                               (util/set-href! (str config/website "/privacy")))}
-       (t :privacy)]]
+       (t :contact-us)]]
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"

@@ -69,5 +69,21 @@
                 state)
               (assoc :loading? false))})
 
+   :citrus/load-more-books
+   (fn [state {:keys [last]}]
+     {:state state
+      :dispatch [:query/send (get-in state [:router :handler])
+                 {:q {:books {:fields [:*]}}
+                  :args {:books {:cursor {:after (:flake_id last)}}}}
+                 true]})
+
+   :citrus/load-more-papers
+   (fn [state {:keys [last]}]
+     {:state state
+      :dispatch [:query/send (get-in state [:router :handler])
+                 {:q {:papers {:fields [:*]}}
+                  :args {:papers {:cursor {:after (:flake_id last)}}}}
+                 true]})
+
    ;; :resource/delete
    })

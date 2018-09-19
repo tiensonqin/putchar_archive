@@ -134,8 +134,6 @@
    :full-name "Full name"
    :full-name-warning "Full name should not be blank."
    :unique-username "Username"
-   :website "Website"
-   :website-placeholder "Your website, optional."
    :bio "Bio"
    :bio-placeholder "Introduce yourself, optional."
    :click-circle-add-avatar "Upload an avatar"
@@ -289,4 +287,14 @@
    :authors "Authors"
    :authors-placeholder "Markdown links are supported..."
    :change "Change"
-   :show-all "Show all"})
+   :show-all "Show all"
+   :no-votes-yet "No votes yet."
+   :books "Books"
+   :book "book"
+   :add-a-book "Add a book"
+   :website "Website"
+   :papers "Papers"
+   :paper "paper"
+   :add-a-paper "Add a paper"
+
+   })

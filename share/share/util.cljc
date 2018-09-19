@@ -90,7 +90,7 @@
 
 (defn date-format
   ([date]
-   (date-format date "yyyy-MM-dd"))
+   (date-format date "yyyy/M/dd"))
   ([date format]
    (if date
      #?(:cljs

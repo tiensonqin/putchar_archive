@@ -140,8 +140,6 @@
    :full-name-placeholder "姓名, 可不填"
    :full-name-warning "姓名不可以为空。"
    :unique-username "用户名"
-   :website "网站"
-   :website-placeholder "你的网站， 可不填。"
    :bio "简介"
    :bio-placeholder "介绍下自己吧， 可不填。"
    :click-circle-add-avatar "添加头像"
@@ -303,4 +301,10 @@
    :authors "作者"
    :authors-placeholder "支持 Markdown"
    :change "修改"
-   :show-all "显示所有"})
+   :show-all "显示所有"
+   :no-votes-yet "暂时还没有顶的文章。"
+   :books "书"
+   :book "书"
+   :add-a-book "添加一本书"
+   :website "网站"
+   })
