@@ -48,19 +48,17 @@
                     0)]
     (inc current-id)))
 
-;; m [:title :description :cover :tags :object_type]
-
-
 (defn get-resources
-  [db object-type cursor]
-  (-> (assoc base-map
-             :where [:and
-                     [:= :object_type object-type]
-                     [:= :del :false]])
-      (util/wrap-cursor (merge cursor
-                               {:order-key :stars
-                                :order :desc}))
-      (->> (util/query db))))
+  ([db object-type cursor]
+   (get-resources db object-type cursor fields))
+  ([db object-type cursor fields]
+   (-> (assoc {:from [table]}
+              :select fields
+              :where [:and
+                      [:= :object_type object-type]
+                      [:= :del :false]])
+       (util/wrap-cursor cursor)
+       (->> (util/query db)))))
 
 (defn star
   [db object-type object-id user-id]

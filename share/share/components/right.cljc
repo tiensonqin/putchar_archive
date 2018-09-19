@@ -18,7 +18,8 @@
   [state]
   (let [expand? (get state ::expand?)
         stared_books (citrus/react [:user :current :stared_books])
-        books stared_books]
+        books (if stared_books stared_books
+                  (citrus/react [:books :latest]))]
     [:div.shadow.column1 {:style {:padding 12
                                   :margin-bottom 12}}
      [:a.row1 {:style {:margin-bottom 12
@@ -61,7 +62,8 @@
   [state]
   (let [expand? (get state ::expand?)
         stared_papers (citrus/react [:user :current :stared_papers])
-        papers stared_papers]
+        papers (if stared_papers stared_papers
+                   (citrus/react [:papers :latest]))]
     [:div.shadow.column1 {:style {:padding 12
                                   :margin-bottom 12}}
      [:a.row1 {:style {:margin-bottom 12

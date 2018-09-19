@@ -269,9 +269,10 @@
                                              :color colors/primary
                                              :padding-right 12}
                                      :href "/new-post"}
-              (widgets/raw-html {:style {:display "inline"
-                                         :margin-right 6}}
-                                "<img src=\"https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png?v8\" style=\"width:24px;height:24px\" class=\"emoji\" data-reactroot=\"\">")
+              (ui/icon {:type :edit
+                        :color colors/shadow
+                        :width 22
+                        :opts {:style {:margin-right 6}}})
               (t :write-new-post)]))
 
          ;; search
@@ -305,13 +306,13 @@
                 (ui/icon {:type "notifications"
                           :color colors/primary})])
 
-             [:a {:on-click (fn []
+             [:a.no-decoration {:on-click (fn []
                               (citrus/dispatch! :user/show-signin-modal?))
                   :style {:padding padding
                           :font-weight "500"
                           :font-size 15
                           :padding-right 0
-                          :color "#222"}}
+                          :color colors/primary}}
               (t :signin)]))
 
          (when (and (not post?)

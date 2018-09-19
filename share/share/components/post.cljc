@@ -740,7 +740,8 @@
                               :width 16
                               :height 16
                               :color colors/shadow
-                              :opts {:style {:margin-left 6}}}))])
+                              :opts {:style {:margin-left 6
+                                             :display "inline-block"}}}))])
             [:span {:style {:color colors/shadow
                             :font-size 13
                             :font-weight 400}}

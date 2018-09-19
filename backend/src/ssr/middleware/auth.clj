@@ -15,7 +15,8 @@
 
 ;; route-handler
 (def query-whitelist
-  #{:user :post :posts :tag :user-tag :moderation-logs})
+  #{:user :post :posts :tag :user-tag :moderation-logs
+    :books :book :papers :paper})
 
 (defn- auth-blocked?
   [request]
