@@ -317,10 +317,6 @@ a.set-cover {
     display: block;
 }
 
-.user-posts {
-    max-width: 600px;
-}
-
 .user-card .editor p, .comment .editor p {
     margin-bottom: 0;
 }
@@ -422,7 +418,7 @@ a.delete {
     }
 
     .user-posts .post-title {
-        font-size: 1.125rem;
+        font-size: 1.3em;
     }
     .col-item {
         padding: 12px 0;
@@ -436,7 +432,7 @@ a.delete {
     }
 
     .col-item:hover {
-        background: #f5f8fa;
+        background: #F9F7F4;
     }
 
     #head {

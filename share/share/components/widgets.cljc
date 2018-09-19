@@ -79,6 +79,8 @@
         current-user (citrus/react [:user :current])
         current-path (citrus/react [:router :handler])
         drafts? (= current-path :drafts)
+        self? (and current-user
+                   (= screen_name (:screen_name current-user)))
         comments? (= current-path :comments)]
     [:div.column1.auto-padding.user-card {:style (if mobile?
                                                    {:margin-top 24
@@ -144,14 +146,15 @@
                      :width 18})
            [:span {:style {:margin-left 3}}
             "Subscribe"]]
-          [:a.tag.row1 {:href "/drafts"
-                        :class (if drafts? "active" "")
-                        :style {:align-items "center"
-                                :margin 0
-                                :margin-left 12
-                                :padding "0 6px"}}
-           [:span
-            (t :drafts)]]
+          (when self?
+            [:a.tag.row1 {:href "/drafts"
+                         :class (if drafts? "active" "")
+                         :style {:align-items "center"
+                                 :margin 0
+                                 :margin-left 12
+                                 :padding "0 6px"}}
+            [:span
+             (t :drafts)]])
           [:a.tag.row1 {:href (str "/@" screen_name "/comments")
                         :class (if comments? "active" "")
                         :style {:align-items "center"

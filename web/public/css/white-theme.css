@@ -1,15 +1,14 @@
 body {
-  background: #fefefe;
+  background: #F4F1EA;
   color: #212529;
 }
 
 #app {
-  background: #fefefe;
+  background: #F4F1EA;
 }
 
 @media screen and (max-width: 768px) {
   #head {
-    background: #FFF;
     -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   }
@@ -108,7 +107,7 @@ span.logo {
 }
 
 .ver_divider {
-  background: linear-gradient(to bottom, #FFF 0%, #ddd 53%, #fefefe 100%);
+  background: linear-gradient(to bottom, #FFF 0%, #ddd 53%, #F4F1EA 100%);
 }
 
 .mention {
@@ -146,12 +145,12 @@ span.logo {
 }
 
 input#search {
-  background: #FFF;
+  background: #F4F1EA;
   color: #000;
 }
 
 #modal-panel {
-  background: #fefefe;
+  background: #F4F1EA;
 }
 
 svg:hover {
@@ -194,18 +193,18 @@ a.tag.active {
 }
 
 .col-item {
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid #dfdfdf;
 }
 
 .menu {
   -webkit-box-shadow: 0 1px 8px #ddd;
   box-shadow: 0 1px 8px #ddd;
   display: block;
-  background: #FFF;
+  background: #F4F1EA;
 }
 
 .menu-item:hover {
-  background: #FFF;
+  background: #F9F7F4;
 }
 
 .menu a:hover {

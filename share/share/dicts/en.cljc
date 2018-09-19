@@ -259,7 +259,6 @@
    :dont-show-vote-numbers "Don't show vote numbers"
    :undo "Undo"
    :required "Required"
-   :agree-text "By clicking Sign In, you agree to our [Privacy](https://putchar.org/privacy)."
    :login-to-comment "You must be logged in to comment"
    :go-to-fullscreen "Go to fullscreen"
    :select-primary-language "Select post primary language"

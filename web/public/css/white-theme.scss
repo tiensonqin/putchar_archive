@@ -1,4 +1,4 @@
-$main-color: #fefefe;
+$main-color: #F4F1EA;
 $primary-color: #071839;
 $header-color: #FFF;
 
@@ -8,12 +8,11 @@ body {
 }
 
 #app {
-    background: #fefefe;
+    background: $main-color;
 }
 
 @media screen and (max-width: 768px) {
     #head {
-        background: $header-color;
         -webkit-box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
         box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
     }
@@ -152,7 +151,7 @@ span.logo {
 }
 
 input#search {
-    background: $header-color;
+    background: #F4F1EA;
     color: #000;
 }
 
@@ -200,18 +199,18 @@ a.tag.active {
 }
 
 .col-item {
-    border-bottom: 1px solid #efefef;
+    border-bottom: 1px solid #dfdfdf;
 }
 
 .menu {
     -webkit-box-shadow: 0 1px 8px #ddd;
     box-shadow: 0 1px 8px #ddd;
     display: block;
-    background: #FFF;
+    background: #F4F1EA;
 }
 
 .menu-item:hover {
-    background: #FFF;
+    background: #F9F7F4;
 }
 
 .menu a:hover {

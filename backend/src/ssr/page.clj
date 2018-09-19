@@ -33,7 +33,7 @@
 (defonce debug-state (atom nil))
 
 (defn head
-  [req handler zh-cn? seo-content seo-title seo-image theme]
+  [req handler zh-cn? seo-content seo-title seo-image]
   (let [post? (= handler :post)]
     [:head
      [:meta {:charset "utf-8"}]
@@ -119,9 +119,7 @@
        :rel "mask-icon"}]
 
      [:meta {:content "#071839", :name "msapplication-TileColor"}]
-     [:meta {:content (if (= theme "black-theme")
-                        "#1f364d"
-                        "#FFFFFF"), :name "theme-color"}]
+     [:meta {:content "#F4F1EA", :name "theme-color"}]
 
      [:link {:rel "manifest"
              :href "/manifest.json"}]
@@ -198,10 +196,10 @@
          current-user (get-in state [:user :current])
          [seo-title seo-content seo-image] (seo/seo-title-content handler route-params state)
           zh-cn? (= locale :zh-cn)
-          theme (str (get state :theme) "-theme")]
+          theme "white-theme"]
       (h/html5
        {:class theme}
-       (head req handler zh-cn? seo-content seo-title seo-image theme)
+       (head req handler zh-cn? seo-content seo-title seo-image)
        [:body
         [:div#app
          content]

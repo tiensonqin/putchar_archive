@@ -150,9 +150,12 @@
          ;;   (widgets/transform-content description {}))
 
 
-         [:div.center-area.auto-padding
+         [:div {:style {:margin "0 auto"
+                        :max-width 768
+                        :margin-top 24
+                        :width "100%"}}
           (post/post-list posts
-                          {:paper_id id
+                          {:book_id id
                            :merge-path posts-path})]]
         [:div.auto-padding
          [:h1 "404 NOT FOUND"]])))

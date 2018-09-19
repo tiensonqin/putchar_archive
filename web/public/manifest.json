@@ -23,8 +23,8 @@
       "sizes": "512x512"
     }
   ],
-  "background_color": "#FFF",
-  "theme_color": "#FFF",
+  "background_color": "#F4F1EA",
+  "theme_color": "#F4F1EA",
   "display": "standalone",
   "start_url": "/?xx_utm_source=pwa"
 }

@@ -273,7 +273,6 @@
    :dont-show-vote-numbers "不显示顶数量"
    :undo "取消"
    :required "需要填写"
-   :agree-text "点击登录代表您同意我们的 [隐私政策](https://putchar.org/privacy)。"
    :login-to-comment "登录以后才可以评论。"
    :go-to-fullscreen "进入全屏"
    :select-primary-language "选择文章主要语言"

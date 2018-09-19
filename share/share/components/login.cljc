@@ -55,13 +55,7 @@
        :on-submit (fn [form-data]
                     (citrus/dispatch! :user/request-code @form-data))
        :cancel-button? false
-       :submit-on-enter? true})]
-
-   (widgets/transform-content (t :agree-text)
-                              {:style {:font-size 14
-                                       :margin-top 24
-                                       :color colors/shadow
-                                       :width 250}})])
+       :submit-on-enter? true})]])
 
 (rum/defc signin-modal < rum/reactive
   [mobile?]

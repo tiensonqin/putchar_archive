@@ -1,3 +1,3 @@
 (ns share.version)
 
-(def version "ac8c66f0-81b8-43a4-8af1-7201cd010152")
+(def version "b43d3a70-1886-47c4-8b4f-33d56daf0b57")
