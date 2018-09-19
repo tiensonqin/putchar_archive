@@ -1,6 +1,6 @@
 = Putchar
 
-Putchar is a community for hackers to publish and discuss their thoughts.
+Putchar is a community for programmers to discuss and share about their thoughts.
 
 https://putchar.org[image:https://putchar.org/logo-1x.png[]]
 

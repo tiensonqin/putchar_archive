@@ -64,7 +64,7 @@
    :replies "replies"
    :hot-posts "Hot posts"
    :signin "Sign In"
-   :slogan "The repo of programmers' thoughts."
+   :slogan "Where programmers discuss and share thoughts."
    :members "members"
    :admins "Moderators"
    :support "support"
@@ -119,8 +119,8 @@
    :reports "Reports"
    :write-new-post "Write new post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
-   :root-title "Putchar - The repo of programmers' thoughts."
-   :root-description "Putchar is a place for hackers to publish and discuss their thoughts. Everyone has a simple and free blog which supports multiple formats include Markdown and Asciidoctor."
+   :root-title "Putchar - Where programmers discuss and share thoughts."
+   :root-description "Putchar is a place for programmers to discuss and share thoughts. Everyone has a simple and free blog which supports multiple formats include Markdown and Asciidoctor."
    :go-to-profile "Posts"
    :profile-updated "Profile updated!"
    :sign-out "Sign Out"
@@ -235,7 +235,7 @@
    :email-notification-settings "Email notification settings"
    :email-notification-settings-text "Email me when someone replies to my post or mentions my @username."
    :my-data "My Data"
-   :about-description "Putchar is a place for hackers to publish and discuss their thoughts."
+   :about-description "Putchar is a place for programmers to discuss and share thoughts."
    :about-text "
 === Features
 
