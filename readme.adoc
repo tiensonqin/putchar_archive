@@ -2,7 +2,7 @@
 
 Putchar is a community for programmers to discuss and share about their thoughts.
 
-https://putchar.org[image:https://putchar.org/logo-1x.png[]]
+https://putchar.org[image:https://putchar.org/logo-2x.png[]]
 
 == Features
    * A simple and free blog for everyone.
