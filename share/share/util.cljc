@@ -854,3 +854,14 @@
            (select-keys m1
                         (remove (fn [k] (= (m1 k) (m2 k)))
                                 ks1*ks2)))))
+
+(defn trimr-punctuations
+  "Removes whitespace and punctuations from the right side of string."
+  {:added "1.2"}
+  [s]
+  (loop [index (count s)]
+    (if (zero? index)
+      ""
+      (if (re-find #"[^A-Za-z0-9]" (str (get s (dec index))))
+        (recur (dec index))
+        (subs s 0 index)))))

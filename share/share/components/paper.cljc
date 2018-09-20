@@ -121,16 +121,11 @@
                                                 :margin-top 12
                                                 }}
                (widgets/transform-content authors {:style {:margin 0}})])
-            (when-let [link (:link paper)]
-              [:span {:style {:margin-top 24}}
-               (str (t :website) ": ")
-               [:a {:href link
-                    :target "_blank"
-                    :style {:color colors/primary}}
-                link]])
+            [:div {:style {:margin-top 6}}
+             (widgets/more-content description 360)]
+
             [:div.row1 {:style {:align-items "center"
-                                :flex-wrap "wrap"
-                                :margin-top 6}}
+                                :flex-wrap "wrap"}}
              (t :posted-by)
              [:a {:href (str "/@" screen_name)
                   :style {:margin-left 4
@@ -145,10 +140,6 @@
                    :style {:margin-top 6
                            :color colors/primary}}
                (t :edit)])]]]
-
-         ;; (when description
-         ;;   (widgets/transform-content description {}))
-
 
          [:div {:style {:margin "0 auto"
                         :max-width 768
@@ -171,8 +162,6 @@
                   :type :textarea
                   :style {:height 80
                           :resize "none"}}
-   :link         {:label (str (t :website) ": *")
-                  :validators [util/link? util/non-blank?]}
    :tags         {:label (t :tags)}
    :description  {:label (t :description)
                   :type :textarea
@@ -204,9 +193,6 @@
                   :type :textarea
                   :style {:height 80
                           :resize "none"}}
-   :link         {:label (t :link)
-                  :validators [util/link?]
-                  :value (:link @form-data)}
    :tags         {:label (t :tags)
                   :value (:tags @form-data)}
    :description  {:label (t :description)

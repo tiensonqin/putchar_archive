@@ -132,22 +132,11 @@
                                               :margin-top 12}}
               (widgets/transform-content authors {:style {:margin 0}})])
 
-           (when description
-             (ui/dropdown
-              {:overlay [:div.center-area {:style {:background "#FFF"
-                                                   :max-width 700
-                                                   :overflow-y "scroll"
-                                                   :padding 24}}
-                         (widgets/transform-content description {:style {:margin-top 12}})]
-               :animation "slide-up"
-               :trigger ["click"]}
-              [:a {:style {:color colors/primary
-                           :margin-top 12
-                           :font-size 15}}
-               (t :introduction)]))
+           [:div {:style {:margin-top 6}}
+            (widgets/more-content description 360)]
+
            [:div.row1 {:style {:align-items "center"
-                               :flex-wrap "wrap"
-                               :margin-top 12}}
+                               :flex-wrap "wrap"}}
             (t :posted-by)
             [:a {:href (str "/@" screen_name)
                  :style {:margin-left 4
@@ -156,9 +145,6 @@
             ", "
             [:i {:style {:margin-left 4}}
              (util/date-format created_at)]]
-
-
-
            (when self?
              [:a {:href (str "/book/" id "/edit")
                   :style {:margin-top 6

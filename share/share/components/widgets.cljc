@@ -415,3 +415,24 @@
                    (item-cp item)])
                 (merge {:visible true}
                        menu-opts)))))))))
+
+(rum/defcs more-content
+  < (rum/local false ::expand?)
+  [state content limit]
+  (when content
+    (let [expand? (get state ::expand?)]
+      (cond
+        (and @expand?
+             (> (count content) limit))
+        [:p content
+         [:a {:style {:margin-left 3}
+              :on-click #(reset! expand? false)}
+          "(less)"]]
+       (and (not @expand?)
+            (> (count content) limit))
+       [:p (util/trimr-punctuations (subs content 0 limit))
+        [:a {:style {:margin-left 3}
+             :on-click #(reset! expand? true)}
+         "...more"]]
+       :else
+       [:p content]))))
