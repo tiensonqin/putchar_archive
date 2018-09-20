@@ -135,13 +135,39 @@
                          :margin-top 16}}
       [:a.control {:href "/tag/feature-requests"
                    :style {:margin-right 24}}
-       (t :feature-requests)]]
+       (t :feature-requests)]
+
+      ]
 
 
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
                          :margin-top 16}}
+      [:a.tag.row1 {:href "/hot.rss"
+                    :target "_blank"
+                    :style {:align-items "center"
+                            :padding "0px 6px"
+                            :margin 0}}
+       (ui/icon {:type :rss
+                 :width 18})
+       [:span {:style {:margin-left 3}}
+        "Subscribe"]]
+
+      [:a {:href "https://github.com/tiensonqin/putchar"
+           :style {:margin-left 24}}
+       (ui/icon {:type :github
+                 :width 18
+                 :color colors/shadow})]
+
+      [:a {:href "https://twitter.com/putchar_org"
+           :style {:margin-left 16}}
+       (ui/icon {:type :twitter
+                 :color colors/shadow
+                 :width 20
+                 :height 20
+                 :opts {:style {:margin-top 1}}})]
+
       (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
                                          :on-click (fn [e]
                                                      (util/stop e)
@@ -152,31 +178,12 @@
                                  "English"
                                  "简体中文"))
                     :animation "slide-up"}
-                   [:a
+                   [:a {:style {:margin-left 12
+                                :margin-top 3}}
                     (ui/icon {:type :translate
                               :width 20
                               :height 20
-                              :color colors/shadow})])
-
-      [:a {:href "https://twitter.com/putchar_org"
-           :style {:margin-left 24}}
-       (ui/icon {:type :twitter
-                 :color colors/shadow
-                 :width 20
-                 :height 20})]
-
-      [:a {:href "https://github.com/tiensonqin/putchar"
-           :style {:margin-left 24}}
-       (ui/icon {:type :github
-                 :width 18
-                 :color colors/shadow})]
-
-      [:a {:href "https://discord.gg/4FHR3jh"
-           :title "Putchar discord group"
-           :style {:margin-left 21}}
-       (ui/icon {:type :discord
-                 :width 30
-                 :color "#7289DA"})]]]))
+                              :color colors/shadow})])]]))
 
 (rum/defc right
   []

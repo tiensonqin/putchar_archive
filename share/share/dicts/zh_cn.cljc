@@ -307,7 +307,6 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
    :post-primary-language "文章主要语言"
    :is-my-default-language-choice " 是我的默认文章语言, "
    :change-it-to "修改为 "
-   :send-us-an-email-moderator "如果你有兴趣做管理员，可以在 Discord 里留言或者发送给我们邮件。"
    :comments "条评论"
    :share-news "分享文章，论文或者你正在读的书..."
    :name "名称"
