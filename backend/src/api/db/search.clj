@@ -8,8 +8,14 @@
    (org.apache.lucene.index Term IndexWriter IndexWriterConfig)
    (org.apache.lucene.search TermQuery
                              BooleanQuery BooleanClause PrefixQuery
-                             BooleanClause$Occur FuzzyQuery)
+                             BooleanClause$Occur FuzzyQuery
+                             )
+   (org.apache.lucene.queryparser.classic QueryParser)
    ))
+
+
+(comment
+  (def ))
 
 (defonce analyzer (lucene-ana/standard-analyzer))
 (defonce index-store (atom nil))
@@ -32,7 +38,7 @@
     (doto writer
       (.deleteAll)
       (.commit)
-      (.close writer))))
+      (.close))))
 
 (defn add-user [user]
   (let [user {:screen_name (:screen_name user)}]
@@ -122,8 +128,6 @@
 
 (defn search
   [q & {:keys [limit]}]
-  (prn {:q q
-        :limit limit})
   (let [limit (if limit limit 5)]
     (lucene/search @index-store
                    q

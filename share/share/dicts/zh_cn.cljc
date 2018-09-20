@@ -65,7 +65,7 @@
    :replies "条评论"
    :invite "邀请朋友"
    :signin "登录"
-   :slogan "Where programmers discuss and share thoughts."
+   :slogan "Where programmers discuss articles, books and papers."
    :members "成员"
    :admins "管理员"
    :support "支持"
@@ -122,8 +122,8 @@
    :reports "举报"
    :write-new-post "写文章"
    :new-post-description "写一篇新的文章。"
-   :root-title "Where programmers discuss and share thoughts. - Putchar"
-   :root-description "Putchar 是一个纯粹的技术文章分享社区。文章格式支持 Markdown 和 Asciidoctor。"
+   :root-title "Where programmers discuss articles, books and papers. - Putchar"
+   :root-description "Putchar.org 是一个纯粹的技术讨论和分享社区。大家可以在这里讨论和分享文章，书籍和论文。"
    :go-to-profile "文章"
    :profile-updated "已保存!"
    :sign-out "注销"
@@ -227,7 +227,7 @@
    :website-name "Putchar"
    :popular "热门话题"
    :new-created "最新"
-   :welcome-to-putchar "欢迎来到 Putchar!"
+   :welcome-to-putchar "欢迎来到 Putchar.org!"
    :activate-your-account "登录"
    :last-reply-by "最近回复: "
    :frequent-poster "最多讨论: "
@@ -245,29 +245,43 @@
    :email-notification-settings "邮件通知"
    :email-notification-settings-text "当别人回复我或者提及我的用户名邮件通知我"
    :my-data "我的数据"
-   :about-description "Putchar 是一个纯粹的技术文章分享社区。文章格式支持 Markdown 和 Asciidoctor。"
    :about-text "
-=== 功能
 
+## 关于 Putchar.org
+Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享文章, [书](/books) 还有 [论文](/papers)。
 
-* 一个简单免费的博客。
-  支持标签和多种格式包括 Markdown, Asciidoctor。
+### 功能
 
-=== FAQ
+* 用户可以添加或收藏自己喜欢的书和论文。
+
+  比如 [Purely functional data structures](/book/7)。
+
+* 文章支持多种格式，包括 Markdown 和 Asciidoctor。
+
+  Emacs Org-mode 很快也会支持。
+
+* 用户可以在 [设置](/settings#languages) 里选择自己想看到的文章语言，比如中文和英文。
+
+### FAQ
 
 * Putchar 团队有哪些人？
+
   目前只有我一人，@tiensonqin。
 
-* 网站免费的话，你怎么赚钱呢？
+* 完全免费的话，你怎么赚钱？
+
   1. 我不会出售你的任何个人信息。
-  2. 网站只会有很少的广告，比如社区赞助。
+  2. 网站只会在首页右侧放置广告，比如社区赞助。
 
 * Putchar 用了什么技术？
-  前端: https://clojurescript.org/[Clojurescript], https://reactjs.org/[React].
-  后端: https://clojure.org/[Clojure], https://www.postgresql.org/[Postgres], https://redis.io/[Redis].
 
-* 我想成为管理员，该怎么做？
-  暂时可以发邮件到: tiensonqin@gmail.com。
+  前端: [Clojurescript](https://clojurescript.org/), [React](https://reactjs.org/).
+
+  后端: [Clojure](https://clojure.org/), Postgres, Redis.
+
+* 网站开源吗？
+
+  https://github.com/tiensonqin/putchar.
 "
    :misc "其他设置"
    :dont-show-vote-numbers "不显示顶数量"
@@ -307,4 +321,5 @@
    :add-a-book "添加一本书"
    :website "网站"
    :introduction "查看介绍"
+   :moderation-logs "管理日志"
    })

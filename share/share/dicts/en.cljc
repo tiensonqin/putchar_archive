@@ -64,7 +64,7 @@
    :replies "replies"
    :hot-posts "Hot posts"
    :signin "Sign In"
-   :slogan "Where programmers discuss and share thoughts."
+   :slogan "Where programmers discuss articles, books and papers."
    :members "members"
    :admins "Moderators"
    :support "support"
@@ -119,8 +119,8 @@
    :reports "Reports"
    :write-new-post "Write new post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
-   :root-title "Putchar - Where programmers discuss and share thoughts."
-   :root-description "Putchar is a place for programmers to discuss and share thoughts. Everyone has a simple and free blog which supports multiple formats include Markdown and Asciidoctor."
+   :root-title "Putchar - Where programmers discuss articles, books and papers."
+   :root-description "Putchar is a place for programmers to discuss articles, books and papers. Posts support multiple formats include Markdown and Asciidoctor."
    :go-to-profile "Posts"
    :profile-updated "Profile updated!"
    :sign-out "Sign Out"
@@ -235,25 +235,41 @@
    :email-notification-settings "Email notification settings"
    :email-notification-settings-text "Email me when someone replies to my post or mentions my @username."
    :my-data "My Data"
-   :about-description "Putchar is a place for programmers to discuss and share thoughts."
    :about-text "
-=== Features
 
-* A simple and free blog for everyone.
-* It supports multiple formats include Markdown and Asciidoctor, Org-mode is coming…​
-* No ads except for possibly future community sponsors.
+## About
 
-=== FAQ
+Putchar.org is a place for programmers to discuss articles, [books](/books) and [papers](/papers).
+
+### Features
+
+* Each book or paper has its own posts and followers.
+
+  For example, [Purely functional data structures](/book/7).
+
+* Post format supports both Markdown and Asciidoctor.
+
+  Emacs Org-mode will be supported soon.
+
+* You can [select multiple languages](/settings#languages) you'd like to see throughout the site.
+
+  Yes, not just English.
+
+### FAQ
 
 * Who are the team behind Putchar?
-  Currently only myself, @tiensonqin.
+
+  Currently only myself, [@tiensonqin](/@tiensonqin).
 
 * What is it built with?
-  https://clojurescript.org/[Clojurescript] with https://reactjs.org/[React].
- The server side is https://clojure.org/[Clojure] backed by a https://www.postgresql.org/[Postgres] database and https://redis.io/[Redis] cache.
 
-* I want to be the one of the moderators, how?
-  Currently you can send an email to me, tiensonqin@gmail.com.
+  [Clojurescript](https://clojurescript.org/) with [React](https://reactjs.org/).
+
+ The server side is [Clojure](https://clojure.org/) backed by a Postgres database and Redis cache.
+
+* Is it open source?
+
+  Yes, https://github.com/tiensonqin/putchar.
 "
    :misc "Misc"
    :dont-show-vote-numbers "Don't show vote numbers"
@@ -296,4 +312,5 @@
    :paper "paper"
    :add-a-paper "Add a paper"
    :introduction "View introduction"
+   :moderation-logs "Moderation Logs"
    })

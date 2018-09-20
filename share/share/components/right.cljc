@@ -116,7 +116,7 @@
        (t :new-created)]
       [:a.control {:href "/moderation-logs"
                    :style {:margin-left 24}}
-       "Moderation logs"]]
+       (t :moderation-logs)]]
 
      [:div.row1 {:style {:align-items "center"
                          :margin-top 16}}

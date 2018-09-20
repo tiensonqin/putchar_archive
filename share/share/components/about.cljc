@@ -10,11 +10,7 @@
 
 (rum/defc about
   [params]
-  [:div.ubuntu.auto-padding
-   [:p {:style {:font-size "1.125em"}}
-    (t :about-description)]
-
+  [:div.auto-padding
    (widgets/transform-content
     (t :about-text)
-    {:body-format :asciidoc
-     :style {:padding-bottom 100}})])
+    {})])

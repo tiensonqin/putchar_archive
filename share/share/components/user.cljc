@@ -202,7 +202,7 @@
                                                 (reset! languages-atom value)
                                                 (citrus/dispatch! :user/update {:languages value})))}
                        lang)))]
-    [:div {:style {:padding "24px 12px"}}
+    [:div#languages {:style {:padding "24px 12px"}}
     [:h3 (t :languages)]
      [:p {:style {:margin-bottom "24px"
                   :font-size 16}}
@@ -222,7 +222,7 @@
 (rum/defc misc-settings < rum/reactive
   []
   (let [hide-votes? (citrus/react [:hide-votes?])]
-    [:div {:style {:padding "24px 12px"}}
+    [:div#misc {:style {:padding "24px 12px"}}
     [:h3 {:style {:margin-bottom 24}}
      (t :misc)]
 

@@ -15,7 +15,7 @@
   [params]
   [:div.auto-padding.column.moderation-logs
    [:h1 {:style {:margin-top 0}}
-    "Moderation Logs"]
+    (t :moderation-logs)]
    [:div.column {:style {:margin-left 3}}
     (query/query
      (let [logs (citrus/react [:moderation-logs])

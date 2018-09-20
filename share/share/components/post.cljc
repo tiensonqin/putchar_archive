@@ -732,13 +732,15 @@
 
             (let [link (:link post)]
                  [:a.post-title.no-decoration (if link
-                                                {:style {:margin-right 6}
+                                                {:style {:margin-right 6
+                                                         :display "inline-block"}
                                                  :on-click (fn [e]
                                                              (.stopPropagation e))
                                                  :href link
                                                  :target "_blank"}
 
-                                                {:style {:margin-right 6}
+                                                {:style {:margin-right 6
+                                                         :display "inline-block"}
                                                  :on-click util/stop
                                                  :href post-link})
                   (:title post)
