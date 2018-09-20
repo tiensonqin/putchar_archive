@@ -158,7 +158,7 @@
                               :height 20
                               :color colors/shadow})])
 
-      [:a {:href "https://twitter.com/putchar"
+      [:a {:href "https://twitter.com/putchar_org"
            :style {:margin-left 24}}
        (ui/icon {:type :twitter
                  :color colors/shadow
