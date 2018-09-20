@@ -318,6 +318,8 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
    :no-votes-yet "暂时还没有顶的文章。"
    :books "书"
    :book "书"
+   :papers "论文"
+   :paper "论文"
    :add-a-book "添加一本书"
    :website "网站"
    :introduction "查看介绍"
