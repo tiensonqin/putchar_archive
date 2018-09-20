@@ -657,6 +657,7 @@
          [:a.tag
           {:key (util/random-uuid)
            :href (str "/tag/" (name tag))
+           :on-click (fn [e] (util/stop e))
            :style (merge {:margin-right 12
                           :white-space "nowrap"}
                          tag-style)}
@@ -694,7 +695,10 @@
             first-tag (if-let [tag (first (:tags post))]
                         (str/capitalize tag)
                         nil)]
-        [:div.post-item.col-item {:style {:position "relative"}
+        [:div.post-item.col-item {:style (cond-> {:position "relative"}
+                                           user-draft?
+                                           (assoc :padding-top 24
+                                                  :padding-bottom 24))
                                   :on-click (fn [e]
                                               (citrus/dispatch! :router/push router true))}
          (cond
@@ -721,8 +725,11 @@
                         :display "block"}}
             (:paper_title post)])
          (if user-draft?
-           [:div.space-between {:style {:flex-wrap "wrap"
-                                        :align-items "center"}}
+           [:div
+            [:span {:style {:margin-right 12
+                            :vertical-align "text-bottom"}}
+             (util/date-format (:created_at post))]
+
             (let [link (:link post)]
                  [:a.post-title.no-decoration (if link
                                                 {:style {:margin-right 6}
@@ -742,10 +749,7 @@
                               :color colors/shadow
                               :opts {:style {:margin-left 6
                                              :display "inline-block"}}}))])
-            [:span {:style {:color colors/shadow
-                            :font-size 13
-                            :font-weight 400}}
-             (util/date-format (:created_at post) "M/dd")]]
+            (tags (:tags post) nil {:padding "0 6px"})]
            [:div.row
             (if show-avatar?
               [:a {:href user-link

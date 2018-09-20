@@ -92,18 +92,15 @@
                                           :class (if mobile?
                                                    ""
                                                    "shadow")}
-     [:div {:class (if mobile? "column" "space-between")}
+     [:div {:class "space-between"}
       [:a {:href (str "/@" screen_name)
-           :style (if mobile?
-                    {:text-align "center"
-                     :margin-bottom 24}
-                    {:margin-right 24})}
+           :style {:margin-right (if mobile? 12 24)}}
        [:img {:src (util/cdn-image screen_name
                                    :height 100
                                    :width 100)
               :style {:border-radius "50%"
-                      :width 90
-                      :height 90}}]]
+                      :width 64
+                      :height 64}}]]
       [:div.column
        [:div.row1 {:style {:flex-wrap "wrap"
                            :align-items "center"}}
@@ -133,9 +130,9 @@
          (transform-content bio {:style {:margin-top 6
                                          :margin-left 1}}))
 
-       (let [url (str config/website "/@" screen_name "/newest.rss")
-             ]
-         [:div.row1 {:style {:margin-top 12}}
+       (let [url (str config/website "/@" screen_name "/newest.rss")]
+         [:div.row1 {:style {:margin-top 12
+                             :flex-wrap "wrap"}}
           [:a.tag.row1 {:href url
                         :target "_blank"
                         :style {:align-items "center"
@@ -147,22 +144,20 @@
            [:span {:style {:margin-left 3}}
             "Subscribe"]]
           (when self?
-            [:a.tag.row1 {:href "/drafts"
-                         :class (if drafts? "active" "")
-                         :style {:align-items "center"
-                                 :margin 0
-                                 :margin-left 12
-                                 :padding "0 6px"}}
-            [:span
-             (t :drafts)]])
-          [:a.tag.row1 {:href (str "/@" screen_name "/comments")
-                        :class (if comments? "active" "")
-                        :style {:align-items "center"
-                                :margin 0
-                                :margin-left 12
-                                :padding "0 6px"}}
-           [:span
-            (t :latest-comments)]]])]]
+            [:a.tag {:href "/drafts"
+                     :class (if drafts? "active" "")
+                     :style {:align-items "center"
+                             :margin 0
+                             :margin-left 12
+                             :padding "0 6px"}}
+             (t :drafts)])
+          [:a.tag {:href (str "/@" screen_name "/comments")
+                   :class (if comments? "active" "")
+                   :style {:align-items "center"
+                           :margin 0
+                           :margin-left 12
+                           :padding "0 6px"}}
+           (t :latest-comments)]])]]
      ]))
 
 (rum/defc back-to-top < rum/reactive

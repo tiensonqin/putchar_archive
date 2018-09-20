@@ -456,6 +456,10 @@ a.delete {
         font-size: 1.25em;
     }
 
+    .user-posts .post-title {
+        font-size: 1.25em;
+    }
+
     .auto-padding {
         padding-left: 12px;
         padding-right: 12px;
