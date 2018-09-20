@@ -295,5 +295,5 @@
    :papers "Papers"
    :paper "paper"
    :add-a-paper "Add a paper"
-
+   :introduction "View introduction"
    })

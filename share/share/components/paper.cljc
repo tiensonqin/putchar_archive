@@ -189,7 +189,7 @@
                                                 (assoc @form-data
                                                        :object_type "paper")
                                                 form-data))
-                 :loading? [:paper :loading?]
+                 :loading? [:resource :loading?]
                  :style {:max-width 512}})])
 
 (defn paper-edit-fields
@@ -234,7 +234,7 @@
                                                              :object_type "paper"
                                                              :object_id id)
                                                       form-data))
-                       :loading? [:paper :loading?]
+                       :loading? [:resource :loading?]
                        :style {:max-width 512}})
          [:div.auto-padding
           [:h1 "404 NOT FOUND"]])))])

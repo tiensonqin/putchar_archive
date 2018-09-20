@@ -46,8 +46,8 @@
            (ui/button {:style {:margin-top 24
                                :margin-bottom 64
                                :width 300}
-                       :on-click (on-click 3)}
-             (nth reasons 3))])))]))
+                       :on-click (on-click 2)}
+             (nth reasons 2))])))]))
 
 ;; 1. delete post or comment
 ;; 2. disable user from post for 3 days

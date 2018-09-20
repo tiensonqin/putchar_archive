@@ -613,3 +613,7 @@ a.delete {
 .cover .box {
     transform: rotateY(40deg);
 }
+
+input#search {
+    color: #000;
+}

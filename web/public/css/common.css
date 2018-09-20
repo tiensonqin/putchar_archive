@@ -475,6 +475,6 @@ textarea, input {
     cursor: pointer;
 }
 
-.book-authors .editor p, .post-item .editor p {
+#book .editor p, .post-item .editor p {
     margin-bottom: 0;
 }

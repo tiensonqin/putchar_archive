@@ -80,79 +80,92 @@
         {:keys [id title description cover tags created_at screen_name] :as book} (citrus/react [:book :by-id id])
         posts (citrus/react posts-path)
         current-user (citrus/react [:user :current])
-        self? (= screen_name (:screen_name current-user))]
+        self? (= screen_name (:screen_name current-user))
+        height (citrus/react [:layout :current :height])
+        mobile? (util/mobile?)]
     (query/query
       (if book
         [:div#book.column
-         [:div.row
-          [:div.row1.splash
-           {:style {:min-height "60vh"
-                    :padding 48
-                    :box-shadow "0 3px 8px #ddd"
-                    :background "#efefef"
-                    :background-image "radial-gradient(at 1% 100%, #ADC0CF, #FFF)"
-                    :align-items "center"
-                    :width "100%"
-                    :position "relative"}}
-           [:div
-            [:a.cover {:href (:link book)
-                       :target "_blank"}
-             [:img.box {:src cover
-                        :style {:max-height 300
-                                :max-width 300
-                                :margin-right 12
-                                :object-fit "contain"}}]]
-            (let [stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
-              [:a.control {:style {:position "absolute"
-                                   :top 12
-                                   :right 12}
-                   :on-click (fn []
-                               (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                 {:object_type "book"
-                                                  :object_id (:id book)}))}
-               [:div.row1
-                (ui/icon (if stared?
-                           {:type :star
-                            :color "#D95653"}
-                           {:type :star-border}))
+         [:div.splash.row1
+          {:style {:padding (if mobile?
+                              "48px 12px"
+                              48)
+                   :box-shadow "0 3px 8px #ddd"
+                   :background "#efefef"
+                   :background-image "radial-gradient(at 1% 100%, #ADC0CF, #FFF)"
+                   :align-items "center"
+                   :width "100%"
+                   :position "relative"}}
+          [:div
+           [:div.cover
+            [:img.box {:src cover
+                       :style (if mobile?
+                                {:max-height 100
+                                 :max-width 100
+                                 :object-fit "contain"}
+                                {:max-height 300
+                                 :max-width 300
+                                 :margin-right 12
+                                 :object-fit "contain"})}]]
+           (let [stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
+             [:a.control {:style {:position "absolute"
+                                  :top 12
+                                  :right 12}
+                          :on-click (fn []
+                                      (citrus/dispatch! (if stared? :user/unstar :user/star)
+                                                        {:object_type "book"
+                                                         :object_id (:id book)}))}
+              [:div.row1
+               (ui/icon (if stared?
+                          {:type :star
+                           :color "#D95653"}
+                          {:type :star-border}))
 
-                [:span {:style {:margin-left 3}}
-                 (:stars book)]]])]
-           [:div.column1
-            [:h1 {:style {:margin 0}} title]
-            (when-let [authors (:authors book)]
-              [:div.row1.book-authors {:style {:align-items "center"
-                                               :margin-top 12
-                                               }}
-               (widgets/transform-content authors {:style {:margin 0}})])
-            (when-let [link (:link book)]
-              [:span {:style {:margin-top 24}}
-               (str (t :website) ": ")
-               [:a {:href link
-                    :target "_blank"
-                    :style {:color colors/primary}}
-                link]])
-            [:div.row1 {:style {:align-items "center"
-                                :flex-wrap "wrap"
-                                :margin-top 6}}
-             (t :posted-by)
-             [:a {:href (str "/@" screen_name)
-                  :style {:margin-left 4
+               [:span {:style {:margin-left 3}}
+                (:stars book)]]])]
+          [:div.column1
+           (if mobile?
+             [:h4 {:style {:margin 0}} title]
+             [:h1 {:style {:margin 0}} title])
+           (when-let [authors (:authors book)]
+             [:div.row1.book-authors {:style {:align-items "center"
+                                              :margin-top 12}}
+              (widgets/transform-content authors {:style {:margin 0}})])
+
+           (when description
+             (ui/dropdown
+              {:overlay [:div.center-area {:style {:background "#FFF"
+                                                   :max-width 700
+                                                   :overflow-y "scroll"
+                                                   :padding 24}}
+                         (widgets/transform-content description {:style {:margin-top 12}})]
+               :animation "slide-up"
+               :trigger ["click"]}
+              [:a {:style {:color colors/primary
+                           :margin-top 12
+                           :font-size 15}}
+               (t :introduction)]))
+           [:div.row1 {:style {:align-items "center"
+                               :flex-wrap "wrap"
+                               :margin-top 12}}
+            (t :posted-by)
+            [:a {:href (str "/@" screen_name)
+                 :style {:margin-left 4
+                         :color colors/primary}}
+             screen_name]
+            ", "
+            [:i {:style {:margin-left 4}}
+             (util/date-format created_at)]]
+
+
+
+           (when self?
+             [:a {:href (str "/book/" id "/edit")
+                  :style {:margin-top 6
                           :color colors/primary}}
-              screen_name]
-             ", "
-             [:i {:style {:margin-left 4}}
-              (util/date-format created_at)]]
+              (t :edit)])]
 
-            (when self?
-              [:a {:href (str "/book/" id "/edit")
-                   :style {:margin-top 6
-                           :color colors/primary}}
-               (t :edit)])]]]
-
-         ;; (when description
-         ;;   (widgets/transform-content description {}))
-
+          ]
 
          [:div {:style {:margin "0 auto"
                         :max-width 768
@@ -175,8 +188,6 @@
                   :type :textarea
                   :style {:height 80
                           :resize "none"}}
-   :link         {:label (str (t :website) ": *")
-                  :validators [util/link? util/non-blank?]}
    :cover        {:label (t :cover)
                   :type :image}})
 
@@ -191,7 +202,7 @@
                                                 (assoc @form-data
                                                        :object_type "book")
                                                 form-data))
-                 :loading? [:book :loading?]
+                 :loading? [:resource :loading?]
                  :style {:max-width 512}})])
 
 (defn book-edit-fields
@@ -214,9 +225,6 @@
                           :resize "none"}}
    :tags         {:label (t :tags)
                   :value (:tags @form-data)}
-   :link         {:label (t :link)
-                  :validators [util/link?]
-                  :value (:link @form-data)}
    :description  {:label (t :description)
                   :type :textarea
                   :value (:description @form-data)
@@ -242,7 +250,7 @@
                                                              :object_type "book"
                                                              :object_id id)
                                                       form-data))
-                       :loading? [:book :loading?]
+                       :loading? [:resource :loading?]
                        :style {:max-width 512}})
          [:div.auto-padding
           [:h1 "404 NOT FOUND"]])))])

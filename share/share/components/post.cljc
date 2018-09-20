@@ -615,7 +615,7 @@
       (:title post)]])))
 
 (rum/defc ops-menu
-  [post self? mobile?]
+  [post self?]
   (ui/menu
     [:a {:style {:margin-top 2
                  :margin-right 12}
@@ -867,9 +867,7 @@
                                                opts)))})
      (when loading?
        [:div.center {:style {:margin "24px 0"}}
-        [:div.spinner]])
-
-     (ops-delete-dialog)]))
+        [:div.spinner]])]))
 
 (rum/defcs post-list < rum/static
   (rum/local nil ::last-post)
@@ -972,7 +970,9 @@
         zh-cn? (= :zh-cn (citrus/react :locale))
         width (citrus/react [:layout :current :width])
         mobile? (or (util/mobile?) (<= width 768))
-        scroll-top (citrus/react [:last-scroll-top (util/get-current-url)])]
+        scroll-top (citrus/react [:last-scroll-top (util/get-current-url)])
+        self? (= (:screen_name current-user)
+                 (get-in post [:user :screen_name]))]
     [:div.row {:id "toolbox"
                :style {:padding 0
                        :align-items "center"
@@ -986,12 +986,9 @@
        (ops-link post)
        (ops-twitter post zh-cn?))
 
-     (ui/menu
-       [:a {:on-click (fn [])}
-        (ui/icon {:type :more
-                  :color "#999"})]
-       [(ops-flag post)]
-       {:menu-style {:width 200}})]))
+     (ops-menu post self?)
+
+     (ops-delete-dialog)]))
 
 (rum/defc quote-selection < rum/reactive
   [current-user]

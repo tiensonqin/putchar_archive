@@ -1,18 +1,10 @@
 $main-color: #F4F1EA;
-$primary-color: #071839;
-$header-color: #FFF;
+$white-color: #FFFFFF;
 
-body {
-    background: $main-color;
-    color: #212529;
-}
-
-#app {
-    background: $main-color;
-}
-
-#head {
-    background: $main-color;
+@media screen and (min-width: 768px) {
+    body, #head, #modal-panel, input#search, .rc-dialog-content, .divider-text:after {
+        background: $main-color
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -20,6 +12,17 @@ body {
         -webkit-box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
         box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
     }
+
+    body, #head, #modal-panel, input#search, .rc-dialog-content, .divider-text:after {
+        background: $white-color
+    }
+}
+
+$primary-color: #071839;
+$header-color: #FFF;
+
+body {
+    color: #212529;
 }
 
 a {
@@ -134,11 +137,6 @@ span.logo {
 
 .divider-text:after {
     color: rgb(127,127,127);
-    background-color: $header-color;
-}
-
-.rc-dialog-content {
-    background-color: #ffffff;
 }
 
 .rc-dialog-close {
@@ -148,15 +146,6 @@ span.logo {
 .rc-dialog-header {
     color: #696969;
     border-bottom: 1px solid #e9e9e9;
-}
-
-input#search {
-    background: #F4F1EA;
-    color: #000;
-}
-
-#modal-panel {
-    background: $main-color;
 }
 
 svg:hover {
@@ -206,7 +195,7 @@ a.tag.active {
     -webkit-box-shadow: 0 1px 8px #ddd;
     box-shadow: 0 1px 8px #ddd;
     display: block;
-    background: #F4F1EA;
+    background: $main-color;
 }
 
 .menu-item:hover {

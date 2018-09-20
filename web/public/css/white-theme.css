@@ -1,22 +1,22 @@
-body {
-  background: #F4F1EA;
-  color: #212529;
+@media screen and (min-width: 768px) {
+  body, #head, #modal-panel, input#search, .rc-dialog-content, .divider-text:after {
+    background: #F4F1EA;
+  }
 }
-
-#app {
-  background: #F4F1EA;
-}
-
-#head {
-  background: #F4F1EA;
-}
-
 @media screen and (max-width: 768px) {
   #head {
     -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   }
+
+  body, #head, #modal-panel, input#search, .rc-dialog-content, .divider-text:after {
+    background: #FFFFFF;
+  }
 }
+body {
+  color: #212529;
+}
+
 a {
   color: #0366d6;
 }
@@ -128,11 +128,6 @@ span.logo {
 
 .divider-text:after {
   color: #7f7f7f;
-  background-color: #FFF;
-}
-
-.rc-dialog-content {
-  background-color: #ffffff;
 }
 
 .rc-dialog-close {
@@ -142,15 +137,6 @@ span.logo {
 .rc-dialog-header {
   color: #696969;
   border-bottom: 1px solid #e9e9e9;
-}
-
-input#search {
-  background: #F4F1EA;
-  color: #000;
-}
-
-#modal-panel {
-  background: #F4F1EA;
 }
 
 svg:hover {

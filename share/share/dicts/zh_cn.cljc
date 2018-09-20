@@ -306,4 +306,5 @@
    :book "书"
    :add-a-book "添加一本书"
    :website "网站"
+   :introduction "查看介绍"
    })
