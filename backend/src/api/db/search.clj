@@ -8,14 +8,9 @@
    (org.apache.lucene.index Term IndexWriter IndexWriterConfig)
    (org.apache.lucene.search TermQuery
                              BooleanQuery BooleanClause PrefixQuery
-                             BooleanClause$Occur FuzzyQuery
-                             )
-   (org.apache.lucene.queryparser.classic QueryParser)
-   ))
+                             BooleanClause$Occur FuzzyQuery)
+   (org.apache.lucene.queryparser.classic QueryParser)))
 
-
-(comment
-  (def ))
 
 (defonce analyzer (lucene-ana/standard-analyzer))
 (defonce index-store (atom nil))

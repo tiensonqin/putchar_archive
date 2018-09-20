@@ -25,7 +25,7 @@
      [:a.row1 {:style {:margin-bottom 12
                   :color colors/primary}
                :href "/books"}
-      "Books"
+      (t :books)
       (ui/icon {:type :star
                 :color "#D95653"
                 :width 16
@@ -69,7 +69,7 @@
      [:a.row1 {:style {:margin-bottom 12
                   :color colors/primary}
                :href "/papers"}
-      "Papers"
+      (t :papers)
       (ui/icon {:type :star
                 :color "#D95653"
                 :width 16
