@@ -255,6 +255,8 @@ Putchar.org is a place for programmers to discuss articles, [books](/books) and 
 
   Yes, not just English.
 
+* 100% free forever.
+
 ### FAQ
 
 * Who are the team behind Putchar?
