@@ -157,14 +157,13 @@
               (widgets/followers followers)])
            ]]
 
-         [:div {:style {:margin "0 auto"
-                        :max-width 768
-                        :margin-top 24
-                        :width "100%"}}
+         [:div.auto-padding {:style {:margin "0 auto"
+                                     :max-width 768
+                                     :margin-top 24
+                                     :width "100%"}}
           (post/post-list posts
                           {:book_id id
-                           :merge-path posts-path})]
-         ]
+                           :merge-path posts-path})]]
        [:div.auto-padding
         [:h1 "404 NOT FOUND"]]))))
 

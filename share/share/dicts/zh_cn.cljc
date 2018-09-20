@@ -103,7 +103,7 @@
    :undown "取消"
    :no-more-posts "没有更多了。"
    :more "更多"
-   :be-the-first "发帖"
+   :be-the-first "写我的感想"
    :no-posts-yet "暂时没有文章。"
    :no-comments-yet "暂时没有评论。"
    :no-drafts-yet "暂时没有草稿。"

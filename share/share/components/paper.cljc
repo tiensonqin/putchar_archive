@@ -145,10 +145,10 @@
               [:div {:style {:margin-top 12}}
                (widgets/followers followers)])]]]
 
-         [:div {:style {:margin "0 auto"
-                        :max-width 768
-                        :margin-top 24
-                        :width "100%"}}
+         [:div.auto-padding {:style {:margin "0 auto"
+                                     :max-width 768
+                                     :margin-top 24
+                                     :width "100%"}}
           (post/post-list posts
                           {:book_id id
                            :merge-path posts-path})]]
