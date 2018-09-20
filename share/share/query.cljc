@@ -32,14 +32,6 @@
      :args  nil
      :merge {:posts [:posts :latest-reply]}}))
 
-(def members-query
-  (fn [state args]
-    (let [tag-name (str/lower-case (:tag args))]
-      {:q    {:tag {:fields [:name
-                             [:members {:fields [:*]
-                                        :cursor {:limit 100}}]]}}
-       :args {:tag {:name tag-name}}})))
-
 (def post-query
   (fn [state args]
     {:q    {:post {:fields [:id
@@ -112,7 +104,7 @@
 (def book-query
   (fn [state args]
     (let [post-filter :latest-reply]
-      {:q {:book {:fields [:id :object_id :object_type :screen_name :title :authors :description :cover :tags :link :stars :created_at :updated_at
+      {:q {:book {:fields [:id :object_id :object_type :screen_name :title :authors :description :cover :tags :link :stars :created_at :updated_at :followers
                            [:posts {:fields post-fields
                                     :filter post-filter}]]}}
        :args {:book {:id (:book-id args)}}
@@ -131,7 +123,7 @@
 (def paper-query
   (fn [state args]
     (let [post-filter :latest-reply]
-      {:q {:paper {:fields [:id :object_id :object_type :screen_name :title :authors :description :tags :link :stars :created_at :updated_at
+      {:q {:paper {:fields [:id :object_id :object_type :screen_name :title :authors :description :tags :link :stars :created_at :updated_at :followers
                            [:posts {:fields post-fields
                                     :filter post-filter}]]}}
        :args {:paper {:id (:paper-id args)}}
@@ -195,8 +187,6 @@
    :newest newest-posts-query
 
    :latest-reply latest-reply-posts-query
-
-   :members members-query
 
    :notifications notifications-query
 

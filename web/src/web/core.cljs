@@ -73,11 +73,6 @@
 
     (start (some? current-user))
 
-    ;; (go
-    ;;   ;; ;; load MathJax
-    ;;   ;; (loader/load-math)
-    ;;   )
-
     (when (nil? emojis)
       (citrus/dispatch! :data/pull-emojis))
 

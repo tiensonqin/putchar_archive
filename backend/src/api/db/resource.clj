@@ -18,7 +18,12 @@
 ;; object-pair {:object_type object-type :object_id object-id}
 (defn get
   [db object-pair]
-  (util/get db base-map object-pair))
+  (when-let [resource (util/get db base-map object-pair)]
+    (assoc resource :followers
+           (star/get-followers db
+                             (:object_type object-pair)
+                             (:object_id object-pair)
+                             {:limit 20}))))
 
 (defn update
   [db object-pair m]

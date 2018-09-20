@@ -81,7 +81,7 @@
   [params]
   (let [id (:paper-id params)
         posts-path [:posts :by-paper-id id :latest-reply]
-        {:keys [id title description tags created_at screen_name] :as paper} (citrus/react [:paper :by-id id])
+        {:keys [id title description tags created_at screen_name followers] :as paper} (citrus/react [:paper :by-id id])
         posts (citrus/react posts-path)
         current-user (citrus/react [:user :current])
         self? (= screen_name (:screen_name current-user))]
@@ -99,21 +99,27 @@
                     :width "100%"
                     :position "relative"}}
            (let [stared? (contains? (set (map :object_id (:stared_papers current-user))) (:id paper))]
-             [:a.control {:style {:position "absolute"
-                                  :top 12
-                                  :right 12}
-                          :on-click (fn []
-                                      (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                        {:object_type "paper"
-                                                         :object_id (:id paper)}))}
+             [:div {:style {:position "absolute"
+                            :top 12
+                            :right 12}}
               [:div.row1
-               (ui/icon (if stared?
-                          {:type :star
-                           :color "#D95653"}
-                          {:type :star-border}))
+               (when self?
+                 [:a {:href (str "/paper/" id "/edit")
+                      :style {:margin-right 12
+                              :color colors/primary}}
+                  (t :edit)])
+               [:a.control {:on-click (fn []
+                                        (citrus/dispatch! (if stared? :user/unstar :user/star)
+                                                          {:object_type "paper"
+                                                           :object_id (:id paper)}))}
+                [:div.row1
+                 (ui/icon (if stared?
+                            {:type :star
+                             :color "#D95653"}
+                            {:type :star-border}))
 
-               [:span {:style {:margin-left 3}}
-                (:stars paper)]]])
+                 [:span {:style {:margin-left 3}}
+                  (:stars paper)]]]]])
            [:div.column1
             [:h1 {:style {:margin 0}} title]
             (when-let [authors (:authors paper)]
@@ -135,11 +141,9 @@
              [:i {:style {:margin-left 4}}
               (util/date-format created_at)]]
 
-            (when self?
-              [:a {:href (str "/paper/" id "/edit")
-                   :style {:margin-top 6
-                           :color colors/primary}}
-               (t :edit)])]]]
+            (when (seq followers)
+              [:div {:style {:margin-top 12}}
+               (widgets/followers followers)])]]]
 
          [:div {:style {:margin "0 auto"
                         :max-width 768

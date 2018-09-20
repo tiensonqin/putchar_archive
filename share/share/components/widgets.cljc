@@ -436,3 +436,13 @@
          "...more"]]
        :else
        [:p content]))))
+
+(rum/defc followers
+  [followers]
+  (when (seq followers)
+    [:div.row1 {:style {:flex-wrap "wrap"}}
+     (for [follower followers]
+       [:div {:key follower
+              :style {:margin-right 6}}
+        (avatar {:screen_name follower}
+                {:class "ant-avatar-mm"})])]))

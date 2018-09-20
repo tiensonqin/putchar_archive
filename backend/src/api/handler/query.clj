@@ -87,12 +87,6 @@
     (assoc user :tags (post/get-user-tags (:screen_name user)))
     :not-found))
 
-(defn get-members
-  [{:keys [uid datasource]} data]
-  (j/with-db-connection [conn datasource]
-
-    ))
-
 ;; cache
 (defn get-post
   [{:keys [uid datasource]} data]
@@ -286,8 +280,6 @@
 
    :user-tag wrap-user-tag-posts
 
-   :members get-members
-
    ;; args {:user_id ID}
    :notifications get-notifications
    :reports get-reports
@@ -308,9 +300,7 @@
 
 (defn one-to-many?
   [field]
-  (contains? #{:posts :drafts :members
-               :comments
-               :notifications :conversations} field))
+  (contains? #{:posts :drafts :comments :notifications :conversations} field))
 
 (defn skip-relation
   [key]

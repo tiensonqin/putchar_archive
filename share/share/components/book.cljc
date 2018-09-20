@@ -77,7 +77,7 @@
   [params]
   (let [id (:book-id params)
         posts-path [:posts :by-book-id id :latest-reply]
-        {:keys [id title description cover tags created_at screen_name] :as book} (citrus/react [:book :by-id id])
+        {:keys [id title description cover tags created_at screen_name followers] :as book} (citrus/react [:book :by-id id])
         posts (citrus/react posts-path)
         current-user (citrus/react [:user :current])
         self? (= screen_name (:screen_name current-user))
@@ -108,21 +108,27 @@
                                  :margin-right 12
                                  :object-fit "contain"})}]]
            (let [stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
-             [:a.control {:style {:position "absolute"
-                                  :top 12
-                                  :right 12}
-                          :on-click (fn []
-                                      (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                        {:object_type "book"
-                                                         :object_id (:id book)}))}
+             [:div {:style {:position "absolute"
+                            :top 12
+                            :right 12}}
               [:div.row1
-               (ui/icon (if stared?
-                          {:type :star
-                           :color "#D95653"}
-                          {:type :star-border}))
+               (when self?
+                 [:a {:href (str "/book/" id "/edit")
+                      :style {:margin-right 12
+                              :color colors/primary}}
+                  (t :edit)])
+               [:a.control {:on-click (fn []
+                                        (citrus/dispatch! (if stared? :user/unstar :user/star)
+                                                          {:object_type "book"
+                                                           :object_id (:id book)}))}
+                [:div.row1
+                 (ui/icon (if stared?
+                            {:type :star
+                             :color "#D95653"}
+                            {:type :star-border}))
 
-               [:span {:style {:margin-left 3}}
-                (:stars book)]]])]
+                 [:span {:style {:margin-left 3}}
+                  (:stars book)]]]]])]
           [:div.column1
            (if mobile?
              [:h4 {:style {:margin 0}} title]
@@ -145,13 +151,11 @@
             ", "
             [:i {:style {:margin-left 4}}
              (util/date-format created_at)]]
-           (when self?
-             [:a {:href (str "/book/" id "/edit")
-                  :style {:margin-top 6
-                          :color colors/primary}}
-              (t :edit)])]
 
-          ]
+           (when (seq followers)
+             [:div {:style {:margin-top 12}}
+              (widgets/followers followers)])
+           ]]
 
          [:div {:style {:margin "0 auto"
                         :max-width 768

@@ -16,28 +16,14 @@
   [db m]
   (util/delete db table m))
 
-(defn get-book-followers
-  [db book-id cursor]
+(defn get-followers
+  [db object-type object-id cursor]
   (let [members (-> {:select [:screen_name]
                      :from [table]
                      :where [:and
-                             [:= :object_type "book"]
-                             [:= :object_id book-id]]}
+                             [:= :object_type object-type]
+                             [:= :object_id object-id]]}
                     (util/wrap-cursor cursor)
                     (->> (util/query db)))]
     (->> members
-         (remove (fn [x]
-                   (nil? (:screen_name x)))))))
-
-(defn get-paper-followers
-  [db paper-id cursor]
-  (let [members (-> {:select [:screen_name]
-                     :from [table]
-                     :where [:and
-                             [:= :object_type "paper"]
-                             [:= :object_id paper-id]]}
-                    (util/wrap-cursor cursor)
-                    (->> (util/query db)))]
-    (->> members
-         (remove (fn [x]
-                   (nil? (:screen_name x)))))))
+         (map :screen_name))))
