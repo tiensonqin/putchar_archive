@@ -501,7 +501,7 @@
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"
-                   :style {:margin-top (if mobile? 96
+                   :style {:margin-top (if mobile? 76
                                            0)
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]

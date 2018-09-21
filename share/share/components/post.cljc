@@ -752,7 +752,7 @@
                                           :display "inline-block"}}}))])
             (tags (:tags post) nil {:padding "0 6px"})
 
-            (when self?
+            (when (and self? drafts-path?)
               [:a {:style {:font-size 14
                            :position "absolute"
                            :right 0}
