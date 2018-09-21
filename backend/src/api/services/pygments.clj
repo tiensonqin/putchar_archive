@@ -13,19 +13,18 @@
   ([lexer content]
    (pygmentize "html" lexer content))
   ([formatter lexer content]
-   (prn {:formatter formatter
-         :lexer lexer
-         :content content})
-   (let [{:keys [exit out err]}
-         (shell/sh "/usr/bin/pygmentize"
-                   "-f" formatter
-                   "-l" lexer
-                   :in content)]
-     (if (not (zero? exit))
-       (do
-         (slack/error "pygmentize error:" err lexer content)
-         content)
-       (first (h out))))))
+   (if lexer
+     (let [{:keys [exit out err]}
+          (shell/sh "/usr/bin/pygmentize"
+                    "-f" formatter
+                    "-l" lexer
+                    :in content)]
+      (if (not (zero? exit))
+        (do
+          (slack/error "pygmentize error:" err lexer content)
+          content)
+        (first (h out))))
+     content)))
 
 ;; Replaces the content of the element. Values can be nodes or collection of nodes.
 (defn transform!

@@ -128,13 +128,16 @@
         (slack/error (str "Parse url: % failed, post-id: %s." url (:id post))
          e)))))
 
+(defn body->html
+  [body body-format]
+  (let [body-html (content/render body (or body-format :markdown))]
+    (if body-html
+      (pygments/highlight! body-html))))
+
 (defn assoc-body-html
   [data body-format]
   (let [body (safe-trim (:body data))
-        body-html (content/render body (or body-format :markdown))
-        body-html (if body-html
-                    (pygments/highlight! body-html))]
-    (prn body-html)
+        body-html (body->html body body-format)]
     (assoc data
            :body body
            :body_html body-html)))

@@ -140,3 +140,9 @@
     (doseq [{:keys [id body] :as post} posts]
       (if-let [link (post/extract-link body)]
         (post/update db id {:link link})))))
+
+(defn generate-post-body-html
+  [db]
+  (let [posts (j/query db ["select * from posts"])]
+    (doseq [{:keys [id body body_format] :as post} posts]
+      (post/update db id {:body_html (post/body->html body body_format)}))))
