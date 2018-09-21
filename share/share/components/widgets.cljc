@@ -192,7 +192,7 @@
           :href "/reports"}
          [:i {:class "fa fa-flag"
               :style {:font-size 20
-                      :color colors/primary}}]]])
+                      :color "#0000ff"}}]]])
 
      (if (and last-scroll-top (> last-scroll-top 200))
        [:a#back-to-top.fadein

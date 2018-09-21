@@ -294,7 +294,7 @@
              :style {:padding padding}}
             [:i {:class "fa fa-flag"
                  :style {:font-size 20
-                         :color "#0366d6"}}]])
+                         :color "#0000ff"}}]])
 
          ;; login or notification
          (when-not post?
@@ -304,7 +304,7 @@
                     :title (t :notifications)
                     :style {:padding padding}}
                 (ui/icon {:type "notifications"
-                          :color "#0366d6"})])
+                          :color "#0000ff"})])
 
              [:a.no-decoration {:on-click (fn []
                               (citrus/dispatch! :user/show-signin-modal?))
