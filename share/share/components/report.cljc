@@ -66,13 +66,11 @@
            [:div.col-item {:key id}
             [:div.row {:style {:align-items "center"
                                :justify-content "space-between"}}
-             [:div.row {:style {:align-items "center"}}
-              ;; post
-              [:a {:key "post"
-                   :style {:margin-left 12
-                           :color "rgba(0,0,0,0.84)"}
-                   :href (str "/" (:permalink post) "/" (:idx comment))}
-               (:title post)]]
+             ;; post
+             [:a {:key "post"
+                  :style {:color "rgba(0,0,0,0.84)"}
+                  :href (str "/" (:permalink post) "/" (:idx comment))}
+              (:title post)]
 
              [:span {:key "time"
                      :style {:color "#999"}}
@@ -120,8 +118,6 @@
                               (citrus/dispatch! :citrus/report-ignore report))}
               "Ignore it"]]
 
-            [:div.divider]
-
             ;; delete dialog
             (ui/dialog
              {:title (t :report-delete-confirmation)
@@ -136,8 +132,7 @@
                         (t :delete))}
              [:div
               (if (= object_type "post")
-                [:a {:style {:margin-left 12
-                             :color "rgba(0,0,0,0.84)"}
+                [:a {:style {:color "rgba(0,0,0,0.84)"}
                      :href (str "/" (:permalink post))}
                  (:title post)]
 
