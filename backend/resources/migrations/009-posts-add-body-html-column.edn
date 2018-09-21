@@ -1,0 +1,2 @@
+{:up   ["alter table posts add column body_html text default null"]
+ :down ["alter able posts drop column body_html"]}

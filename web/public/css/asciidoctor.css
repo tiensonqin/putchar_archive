@@ -332,27 +332,15 @@ table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-si
 
 /* .literalblock > .content pre, .listingblock > .content pre { -webkit-border-radius: 4px; border-radius: 4px; padding: 0.75em 0.75em 0.5em 0.75em; word-wrap: break-word; } */
 .literalblock > .content pre.nowrap, .listingblock > .content pre.nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
-.literalblock > .content pre > code, .listingblock > .content pre > code { display: block; }
-@media only screen { .literalblock > .content pre, .listingblock > .content pre { font-size: 0.8em; } }
+.literalblock > .content pre > code, .listingblock > .content pre > code { display: flex;}
+@media only screen { .literalblock > .content pre, .listingblock > .content pre { font-size: 0.9em; } }
 @media only screen and (min-width: 768px) { .literalblock > .content pre, .listingblock > .content pre { font-size: 0.9em; } }
 @media only screen and (min-width: 1280px) { .literalblock > .content pre, .listingblock > .content pre { font-size: 1em; } }
 
 .listingblock > .content { position: relative; }
 
-.listingblock:hover code[class*=" language-"]:before { text-transform: uppercase; font-size: 0.9em; color: #999; position: absolute; top: 0.375em; right: 0.375em; }
-
-.listingblock:hover code.asciidoc:before { content: "asciidoc"; }
-.listingblock:hover code.clojure:before { content: "clojure"; }
-.listingblock:hover code.css:before { content: "css"; }
-.listingblock:hover code.groovy:before { content: "groovy"; }
-.listingblock:hover code.html:before { content: "html"; }
-.listingblock:hover code.java:before { content: "java"; }
-.listingblock:hover code.javascript:before { content: "javascript"; }
-.listingblock:hover code.python:before { content: "python"; }
-.listingblock:hover code.ruby:before { content: "ruby"; }
-.listingblock:hover code.scss:before { content: "scss"; }
-.listingblock:hover code.xml:before { content: "xml"; }
-.listingblock:hover code.yaml:before { content: "yaml"; }
+.listingblock code[data-lang]::before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]::before{display:block}
 
 .listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
 
@@ -571,7 +559,6 @@ div.unbreakable { page-break-inside: avoid; }
 .admonitionblock td.icon .icon-important:before {content:"\f06a";color:#cf0000}
 
 .conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 20px; height: 20px; font-size: 12px; font-weight: bold; line-height: 20px; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -2px; letter-spacing: -1px; }
-code.hljs .column { color: #222 !important; background-color: #FFF;}
 .conum * { color: white !important; }
 .conum + b { display: none; }
 .conum:after { content: attr(data-value); }

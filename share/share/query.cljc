@@ -36,7 +36,7 @@
   (fn [state args]
     {:q    {:post {:fields [:id
                             :title
-                            :body
+                            :body_html
                             :body_format
                             :tags
                             :permalink
@@ -66,8 +66,7 @@
                                     :is_draft
                                     :tags
                                     :book_id :book_title :paper_id :paper_title]}}
-             :args {:post {:id id
-                           :raw_body? true}}}]
+             :args {:post {:id id}}}]
       #?(:clj q
          :cljs (let [current (get-in state [:post :current])]
                  (when (or (not current)

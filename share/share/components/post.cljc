@@ -453,7 +453,6 @@
         current-book (citrus/react [:book :current])
         current-paper (citrus/react [:paper :current])
         submit-fn (fn []
-                    (prn "submit form-data: " form-data)
                     (let [data (cond->
                                    (merge {:id (:id current-post)
                                            :is_draft false}
@@ -1142,7 +1141,7 @@
                  (:paper_title post)])
 
               [:div.post
-               (when (:body post)
+               (when (:body_html post)
                  (widgets/raw-html {:on-mouse-up (fn [e]
                                                    (let [text (util/get-selection-text)]
                                                      (when-not (str/blank? text)
@@ -1152,7 +1151,7 @@
                                     :style {:word-wrap "break-word"
                                             :font-size "1.127em"}
                                     :id "post-body"}
-                                   (:body post)))]
+                                   (:body_html post)))]
 
               [:div.center-area
                (when (seq (:tags post))

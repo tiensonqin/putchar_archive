@@ -253,7 +253,7 @@
                remove-nil? (partial util/remove-v-nil? :v)]
            (if-let [current (:current state)]
              (let [data (assoc (select-keys form-data
-                                            [:title :body])
+                                            [:title :body :body_format])
                                :id (:id current))
                    data (if (and (nil? (:cover current))
                                  first-image)

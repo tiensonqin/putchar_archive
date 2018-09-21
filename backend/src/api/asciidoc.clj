@@ -47,10 +47,10 @@
   (.convert doctor str (java.util.HashMap.
                         {"safe" (int 1)
                          "attributes" (java.util.HashMap.
-                                       {"showTitle" true
+                                       {"showTitle" false
                                         "hardbreaks" true
                                         "icons" "font"
-                                        "source-highlighter" "highlightjs"})})))
+                                        "source-highlighter" "pygments"})})))
 
 (defn parse [str]
   (map-structured-document (.readDocumentStructure doctor str (java.util.HashMap. {}))))

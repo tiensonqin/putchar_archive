@@ -87,7 +87,6 @@
     (assoc user :tags (post/get-user-tags (:screen_name user)))
     :not-found))
 
-;; cache
 (defn get-post
   [{:keys [uid datasource]} data]
   (->
@@ -95,13 +94,7 @@
                  (:id data)
                  {:permalink (su/encode-permalink (:permalink data))})]
      (j/with-db-connection [conn datasource]
-       (let [post (post/get conn where)]
-         (if post
-           (assoc post :body (if (:raw_body? data)
-                               (:body post)
-                               (content/render (:body post)
-                                 (:body_format post))))
-           post))))
+       (post/get conn where)))
    set-not-found!))
 
 (defn get-comments

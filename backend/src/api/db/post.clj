@@ -25,6 +25,7 @@
             [api.services.slack :as slack]
             [clojure.set :as set]
             [api.db.moderation-log :as mlog]
+            [api.services.pygments :as pygments]
             [share.content :as content]
             [api.services.opengraph :as opengraph]))
 
@@ -35,7 +36,7 @@
                                   :rank :comments_count :permalink :link
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
                                   :lang
-                                  :body :body_format :tags
+                                  :body :body_format :body_html :tags
                                   :book_id :book_title
                                   :paper_id :paper_title
                                   :cover :video]
@@ -127,10 +128,20 @@
         (slack/error (str "Parse url: % failed, post-id: %s." url (:id post))
          e)))))
 
+(defn assoc-body-html
+  [data body-format]
+  (let [body (safe-trim (:body data))
+        body-html (content/render body (or body-format :markdown))
+        body-html (if body-html
+                    (pygments/highlight! body-html))]
+    (prn body-html)
+    (assoc data
+           :body body
+           :body_html body-html)))
+
 (defn create
   [db data]
-  (let [m (-> data
-              (clojure.core/update :body safe-trim)
+  (let [m (-> (assoc-body-html data (clojure.core/get data :body_format :markdown))
               (clojure.core/update :title safe-trim))
         tags (su/->tags (:tags m))
         m (assoc m :tags tags)
@@ -151,7 +162,7 @@
       (when (seq m)
         (let [m (cond-> m
                   (:body m)
-                  (clojure.core/update :body safe-trim)
+                  (assoc-body-html (:body_format m))
 
                   (:title m)
                   (clojure.core/update :title safe-trim))

@@ -1,5 +1,5 @@
 (defproject backend "0.1.0-SNAPSHOT"
-  :description "putchar backend."
+  :description "Putchar.org backend code."
   :url "https://github.com/tiensonqin/putchar"
 
   :dependencies [[org.clojure/clojure "1.9.0"]
