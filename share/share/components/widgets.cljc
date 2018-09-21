@@ -247,14 +247,15 @@
              all-formats [:markdown :asciidoc :org-mode]
              others (remove #{body-format} all-formats)]
          (ui/menu
-          [:a.no-decoration.control {:style {:padding 12
-                                                    :font-size 14}}
-           (str/capitalize (name body-format))]
+           [:a.no-decoration.control {:style {:padding 12
+                                              :font-size 14}}
+            (str/capitalize (name body-format))]
            (for [body-format others]
              [:a.button-text {:style {:font-size 14}
                               :on-click (fn [] (on-click body-format))}
               (str (t :switch-to) " "
-                   (str/capitalize (name body-format)))]))))
+                   (str/capitalize (name body-format)))])
+           {})))
 
     [:a {:title (if (:preview? form-data)
                   (t :back)

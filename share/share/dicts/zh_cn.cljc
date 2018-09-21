@@ -256,9 +256,7 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
 
   比如 [Purely functional data structures](/book/7)。
 
-* 文章支持多种格式，包括 Markdown 和 Asciidoctor。
-
-  Emacs Org-mode 很快也会支持。
+* 文章支持多种格式，包括 Markdown，Asciidoctor 以及 Emacs Org-mode。
 
 * 用户可以在 [设置](/settings#languages) 里选择自己想看到的文章语言，比如中文和英文。
 

@@ -10,9 +10,7 @@ Putchar.org is a place for programmers to discuss articles, [books](https://putc
 
   For example, [Purely functional data structures](https://putchar.org/book/7).
 
-* Post format supports both Markdown and Asciidoctor.
-
-  Emacs Org-mode will be supported soon.
+* Post format supports Markdown, Asciidoctor and Emacs Org mode.
 
 * You can select multiple languages you'd like to see throughout the site.
 
