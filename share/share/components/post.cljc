@@ -731,27 +731,39 @@
              (util/date-format (:created_at post))]
 
             (let [link (:link post)]
-                 [:a.post-title.no-decoration (if link
-                                                {:style {:margin-right 6
-                                                         :display "inline-block"}
-                                                 :on-click (fn [e]
-                                                             (.stopPropagation e))
-                                                 :href link
-                                                 :target "_blank"}
+              [:a.post-title.no-decoration (if link
+                                             {:style {:margin-right 6
+                                                      :display "inline-block"}
+                                              :on-click (fn [e]
+                                                          (.stopPropagation e))
+                                              :href link
+                                              :target "_blank"}
 
-                                                {:style {:margin-right 6
-                                                         :display "inline-block"}
-                                                 :on-click util/stop
-                                                 :href post-link})
-                  (:title post)
-                  (if link
-                    (ui/icon {:type :link
-                              :width 16
-                              :height 16
-                              :color colors/shadow
-                              :opts {:style {:margin-left 6
-                                             :display "inline-block"}}}))])
-            (tags (:tags post) nil {:padding "0 6px"})]
+                                             {:style {:margin-right 6
+                                                      :display "inline-block"}
+                                              :on-click util/stop
+                                              :href post-link})
+               (:title post)
+               (if link
+                 (ui/icon {:type :link
+                           :width 16
+                           :height 16
+                           :color colors/shadow
+                           :opts {:style {:margin-left 6
+                                          :display "inline-block"}}}))])
+            (tags (:tags post) nil {:padding "0 6px"})
+
+            (when self?
+              [:a {:style {:font-size 14
+                           :position "absolute"
+                           :right 0}
+                   :on-click (fn [e]
+                               (util/stop e)
+                               (citrus/dispatch! :post/open-delete-dialog? post))}
+               (ui/icon {:type :delete
+                         :color "#999"
+                         :width 18})])]
+
            [:div.row
             (if show-avatar?
               [:a {:href user-link
@@ -873,7 +885,8 @@
                                                opts)))})
      (when loading?
        [:div.center {:style {:margin "24px 0"}}
-        [:div.spinner]])]))
+        [:div.spinner]])
+     (ops-delete-dialog)]))
 
 (rum/defcs post-list < rum/static
   (rum/local nil ::last-post)
