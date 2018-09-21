@@ -171,4 +171,4 @@
                           :on-click (fn []
                                       (citrus/dispatch! :report/nothing report))}
                 "Nothing")])]))
-       [:h2.ubuntu (t :no-more-reports)]))])
+       [:h2 (t :no-more-reports)]))])

@@ -344,7 +344,7 @@ The posts and comments that you have posted will not be deleted, in order to pre
 . 2. If you wish to delete any posts or comments on putchar, please do this prior to deleting your account. You can view your profile.
 
 . 3. All backups containing personal information are deleted after 30 days."
-       {:body-format :asciidoc}))]))
+       {}))]))
 
 (rum/defc user < rum/reactive
   (mixins/query :user)

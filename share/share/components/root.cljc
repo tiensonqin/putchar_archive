@@ -249,7 +249,7 @@
 
           (if (and (not mobile?)
                    post-edit-page?)
-            [:span.ubuntu {:style {:margin-left 12
+            [:span {:style {:margin-left 12
                                    :font-weight "600"
                                    :color (colors/icon-color)
                                    :font-size 13}}

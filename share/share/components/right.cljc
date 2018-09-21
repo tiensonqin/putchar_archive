@@ -105,7 +105,7 @@
   []
   (let [locale (citrus/react :locale)
         zh-cn? (= locale :zh-cn)]
-    [:div.ubuntu.right-sub {:class "column1 shadow"
+    [:div.right-sub {:class "column1 shadow"
                             :style {:font-size 14
                                     :padding 12}}
 

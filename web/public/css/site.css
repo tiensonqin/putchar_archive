@@ -59,6 +59,10 @@ div.editor i {
     margin-bottom: 24px;
 }
 
+.post .org-mode ul, .post .org-mode ol {
+    margin-bottom: 0;
+}
+
 .post #toc ul {
     margin-bottom: 0px;
 }
@@ -67,6 +71,13 @@ div.editor i {
     margin: 6px 0;
 }
 
+.org-mode .tableofcontents {
+    margin-bottom: 24px;
+}
+
+.org-mode .tableofcontents p:first-child {
+    font-weight: 600;
+}
 
 .field:not(:last-child) {
     margin-bottom: .75rem;
@@ -113,11 +124,6 @@ div.editor i {
     outline: 0;
 }
 
-hr {
-    margin: 0;
-    border: none;
-}
-
 code {
     font-family: Consolas,monaco,"Ubuntu Mono",courier,monospace!important;
     font-size: 1rem;
@@ -152,11 +158,12 @@ code {
     margin: 0;
 }
 
-.hr{
-    height:2px;
-    margin:60px 0 50px 0;
-    background:rgba(255,255,255,.2);
-}
+/* .hr{ */
+/*     height:2px; */
+/*     margin:60px 0 50px 0; */
+/*     background:rgba(255,255,255,.2); */
+/* } */
+
 .foot-lnk{
     text-align:center;
 }
@@ -363,7 +370,6 @@ a.delete {
 }
 
 .post-page-title {
-    font-weight: 600;
     margin-top: 0;
     margin-bottom: 1em;
     text-align: center;
@@ -444,16 +450,12 @@ a.delete {
     }
 
     .post-page-title {
-        font-size: 1.5rem;
+        font-size: 1.7rem;
     }
 }
 
 .comments .col-item {
     padding: 24px 12px;
-}
-
-.ubuntu {
-    font-family: ubuntu, -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
 
 .hr-divider {
@@ -525,10 +527,14 @@ a.delete {
     margin-bottom: 0.5em;
 }
 
-.markdown blockquote, .comment-box .quoteblock, .comment .quoteblock, .home .quoteblock, .home blockquote {
+.org-mode #content {
+    padding: 0;
+}
+
+.org-mode blockquote, .markdown blockquote, .comment-box .quoteblock, .comment .quoteblock, .home .quoteblock, .home blockquote {
     margin: 0.5em 0;
-    border-left: 5px solid #999;
-    padding: 6px 12px;
+    border-left: 4px solid #d3d3d3;
+    padding: 3px 12px;
 }
 
 .comment-box .concate, .comment .concate {

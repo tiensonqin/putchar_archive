@@ -235,31 +235,29 @@
 
 (rum/defc preview < rum/reactive
   [body-format form-data]
-  (let [markdown? (= :markdown (keyword body-format))]
+  (let [body-format (keyword (if body-format body-format :markdown))
+        markdown? (= :markdown (keyword body-format))]
     [:div.row1 {:style {:align-items "center"}}
      (when-not (util/mobile?)
-       (ui/dropdown
-        {:overlay (ui/button {:on-click (fn []
-                                          (let [format (if markdown? :asciidoc :markdown)]
-                                            (citrus/dispatch-sync! :citrus/set-post-form-data
-                                                                   {:body_format format})
-                                            (citrus/dispatch! :citrus/save-latest-body-format
-                                                              format)))}
-                    (str (t :switch-to) " "
-                         (if markdown?
-                           "Asciidoc"
-                           "Markdown")))
-         :animation "slide-up"}
-        [:a.no-decoration.control.ubuntu {:style {:padding 12
-                                                  :font-size 14
-                                                  ;; :color (colors/icon-color)
-                                                  }}
-         (if markdown?
-           "Markdown"
-           "Asciidoc")]))
+       (let [on-click (fn [body-format]
+                        (citrus/dispatch-sync! :citrus/set-post-form-data
+                                               {:body_format body-format})
+                        (citrus/dispatch! :citrus/save-latest-body-format
+                                          body-format))
+             all-formats [:markdown :asciidoc :org-mode]
+             others (remove #{body-format} all-formats)]
+         (ui/menu
+          [:a.no-decoration.control {:style {:padding 12
+                                                    :font-size 14}}
+           (str/capitalize (name body-format))]
+           (for [body-format others]
+             [:a.button-text {:style {:font-size 14}
+                              :on-click (fn [] (on-click body-format))}
+              (str (t :switch-to) " "
+                   (str/capitalize (name body-format)))]))))
 
     [:a {:title (if (:preview? form-data)
-                  "Back"
+                  (t :back)
                   (t :preview))
          :on-click (fn []
                      (citrus/dispatch!
@@ -289,7 +287,7 @@
           tags (if (and has-more? (not @expand?))
                  (take 12 tags)
                  tags)]
-      [:div#tags.auto-padding.ubuntu {:class "row1"
+      [:div#tags.auto-padding {:class "row1"
                                       :style {:flex-wrap "wrap"
                                               :align-items "center"}}
 

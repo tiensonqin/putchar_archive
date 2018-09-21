@@ -282,7 +282,7 @@
                                      (:reply_to x)))
                           comments)
                   nil)]
-    [:div.column.ubuntu {:style {:margin-top 6}}
+    [:div.column {:style {:margin-top 6}}
      [:div.row {:style {:align-items "center"
                         :justify-content (if (seq replies) "space-between" "flex-end")}}
       (when (and (seq replies) has-replies?)
@@ -449,8 +449,7 @@
            (if @edit-mode?
              (update-comment-box comment edit-mode? [table fk])
              (widgets/transform-content body
-                                        {:body-format :markdown
-                                         :on-mouse-up (fn [e]
+                                        {:on-mouse-up (fn [e]
                                                        (let [text (util/get-selection-text)]
                                                          (when-not (str/blank? text)
                                                            (citrus/dispatch! :comment/set-selection

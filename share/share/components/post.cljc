@@ -102,26 +102,26 @@
   [state form-data init auto-focus?]
   (let [title-exists? (citrus/react [:post :post-title-exists?])]
     [:div.new-post-title
-     [:input.ubuntu {:type "text"
-                     :class "header-text"
-                     :autoComplete "off"
-                     :autoFocus auto-focus?
-                     :on-focus util/set-cursor-end
-                     :name "title"
-                     :placeholder (t :title)
-                     :style {:border "none"
-                             :background-color "transparent"
-                             :font-size "2em"
-                             :font-weight "600"
-                             :padding-left 0
-                             :width "100%"
-                             :padding-right 36
-                             :color "#222"}
-                     :on-change (fn [e]
-                                  (citrus/dispatch! :citrus/set-post-form-data
-                                                    {:title-validated? true
-                                                     :title (util/ev e)}))
-                     :value (or (:title form-data) init "")}]
+     [:input {:type "text"
+              :class "header-text"
+              :autoComplete "off"
+              :autoFocus auto-focus?
+              :on-focus util/set-cursor-end
+              :name "title"
+              :placeholder (t :title)
+              :style {:border "none"
+                      :background-color "transparent"
+                      :font-size "2em"
+                      :font-weight "600"
+                      :padding-left 0
+                      :width "100%"
+                      :padding-right 36
+                      :color "#222"}
+              :on-change (fn [e]
+                           (citrus/dispatch! :citrus/set-post-form-data
+                                             {:title-validated? true
+                                              :title (util/ev e)}))
+              :value (or (:title form-data) init "")}]
 
      (if (false? (get form-data :title-validated?))
        [:p {:class "help is-danger"} (t :post-title-warning)])
@@ -247,7 +247,7 @@
                    :font-weight "600"}}
     (str (t :tags) ) ":"]
    [:div
-    (ui/input {:class "ant-input ubuntu"
+    (ui/input {:class "ant-input"
                :type "text"
                :autoComplete "off"
                :auto-focus auto-focus?
@@ -257,7 +257,6 @@
                        :border-radius 0
                        :padding 0
                        :color colors/primary
-                       :background "#FFF"
                        :font-size 15}
                :placeholder (t :add-tags)
                :default-value (or (:tags form-data) "")
@@ -284,7 +283,7 @@
       "Related Book(optional): "]
      [:div.column1 {:style {:position "relative"}}
       (ui/input
-       {:class "ant-input ubuntu"
+       {:class "ant-input"
         :type "text"
         :autoComplete "off"
         :name "book_id"
@@ -293,7 +292,6 @@
                 :border-radius 0
                 :padding 0
                 :color colors/primary
-                :background "#FFF"
                 :font-size 15}
         :value (or (:book_title form-data) (:title current-book) "")
         :on-change (fn [value]
@@ -339,7 +337,7 @@
       "Related Paper(optional): "]
      [:div.column1 {:style {:position "relative"}}
       (ui/input
-       {:class "ant-input ubuntu"
+       {:class "ant-input"
         :type "text"
         :autoComplete "off"
         :name "paper_id"
@@ -348,7 +346,6 @@
                 :border-radius 0
                 :padding 0
                 :color colors/primary
-                :background "#FFF"
                 :font-size 15}
         :value (or (:paper_title form-data) (:title current-paper) "")
         :on-change (fn [value]
@@ -385,7 +382,7 @@
         images (:images form-data)
         images? (seq images)
         default-post-language (citrus/react [:user :default-post-language])]
-    [:div.column.ubuntu#publish-dialog
+    [:div.column#publish-dialog
      (if images?
        [:div#set-cover
         [:h6 {:style {:margin-bottom "1em"}}
@@ -650,7 +647,7 @@
 (rum/defc tags
   [tags opts tag-style]
   (if (seq tags)
-    [:span.ubuntu opts
+    [:span opts
      (for [tag tags]
        (when-not (str/blank? tag)
          [:a.tag
@@ -814,7 +811,7 @@
                                              :margin-top 8
                                              :margin-bottom 6}}]])]
 
-             [:div.space-between.ubuntu {:style {:align-items "center"
+             [:div.space-between {:style {:align-items "center"
                                                  :margin-top 8}}
               [:div.row1 {:style {:align-items "center"}}
                (vote post)]
@@ -926,7 +923,7 @@
          [:a {:href "/new-post"
               :style {:margin-top 24
                       :color colors/primary}}
-          [:span.ubuntu {:style {:margin-top 3}}
+          [:span {:style {:margin-top 3}}
            (t :be-the-first)]])])))
 
 (rum/defc user-post-list <

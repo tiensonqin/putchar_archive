@@ -14,11 +14,17 @@
   []
   {:email         {:warning (t :invalid-email)
                    :placeholder "Email"
-                   :validators [form/email?]}})
+                   :validators [form/email?]
+                   :style {:border "none"
+                           :border-bottom "1px solid #aaa"
+                           :border-radius 0
+                           :padding 0
+                           :color colors/primary
+                           :font-size 15}}})
 
 (rum/defc signin
   [background-color]
-  [:div.column.ubuntu {:style (cond->
+  [:div.column {:style (cond->
                                 {:border-radius "4px"
                                  :padding 24
                                 :justify-content "center"

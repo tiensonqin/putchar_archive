@@ -6,11 +6,11 @@
             [share.emoji :as emoji]
             #?(:cljs ["react-dom/server" :as react-dom-server])
             #?(:cljs [sablono.core :as html])
+            #?(:clj [api.services.org-mode :as org-mode])
             [appkit.citrus :as citrus]
             [share.kit.colors :as colors]
             [share.asciidoc :as ascii]
-            [share.markdown :as md]
-            ))
+            [share.markdown :as md]))
 
 ;; TODO: write a parser for asciidoc using cljc
 
@@ -120,7 +120,7 @@
 
 (rum/defc mention
   [screen-name]
-  [:a.mention.ubuntu {:href (str "/@" screen-name)}
+  [:a.mention {:href (str "/@" screen-name)}
    (str "@" screen-name)])
 
 (def mention-pattern #"^(?!.*\bRT\b)(?:.+\s)?@(\w+)")
@@ -223,9 +223,11 @@
 (defn render
   [body body-format]
   (let [body-format (keyword body-format)
-        render-fn (if (= body-format :markdown)
-                    md/render
-                    ascii/render)]
+        render-fn (case body-format
+                    :markdown md/render
+                    :asciidoc ascii/render
+                    :org-mode #?(:clj org-mode/render
+                                 :cljs identity))]
     (some-> body
             (pre-transform body-format)
             (render-fn)

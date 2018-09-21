@@ -1,5 +1,5 @@
 @media screen and (min-width: 768px) {
-  body, #head, #modal-panel, input#search, .rc-dialog-content, .divider-text:after {
+  html, body, #head, #modal-panel, input, .rc-dialog-content, .divider-text:after {
     background: #F4F1EA;
   }
 }
@@ -170,12 +170,52 @@ a.tag.active {
   background: #ffe4c4;
 }
 
-.editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .editor h6 a {
+.editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .ediptor h6 a {
   color: #071839;
 }
 
 *:not(pre) > code {
-  color: #000;
+  background: #FFE4C4;
+  color: #333;
+  font-size: 15px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.org-mode pre {
+  background: #dfdfdf;
+  padding: 12px;
+  margin-bottom: 1.25em;
+  margin-top: 0.25em;
+  border-radius: 4px;
+  white-space: pre;
+}
+
+.org-mode .code pre, .org-mode .linenos pre {
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.org-mode .highlight {
+  padding: 0;
+}
+
+.org-mode table {
+  width: 100%;
+}
+
+.org-mode table.highlighttable {
+  background: #dfdfdf;
+  border-radius: 4px;
+  border: 1px;
+}
+
+.org-mode .highlighttable td {
+  padding: 0;
+}
+
+.org-mode .highlighttable td.linenos {
+  padding: 12px 0 12px 12px;
 }
 
 .col-item {

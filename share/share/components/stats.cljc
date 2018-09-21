@@ -85,4 +85,4 @@
              (for [item stats]
                (rum/with-key (item-cp mobile? item)
                  (:id (:post_id item))))]]]
-          [:h2.ubuntu (t :no-stats-yet)])))]))
+          [:h2 (t :no-stats-yet)])))]))

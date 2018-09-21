@@ -11,6 +11,4 @@
 (rum/defc about
   [params]
   [:div.auto-padding
-   (widgets/transform-content
-    (t :about-text)
-    {})])
+   (widgets/transform-content (t :about-text) {})])
