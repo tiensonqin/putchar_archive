@@ -26,10 +26,11 @@
                          :color colors/primary}}
      (if (:cover book)
        (let [style (if mobile?
-                     {:width "100%"}
-                     {:max-width 230
-                      :max-height 300
-                      :min-height 121})]
+                     {:width "100%"
+                      :background-color "#F4F1EA"}
+                     {:width 230
+                      :height 300
+                      :background-color "#F4F1EA"})]
          [:div {:style style}
           [:img.hover-shadow {:src (:cover book)
                               :style (merge
@@ -102,9 +103,11 @@
                        :style (if mobile?
                                 {:max-height 100
                                  :max-width 100
+                                 :min-width 100
                                  :object-fit "contain"}
-                                {:max-height 300
-                                 :max-width 300
+                                {:height 300
+                                 :min-width 230
+                                 :width 230
                                  :margin-right 12
                                  :object-fit "contain"})}]]
            (let [stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
