@@ -721,15 +721,14 @@
                         :display "block"}}
             (:paper_title post)])
          (if user-draft?
-           [:div
+           [:span
             [:span {:style {:margin-right 12
                             :vertical-align "text-bottom"}}
              (util/date-format (:created_at post))]
 
             (let [link (:link post)]
               [:a.post-title.no-decoration (if link
-                                             {:style {:margin-right 6
-                                                      :display "inline-block"}
+                                             {:style {:margin-right 6}
                                               :on-click (fn [e]
                                                           (.stopPropagation e))
                                               :href link
@@ -742,8 +741,8 @@
                (:title post)
                (if link
                  (ui/icon {:type :link
-                           :width 16
-                           :height 16
+                           :width 13
+                           :height 13
                            :color colors/shadow
                            :opts {:style {:margin-left 6
                                           :display "inline-block"}}}))])

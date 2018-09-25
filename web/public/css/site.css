@@ -340,6 +340,7 @@ a.set-cover {
 
 .user-card .editor p, .comment .editor p {
     margin-bottom: 0;
+    margin-top: 0;
 }
 
 #back-to-top svg:hover {

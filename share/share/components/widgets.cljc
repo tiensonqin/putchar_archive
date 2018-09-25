@@ -149,16 +149,15 @@
                      :style {:align-items "center"
                              :margin 0
                              :margin-left 12
-                             :padding "0 6px"}}
+                             :padding "2px 6px 0 6px"}}
              (t :drafts)])
           [:a.tag {:href (str "/@" screen_name "/comments")
                    :class (if comments? "active" "")
                    :style {:align-items "center"
                            :margin 0
                            :margin-left 12
-                           :padding "0 6px"}}
-           (t :latest-comments)]])]]
-     ]))
+                           :padding "2px 6px 0 6px"}}
+           (t :latest-comments)]])]]]))
 
 (rum/defc back-to-top < rum/reactive
   []
