@@ -203,7 +203,7 @@
                                                               {:lang value}))}
                       lang))]
     [:div#select-language {:style {:margin "12px 0"}}
-     [:h6
+     [:h3
       (str (t :select-primary-language) ":")]
 
      [:p {:style {:margin-bottom "1em"
@@ -386,7 +386,7 @@
     [:div.column#publish-dialog
      (if images?
        [:div#set-cover
-        [:h6 {:style {:margin-bottom "1em"}}
+        [:h3 {:style {:margin-bottom "1em"}}
          (str (t :cover) ":")]
         (for [[id image] (:images form-data)]
           [:a.hover-opacity {:key id

@@ -1,18 +1,7 @@
-@media screen and (min-width: 768px) {
-  html, body, #head, #modal-panel, input, .rc-dialog-content, .divider-text:after {
-    background: #F4F1EA;
-  }
+html, body, #head, #modal-panel, input, .rc-dialog-content, .divider-text:after {
+  background: #fdf6e3;
 }
-@media screen and (max-width: 768px) {
-  #head {
-    -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  }
 
-  body, #head, #modal-panel, input#search, .rc-dialog-content, .divider-text:after {
-    background: #FFFFFF;
-  }
-}
 body {
   color: #212529;
 }
@@ -217,15 +206,11 @@ a.tag.active {
   padding: 12px 0 12px 12px;
 }
 
-.col-item {
-  border-bottom: 1px solid #dfdfdf;
-}
-
 .menu {
   -webkit-box-shadow: 0 1px 8px #ddd;
   box-shadow: 0 1px 8px #ddd;
   display: block;
-  background: #F4F1EA;
+  background: #fdf6e3;
 }
 
 .menu-item:hover {

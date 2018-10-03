@@ -12,7 +12,8 @@
             [clojure.string :as s]
             [share.kit.query :as query]
             [share.kit.mixins :as mixins]
-            [share.kit.infinite-list :as inf]))
+            [share.kit.infinite-list :as inf]
+            [share.components.right :as right]))
 
 (rum/defc paper-item
   [paper]
@@ -84,17 +85,18 @@
         {:keys [id title description tags created_at screen_name followers] :as paper} (citrus/react [:paper :by-id id])
         posts (citrus/react posts-path)
         current-user (citrus/react [:user :current])
-        self? (= screen_name (:screen_name current-user))]
+        self? (= screen_name (:screen_name current-user))
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
     (query/query
       (if paper
         [:div#paper.column
-         [:div.row
+         [:div.row1
           [:div.row1.splash
            {:style {:min-height "40vh"
                     :padding 48
                     :box-shadow "0 3px 8px #ddd"
                     :background "#efefef"
-                    :background-image "radial-gradient(at 1% 100%, #ADC0CF, #FFF)"
+                    :background-image "radial-gradient(at 1% 100%, #ffe4c4, #FFF)"
                     :align-items "center"
                     :width "100%"
                     :position "relative"}}
@@ -145,13 +147,17 @@
               [:div {:style {:margin-top 12}}
                (widgets/followers followers)])]]]
 
-         [:div.auto-padding {:style {:margin "0 auto"
-                                     :max-width 768
-                                     :margin-top 24
-                                     :width "100%"}}
+         [:div.auto-padding.row {:style {:margin-top 24}}
           (post/post-list posts
                           {:book_id id
-                           :merge-path posts-path})]]
+                           :merge-path posts-path})
+          (when-not mobile?
+            [:div#right {:key "right"
+                         :class "column1"
+                         :style {:margin-left 12
+                                 :margin-right 3
+                                 :width 243}}
+             (right/right)])]]
         [:div.auto-padding
          [:h1 "404 NOT FOUND"]])))
   )

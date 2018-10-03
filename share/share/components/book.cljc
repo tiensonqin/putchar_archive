@@ -12,7 +12,8 @@
             [clojure.string :as str]
             [share.kit.query :as query]
             [share.kit.mixins :as mixins]
-            [share.kit.infinite-list :as inf]))
+            [share.kit.infinite-list :as inf]
+            [share.components.right :as right]))
 
 (rum/defc book-item
   [book]
@@ -27,10 +28,10 @@
      (if (:cover book)
        (let [style (if mobile?
                      {:width "100%"
-                      :background-color "#F4F1EA"}
+                      :background-color "#fdf6e3"}
                      {:width 230
                       :height 300
-                      :background-color "#F4F1EA"})]
+                      :background-color "#fdf6e3"})]
          [:div {:style style}
           [:img.hover-shadow {:src (:cover book)
                               :style (merge
@@ -83,7 +84,7 @@
         current-user (citrus/react [:user :current])
         self? (= screen_name (:screen_name current-user))
         height (citrus/react [:layout :current :height])
-        mobile? (util/mobile?)]
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
     (query/query
       (if book
         [:div#book.column
@@ -93,23 +94,19 @@
                               48)
                    :box-shadow "0 3px 8px #ddd"
                    :background "#efefef"
-                   :background-image "radial-gradient(at 1% 100%, #ADC0CF, #FFF)"
+                   :background-image "radial-gradient(at 1% 100%, #ffe4c4, #FFF)"
                    :align-items "center"
                    :width "100%"
                    :position "relative"}}
           [:div
-           [:div.cover
-            [:img.box {:src cover
-                       :style (if mobile?
-                                {:max-height 100
-                                 :max-width 100
-                                 :min-width 100
-                                 :object-fit "contain"}
-                                {:height 300
+           (when-not mobile?
+             [:div.cover
+              [:img.box {:src cover
+                         :style {:height 300
                                  :min-width 230
                                  :width 230
                                  :margin-right 12
-                                 :object-fit "contain"})}]]
+                                 :object-fit "contain"}}]])
            (let [stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
              [:div {:style {:position "absolute"
                             :top 12
@@ -134,15 +131,24 @@
                   (:stars book)]]]]])]
           [:div.column1
            (if mobile?
-             [:h4 {:style {:margin 0}} title]
+             [:div.row1 {:style {:align-items "center"}}
+              [:img.box {:src cover
+                         :style {:max-height 100
+                                 :max-width 100
+                                 :object-fit "contain"
+                                 :margin-right 12}}]
+              [:h3 {:style {:margin 0}} title]])
+
+           (when-not mobile?
              [:h1 {:style {:margin 0}} title])
+
            (when-let [authors (:authors book)]
              [:div.row1.book-authors {:style {:align-items "center"
                                               :margin-top 12}}
               (widgets/transform-content authors {:style {:margin 0}})])
 
            [:div {:style {:margin-top 6}}
-            (widgets/more-content description 360)]
+            (widgets/more-content description (if mobile? 80 360))]
 
            [:div.row1 {:style {:align-items "center"
                                :flex-wrap "wrap"}}
@@ -157,16 +163,19 @@
 
            (when (seq followers)
              [:div {:style {:margin-top 12}}
-              (widgets/followers followers)])
-           ]]
+              (widgets/followers followers)])]]
 
-         [:div.auto-padding {:style {:margin "0 auto"
-                                     :max-width 768
-                                     :margin-top 24
-                                     :width "100%"}}
+         [:div.auto-padding.row {:style {:margin-top 24}}
           (post/post-list posts
                           {:book_id id
-                           :merge-path posts-path})]]
+                           :merge-path posts-path})
+          (when-not mobile?
+            [:div#right {:key "right"
+                         :class "column1"
+                         :style {:margin-left 12
+                                 :margin-right 3
+                                 :width 243}}
+             (right/right)])]]
        [:div.auto-padding
         [:h1 "404 NOT FOUND"]]))))
 

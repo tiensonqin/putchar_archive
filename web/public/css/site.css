@@ -337,8 +337,8 @@ a.delete {
 }
 
 .ver_divider {
-    width: 3px!important;
-    background: #ddd;
+    width: 1px!important;
+    background: #ffe4c4;
 }
 
 .mention {
@@ -415,6 +415,7 @@ a.delete {
     }
 }
 
+
 @media screen and (max-width: 768px) {
 
     .col-item {
@@ -422,7 +423,7 @@ a.delete {
     }
 
     .col-item:hover {
-        background: #F9F7F4;
+        background: #ffe4c4;
     }
 
     #head {
@@ -464,7 +465,7 @@ a.delete {
 }
 
 .comments .col-item {
-    padding: 24px 12px;
+    padding: 24px 0;
 }
 
 .divider-text {
