@@ -452,21 +452,13 @@
                  state)
    :after-render (fn [state]
                    #?(:cljs
-                      (let [reconciler (-> state :rum/args first)
-                            router (bidi/match-route share.routes/routes
-                                                     js/window.location.pathname)
-                            current-handler (:handler router)]
-                        (let [hash-part js/window.location.hash]
-                          (if (and hash-part (not (str/blank? (str/trim hash-part))))
-                            (util/scroll-to-element hash-part)
-                            (when (not= current-handler :comment)
-                              (let [last-position (get-in @reconciler
-                                                              [:last-scroll-top (util/get-current-url)])]
-                                (if (nil? last-position)
-                                  (.scrollTo js/window 0 0)
-                                  (.scrollTo js/window 0 last-position))
-                                ))))
-
+                      (do
+                        (let [reconciler (-> state :rum/args first)]
+                         (let [last-position (get-in @reconciler
+                                                     [:last-scroll-top (util/get-current-url)])]
+                           (if (nil? last-position)
+                             (.scrollTo js/window 0 0)
+                             (.scrollTo js/window 0 last-position))))
                         (.addEventListener js/window "popstate"
                                            (fn [e]
                                              (citrus/dispatch-sync! :query/into-back-mode)))))

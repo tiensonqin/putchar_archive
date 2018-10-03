@@ -114,32 +114,22 @@
                    :on-click (fn []
                                (citrus/dispatch! :citrus/re-fetch :newest {}))}
        (t :new-created)]
-      [:a.control {:href "/moderation-logs"
-                   :style {:margin-left 24}}
-       (t :moderation-logs)]]
+      [:a.control
+       {:style {:margin-left 24}
+        :key "about"
+        :href "/about"}
+       (t :about)]]
 
      [:div.row1 {:style {:align-items "center"
                          :margin-top 16}}
-      [:a.control
-       {:key "about"
-        :href "/about"}
-       (t :about)]
+
+      [:a.control {:href "/tag/feature-requests"}
+       (t :feature-requests)]
 
       [:a.control
        {:style {:margin-left 24}
         :href "mailto:tiensonqin@gmail.com"}
        (t :contact-us)]]
-
-     [:div.row1 {:style {:align-items "center"
-                         :flex-wrap "wrap"
-                         :margin-top 16}}
-      [:a.control {:href "/tag/feature-requests"
-                   :style {:margin-right 24}}
-       (t :feature-requests)]
-
-      ]
-
-
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"

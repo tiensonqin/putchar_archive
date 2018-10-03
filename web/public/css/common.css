@@ -276,7 +276,7 @@ img { display: inline-block; vertical-align: middle; }
 ul, ol, dl { font-size: 1em; line-height: 1.6; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
 
 /* Lists */
-ul, ol { margin-left: 1.5em; }
+ul, ol { margin-left: 1.5em; margin-top: 0px;}
 
 /* Unordered Lists */
 ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }

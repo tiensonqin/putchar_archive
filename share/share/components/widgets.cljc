@@ -187,7 +187,7 @@
                  :padding-top 6
                  :text-align "center"}
          :on-click (fn []
-                     (citrus/dispatch! :citrus/set-scroll-top url 0))}
+                     (util/scroll-to-top))}
         (ui/icon {:type :back-to-top
                   :color "#efefef"})
         ])]))

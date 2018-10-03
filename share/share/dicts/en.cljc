@@ -237,11 +237,11 @@
    :my-data "My Data"
    :about-text "
 
-## About
+# About
 
 Putchar.org is a place for programmers to discuss articles, [books](/books) and [papers](/papers).
 
-### Features
+## Features
 
 * Each book or paper has its own posts and followers.
 
@@ -255,7 +255,7 @@ Putchar.org is a place for programmers to discuss articles, [books](/books) and 
 
 * 100% free forever.
 
-### FAQ
+## FAQ
 
 * Who are the team behind Putchar?
 

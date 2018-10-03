@@ -1051,7 +1051,7 @@
 
 (rum/defcs post < rum/reactive
   (mixins/query :post)
-  {:after-render
+  {:init
    (fn [state]
      #?(:cljs
         (do
