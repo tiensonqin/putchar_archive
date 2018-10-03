@@ -776,14 +776,7 @@
                                                 {:style {:margin-right 6}
                                                  :on-click util/stop
                                                  :href post-link})
-                  (:title post)
-                  (if link
-                    (ui/icon {:type :link
-                              :width 16
-                              :height 16
-                              :color colors/shadow
-                              :opts {:style {:margin-left 6
-                                             :display "inline-block"}}}))])
+                  (:title post)])
 
                [:a.control {:href (str post-link "#comments")
                             :title (str (:comments_count post)
@@ -1052,7 +1045,7 @@
 (rum/defcs post < rum/reactive
   (mixins/query :post)
   {:init
-   (fn [state]
+   (fn [state props]
      #?(:cljs
         (do
           (when-let [idx (:comment-idx (first (:rum/args state)))]

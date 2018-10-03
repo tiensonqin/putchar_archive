@@ -467,14 +467,6 @@ a.delete {
     padding: 24px 12px;
 }
 
-.hr-divider {
-    display: block;
-    margin: 1.25rem 0;
-    height: 1px;
-    width: 100%;
-    border: 0;
-}
-
 .divider-text {
     position: relative;
     overflow: visible;
@@ -578,3 +570,16 @@ table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { pad
 table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
 table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
 table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.6; }
+
+hr {
+    border: 1px solid #dfdfdf;
+    margin: 48px 0;
+}
+
+.hr-divider {
+    display: block;
+    margin: 1.25rem 0;
+    height: 1px;
+    width: 100%;
+    border: 0;
+}
