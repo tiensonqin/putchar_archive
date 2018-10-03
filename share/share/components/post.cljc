@@ -160,10 +160,10 @@
           :placeholder (t :post-body-placeholder)
           :style {:border "none"
                   :background-color "transparent"
-                  :font-size "18px"
+                  :font-size 18
                   :resize "none"
                   :width "100%"
-                  :line-height "1.8"
+                  :line-height "1.7"
                   :white-space "pre-wrap"
                   :overflow-wrap "break-word"
                   :overflow-y "hidden"
@@ -528,7 +528,7 @@
         preview? (:preview? form-data)]
     [:div.column {:class "editor"
                   :style {:max-width (if (and preview? (> width 1024))
-                                       1238
+                                       1160
                                        768)
                           :margin "0 auto"}}
      [:div.auto-padding {:style {:flex 1
@@ -946,7 +946,7 @@
                             (assoc :body (:body form-data)))))
       [:div.column.center-area.auto-padding {:class "post-edit editor"
                                              :style (if (and preview? (> width 1024))
-                                                      {:max-width 1238
+                                                      {:max-width 1160
                                                        :margin-top 48}
                                                       {:margin-top 48})}
        (new-post-title form-data (or

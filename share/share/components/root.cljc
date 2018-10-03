@@ -234,7 +234,7 @@
                              :left 0}
                             {})
                            (and preview? (not mobile?))
-                           (assoc :max-width 1238))}
+                           (assoc :max-width 1160))}
        [:div.row {:class "wrap"
                   :style {:justify-content "space-between"}}
         [:div.row1 {:style {:align-items "center"}}
