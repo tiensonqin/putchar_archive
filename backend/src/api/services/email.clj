@@ -93,7 +93,7 @@
 "]
                            [:p [:a {:href (str "https://putchar.org/@" who)
                                     :target "_blank"}
-                                [:img {:src (str (:img-cdn config) "/pics/" who ".jpg")
+                                [:img {:src (str (:img-cdn config) "/" who ".jpg")
                                        :style  "border-radius: 6px;margin-right:6px;"}]
                                 [:span who]]
                             " invited you to join Putchar.org!"]]

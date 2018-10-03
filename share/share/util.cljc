@@ -191,14 +191,10 @@
       (str config/website "/logo-2x.png")
 
       (s/starts-with? name "deleted-user-")
-      (str config/img-cdn "/pics/11FAjQ9BPF.jpg")
+      (str config/img-cdn "/11FAjQ9BPF.jpg")
 
       :else
-      (str config/img-cdn
-           (format "/fit-in/%dx%d/smart/filters:quality(85)/pics/" width height)
-           name
-           "."
-           suffix))))
+      (str config/img-cdn "/" name "." suffix))))
 
 (def cdn-img-re
   (re-pattern (format "%s/pics/[^ ]+.jpg" config/img-cdn)))

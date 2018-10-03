@@ -144,8 +144,8 @@
               (let [avatar (or (let [avatar (:avatar data)]
                                  (and (not (str/blank? avatar))
                                       avatar))
-                               (rand-nth [(str (:img-cdn config/config) "/pics/4VuWB7D1Ht.jpg")
-                                          (str (:img-cdn config/config) "/pics/4VuXdNeNnt.jpg")]))]
+                               (rand-nth [(str (:img-cdn config/config) "/4VuWB7D1Ht.jpg")
+                                          (str (:img-cdn config/config) "/4VuXdNeNnt.jpg")]))]
                 (s3/save-url-image (:screen_name user) avatar)))
             (future
               (email/aws-with-credential

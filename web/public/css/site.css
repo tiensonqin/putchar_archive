@@ -64,10 +64,6 @@ div.editor {
     margin: 0;
 }
 
-.org-mode .tableofcontents p:first-child {
-    font-weight: 500;
-}
-
 .org-mode .timestamp {
     background: bisque;
     padding: 3px 6px;
@@ -183,12 +179,6 @@ code {
     margin: 0;
 }
 
-/* .hr{ */
-/*     height:2px; */
-/*     margin:60px 0 50px 0; */
-/*     background:rgba(255,255,255,.2); */
-/* } */
-
 .foot-lnk{
     text-align:center;
 }
@@ -236,13 +226,6 @@ span.logo {
 .comment h1, .comment h2, .comment h3, .comment h4, .comment h1, .comment h5, .comment h6 {
     margin: 6px 0;
     font-weight: 600;
-}
-
-.post-item h1, .post-item h2, .post-item h3, .post-item h4, .post-item h1, .post-item h5, .post-item h6 {
-    margin: 0;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 1.6;
 }
 
 label {

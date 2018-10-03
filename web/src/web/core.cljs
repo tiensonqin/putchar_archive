@@ -72,11 +72,9 @@
 
     (start (some? current-user))
 
-    (when (nil? emojis)
-      (citrus/dispatch! :data/pull-emojis))
-
     (when current-user
-      (citrus/dispatch! :user/poll))))
+      (util/set-timeout 30000
+                        #(citrus/dispatch! :user/poll)))))
 
 (defn stop []
   ;; stop is called before any code is reloaded

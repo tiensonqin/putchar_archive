@@ -21,6 +21,7 @@
             [share.components.post-box :as post-box]
             [share.kit.infinite-list :as inf]
             [share.admins :as admins]
+            #?(:cljs [appkit.storage :as storage])
             #?(:cljs [web.scroll :as scroll])))
 
 (rum/defcs vote < rum/reactive
@@ -722,8 +723,7 @@
             (:paper_title post)])
          (if user-draft?
            [:span
-            [:span {:style {:margin-right 12
-                            :vertical-align "text-bottom"}}
+            [:span {:style {:margin-right 12}}
              (util/date-format (:created_at post))]
 
             (let [link (:link post)]
@@ -738,15 +738,9 @@
                                                       :display "inline-block"}
                                               :on-click util/stop
                                               :href post-link})
-               (:title post)
-               (if link
-                 (ui/icon {:type :link
-                           :width 13
-                           :height 13
-                           :color colors/shadow
-                           :opts {:style {:margin-left 6
-                                          :display "inline-block"}}}))])
-            (tags (:tags post) nil {:padding "0 6px"})
+               (:title post)])
+            (tags (:tags post) nil {:margin-left 6
+                                    :padding "0 6px"})
 
             (when (and self? drafts-path?)
               [:a {:style {:font-size 14
@@ -933,7 +927,13 @@
   (mixins/interval-mixin :post-auto-save
                          5000
                          (fn [] (citrus/dispatch! :post/save)))
-  {:will-unmount (fn [state]
+  {:will-mount (fn [state]
+                 #?(:cljs
+                    (let [emojis (storage/get :emojis)]
+                      (when (nil? emojis)
+                        (citrus/dispatch! :data/pull-emojis))))
+                 state)
+   :will-unmount (fn [state]
                    (citrus/dispatch! :post/reset-form-data)
                    state)}
   [state params]

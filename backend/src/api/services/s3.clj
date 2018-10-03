@@ -37,7 +37,8 @@
                                      :content-type content-type
                                      :content-length length
                                      :cache-control "public, max-age=31536000"}))
-         (str (:img-cdn config) "/" name)))
+         (str (:img-cdn config)
+              (str/replace name "pics" ""))))
      (catch Exception e
        (t/error e)
        false))))
@@ -69,7 +70,8 @@
           ;;   (imgix/purger (str/replace name "pics" "")))
 
 
-          (str (:img-cdn config) "/" name))
+          (str (:img-cdn config)
+               (str/replace name "pics" "")))
         (catch Exception e
           (slack/error e)
           false)))))

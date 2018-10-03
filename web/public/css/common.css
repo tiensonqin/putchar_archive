@@ -271,8 +271,6 @@ li {
     padding: 0;
 }
 
-h2 { font-size: 1.6875em; }
-
 img { display: inline-block; vertical-align: middle; }
 
 ul, ol, dl { font-size: 1em; line-height: 1.6; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
@@ -328,10 +326,6 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     margin-bottom: 0;
 }
 
-.post-item .imageblock, .post-item .literalblock, .post-item .listingblock, .post-item .verseblock, .post-item .videoblock {
-    margin-bottom: 0.25em;
-}
-
 .radio-button {
     width: 20px;
     height: 20px;
@@ -371,7 +365,6 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
     flex: 1;
     border-radius: 4px;
     min-height: calc(100vh - 56px - 12px)!important;
-    /* margin-top: -8px; */
 }
 
 .col-item {

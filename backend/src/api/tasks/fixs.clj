@@ -154,7 +154,7 @@
     (doseq [{:keys [id body body_format] :as post} posts]
       (when body
         (let [body (str/replace body
-                                (str config/img-cdn "/pics/pics")
-                                (str config/img-cdn "/pics"))]
-         (post/update db id {:body (post/body->html body body_format)
+                                (str config/img-cdn "/pics")
+                                config/img-cdn)]
+          (post/update db id {:body body
                              :body_html (post/body->html body body_format)}))))))

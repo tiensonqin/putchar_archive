@@ -263,11 +263,11 @@
   (when (seq tags)
     (let [expand? (get state ::expand?)
           tags-count (count tags)
-          number 12
+          number 6
           has-more? (> tags-count number)
           show-expand? (and has-more? (not @expand?))
           tags (if (and has-more? (not @expand?))
-                 (take 12 tags)
+                 (take 6 tags)
                  tags)]
       [:div#tags.auto-padding {:class "row1"
                                       :style {:flex-wrap "wrap"
