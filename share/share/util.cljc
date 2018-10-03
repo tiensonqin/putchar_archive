@@ -96,8 +96,7 @@
      #?(:cljs
         (cljstf/unparse-local (cljstf/formatter format) (cljscc/to-date-time date))
         :clj
-        (tf/unparse (tf/formatter format) (cc/to-date-time date))))
-   ))
+        (tf/unparse (tf/formatter format) (cc/to-date-time date))))))
 
 (defn days-ago [days]
   (let [day #?(:clj (c/ago (c/days days))
@@ -175,6 +174,11 @@
       m)
     (dissoc m k)))
 
+(defn format
+  [fmt & args]
+  #?(:cljs (apply goog.string/format fmt args)
+     :clj (apply clojure.core/format fmt args)))
+
 (defn cdn-image
   [name & {:keys [suffix width height]
            :or {width 80
@@ -187,15 +191,28 @@
       (str config/website "/logo-2x.png")
 
       (s/starts-with? name "deleted-user-")
-      (str config/img-cdn "/11FAjQ9BPF.jpg")
+      (str config/img-cdn "/pics/11FAjQ9BPF.jpg")
 
       :else
-      (str config/img-cdn "/" name "." suffix))))
+      (str config/img-cdn
+           (format "/fit-in/%dx%d/smart/filters:quality(85)/pics/" width height)
+           name
+           "."
+           suffix))))
 
-(defn format
-  [fmt & args]
-  #?(:cljs (apply goog.string/format fmt args)
-     :clj (apply clojure.core/format fmt args)))
+(def cdn-img-re
+  (re-pattern (format "%s/pics/[^ ]+.jpg" config/img-cdn)))
+
+(defn cdn-replace
+  [body]
+  (some-> body
+          (s/replace cdn-img-re
+                     (fn [x]
+                       (s/replace x
+                                    config/img-cdn
+                                    (str config/img-cdn
+                                         "/fit-in/768x600/smart/filters:quality(85)"))))))
+
 
 (defn non-blank? [v]
   (and (string? v)
@@ -325,9 +342,6 @@
 (defn link?
   [s]
   (and s (re-find (re-pattern (str "^" link-re "\\[*\\]*" "$")) s)))
-
-(comment
-  (def asciidoc-link "https://putchar.org[putchar]"))
 
 (def email-re #"[\w._%+-]+@[\w.-]+\.[\w]{2,4}")
 

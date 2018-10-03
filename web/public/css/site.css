@@ -19,15 +19,6 @@ div.editor {
     word-wrap: break-word;
 }
 
-div.editor i {
-    font-size: 100%;
-}
-
-.editor-content pre, .editor pre, .posts pre {
-    overflow-x: auto;
-    display: block;
-}
-
 .rc-dropdown .editor p {
     font-size: 1em;
 }
@@ -43,12 +34,6 @@ div.editor i {
     flex-direction: column;
     margin: 12px 0 64px 0;
     background: transparent;
-}
-
-.ant-input:hover, .new-post-title .ant-input:focus, .new-post-title .ant-input:hover, .message-box .ant-input:focus, .message-box .ant-input:hover, .editor .ant-input:hover, .editor .ant-input:focus {
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
 }
 
 .post ul li {
@@ -529,7 +514,10 @@ a.delete {
     padding-left: .625rem;
 }
 
-.quoteblock blockquote, .quoteblock blockquote p {
+blockquote {
+    margin: 0.5em 0;
+    border-left: 4px solid #d3d3d3;
+    padding: 1px 12px;
     font-size: 1.15rem;
     line-height: 1.5;
     word-spacing: 0.1em;
@@ -538,30 +526,9 @@ a.delete {
     text-align: justify;
 }
 
-.quoteblock blockquote>.paragraph:last-child p, blockquote > p:last-child {
+blockquote p {
     margin-bottom: 0;
-}
-
-.quoteblock .attribution, .verseblock .attribution {
-    font-size: .9375em;
-    line-height: 1.45;
-    font-style: italic;
-}
-
-.quoteblock .attribution {
-    margin-top: 0.5em;
-    margin-right: 0.5ex;
-    text-align: right;
-}
-
-.quoteblock blockquote:before {
-    content: "\201c";
-    float: left;
-    font-size: 2.75em;
-    font-weight: bold;
-    line-height: 0.6em;
-    margin-left: -0.5em;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    margin-top: 0;
 }
 
 .post-item p {
@@ -572,39 +539,11 @@ a.delete {
     padding: 0;
 }
 
-.org-mode blockquote, .markdown blockquote, .comment-box .quoteblock, .comment .quoteblock, .home .quoteblock, .home blockquote {
-    margin: 0.5em 0;
-    border-left: 4px solid #d3d3d3;
-    padding: 3px 12px;
-}
-
 .comment-box .concate, .comment .concate {
     margin-bottom: -1.5em;
 }
 
-.comment-box .quoteblock blockquote, .comment-box .quoteblock blockquote p, .comment .quoteblock blockquote, .comment .quoteblock blockquote p {
-    font-size: 12px;
-    font-style: normal;
-}
-
-.comment-box .quoteblock blockquote:before, .comment .quoteblock blockquote:before {
-    content: "";
-}
-
-.quoteblock {
-    padding: 1em 1.25em 1.5em 1.7em;
-}
-
-.asciidoc blockquote {
-    margin: 0;
-}
-
 .markdown ul, .markdown ol {
-    margin-bottom: 1.25em;
-}
-
-.markdown blockquote {
-    margin-top: 0;
     margin-bottom: 1.25em;
 }
 
@@ -638,6 +577,21 @@ input#search {
     color: #000;
 }
 
+pre, pre > code { line-height: 1.4; font-family: "Droid Sans Mono","DejaVu Sans Mono","Monospace",monospace; font-weight: normal; }
+
 pre code {
     display: block;
 }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.6; }

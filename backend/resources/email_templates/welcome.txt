@@ -1,6 +1,6 @@
 Hi, welcome to Putchar.org!
 
-Putchar.org is a place for hackers to publish and discuss their thoughts. Everyone has a simple and free blog which supports multiple formats include Markdown and Asciidoctor.
+Putchar.org is a place for hackers to publish and discuss their thoughts. Everyone has a simple and free blog which supports multiple formats include Markdown and Org mode.
 
 Click https://putchar.org/email_confirmation?code={{code}} to activate your account to receive email notifications.
 

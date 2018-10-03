@@ -555,8 +555,7 @@
             (if @edit-mode?
               (let [[table fk] [:posts :post_id]]
                 (update-comment-box comment edit-mode? [table fk]))
-              (widgets/transform-content body
-                                         {:body-format :asciidoc}))]]]]]])))
+              (widgets/transform-content body nil))]]]]]])))
 
 (rum/defc user-comments-list
   [user-id {:keys [result end?]}]

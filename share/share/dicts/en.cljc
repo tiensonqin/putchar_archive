@@ -120,7 +120,7 @@
    :write-new-post "Write new post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
    :root-title "Putchar - Where programmers discuss articles, books and papers."
-   :root-description "Putchar is a place for programmers to discuss articles, books and papers. Posts support multiple formats include Markdown and Asciidoctor."
+   :root-description "Putchar is a place for programmers to discuss articles, books and papers. Posts support multiple formats include Markdown and Org mode."
    :go-to-profile "Posts"
    :profile-updated "Profile updated!"
    :sign-out "Sign Out"
@@ -247,7 +247,7 @@ Putchar.org is a place for programmers to discuss articles, [books](/books) and 
 
   For example, [Purely functional data structures](/book/7).
 
-* Post format supports Markdown, Asciidoctor and Emacs Org-mode.
+* Post format supports Markdown and Emacs Org-mode.
 
 * You can [select multiple languages](/settings#languages) you'd like to see throughout the site.
 

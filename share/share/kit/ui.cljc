@@ -5,7 +5,6 @@
             [appkit.rum :as r]
             [appkit.citrus :as citrus]
             [share.kit.icons :as icons]
-            [share.kit.modal :as modal]
             [clojure.string :as str]
             [share.dicts :refer [t]]
             #?(:cljs [goog.object :as gobj])
@@ -175,5 +174,3 @@
        visible
        (assoc :visible visible))
      element)))
-
-(def modal modal/modal)

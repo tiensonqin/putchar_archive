@@ -11,7 +11,6 @@
             [selmer.parser :as selmer]
             [selmer.util]
             [share.util :as util]
-            [share.asciidoc :as ascii]
             [api.services.email.template :as template]
             [share.dicts :refer [t]]))
 
@@ -94,7 +93,7 @@
 "]
                            [:p [:a {:href (str "https://putchar.org/@" who)
                                     :target "_blank"}
-                                [:img {:src (str (:img-cdn config) "/" who ".jpg")
+                                [:img {:src (str (:img-cdn config) "/pics/" who ".jpg")
                                        :style  "border-radius: 6px;margin-right:6px;"}]
                                 [:span who]]
                             " invited you to join Putchar.org!"]]

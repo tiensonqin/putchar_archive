@@ -799,16 +799,7 @@
                             :style {:margin-left 24}}
                 [:span.number {:style {:font-weight "600"
                                        :font-size 18}}
-                 (:comments_count post)]]]
-
-              (if-let [cover (:cover post)]
-                [:a {:href post-link
-                     :on-click util/stop}
-                 [:img.hover-shadow {:src (str cover "?w=" 200)
-                                     :style {:max-width 200
-                                             :border-radius 4
-                                             :margin-top 8
-                                             :margin-bottom 6}}]])]
+                 (:comments_count post)]]]]
 
              [:div.space-between {:style {:align-items "center"
                                                  :margin-top 8}}

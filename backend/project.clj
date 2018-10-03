@@ -39,7 +39,6 @@
 
                  ;; server side rendering
                  [org.clojure/clojurescript "1.9.946"]
-                 [org.asciidoctor/asciidoctorj "1.5.6"]
                  [com.vladsch.flexmark/flexmark-all "0.32.18"]
                  [compojure "1.6.0"]
                  [tongue "0.2.4"]

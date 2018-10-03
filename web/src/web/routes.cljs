@@ -3,8 +3,6 @@
             [clojure.string :as str]
             [bidi.bidi :as bidi]
             [web.pushy :as pushy]
-            [goog.events :as events]
-            [share.util :as util]
             [share.routes :as routes]))
 
 (defn push-state!

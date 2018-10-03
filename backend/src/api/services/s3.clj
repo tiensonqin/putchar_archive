@@ -28,18 +28,16 @@
        (copy-uri-to-file uri tmp-path)
        (let [file (io/file tmp-path)
              length (.length file)]
-         (prn
-          (core/with-credential [access-key secret-key endpoint]
-            (s3/put-object :bucket-name "putchar"
-                           :key name
-                           :file file
-                           :metadata {
-                                      ;; :server-side-encryption "AES256"
-                                      :content-type content-type
-                                      :content-length length
-                                      :cache-control "public, max-age=31536000"})))
-         (str (:img-cdn config)
-              (str/replace name "pics" ""))))
+         (core/with-credential [access-key secret-key endpoint]
+           (s3/put-object :bucket-name "putchar"
+                          :key name
+                          :file file
+                          :metadata {
+                                     ;; :server-side-encryption "AES256"
+                                     :content-type content-type
+                                     :content-length length
+                                     :cache-control "public, max-age=31536000"}))
+         (str (:img-cdn config) "/" name)))
      (catch Exception e
        (t/error e)
        false))))
@@ -71,8 +69,7 @@
           ;;   (imgix/purger (str/replace name "pics" "")))
 
 
-          (str (:img-cdn config)
-               (str/replace name "pics" "")))
+          (str (:img-cdn config) "/" name))
         (catch Exception e
           (slack/error e)
           false)))))

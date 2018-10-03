@@ -14,7 +14,6 @@
             [pinyin4clj.core :refer [ascii-pinyin]]
             [api.config :refer [config]]
             [share.config :as sc]
-            [share.asciidoc :as ascii]
             [api.pg.types]
             [clj-time
              [coerce :as tc]

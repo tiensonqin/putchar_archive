@@ -11,6 +11,7 @@
             [taoensso.carmine :as car]
             [api.util :as au]
             [share.util :as su]
+            [share.config :as config]
             [api.services.s3 :as s3]
             [clojure.java.shell :as shell]))
 
@@ -146,3 +147,14 @@
   (let [posts (j/query db ["select * from posts"])]
     (doseq [{:keys [id body body_format] :as post} posts]
       (post/update db id {:body_html (post/body->html body body_format)}))))
+
+(defn post-images
+  [db]
+  (let [posts (j/query db ["select * from posts"])]
+    (doseq [{:keys [id body body_format] :as post} posts]
+      (when body
+        (let [body (str/replace body
+                                (str config/img-cdn "/pics/pics")
+                                (str config/img-cdn "/pics"))]
+         (post/update db id {:body (post/body->html body body_format)
+                             :body_html (post/body->html body body_format)}))))))

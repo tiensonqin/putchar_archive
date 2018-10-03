@@ -12,7 +12,6 @@
             [appkit.storage :as storage]
             [bidi.bidi :as bidi]
             [share.routes]
-            [share.asciidoc :as asciidoc]
             [appkit.db :as db]
             [cognitect.transit :as t]
             [cljs.core.async :as async]

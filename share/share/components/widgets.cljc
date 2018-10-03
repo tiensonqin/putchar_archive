@@ -5,7 +5,6 @@
             [appkit.citrus :as citrus]
             [share.config :as config]
             [clojure.string :as str]
-            [share.asciidoc :as ascii]
             [share.dicts :refer [t]]
             [share.kit.colors :as colors]
             [share.helpers.form :as form]
@@ -36,42 +35,25 @@
                opts)])
 
 (rum/defcs transform-content < rum/reactive
-  {:init (fn [state props]
-           #?(:cljs
-              (let [ascii-loaded? (ascii/ascii-loaded?)
-                    adoc-format? (= :asciidoc (keyword (:body-format (second (:rum/args state)))))]
-                (when (and adoc-format? (not ascii-loaded?))
-                  (citrus/dispatch-sync! :citrus/default-update
-                                         [:ascii-loaded?]
-                                         false)
-                  (go
-                    (async/<! (ascii/load-ascii))
-                    (citrus/dispatch! :citrus/default-update
-                                      [:ascii-loaded?]
-                                      true)))))
-           state)}
   [state body {:keys [style
                 body-format
                 render-opts
                 on-mouse-up]
          :or {body-format :markdown}
                :as attrs}]
-  (let [ascii-loaded? (citrus/react [:ascii-loaded?])
-        body-format (keyword body-format)]
-    (if (false? ascii-loaded?)
-      [:div (t :loading)]
-      [:div.column
-      (cond->
-          {:class (str "editor " (name body-format))
-           :style (merge
-                   {:word-wrap "break-word"}
-                   style)
-           :dangerouslySetInnerHTML {:__html
-                                     (if (str/blank? body)
-                                       ""
-                                       (content/render body body-format))}}
-        on-mouse-up
-        (assoc :on-mouse-up on-mouse-up))])))
+  (let [body-format (keyword body-format)]
+    [:div.column
+     (cond->
+       {:class (str "editor " (name body-format))
+        :style (merge
+                {:word-wrap "break-word"}
+                style)
+        :dangerouslySetInnerHTML {:__html
+                                  (if (str/blank? body)
+                                    ""
+                                    (content/render body body-format))}}
+       on-mouse-up
+       (assoc :on-mouse-up on-mouse-up))]))
 
 (rum/defc user-card < rum/reactive
   [{:keys [id name screen_name bio github_handle] :as user}]
@@ -243,7 +225,7 @@
                                                {:body_format body-format})
                         (citrus/dispatch! :citrus/save-latest-body-format
                                           body-format))
-             all-formats [:markdown :asciidoc :org-mode]
+             all-formats [:markdown :org-mode]
              others (remove #{body-format} all-formats)]
          (ui/menu
            [:a.no-decoration.control {:style {:padding 12

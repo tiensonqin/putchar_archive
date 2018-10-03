@@ -9,38 +9,26 @@
             #?(:clj [api.services.org-mode :as org-mode])
             [appkit.citrus :as citrus]
             [share.kit.colors :as colors]
-            [share.asciidoc :as ascii]
             [share.markdown :as md]))
-
-;; TODO: write a parser for asciidoc using cljc
 
 (def youtube-re #"https://youtu\.be/([a-zA-Z0-9-_]+)(\?t=[a-zA-Z0-9]+)*")
 (def youtube-re-2 #"https://(www\.)?youtube\.com/watch\?v=([a-zA-Z0-9-_]+)")
-(def ascii-youtube-re #"video::([a-zA-Z0-9-_]+)\[youtube\]")
 
 (defn render-dom
   [hiccups]
   #?(:clj (rum/render-html hiccups)
      :cljs (react-dom-server/renderToString (html/html hiccups))))
 
-(defn wrap-html
-  [string]
-  (str "+++" string "+++"))
-
 (defn wrap-render
   [hiccups body-format]
-  (cond-> (render-dom hiccups)
-    (= body-format :asciidoc)
-    (wrap-html)))
+  (render-dom hiccups))
 
 (defn get-first-youtube-video
   [body]
   (when-let [id (if-let [result (re-find youtube-re body)]
                   (second result)
                   (if-let [result (re-find youtube-re-2 body)]
-                    (nth result 2)
-                    (if-let [result (re-find ascii-youtube-re body)]
-                      (second result))))]
+                    (nth result 2)))]
     (str "https://youtu.be/" id)))
 
 (defn start->secs
@@ -61,12 +49,12 @@
       0)))
 
 (defn build-youtube-frame
-  [id start ascii?]
+  [id start]
   (let [[width height] (if (util/mobile?)
                          [300 (double (* 300 (/ 315 560)))]
                          [560 315])]
     (str
-     (if ascii? "+++\n" "\n")
+     "\n"
      "<iframe width=\""
      width
      "\" height=\""
@@ -75,7 +63,7 @@
      id
      (if start (str "?start=" (start->secs start)) "")
      "\" frameborder=\"0\" allow=\"encrypted-media\" allowfullscreen></iframe>"
-     (if ascii? "\n+++\n" "\n"))))
+     "\n")))
 
 (defn embed-youtube
   [body body-format]
@@ -84,7 +72,7 @@
                            [youtube-id start] (if (= 3 (count l))
                                                 (rest l)
                                                 [(last l) nil])]
-                       (build-youtube-frame youtube-id start (= body-format :asciidoc))))]
+                       (build-youtube-frame youtube-id start)))]
     (-> body
         (s/replace youtube-re replace-fn)
         (s/replace youtube-re-2 replace-fn))))
@@ -225,7 +213,6 @@
   (let [body-format (keyword body-format)
         render-fn (case body-format
                     :markdown md/render
-                    :asciidoc ascii/render
                     :org-mode #?(:clj org-mode/render
                                  :cljs identity))]
     (some-> body
