@@ -1,5 +1,5 @@
 html, body, #head, #modal-panel, input, .rc-dialog-content, .divider-text:after {
-  background: #fdf6e3;
+  background: #faf6e3;
 }
 
 body {
@@ -210,7 +210,7 @@ a.tag.active {
   -webkit-box-shadow: 0 1px 8px #ddd;
   box-shadow: 0 1px 8px #ddd;
   display: block;
-  background: #fdf6e3;
+  background: #faf6e3;
 }
 
 .menu-item:hover {

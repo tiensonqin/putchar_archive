@@ -28,10 +28,10 @@
      (if (:cover book)
        (let [style (if mobile?
                      {:width "100%"
-                      :background-color "#fdf6e3"}
+                      :background-color "#faf6e3"}
                      {:width 230
                       :height 300
-                      :background-color "#fdf6e3"})]
+                      :background-color "#faf6e3"})]
          [:div {:style style}
           [:img.hover-shadow {:src (:cover book)
                               :style (merge
@@ -93,8 +93,7 @@
                               "48px 12px"
                               48)
                    :box-shadow "0 3px 8px #ddd"
-                   :background "#efefef"
-                   :background-image "radial-gradient(at 1% 100%, #ffe4c4, #FFF)"
+                   :background "#FAEBD7"
                    :align-items "center"
                    :width "100%"
                    :position "relative"}}

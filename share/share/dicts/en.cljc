@@ -99,7 +99,7 @@
    :undown "Undown"
    :no-more-posts "No more posts."
    :more "More"
-   :be-the-first "Write my thoughts"
+   :be-the-first "Write your thoughts"
    :no-posts-yet "No posts yet."
    :no-comments-yet "No comments yet."
    :no-drafts-yet "No drafts yet."

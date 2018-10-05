@@ -119,7 +119,7 @@
        :rel "mask-icon"}]
 
      [:meta {:content "#071839", :name "msapplication-TileColor"}]
-     [:meta {:content "#fdf6e3", :name "theme-color"}]
+     [:meta {:content "#faf6e3", :name "theme-color"}]
 
      [:link {:rel "manifest"
              :href "/manifest.json"}]
@@ -167,7 +167,7 @@
          :rel "mask-icon"}]
 
        [:meta {:content "#00a300", :name "msapplication-TileColor"}]
-       [:meta {:content "#fdf6e3", :name "theme-color"}]]
+       [:meta {:content "#faf6e3", :name "theme-color"}]]
       [:body {:style {:height "100%"
                       :width "100%"
                       :display "flex"
@@ -178,7 +178,7 @@
                       :align-items "center"
                       :justify-content "center"
                       :padding-right "0 !important"
-                      :background "#fdf6e3"}}
+                      :background "#faf6e3"}}
        [:a {:style {:margin-top "24px"}
             :href "/"}
         [:img {:src "/images/logo.png"}]]

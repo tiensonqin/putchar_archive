@@ -95,8 +95,7 @@
            {:style {:min-height "40vh"
                     :padding 48
                     :box-shadow "0 3px 8px #ddd"
-                    :background "#efefef"
-                    :background-image "radial-gradient(at 1% 100%, #ffe4c4, #FFF)"
+                    :background "#FAEBD7"
                     :align-items "center"
                     :width "100%"
                     :position "relative"}}
