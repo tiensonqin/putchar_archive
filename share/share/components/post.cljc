@@ -901,13 +901,13 @@
        end?
        (assoc opts :last last-post)
        scroll-loading?)
-      [:div.empty-posts
+      [:div.empty-posts.auto-padding
        (if empty-widget
          empty-widget
          [:a {:href "/new-post"
               :style {:margin-top 24
                       :color colors/primary}}
-          [:span {:style {:margin-top 3}}
+          [:h2 {:style {:margin-top 3}}
            (t :be-the-first)]])])))
 
 (rum/defc user-post-list <

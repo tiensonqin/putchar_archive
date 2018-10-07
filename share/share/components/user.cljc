@@ -424,5 +424,5 @@ The posts and comments that you have posted will not be deleted, in order to pre
        (post/post-list posts {:filter post-filter
                               :merge-path path}
                        :show-avatar? true
-                       :empty-widget [:h2.auto-padding
+                       :empty-widget [:h2
                                       (t :no-votes-yet)]))]))
