@@ -1,6 +1,6 @@
 # Putchar
 
-Putchar.org is a place for programmers to discuss articles, [books](https://putchar.org/books) and [papers](https://putchar.org/papers).
+Putchar.org is a place to discuss tech articles, [books](https://putchar.org/books) and [papers](https://putchar.org/papers).
 
 [![Logo](https://putchar.org/logo-2x.png)](https://putchar.org)
 

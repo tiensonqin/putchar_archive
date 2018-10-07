@@ -64,7 +64,7 @@
    :replies "replies"
    :hot-posts "Hot posts"
    :signin "Sign In"
-   :slogan "Where programmers discuss articles, books and papers."
+   :slogan "A place to discuss tech articles, books and papers."
    :members "members"
    :admins "Moderators"
    :support "support"
@@ -119,8 +119,8 @@
    :reports "Reports"
    :write-new-post "Write new post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
-   :root-title "Putchar - Where programmers discuss articles, books and papers."
-   :root-description "Putchar is a place for programmers to discuss articles, books and papers. Posts support multiple formats include Markdown and Org mode."
+   :root-title "A place to discuss tech articles, books and papers."
+   :root-description "Putchar is a place to discuss articles, books and papers. Posts support multiple formats include Markdown and Org mode."
    :go-to-profile "Posts"
    :profile-updated "Profile updated!"
    :sign-out "Sign Out"
@@ -239,7 +239,7 @@
 
 # About
 
-Putchar.org is a place for programmers to discuss articles, [books](/books) and [papers](/papers).
+Putchar.org is a place to discuss articles, [books](/books) and [papers](/papers).
 
 ## Features
 
