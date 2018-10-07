@@ -4,10 +4,11 @@
             [clojure.string :as string])
   #?(:clj
      (:import com.vladsch.flexmark.ext.toc.TocExtension
+              com.vladsch.flexmark.ext.typographic.TypographicExtension
               com.vladsch.flexmark.ext.autolink.AutolinkExtension
               com.vladsch.flexmark.ext.footnotes.FootnoteExtension
               com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension
-              com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension
+              [com.vladsch.flexmark.ext.gfm.strikethrough StrikethroughExtension StrikethroughSubscriptExtension]
               com.vladsch.flexmark.ext.tables.TablesExtension
               com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension
               com.vladsch.flexmark.ext.youtube.embedded.YouTubeLinkExtension
@@ -16,6 +17,8 @@
               com.vladsch.flexmark.util.options.MutableDataSet
               com.vladsch.flexmark.ext.definition.DefinitionExtension
               com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension
+              com.vladsch.flexmark.superscript.SuperscriptExtension
+              ;; com.vladsch.flexmark.ext.gfm.strikethrough.SubscriptExtension
               java.util.ArrayList
               [com.vladsch.flexmark.profiles.pegdown Extensions PegdownOptionsAdapter])))
 
@@ -36,7 +39,9 @@
                           (YouTubeLinkExtension/create)
                           (TaskListExtension/create)
                           (DefinitionExtension/create)
-                          (AbbreviationExtension/create)])))))
+                          (AbbreviationExtension/create)
+                          (SuperscriptExtension/create)
+                          (TypographicExtension/create)])))))
 
 #?(:clj
    (defn parser-builder
