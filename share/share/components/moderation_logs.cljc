@@ -25,7 +25,7 @@
            [:div.col-item {:key id}
             [:div.space-between {:style {:align-items "center"
                                          :margin-bottom "1.5em"}}
-             [:h4 {:style {:margin-top 0
+             [:h3 {:style {:margin-top 0
                            :margin-bottom 0}}
               type]
              [:span {:style {:font-size 14

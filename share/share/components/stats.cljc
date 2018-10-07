@@ -16,7 +16,7 @@
     [:div.column
      [:a {:style {:color colors/primary}
           :href (str "/" post_permalink)}
-      [:h4 post_title]]
+      [:h3 post_title]]
      [:div.row1
       [:span {:style {:font-weight "bold"
                       :color colors/shadow}}
@@ -34,7 +34,7 @@
       [:div
        [:a {:style {:color colors/primary}
             :href (str "/" post_permalink)}
-        [:h4 post_title]]]]
+        [:h3 post_title]]]]
      [:td {:style {:text-align "right"}}
       [:span {:style {:font-weight "bold"
                       :color colors/shadow}}

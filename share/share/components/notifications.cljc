@@ -15,7 +15,7 @@
         reasons (dicts/reasons)]
     [:div.column {:key (util/random-uuid)}
      [:div.space-between
-      [:h4
+      [:h3
        (str (t :your) (str/lower-case
                        (if comment (t :comment) (t :post)))
             (t :as-below-deleted))]
@@ -66,7 +66,7 @@
            :style {:margin-top 24}}
      [:div.column
       [:div.row1
-       [:h4 {:style {:margin-top 0}}
+       [:h3 {:style {:margin-top 0}}
         "New comment on "]
 
        [:a {:key "post"

@@ -703,25 +703,29 @@
            (and (not book?)
                 (:book_id post)
                 (:book_title post))
-           [:a {:href (str "/book/" (:book_id post))
-                :on-click util/stop
-                :style {:margin-right 12
-                        :font-size 14
-                        :margin-bottom 6
-                        :color colors/primary
-                        :display "block"}}
-            (:book_title post)]
+           [:div.row1 {:style {:font-size 14}}
+            [:span "Book:"]
+            [:a {:href (str "/book/" (:book_id post))
+                 :on-click util/stop
+                 :style {:margin-left 6
+                         :margin-right 12
+                         :margin-bottom 6
+                         :color colors/primary
+                         :display "block"}}
+             (:book_title post)]]
            (and (not paper?)
                 (:paper_id post)
                 (:paper_title post))
-           [:a {:href (str "/paper/" (:paper_id post))
-                :on-click util/stop
-                :style {:margin-right 12
-                        :font-size 14
-                        :margin-bottom 6
-                        :color colors/primary
-                        :display "block"}}
-            (:paper_title post)])
+           [:div.row1 {:style {:font-size 14}}
+            [:span "Paper:"]
+            [:a {:href (str "/paper/" (:paper_id post))
+                 :on-click util/stop
+                 :style {:margin-left 6
+                         :margin-right 12
+                         :margin-bottom 6
+                         :color colors/primary
+                         :display "block"}}
+             (:paper_title post)]])
          (if user-draft?
            [:span
             [:span {:style {:margin-right 12}}
