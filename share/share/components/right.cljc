@@ -19,11 +19,15 @@
   (let [expand? (get state ::expand?)
         stared_books (citrus/react [:user :current :stared_books])
         books (if stared_books stared_books
-                  (citrus/react [:books :latest]))]
-    [:div.shadow.column1 {:style {:padding 12
-                                  :margin-bottom 16}}
+                  (citrus/react [:books :latest]))
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
+    [:div.column1 {:style {:padding 12
+                           :margin-bottom (if mobile? 0 16)
+                           :margin-top (if mobile? 24 0)}
+                   :class (if mobile? "" "shadow")}
      [:a.row1 {:style {:margin-bottom 12
-                  :color colors/primary}
+                       :color colors/primary
+                       :font-size (if mobile? 20 15)}
                :href "/books"}
       (t :books)
       (ui/icon {:type :star
@@ -63,11 +67,14 @@
   (let [expand? (get state ::expand?)
         stared_papers (citrus/react [:user :current :stared_papers])
         papers (if stared_papers stared_papers
-                   (citrus/react [:papers :latest]))]
-    [:div.shadow.column1 {:style {:padding 12
-                                  :margin-bottom 16}}
+                  (citrus/react [:papers :latest]))
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
+    [:div.column1 {:style {:padding 12
+                           :margin-bottom (if mobile? 0 16)}
+                   :class (if mobile? "" "shadow")}
      [:a.row1 {:style {:margin-bottom 12
-                  :color colors/primary}
+                       :color colors/primary
+                       :font-size (if mobile? 20 15)}
                :href "/papers"}
       (t :papers)
       (ui/icon {:type :star
@@ -105,8 +112,8 @@
   []
   (let [locale (citrus/react :locale)
         zh-cn? (= locale :zh-cn)]
-    [:div.right-sub {:class "column1 shadow"
-                            :style {:font-size 14
+    [:div.right-sub.column1 {:class (if (util/mobile?) "" "shadow")
+                             :style {:font-size 14
                                     :padding 12}}
 
      [:div.row1 {:style {:align-items "center"}}

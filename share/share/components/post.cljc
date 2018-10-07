@@ -60,7 +60,7 @@
   (let [form-data (citrus/react [:post :form-data])
         images (:images form-data)
         mobile? (util/mobile?)
-        margin (if mobile? 12 24)
+        margin 24
         current-path (citrus/react [:router :handler])
         post-edit? (= :post-edit current-path)
         new-post? (= :new-post current-path)
@@ -117,7 +117,8 @@
                       :padding-left 0
                       :width "100%"
                       :padding-right 36
-                      :color "#222"}
+                      :color "#222"
+                      :margin-top 0}
               :on-change (fn [e]
                            (citrus/dispatch! :citrus/set-post-form-data
                                              {:title-validated? true

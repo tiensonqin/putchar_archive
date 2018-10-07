@@ -223,6 +223,8 @@
         user-page? (contains? #{:user :drafts :comments :user-tag} handler)
         post-edit-page? (contains? #{:new-post :post-edit} current-path)
         padding 12
+        ios? (util/ios?)
+        open-drawer? (citrus/react [:open-drawer?])
 ]
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
@@ -233,50 +235,89 @@
        [:div.row {:class "wrap"
                   :style {:justify-content "space-between"}}
         [:div.row1 {:style {:align-items "center"}}
-         (when (and (not= current-path :home)
-                    (util/ios?))
-           [:a {:style {:margin-right 12}
-                :on-click (fn [] (citrus/dispatch! :router/back))}
-            (ui/icon {:type :ios_back
-                      :color colors/primary})])
+         (when mobile?
+           (if (and (not= current-path :home)
+                    ios?)
+             [:a {:style {:margin-right 12
+                          :width 41}
+                  :on-click (fn [] (citrus/dispatch! :router/back))}
+              (ui/icon {:type :ios_back
+                        :color colors/primary})]
+             [:span {:style {:width 53}}]))
+
          [:div.row1
           (widgets/website-logo)
 
           (if (and (not mobile?)
                    post-edit-page?)
             [:span {:style {:margin-left 12
-                                   :font-weight "600"
-                                   :color (colors/icon-color)
-                                   :font-size 13}}
+                            :font-weight "600"
+                            :color (colors/icon-color)
+                            :font-size 13}}
              (t :draft)])]]
+
+        #?(:cljs
+           (when mobile?
+             (ui/drawer {:width 280
+                         :open open-drawer?
+                         :onHandleClick (fn []
+                                          (prn "click")
+                                          (citrus/dispatch! :citrus/toggle-drawer?))
+                         :onMaskClick (fn []
+                                        (prn "hi")
+                                        (citrus/dispatch! :citrus/close-drawer?))
+                         :on-change (fn [state]
+                                      (prn "state: " state))}
+                        [:div.column
+                         [:div.column {:style {:padding 16}}
+                          (when-let [name (:screen_name current-user)]
+                            [:div.space-between {:style {:align-items "center"}}
+                             [:a {:href (str "/@" name)
+                                  :style {:margin-right 12}}
+                              [:img {:src (util/cdn-image name
+                                                          :height 100
+                                                          :width 100)
+                                     :style {:border-radius "50%"
+                                             :width 64
+                                             :height 64}}]]
+                             [:a {:href "/votes"}
+                              (ui/icon {:type :thumb_up})]
+                             [:a {:href "/settings"
+                                  :style {:margin-left 24}}
+                              (ui/icon {:type :settings})]])
+
+                          [:a.row1 {:href "/new-post"
+                                    :style {:margin-top 24
+                                            :color colors/primary}}
+                           (ui/icon {:type :edit})
+                           [:span {:style {:margin-left 3
+                                           :font-size 18}}
+                            (t :write-new-post)]]]
+
+                         [:div.divider {:style {:margin 0}}]
+
+                         [:div {:style {:margin-top -20}}
+                          (right/books)
+                          [:div.divider {:style {:margin 0}}]
+                          (right/papers)
+                          [:div.divider {:style {:margin 0}}]
+                          (right/footer)
+                          ]])))
 
         [:div {:class "row1"
                :style {:align-items "center"}
                :id "right-head"}
 
-         (when-not post?
-           (if mobile?
-             [:a {:style {:padding-right 12}
-                  :href "/new-post"}
-              (ui/icon {:type :edit
-                        :color colors/shadow})]
-             [:a.row1.no-decoration {:style {:align-items "center"
-                                             :color colors/primary
-                                             :padding-right 12}
-                                     :href "/new-post"}
-              (ui/icon {:type :edit
-                        :color colors/shadow
-                        :width 22
-                        :opts {:style {:margin-right 6}}})
-              (t :write-new-post)]))
-
-         ;; search
-         (if (not post?)
-           [:a {:title (t :search)
-                :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
-                :style {:padding padding}}
-            (ui/icon {:type "search"
-                      :color (colors/icon-color)})])
+         (when (and (not post?) (not mobile?))
+           [:a.row1.no-decoration {:style {:align-items "center"
+                                           :color colors/primary
+                                           :padding-right 12}
+                                   :href "/new-post"}
+            (ui/icon {:type :edit
+                      :color colors/shadow
+                      :width 22
+                      :opts {:style {:margin-right 6}}})
+            (t :write-new-post)])
 
          ;; publish
          (if post?
@@ -292,23 +333,29 @@
                          :color "#0000ff"}}]])
 
          ;; login or notification
-         (when-not post?
-           (if current-user
-             (when unread?
-               [:a {:href "/notifications"
-                    :title (t :notifications)
-                    :style {:padding padding}}
-                (ui/icon {:type "notifications"
-                          :color "#0000ff"})])
+         (when (and current-user unread? (not post?))
+           [:a {:href "/notifications"
+                :title (t :notifications)
+                :style {:padding padding}}
+            (ui/icon {:type "notifications"
+                      :color "#0000ff"})])
 
-             [:a.no-decoration {:on-click (fn []
-                              (citrus/dispatch! :user/show-signin-modal?))
-                  :style {:padding padding
-                          :font-weight "500"
-                          :font-size 15
-                          :padding-right 12
-                          :color colors/primary}}
-              (t :signin)]))
+         ;; search
+         (if (not post?)
+           [:a {:title (t :search)
+                :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
+                :style {:padding padding}}
+            (ui/icon {:type "search"
+                      :color (colors/icon-color)})])
+
+         (when-not current-user
+           [:a.no-decoration {:on-click (fn []
+                                          (citrus/dispatch! :user/show-signin-modal?))
+                              :style {:padding-left padding
+                                      :font-weight "500"
+                                      :font-size 15
+                                      :color colors/primary}}
+            (t :signin)])
 
          (when (and (not post?)
                     (not mobile?)
@@ -359,22 +406,7 @@
                                :style {:font-size 14}}
                (t :sign-out)]]
 
-             {:menu-style {:margin-top 17}}))
-
-         (when (and (not post?)
-                    mobile?)
-           (ui/dropdown
-            {:trigger ["click"]
-             :visible show-panel?
-             :overlay (modal-panel width mobile? unread? new-report? current-user)
-             :animation "slide-up"}
-            [:a {:style {:padding padding
-                         :padding-right 0
-                         :margin-top 2}
-                 :on-click (fn []
-                             (citrus/dispatch! (if show-panel? :layout/close-panel :layout/show-panel)))}
-             (ui/icon {:type "menu"
-                       :color (colors/icon-color)})]))]]])))
+             {:menu-style {:margin-top 17}}))]]])))
 
 (defn attach-listeners
   [state]
@@ -424,6 +456,14 @@
                                      ;; not inside selection range
                                      (not (util/inside-selection? [client-x client-y])))
                            (citrus/dispatch-sync! :comment/clear-selection)))))
+
+       (mixins/listen state js/window :touchstart
+                      (fn [e]
+                        (citrus/dispatch! :citrus/touch-start e)))
+
+       (mixins/listen state js/window :touchend
+                      (fn [e]
+                        (citrus/dispatch! :citrus/touch-end e)))
 
        (.addEventListener js/window "scroll"
                           (fn []
@@ -488,8 +528,7 @@
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"
-                   :style {:margin-top (if mobile? 64
-                                           0)
+                   :style {:margin-top 12
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]
 

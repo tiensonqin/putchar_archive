@@ -11,6 +11,7 @@
             #?(:cljs ["react" :as react])
             #?(:cljs ["rc-dialog" :as rc-dialog])
             #?(:cljs ["rc-dropdown" :as rc-dropdown])
+            #?(:cljs ["rc-drawer" :as rc-drawer])
             #?(:cljs ["react-textarea-autosize" :as autosize-textarea])
             ;; cdn
             #?(:cljs ["/web/caret_coordinates" :as caret-coordinates])
@@ -97,6 +98,10 @@
                          :height 20
                          :border "3px solid #FFF"
                          :margin-top 5}}])
+#?(:cljs
+   (defonce drawer (r/adapt-class rc-drawer))
+   :clj
+   (rum/defc drawer []))
 
 #?(:cljs
    (do

@@ -415,13 +415,6 @@ a.delete {
 
 
 @media screen and (max-width: 768px) {
-
-    #head {
-        position: fixed;
-        top: 0;
-        left: 0;
-    }
-
     .col-item {
         padding: 12px;
     }

@@ -10,16 +10,6 @@
    (fn [state layout]
      {:state {:current layout}})
 
-   :layout/show-panel
-   (fn [state]
-     (dommy/set-style! (dommy/sel1 "body") "overflow" "hidden")
-     {:state {:show-panel? true}})
-
-   :layout/close-panel
-   (fn [state]
-     (dommy/set-style! (dommy/sel1 "body") "overflow" "inherit")
-     {:state {:show-panel? false}})
-
    :citrus/set-scroll-top
    (fn [state current-url v]
      (let [old-v (get-in state [:last-scroll-top current-url])
@@ -56,5 +46,43 @@
    (fn [state]
      {:state (assoc state :hide-votes? false)
       :cookie [:set-forever "hide-votes" false]})
+
+   :citrus/touch-start
+   (fn [state e]
+     {:state {:touch {:touching? true
+                      :start-x (.-screenX e)
+                      :start-y (.-screenY e)}}})
+
+   :citrus/touch-end
+   (fn [state e]
+     (let [{:keys [start-x start-y] :as touch} (:touch state)
+           end-x (.-screenX e)
+           end-y (.-screenY e)
+           offset (- end-x start-x)
+           direction (if (> offset 0) :right :left)
+           open? (and (= direction :right) (> offset 30)
+                      (< start-x 50))
+           close? (and (= direction :left) (> offset 30))]
+       {:state {:open-drawer? (cond
+                                close?
+                                false
+                                open?
+                                true
+                                :else
+                                false)}}))
+
+   :citrus/open-drawer?
+   (fn [state]
+     {:state {:open-drawer? true}})
+
+   :citrus/close-drawer?
+   (fn [state]
+     {:state {:open-drawer? false}})
+
+   :citrus/toggle-drawer?
+   (fn [state]
+     {:state {:open-drawer? (not (:open-drawer? state))}})
+
+
 
    })
