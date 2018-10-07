@@ -233,7 +233,6 @@
    ;; TODO: add to drafts
    :post/new-draft-ready
    (fn [state result]
-     (prn result)
      {:state {:saving? false
               :current result}
       :redirect {:handler :post-edit

@@ -40,7 +40,6 @@
 
    :resource/update
    (fn [state data form-data]
-     (prn data )
      {:state (assoc state :loading? true)
       :http {:params [:resource/update data]
              :on-load :resource/update-ready

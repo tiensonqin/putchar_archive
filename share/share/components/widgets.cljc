@@ -204,7 +204,8 @@
         mobile? (util/mobile?)]
     [:a.row1.no-decoration {:href "/"
                             :on-click (fn []
-                                        (citrus/dispatch! :citrus/re-fetch :home {}))}
+                                        (citrus/dispatch! :citrus/re-fetch :home {})
+                                        #?(:cljs (.scroll js/window #js {:top 0})))}
      (ui/icon {:type :logo
                :color colors/primary
                :width 28
@@ -374,8 +375,6 @@
               tab-pressed? (rum/react tab-pressed?)
               enter-pressed? (rum/react enter-pressed?)
               current-idx (or (rum/react current-idx) 0)]
-          (prn {:tab tab-pressed?
-                :enter enter-pressed?})
           (when (seq col)
             (when tab-pressed?
               (on-select (first col)))

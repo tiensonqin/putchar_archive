@@ -257,17 +257,15 @@
              (t :draft)])]]
 
         #?(:cljs
-           (when mobile?
+           (when (and
+                  mobile?
+                  (not (and ios? (not= current-path :home))))
              (ui/drawer {:width 280
                          :open open-drawer?
                          :onHandleClick (fn []
-                                          (prn "click")
                                           (citrus/dispatch! :citrus/toggle-drawer?))
                          :onMaskClick (fn []
-                                        (prn "hi")
-                                        (citrus/dispatch! :citrus/close-drawer?))
-                         :on-change (fn [state]
-                                      (prn "state: " state))}
+                                        (citrus/dispatch! :citrus/close-drawer?))}
                         [:div.column
                          [:div.column {:style {:padding 16}}
                           (when-let [name (:screen_name current-user)]

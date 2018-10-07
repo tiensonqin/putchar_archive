@@ -31,7 +31,6 @@
 (defn get-entities
   [node selector k]
   (map (fn [node]
-         (prn node)
          (if-let [entity (get node k)]
            (if (coll? entity)
              (first entity)

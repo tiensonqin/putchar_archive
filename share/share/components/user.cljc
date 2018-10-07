@@ -416,13 +416,13 @@ The posts and comments that you have posted will not be deleted, in order to pre
         path [:posts :current-user post-filter]
         user (citrus/react [:user :current])
         posts (citrus/react path)]
-    [:div.column {:style {:margin-bottom 48}}
-     [:h2.auto-padding {:style {:margin-top 0
+    [:div.column
+     [:h1.auto-padding {:style {:margin-top 24
                                 :margin-bottom 24}}
       (str (t :votes) ":")]
      (query/query
        (post/post-list posts {:filter post-filter
                               :merge-path path}
                        :show-avatar? true
-                       :empty-widget [:h5.auto-padding
+                       :empty-widget [:h2.auto-padding
                                       (t :no-votes-yet)]))]))

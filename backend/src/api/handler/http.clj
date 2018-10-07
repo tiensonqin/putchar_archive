@@ -198,7 +198,6 @@
       (util/bad "Sorry your account is disabled for now."))))
 
 (defmethod handle :resource/update [[{:keys [uid datasource]} data]]
-  (prn data)
   (j/with-db-transaction [conn datasource]
     (reject-not-owner-or-admin? conn uid :resources (:id data)
                                 (fn [moderator]

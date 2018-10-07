@@ -62,7 +62,6 @@
   (let [query-params (util/query->map path)
         result (bidi/match-route routes path)]
     #?(:cljs (let [hash-part js/window.location.hash]
-               (prn hash-part)
                (when (and hash-part (not (str/blank? (str/trim hash-part))))
                  (util/scroll-to-element hash-part))))
     (update result :route-params
