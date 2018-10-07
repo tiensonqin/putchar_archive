@@ -17,10 +17,10 @@
        :args  nil
        :merge {:posts [:posts :hot]}})))
 
-(def newest-posts-query
+(def latest-posts-query
   (fn [state args]
     {:q     {:posts {:fields post-fields
-                     :filter :newest}}
+                     :filter :latest}}
      :args  nil
      :merge {:posts [:posts :latest]}}))
 
@@ -93,7 +93,7 @@
 
 (def user-query
   (fn [state args]
-    (let [post-filter :newest]
+    (let [post-filter :latest]
       {:q {:user {:fields [:id :screen_name :name :bio :github_handle :tags
                            [:posts {:fields post-fields
                                     :filter post-filter}]]}}
@@ -183,7 +183,7 @@
 (def queries
   {:home home-query
 
-   :newest newest-posts-query
+   :latest latest-posts-query
 
    :latest-reply latest-reply-posts-query
 

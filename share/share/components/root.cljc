@@ -72,7 +72,7 @@
                                   (logs/logs params))
          :stats         (fn [params current-user]
                           (stats/stats params))
-         :newest (fn [params current-user]
+         :latest (fn [params current-user]
                    (post/sort-by-new))
          :latest-reply (fn [params current-user]
                 (post/sort-by-latest-reply))
@@ -120,7 +120,7 @@
                    (citrus/dispatch-sync! :search/reset)
                    (if (= :search current-path)
                      (citrus/dispatch! :router/back)))]
-    [:div#head {:key "head"}
+    [:div#head
      [:div.wrap {:class "row space-between"}
       [:input.row {:id "search"
                    :type "search"
@@ -227,12 +227,7 @@
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
       [:div#head {:key "head"
-                  :style (cond->
-                             (if mobile?
-                            {:position "fixed"
-                             :top 0
-                             :left 0}
-                            {})
+                  :style (cond-> {}
                            (and preview? (not mobile?))
                            (assoc :max-width 1160))}
        [:div.row {:class "wrap"
@@ -311,7 +306,7 @@
                   :style {:padding padding
                           :font-weight "500"
                           :font-size 15
-                          :padding-right 0
+                          :padding-right 12
                           :color colors/primary}}
               (t :signin)]))
 
@@ -493,7 +488,7 @@
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"
-                   :style {:margin-top (if mobile? 76
+                   :style {:margin-top (if mobile? 64
                                            0)
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]

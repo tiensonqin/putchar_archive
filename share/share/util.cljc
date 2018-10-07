@@ -502,7 +502,9 @@
 
 (defn scroll-to-top []
   #?(:clj nil
-     :cljs (.scrollTo js/window 0 0)))
+     :cljs (.scroll js/window #js {:top 0
+                                   :behavior "smooth"
+                                   })))
 
 (defn scroll-top []
   #?(:clj nil

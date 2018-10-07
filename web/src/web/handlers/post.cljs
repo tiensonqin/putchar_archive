@@ -32,7 +32,7 @@
                       :latest-reply
 
                       (contains? #{:user} current-path)
-                      :newest
+                      :latest
 
                       (= current-path :votes)
                       :voted
@@ -110,7 +110,7 @@
                                              [:= :rank (:rank last-post)]
                                              [:< :flake_id (:flake_id last-post)]]]]}
 
-                                  :newest
+                                  :latest
                                   {:after (:flake_id last-post)}
 
                                   :latest-reply

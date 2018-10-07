@@ -93,7 +93,6 @@
                               "48px 12px"
                               48)
                    :box-shadow "0 3px 8px #ddd"
-                   :background "#FAEBD7"
                    :align-items "center"
                    :width "100%"
                    :position "relative"}}
@@ -111,9 +110,12 @@
                             :top 12
                             :right 12}}
               [:div.row1
+               (widgets/subscribe (str "/book/" id "/latest.rss"))
+
                (when self?
                  [:a {:href (str "/book/" id "/edit")
                       :style {:margin-right 12
+                              :margin-left 18
                               :color colors/primary}}
                   (t :edit)])
                [:a.control {:on-click (fn []
@@ -128,41 +130,43 @@
 
                  [:span {:style {:margin-left 3}}
                   (:stars book)]]]]])]
-          [:div.column1
-           (if mobile?
-             [:div.row1 {:style {:align-items "center"}}
-              [:img.box {:src cover
-                         :style {:max-height 100
-                                 :max-width 100
-                                 :object-fit "contain"
-                                 :margin-right 12}}]
-              [:h3 {:style {:margin 0}} title]])
+          (let [authors [:div.row1.book-authors {:style {:align-items "center"}}
+                         (widgets/transform-content (:authors book) {:style {:margin 0}})]]
+            [:div.column1
+             (when mobile?
+               [:div.row1 {:style {:align-items "center"}}
+                [:img.box {:src cover
+                           :style {:max-height 100
+                                   :max-width 100
+                                   :object-fit "contain"
+                                   :margin-right 12}}]
+                [:div.column1
+                 [:h3 {:style {:margin 0}} title]
+                 authors]])
 
-           (when-not mobile?
-             [:h1 {:style {:margin 0}} title])
+            (when-not mobile?
+              [:h1 {:style {:margin 0}} title])
 
-           (when-let [authors (:authors book)]
-             [:div.row1.book-authors {:style {:align-items "center"
-                                              :margin-top 12}}
-              (widgets/transform-content authors {:style {:margin 0}})])
+             (when-not mobile?
+               authors)
 
-           [:div {:style {:margin-top 6}}
-            (widgets/more-content description (if mobile? 80 360))]
+             [:div {:style {:margin-top 6}}
+             (widgets/more-content description (if mobile? 80 360))]
 
-           [:div.row1 {:style {:align-items "center"
-                               :flex-wrap "wrap"}}
-            (t :posted-by)
-            [:a {:href (str "/@" screen_name)
-                 :style {:margin-left 4
-                         :color colors/primary}}
-             screen_name]
-            ", "
-            [:i {:style {:margin-left 4}}
-             (util/date-format created_at)]]
+            [:div.row1 {:style {:align-items "center"
+                                :flex-wrap "wrap"}}
+             (t :posted-by)
+             [:a {:href (str "/@" screen_name)
+                  :style {:margin-left 4
+                          :color colors/primary}}
+              screen_name]
+             ", "
+             [:i {:style {:margin-left 4}}
+              (util/date-format created_at)]]
 
-           (when (seq followers)
-             [:div {:style {:margin-top 12}}
-              (widgets/followers followers)])]]
+            (when (seq followers)
+              [:div {:style {:margin-top 12}}
+               (widgets/followers followers)])])]
 
          [:div.auto-padding.row {:style {:margin-top 24}}
           (post/post-list posts
@@ -174,7 +178,7 @@
                          :style {:margin-left 12
                                  :margin-right 3
                                  :width 243}}
-             (right/right)])]]
+             (right/books)])]]
        [:div.auto-padding
         [:h1 "404 NOT FOUND"]]))))
 

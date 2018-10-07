@@ -350,7 +350,7 @@ The posts and comments that you have posted will not be deleted, in order to pre
   (mixins/query :user)
   [params]
   (let [screen-name (:screen_name params)
-        posts-path [:posts :by-screen-name screen-name :newest]
+        posts-path [:posts :by-screen-name screen-name :latest]
         user (citrus/react [:user :by-screen-name screen-name])
         posts (citrus/react posts-path)]
     (if user

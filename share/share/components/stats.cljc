@@ -12,7 +12,6 @@
 
 (rum/defc item-cp < rum/static
   [mobile? {:keys [post_id post_title post_permalink stats views reads] :as item}]
-  (prn item)
   (if mobile?
     [:div.column
      [:a {:style {:color colors/primary}
@@ -58,9 +57,8 @@
           [:div.center {:style {:width "100%"}}
            (let [all-views (apply + (map :views stats))
                  all-reads (apply + (map :reads stats))]
-             [:h5 {:style {:margin-top 48
-                           :margin-bottom 12
-                           :color colors/shadow}}
+             [:h2 {:style {:margin-top 48
+                           :margin-bottom 12}}
               (str (str/capitalize (t :views)) " ")
               [:span {:style {:margin-left 6}}
                all-views]

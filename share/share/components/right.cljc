@@ -21,7 +21,7 @@
         books (if stared_books stared_books
                   (citrus/react [:books :latest]))]
     [:div.shadow.column1 {:style {:padding 12
-                                  :margin-bottom 12}}
+                                  :margin-bottom 16}}
      [:a.row1 {:style {:margin-bottom 12
                   :color colors/primary}
                :href "/books"}
@@ -65,7 +65,7 @@
         papers (if stared_papers stared_papers
                    (citrus/react [:papers :latest]))]
     [:div.shadow.column1 {:style {:padding 12
-                                  :margin-bottom 12}}
+                                  :margin-bottom 16}}
      [:a.row1 {:style {:margin-bottom 12
                   :color colors/primary}
                :href "/papers"}
@@ -110,9 +110,9 @@
                                     :padding 12}}
 
      [:div.row1 {:style {:align-items "center"}}
-      [:a.control {:href "/newest"
+      [:a.control {:href "/latest"
                    :on-click (fn []
-                               (citrus/dispatch! :citrus/re-fetch :newest {}))}
+                               (citrus/dispatch! :citrus/re-fetch :latest {}))}
        (t :new-created)]
       [:a.control
        {:style {:margin-left 24}
@@ -134,15 +134,7 @@
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
                          :margin-top 16}}
-      [:a.tag.row1 {:href "/hot.rss"
-                    :target "_blank"
-                    :style {:align-items "center"
-                            :padding "0px 6px"
-                            :margin 0}}
-       (ui/icon {:type :rss
-                 :width 18})
-       [:span {:style {:margin-left 3}}
-        "Subscribe"]]
+      (widgets/subscribe "/hot.rss")
 
       [:a {:href "https://github.com/tiensonqin/putchar"
            :style {:margin-left 24}}

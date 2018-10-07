@@ -2,6 +2,18 @@ html, body, #head, #modal-panel, input, .rc-dialog-content, .divider-text:after 
   background: #faf6e3;
 }
 
+@media screen and (max-width: 768px) {
+    #head {
+        background: #FFFFFF;
+        box-shadow: 0 4px 8px #ddd;
+    }
+
+    html, body, #modal-panel, input, .rc-dialog-content {
+        background: #fefefe;
+    }
+}
+
+
 body {
   color: #212529;
 }

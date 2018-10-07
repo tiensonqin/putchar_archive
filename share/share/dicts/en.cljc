@@ -210,7 +210,7 @@
    :drafts "Drafts"
    :saving "saving..."
    :sort "Sort"
-   :latest-reply "latest"
+   :latest-reply "latest reply"
    :created-at "Created at"
    :last-reply-at "Latest reply at"
    :updated-at "Updated at"

@@ -599,7 +599,7 @@
      :wrap-class-name "center"
      :style {:width (min 600 (- (:width (util/get-layout)) 48))}
      :footer (ui/button
-               {:class "btn-danger"
+               {:class "btn-primary"
                 :on-click (fn [e]
                             (util/stop e)
                             (citrus/dispatch! :post/delete post))}
@@ -646,19 +646,19 @@
      :other-attrs {:trigger ["click"]}}))
 
 (rum/defc tags
-  [tags opts tag-style]
+  [tags opts]
   (if (seq tags)
     [:span opts
      (for [tag tags]
        (when-not (str/blank? tag)
-         [:a.tag
+         [:a
           {:key (util/random-uuid)
            :href (str "/tag/" (name tag))
            :on-click (fn [e] (util/stop e))
-           :style (merge {:margin-right 12
-                          :white-space "nowrap"}
-                         tag-style)}
-          (util/tag-decode (name tag))]))]))
+           :style {:margin-right 12
+                   :white-space "nowrap"
+                   :color colors/primary}}
+          (str "#" (name tag))]))]))
 
 (rum/defcs post-item < {:key-fn (fn [post]
                                   (:id post))}
@@ -690,7 +690,7 @@
             {:keys [last_reply_at created_at]} post
             self? (and current-user self?)
             first-tag (if-let [tag (first (:tags post))]
-                        (str/capitalize tag)
+                        (str/lower-case tag)
                         nil)]
         [:div.post-item.col-item {:style (cond-> {:position "relative"}
                                            user-draft?
@@ -739,19 +739,25 @@
                                               :on-click util/stop
                                               :href post-link})
                (:title post)])
-            (tags (:tags post) nil {:margin-left 6
-                                    :padding "0 6px"})
+            (tags (:tags post) {:style {:margin-left 6}})
 
             (when (and self? drafts-path?)
-              [:a {:style {:font-size 14
-                           :position "absolute"
-                           :right 0}
-                   :on-click (fn [e]
-                               (util/stop e)
-                               (citrus/dispatch! :post/open-delete-dialog? post))}
-               (ui/icon {:type :delete
-                         :color "#999"
-                         :width 18})])]
+              (ui/menu
+                [:a {:style {:font-size 14
+                             :position "absolute"
+                             :right (if mobile? 12 0)}
+                     :on-click (fn [e]
+                                 (util/stop e))}
+                 (ui/icon {:type :more
+                           :color "#999"
+                           :width 20
+                           :height 20})]
+                [[:a.button-text {:style {:font-size 14}
+                                  :on-click (fn [e]
+                                              (util/stop e)
+                                              (citrus/dispatch! :post/open-delete-dialog? post))}
+                  (t :delete)]]
+                {:other-attrs {:trigger ["click"]}}))]
 
            [:div.row
             (if show-avatar?
@@ -819,7 +825,7 @@
                  [:a.control {:href (str "/tag/" (first (:tags post)))
                               :style {:margin-right 12}
                               :on-click util/stop}
-                  first-tag])
+                  (str "#" first-tag)])
 
                [:a.no-decoration.control {:title (if last_reply_at
                                                    (str
@@ -880,7 +886,7 @@
         posts result
         current-filter (citrus/react [:post :filter])
         current-path (citrus/react [:router :handler])
-        posts (if (= current-filter :newest)
+        posts (if (= current-filter :latest)
                 (reverse (sort-by :created_at posts))
                 posts)
         posts (util/remove-duplicates :id posts)
@@ -1061,7 +1067,8 @@
      state)}
   [state {:keys [screen_name permalink] :as params}]
   (let [permalink (util/encode-permalink (str "@" screen_name "/" permalink))
-        current-user (citrus/react [:user :current])]
+        current-user (citrus/react [:user :current])
+        mobile? (util/mobile?)]
     (query/query
       (let [post (citrus/react [:post :by-permalink permalink])]
         (if post
@@ -1070,17 +1077,15 @@
                 avatar (util/cdn-image (:screen_name user))]
             [:div.column.auto-padding.center-area {:key "post"}
              [:div {:style {:padding "12px 0"
-                            :margin-top (cond
-                                          (util/mobile?)
-                                          0
-                                          :else
-                                          64)}}
-              [:div {:style {:margin-bottom 64}}
-               [:h1.post-page-title
-                (:title post)]
+                            :margin-top 24}}
+              [:div.column1 {:style (if mobile?
+                                      {}
+                                      {:align-items "center"
+                                       :justify-content "center"})}
+               [:h1.post-page-title {:style {:color "#000"}}
+                (str/capitalize (:title post))]
 
-               [:div#post-user {:style {:text-align "center"
-                                        :font-style "italic"
+               [:div#post-user {:style {:font-style "italic"
                                         :font-size "1.1em"}}
                 [:a {:href (str "/@" (:screen_name user))
                      :style {:color colors/primary}}
@@ -1099,27 +1104,33 @@
                                :margin-left 12}
                        :on-click (fn [e]
                                    (util/set-href! (str config/website "/p/" (:id post) "/edit")))}
-                   (t :edit)])
-]]
+                   (t :edit)])]
 
-              (cond
-                (and (:book_id post)
-                     (:book_title post))
-                [:a {:href (str "/book/" (:book_id post))
-                     :style {:color colors/primary
-                             :font-size 14
-                             :display "block"
-                             :margin-bottom 12}}
-                 (:book_title post)]
-                (and (:paper_id post)
-                     (:paper_title post))
-                [:a {:href (str "/paper/" (:paper_id post))
-                     :style {:color colors/primary
-                             :font-size 14
-                             :display "block"
-                             :margin-bottom 12}}
-                 (:paper_title post)])
+               [:div.divider]
 
+               (cond
+                 (and (:book_id post)
+                      (:book_title post))
+                 [:div.row1 {:style {:margin-bottom 12}}
+                  [:span "On book: "]
+                  [:a {:href (str "/book/" (:book_id post))
+                       :style {:color colors/primary
+                               :display "block"
+                               :margin-left 6}}
+                   (:book_title post)]]
+                 (and (:paper_id post)
+                      (:paper_title post))
+                 [:div.row1 {:style {:margin-bottom 12}}
+                  [:span "On paper: "]
+                  [:a {:href (str "/paper/" (:paper_id post))
+                       :style {:color colors/primary
+                               :margin-left 6
+                               :display "block"}}
+                   (:paper_title post)]])
+
+               [:div.row {:style {:margin-bottom 24}}
+                (when (seq (:tags post))
+                  (tags (:tags post) nil))]]
               [:div.post
                (when (:body_html post)
                  (widgets/raw-html {:on-mouse-up (fn [e]
@@ -1134,11 +1145,6 @@
                                    (:body_html post)))]
 
               [:div.center-area
-               (when (seq (:tags post))
-                 [:div.row1 {:style {:margin "24px 0"}}
-                  (tags (:tags post)
-                        nil
-                        nil)])
 
                (toolbox post)
 
@@ -1154,7 +1160,7 @@
           )))))
 
 (rum/defc sort-by-new < rum/reactive
-  (mixins/query :newest)
+  (mixins/query :latest)
   []
   [:div.column {:style {:padding-bottom 48}}
 
@@ -1179,8 +1185,13 @@
   (let [path [:posts :by-tag tag]
         posts (citrus/react path)]
     [:div.column.center-area {:style {:margin-bottom 48}}
+     [:div.space-between.auto-padding {:style {:align-items "center"
+                                               :margin-top 24}}
+      [:h1 {:style {:margin 0}}
+       (str "#" tag)]
+      (widgets/subscribe (str "/tag/" tag "/latest.rss"))]
 
-     [:h1.auto-padding (str "Tag: " (util/tag-decode tag))]
+     [:div.divider]
 
      (query/query
        (post-list posts {:tag tag

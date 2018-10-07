@@ -31,10 +31,11 @@
        (:title paper)]
 
       (for [tag (:tags paper)]
-        [:a.tag {:id tag
-                 :style {:margin "0 12px 0 0"}
-                 :key tag}
-         tag])]
+        [:a {:id tag
+             :style {:margin "0 12px 0 0"
+                     :color colors/primary}
+             :key tag}
+         (str "#" tag)])]
      [:div {:style {:margin-top 6}}
       (widgets/transform-content (:authors paper) nil)]]))
 
@@ -62,8 +63,7 @@
    [:h1 {:style {:margin "24px 0"}}
     (t :papers)]
 
-   [:a.row1 {:style {:margin "24px 0"
-                     :color colors/primary
+   [:a.row1 {:style {:color colors/primary
                      :font-size 17}
              :href "/new-paper"}
     (ui/icon {:type :add})
@@ -95,7 +95,6 @@
            {:style {:min-height "40vh"
                     :padding 48
                     :box-shadow "0 3px 8px #ddd"
-                    :background "#FAEBD7"
                     :align-items "center"
                     :width "100%"
                     :position "relative"}}
@@ -104,9 +103,11 @@
                             :top 12
                             :right 12}}
               [:div.row1
+               (widgets/subscribe (str "/paper/" id "/latest.rss"))
                (when self?
                  [:a {:href (str "/paper/" id "/edit")
                       :style {:margin-right 12
+                              :margin-left 18
                               :color colors/primary}}
                   (t :edit)])
                [:a.control {:on-click (fn []
@@ -156,7 +157,7 @@
                          :style {:margin-left 12
                                  :margin-right 3
                                  :width 243}}
-             (right/right)])]]
+             (right/papers)])]]
         [:div.auto-padding
          [:h1 "404 NOT FOUND"]])))
   )

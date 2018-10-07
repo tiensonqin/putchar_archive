@@ -4,6 +4,7 @@
             [ssr.auth :as auth]
             [clojure.java.jdbc :as j]
             [api.db.user :as u]
+            [api.db.resource :as resource]
             [api.db.util :as du]
             [api.db.post :as post]
             [api.db.token :as token]
@@ -166,7 +167,7 @@
         ;; whole site rss
         (= :new-rss (:handler route))
         (util/rss {:title "putchar"
-                   :link (website-path "newest")
+                   :link (website-path "latest")
                    :description "Latest posts on putchar.org"}
                   (j/with-db-connection [conn datasource]
                     (post/->rss (post/get-new conn {:limit 20}))))
@@ -185,7 +186,44 @@
                   (j/with-db-connection [conn datasource]
                     (post/->rss (post/get-hot conn {:limit 20}))))
 
-        ;; TODO: tag rss
+        ;; tag
+        (= :tag-rss (:handler route))
+        (when-let [tag (:tag (:route-params route))]
+            (util/rss {:title "putchar"
+                    :link (website-path "hot")
+                       :description (str "Latest posts on putchar.org tagged in " tag)}
+                   (j/with-db-connection [conn datasource]
+                     (post/->rss (post/get-tag conn tag {:limit 20})))))
+
+        ;; book
+        (= :book-rss (:handler route))
+        (when-let [book-id (:book-id (:route-params route))]
+          (j/with-db-connection [conn datasource]
+            (when-let [book (resource/get conn {:object_type "book"
+                                                :object_id book-id})]
+              (util/rss {:title "putchar"
+                         :link (website-path "hot")
+                         :description (str "Latest posts on book: " (:title book))}
+                        (post/->rss (post/get-book-posts conn book-id {:limit 20}))))))
+
+        ;; paper
+        (= :paper-rss (:handler route))
+        (when-let [paper-id (:paper-id (:route-params route))]
+          (j/with-db-connection [conn datasource]
+            (when-let [paper (resource/get conn {:object_type "paper"
+                                                :object_id paper-id})]
+              (util/rss {:title "putchar"
+                         :link (website-path "hot")
+                         :description (str "Latest posts on paper: " (:title paper))}
+                        (post/->rss (post/get-paper-posts conn paper-id {:limit 20}))))))
+
+        (= :tag-rss (:handler route))
+        (when-let [tag (:tag (:route-params route))]
+          (util/rss {:title "putchar"
+                     :link (website-path "hot")
+                     :description (str "Latest posts on putchar.org tagged in " tag)}
+                    (j/with-db-connection [conn datasource]
+                      (post/->rss (post/get-tag conn tag {:limit 20})))))
 
         ;; user rss
         (= :user-latest-rss (:handler route))

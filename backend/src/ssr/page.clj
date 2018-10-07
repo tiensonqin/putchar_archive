@@ -92,8 +92,8 @@
 
      [:link {:rel "alternate"
              :type "application/rss+xml"
-             :title "Newest posts"
-             :href (str (:website-uri config) "/newest.rss")}]
+             :title "Latest posts"
+             :href (str (:website-uri config) "/latest.rss")}]
 
      ;; TODO: add user and tag rss
      [:link
@@ -119,7 +119,7 @@
        :rel "mask-icon"}]
 
      [:meta {:content "#071839", :name "msapplication-TileColor"}]
-     [:meta {:content "#faf6e3", :name "theme-color"}]
+     [:meta {:content "#FFFFFF", :name "theme-color"}]
 
      [:link {:rel "manifest"
              :href "/manifest.json"}]
@@ -167,7 +167,7 @@
          :rel "mask-icon"}]
 
        [:meta {:content "#00a300", :name "msapplication-TileColor"}]
-       [:meta {:content "#faf6e3", :name "theme-color"}]]
+       [:meta {:content "#FFFFFF", :name "theme-color"}]]
       [:body {:style {:height "100%"
                       :width "100%"
                       :display "flex"

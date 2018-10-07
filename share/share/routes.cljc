@@ -18,13 +18,17 @@
         ["votes"                                                  :votes]
         ["votes"                                              :votes]
         ["stats"                                                  :stats]
-        ["newest"                                                 :newest]
+        ["latest"                                                 :latest]
         ["latest-reply"                                           :latest-reply]
         ;; rss
-        ["newest.rss"                                             :new-rss]
         ["hot.rss"                                                :hot-rss]
-        ["latest-reply.rss"                                       :latest-reply-rss]
-        [["@" :screen_name "/newest.rss"]                         :user-latest-rss]
+        [["@" :screen_name "/latest.rss"]                         :user-latest-rss]
+        ;; tag
+        [["tag/" [#"[^\/]+" :tag] "/latest.rss"]                                             :tag-rss]
+        ;; book
+        [["book/" [ #"\d+" :book-id ] "/latest.rss"]                                      :book-rss]
+        ;; paper
+        [["paper/" [ #"\d+" :paper-id ] "/latest.rss"]                                     :paper-rss]
 
         ["search"                                                 :search]
         ["reports"                                                :reports]

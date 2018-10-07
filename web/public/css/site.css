@@ -127,7 +127,7 @@ span.task-status.done {
     line-height: 1.2em;
 }
 
-.divider {
+hr, .divider {
     display: block;
     height: 1px;
     width: 100%;
@@ -380,8 +380,6 @@ a.delete {
 
 .post-page-title {
     margin-top: 0;
-    margin-bottom: 1em;
-    text-align: center;
     font-size: 230%;
 }
 
@@ -417,6 +415,12 @@ a.delete {
 
 
 @media screen and (max-width: 768px) {
+
+    #head {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
 
     .col-item {
         padding: 12px;
@@ -460,7 +464,7 @@ a.delete {
     }
 
     .post-page-title {
-        font-size: 1.7rem;
+        font-size: 2rem;
     }
 }
 
@@ -571,11 +575,6 @@ table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { pad
 table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
 table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
 table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.6; }
-
-hr {
-    border: 1px solid #dfdfdf;
-    margin: 48px 0;
-}
 
 .hr-divider {
     display: block;

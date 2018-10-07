@@ -17,6 +17,20 @@
   #?(:cljs
      (:require-macros [cljs.core.async.macros :refer [go]])))
 
+(rum/defc subscribe
+  [url]
+  [:a.tag.row1 {:href url
+                :target "_blank"
+                :style {:align-items "center"
+                        :width 95
+                        :height 24
+                        :margin 0
+                        :padding "0 6px"}}
+   (ui/icon {:type :rss
+             :width 18})
+   [:span {:style {:margin-left 3}}
+    "Subscribe"]])
+
 (rum/defc avatar
   [user {:keys [class title]}]
   [:div.user-avatar
@@ -67,13 +81,13 @@
     [:div.column1.auto-padding.user-card {:style (if mobile?
                                                    {:margin-top 24
                                                     :margin-bottom 24
-                                                    :padding 12}
+                                                    :padding 12
+                                                    :margin-left 12
+                                                    :margin-right 12}
                                                    {:margin-top 64
                                                     :margin-bottom 64
                                                     :padding 24})
-                                          :class (if mobile?
-                                                   ""
-                                                   "shadow")}
+                                          :class "shadow"}
      [:div {:class "space-between"}
       [:a {:href (str "/@" screen_name)
            :style {:margin-right (if mobile? 12 24)}}
@@ -112,19 +126,10 @@
          (transform-content bio {:style {:margin-top 6
                                          :margin-left 1}}))
 
-       (let [url (str config/website "/@" screen_name "/newest.rss")]
+       (let [url (str config/website "/@" screen_name "/latest.rss")]
          [:div.row1 {:style {:margin-top 12
                              :flex-wrap "wrap"}}
-          [:a.tag.row1 {:href url
-                        :target "_blank"
-                        :style {:align-items "center"
-                                :width 95
-                                :margin 0
-                                :padding "0 6px"}}
-           (ui/icon {:type :rss
-                     :width 18})
-           [:span {:style {:margin-left 3}}
-            "Subscribe"]]
+          (subscribe url)
           (when self?
             [:a.tag {:href "/drafts"
                      :class (if drafts? "active" "")
@@ -201,13 +206,16 @@
                             :on-click (fn []
                                         (citrus/dispatch! :citrus/re-fetch :home {}))}
      (ui/icon {:type :logo
-               :color colors/primary})
-     [:span {:style {:font-size 20
-                     :margin-top -6
-                     :font-weight "bold"
-                     :letter-spacing "0.05em"
-                     :color colors/primary}}
-      "utchar"]
+               :color colors/primary
+               :width 28
+               :height 28})
+     (when-not mobile?
+       [:span {:style {:font-size 20
+                       :margin-top -3
+                       :font-weight "bold"
+                       :letter-spacing "0.05em"
+                       :color colors/primary}}
+        "utchar"])
      (when-not mobile?
        [:span {:style {:margin-left 6
                        :font-size 10

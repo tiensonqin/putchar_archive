@@ -166,7 +166,7 @@
                      (:user-tag data)
                      (get-user-tag-posts conn data)
 
-                     (and (:user_id data) (= :newest (:filter data)))
+                     (and (:user_id data) (= :latest (:filter data)))
                      (let [self? (= (:user_id data) uid)]
                        (post/get-user-new conn (:user_id data)
                                           (if self?
@@ -181,19 +181,11 @@
 
                      ;; book
                      (and (:book_id data) (= :latest-reply (:filter data)))
-                     (post/get-latest-reply conn
-                                            [:and
-                                             [:= :book_id (:book_id data)]
-                                             [:= :is_draft false]]
-                                   cursor)
+                     (post/get-book-posts conn (:book_id data) cursor)
 
                      ;; paper
                      (and (:paper_id data) (= :latest-reply (:filter data)))
-                     (post/get-latest-reply conn
-                                            [:and
-                                             [:= :paper_id (:paper_id data)]
-                                             [:= :is_draft false]]
-                                            cursor)
+                     (post/get-paper-posts conn (:paper_id data) cursor)
 
                      (= :toped (:filter data))
                      (post/get-toped conn uid cursor)

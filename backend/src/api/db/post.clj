@@ -385,6 +385,22 @@
   ([db id post-conditions cursor]
    (get-new db post-conditions cursor)))
 
+(defn get-book-posts
+  [db book-id cursor]
+  (get-latest-reply db
+                    [:and
+                     [:= :book_id book-id]
+                     [:= :is_draft false]]
+                    cursor))
+
+(defn get-paper-posts
+  [db paper-id cursor]
+  (get-latest-reply db
+                    [:and
+                     [:= :paper_id paper-id]
+                     [:= :is_draft false]]
+                    cursor))
+
 (defn search
   [db q & {:keys [limit where]
            :or {limit 5
