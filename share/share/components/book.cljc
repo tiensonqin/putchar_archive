@@ -96,42 +96,17 @@
                    :align-items "center"
                    :width "100%"
                    :position "relative"}}
-          [:div
-           (when-not mobile?
-             [:div.cover
-              [:img.box {:src cover
-                         :style {:height 300
-                                 :min-width 230
-                                 :width 230
-                                 :margin-right 12
-                                 :object-fit "contain"}}]])
-           (let [stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
-             [:div {:style {:position "absolute"
-                            :top 12
-                            :right 12}}
-              [:div.row1
-               (widgets/subscribe (str "/book/" id "/latest.rss"))
-
-               (when self?
-                 [:a {:href (str "/book/" id "/edit")
-                      :style {:margin-right 12
-                              :margin-left 18
-                              :color colors/primary}}
-                  (t :edit)])
-               [:a.control {:on-click (fn []
-                                        (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                          {:object_type "book"
-                                                           :object_id (:id book)}))}
-                [:div.row1
-                 (ui/icon (if stared?
-                            {:type :star
-                             :color "#D95653"}
-                            {:type :star-border}))
-
-                 [:span {:style {:margin-left 3}}
-                  (:stars book)]]]]])]
+          (when-not mobile?
+            [:div.cover
+             [:img.box {:src cover
+                        :style {:height 300
+                                :min-width 230
+                                :width 230
+                                :margin-right 12
+                                :object-fit "contain"}}]])
           (let [authors [:div.row1.book-authors {:style {:align-items "center"}}
-                         (widgets/transform-content (:authors book) {:style {:margin 0}})]]
+                         (widgets/transform-content (:authors book) {:style {:margin 0}})]
+                stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
             [:div.column1
              (when mobile?
                [:div.row1 {:style {:align-items "center"}}
@@ -141,7 +116,7 @@
                                    :object-fit "contain"
                                    :margin-right 12}}]
                 [:div.column1
-                 [:h3 {:style {:margin 0}} title]
+                 [:h2 {:style {:margin 0}} title]
                  authors]])
 
             (when-not mobile?
@@ -161,14 +136,36 @@
                           :color colors/primary}}
               screen_name]
              ", "
-             [:i {:style {:margin-left 4}}
-              (util/date-format created_at)]]
+             [:i {:style {:margin-left 4
+                          :margin-right 12}}
+              (util/date-format created_at)]
+             (widgets/subscribe (str "/book/" id "/latest.rss"))
 
-            (when (seq followers)
-              [:div {:style {:margin-top 12}}
-               (widgets/followers followers)])])]
+             (when self?
+               [:a {:href (str "/book/" id "/edit")
+                    :style {:margin-left 12}}
+                (ui/icon {:type :edit
+                          :width 18})])]
 
-         [:div {:style {:margin-top 24}}
+             [:div.row {:style {:margin-top 12
+                                :align-items "center"}}
+
+              (when (seq followers)
+                (widgets/followers followers (:stars book)))
+
+              [:a.tag.row1 {:on-click (fn []
+                                        (citrus/dispatch! (if stared? :user/unstar :user/star)
+                                                          {:object_type "book"
+                                                           :object_id (:id book)}))
+                            :style {:margin-left 6}}
+               [(ui/icon (if stared?
+                           {:type :star
+                            :color "#D95653"}
+                           {:type :star-border}))
+                [:span {:style {:margin-left 4}}
+                 (if stared? (t :leave) (t :join))]]]]])]
+
+         [:div.row {:style {:margin-top 24}}
           (post/post-list posts
                           {:book_id id
                            :merge-path posts-path})

@@ -526,16 +526,14 @@
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"
-                   :style {:margin-top 12
+                   :style {:margin-top (if mobile? 12 0)
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]
 
        (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats :books :book :book-edit :new-book :papers :paper :paper-edit :new-paper} route)))
          [:div#right {:key "right"
                       :class "column1"
-                      :style {:margin-top (if mobile?
-                                            100
-                                            0)
+                      :style {:margin-top 0
                               :margin-left 12
                               :margin-right 3
                               :width 243}}

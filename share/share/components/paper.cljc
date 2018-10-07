@@ -86,7 +86,8 @@
         posts (citrus/react posts-path)
         current-user (citrus/react [:user :current])
         self? (= screen_name (:screen_name current-user))
-        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))
+        stared? (contains? (set (map :object_id (:stared_papers current-user))) (:id paper))]
     (query/query
       (if paper
         [:div#paper.column
@@ -98,30 +99,6 @@
                     :align-items "center"
                     :width "100%"
                     :position "relative"}}
-           (let [stared? (contains? (set (map :object_id (:stared_papers current-user))) (:id paper))]
-             [:div {:style {:position "absolute"
-                            :top 12
-                            :right 12}}
-              [:div.row1
-               (widgets/subscribe (str "/paper/" id "/latest.rss"))
-               (when self?
-                 [:a {:href (str "/paper/" id "/edit")
-                      :style {:margin-right 12
-                              :margin-left 18
-                              :color colors/primary}}
-                  (t :edit)])
-               [:a.control {:on-click (fn []
-                                        (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                          {:object_type "paper"
-                                                           :object_id (:id paper)}))}
-                [:div.row1
-                 (ui/icon (if stared?
-                            {:type :star
-                             :color "#D95653"}
-                            {:type :star-border}))
-
-                 [:span {:style {:margin-left 3}}
-                  (:stars paper)]]]]])
            [:div.column1
             [:h1 {:style {:margin 0}} title]
             (when-let [authors (:authors paper)]
@@ -140,14 +117,36 @@
                           :color colors/primary}}
               screen_name]
              ", "
-             [:i {:style {:margin-left 4}}
-              (util/date-format created_at)]]
+             [:i {:style {:margin-left 4
+                          :margin-right 12}}
+              (util/date-format created_at)]
+             (widgets/subscribe (str "/paper/" id "/latest.rss"))
 
-            (when (seq followers)
-              [:div {:style {:margin-top 12}}
-               (widgets/followers followers)])]]]
+             (when self?
+               [:a {:href (str "/paper/" id "/edit")
+                    :style {:margin-left 12}}
+                (ui/icon {:type :edit
+                          :width 18})])]
 
-         [:div {:style {:margin-top 24}}
+            [:div.row {:style {:margin-top 12
+                               :align-items "center"}}
+
+             (when (seq followers)
+               (widgets/followers followers (:stars paper)))
+
+             [:a.tag.row1 {:on-click (fn []
+                                       (citrus/dispatch! (if stared? :user/unstar :user/star)
+                                                         {:object_type "paper"
+                                                          :object_id (:id paper)}))
+                           :style {:margin-left 6}}
+              [(ui/icon (if stared?
+                          {:type :star
+                           :color "#D95653"}
+                          {:type :star-border}))
+               [:span {:style {:margin-left 4}}
+                (if stared? (t :leave) (t :join))]]]]]]]
+
+         [:div.row {:style {:margin-top 24}}
           (post/post-list posts
                           {:book_id id
                            :merge-path posts-path})

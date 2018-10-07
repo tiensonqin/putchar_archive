@@ -420,9 +420,12 @@
        [:p content]))))
 
 (rum/defc followers
-  [followers]
+  [followers count]
   (when (seq followers)
     [:div.row1 {:style {:flex-wrap "wrap"}}
+     [:span {:style {:font-weight 500
+                     :margin-right 12}}
+      (str count " "(str/capitalize (t :members)) ":")]
      (for [follower followers]
        [:div {:key follower
               :style {:margin-right 6}}

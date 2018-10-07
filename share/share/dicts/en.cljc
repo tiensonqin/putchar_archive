@@ -313,4 +313,6 @@ Putchar.org is a place to discuss articles, [books](/books) and [papers](/papers
    :add-a-paper "Add a paper"
    :introduction "View introduction"
    :moderation-logs "Moderation Logs"
+   :join "Join"
+   :leave "Leave"
    })

@@ -321,4 +321,6 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
    :website "网站"
    :introduction "查看介绍"
    :moderation-logs "管理日志"
+   :join "加入"
+   :leave "离开"
    })
