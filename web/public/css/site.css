@@ -486,8 +486,8 @@ a.delete {
 
 blockquote {
     margin: 0.5em 0;
-    border-left: 4px solid #d3d3d3;
-    padding: 1px 12px;
+    border-left: 5px solid #3b91af;
+    padding: 6px 12px;
     font-size: 1.15rem;
     line-height: 1.5;
     word-spacing: 0.1em;

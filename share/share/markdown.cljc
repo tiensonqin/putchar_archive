@@ -16,12 +16,16 @@
               com.vladsch.flexmark.util.options.MutableDataSet
               com.vladsch.flexmark.ext.definition.DefinitionExtension
               com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension
-              java.util.ArrayList)))
+              java.util.ArrayList
+              [com.vladsch.flexmark.profiles.pegdown Extensions PegdownOptionsAdapter])))
+
 
 #?(:clj
    (defn build-options
      []
      (doto (MutableDataSet.)
+       (.set HtmlRenderer/SOFT_BREAK "<br />\n")
+       (.set HtmlRenderer/HARD_BREAK "<br />\n")
        (.set Parser/EXTENSIONS
              (ArrayList. [(AnchorLinkExtension/create)
                           (AutolinkExtension/create)
@@ -45,11 +49,11 @@
      (.build (HtmlRenderer/builder options))))
 
 #?(:clj
-   (defonce markdown-parser ^Parser$Builder
+   (def markdown-parser ^Parser$Builder
      (parser-builder (build-options))))
 
 #?(:clj
-   (defonce markdown-html-renderer ^HtmlRenderer$Builder
+   (def markdown-html-renderer ^HtmlRenderer$Builder
      (renderer (build-options))))
 
 (def test-str (atom nil))

@@ -40,6 +40,7 @@
                  ;; server side rendering
                  [org.clojure/clojurescript "1.9.946"]
                  [com.vladsch.flexmark/flexmark-all "0.32.18"]
+                 [com.vladsch.flexmark/flexmark-profile-pegdown "0.32.18"]
                  [compojure "1.6.0"]
                  [tongue "0.2.4"]
                  [http-kit "2.2.0"]
