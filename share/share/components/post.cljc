@@ -34,7 +34,7 @@
                     (toped-posts (:id post)))
         tops (-> (if (:tops post) (:tops post) 0)
                  (+ @init-tops))
-        post? (= :post (citrus/react [:router :handler]))
+        post-or-comment? (contains? #{:post :comment} (citrus/react [:router :handler]))
         title (if toped? (t :unvote) (t :vote))
         on-click (fn [e]
                    (util/stop e)
@@ -45,7 +45,7 @@
      [:a.scale.row1 {:title title
                      :on-click on-click
                      :style {:align-items "center"}}
-      (ui/icon {:width (if post? 24 18)
+      (ui/icon {:width (if post-or-comment? 24 18)
                 :type :thumb_up
                 :color (if toped? colors/primary "rgb(127,127,127)")
                 :opts {:style {:margin-top -2}}})]
@@ -1145,7 +1145,6 @@
                                    (:body_html post)))]
 
               [:div.center-area
-
                (toolbox post)
 
                (quote-selection current-user)]
