@@ -1076,9 +1076,8 @@
           (let [{:keys [user]} post
                 current-reply (citrus/react [:comment :reply])
                 avatar (util/cdn-image (:screen_name user))]
-            [:div.column.auto-padding.center-area {:key "post"}
-             [:div {:style {:padding "12px 0"
-                            :margin-top 24}}
+            [:div.column.center-area {:key "post"}
+             [:div.auto-padding {:style {:margin-top 24}}
               [:div.column1 {:style (if mobile?
                                       {}
                                       {:align-items "center"
@@ -1129,7 +1128,7 @@
                                :display "block"}}
                    (:paper_title post)]])
 
-               [:div.row {:style {:margin-bottom 24}}
+               [:div.row
                 (when (seq (:tags post))
                   (tags (:tags post) nil))]]
               [:div.post
@@ -1151,10 +1150,10 @@
 
                (quote-selection current-user)]
 
-              [:div#comments {:style {:margin-top 96}}
-               (comment/comment-list post)]
+              (read-post post)]
 
-              (read-post post)]])
+             [:div#comments
+              (comment/comment-list post)]])
 
           [:div.row {:style {:justify-content "center"}}
            (ui/donut)]

@@ -168,7 +168,7 @@
               [:div {:style {:margin-top 12}}
                (widgets/followers followers)])])]
 
-         [:div.auto-padding.row {:style {:margin-top 24}}
+         [:div {:style {:margin-top 24}}
           (post/post-list posts
                           {:book_id id
                            :merge-path posts-path})

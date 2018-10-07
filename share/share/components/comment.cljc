@@ -505,17 +505,18 @@
         comments (map (fn [x] (assoc x fk entity-id)) comments)
         reply-box? (citrus/react [:comment :reply-box?])]
     [:div.center-area
-     [:div.comment-list
+     [:div.auto-padding
       (comment-box current-user entity [table fk] nil nil
                    (if reply-box?
                      true
-                     false))
+                     false))]
 
+     [:div.comment-list
       (let [comments-count (get entity :comments_count 0)]
         (if (> comments-count 0)
-          [:div.space-between {:style {:align-items "center"
+          [:div.space-between.auto-padding {:style {:align-items "center"
                                        :margin-bottom 12}}
-           [:h3 {:style {:margin 0}}
+           [:h2 {:style {:margin 0}}
             (when-not (zero? (count comments))
               (str (+ (:comments_count entity) (if count-delta count-delta 0)) " " (t :replies)))]]))
 
