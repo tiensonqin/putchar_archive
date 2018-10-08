@@ -16,8 +16,6 @@ Putchar.org is a place to discuss tech articles, [books](https://putchar.org/boo
 
   Yes, not just English.
 
-* 100% free forever.
-
 ## License
 
 Copyright © 2018 Tienson Qin

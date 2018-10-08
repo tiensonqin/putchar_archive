@@ -253,8 +253,6 @@ Putchar.org is a place to discuss articles, [books](/books) and [papers](/papers
 
   Yes, not just English.
 
-* 100% free forever.
-
 ## FAQ
 
 * Who are the team behind Putchar?

@@ -266,11 +266,6 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
 
   目前只有我一人，@tiensonqin。
 
-* 完全免费的话，你怎么赚钱？
-
-  1. 我不会出售你的任何个人信息。
-  2. 网站只会在首页右侧放置广告，比如社区赞助。
-
 * Putchar 用了什么技术？
 
   前端: [Clojurescript](https://clojurescript.org/), [React](https://reactjs.org/).

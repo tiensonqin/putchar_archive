@@ -16,7 +16,6 @@
             #?(:cljs ["/web/caret_coordinates" :as caret-coordinates])
             [appkit.macros :refer [oget]]))
 
-
 #?(:cljs
    (def get-caret-coordinates caret-coordinates/getCaretCoordinates))
 
