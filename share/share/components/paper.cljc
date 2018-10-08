@@ -93,8 +93,7 @@
         [:div#paper.column
          [:div.row1
           [:div.row1.splash
-           {:style {:min-height "40vh"
-                    :padding 48
+           {:style {:padding (if mobile? "12px 12px 24px 12px" 48)
                     :box-shadow "0 3px 8px #ddd"
                     :align-items "center"
                     :width "100%"
@@ -106,7 +105,7 @@
                                                 :margin-top 12
                                                 }}
                (widgets/transform-content authors {:style {:margin 0}})])
-            [:div {:style {:margin-top 6}}
+            [:div {:style {:margin-top -16}}
              (widgets/more-content description 360)]
 
             [:div.row1 {:style {:align-items "center"
@@ -120,7 +119,7 @@
              [:i {:style {:margin-left 4
                           :margin-right 12}}
               (util/date-format created_at)]
-             (widgets/subscribe (str "/paper/" id "/latest.rss"))
+             ;; (widgets/subscribe (str "/paper/" id "/latest.rss"))
 
              (when self?
                [:a {:href (str "/paper/" id "/edit")
@@ -128,23 +127,20 @@
                 (ui/icon {:type :edit
                           :width 18})])]
 
-            [:div.row {:style {:margin-top 12
+            [:div.row {:style {:margin-top 18
                                :align-items "center"}}
 
              (when (seq followers)
                (widgets/followers followers (:stars paper)))
 
-             [:a.tag.row1 {:on-click (fn []
-                                       (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                         {:object_type "paper"
-                                                          :object_id (:id paper)}))
-                           :style {:margin-left 6}}
-              [(ui/icon (if stared?
-                          {:type :star
-                           :color "#D95653"}
-                          {:type :star-border}))
-               [:span {:style {:margin-left 4}}
-                (if stared? (t :leave) (t :join))]]]]]]]
+             (ui/button {:class (if stared? "btn" "btn-primary")
+                         :style {:margin-left 12
+                                 :width 106}
+                         :on-click (fn []
+                                     (citrus/dispatch! (if stared? :user/unstar :user/star)
+                                                       {:object_type "paper"
+                                                        :object_id (:id paper)}))}
+               (if stared? (t :leave) (t :join)))]]]]
 
          [:div.row {:style {:margin-top 24}}
           (post/post-list posts

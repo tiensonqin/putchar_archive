@@ -911,7 +911,8 @@
          [:a {:href "/new-post"
               :style {:margin-top 24
                       :color colors/primary}}
-          [:h2 {:style {:margin-top 3}}
+          [:span {:style {:margin-top 3
+                          :font-size 18}}
            (t :be-the-first)]])])))
 
 (rum/defc user-post-list <

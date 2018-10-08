@@ -68,21 +68,17 @@
                                 false
                                 open?
                                 true
+                                (> end-x 300)
+                                false
                                 :else
-                                false)}}))
+                                (:open-drawer? state))}}))
 
    :citrus/open-drawer?
    (fn [state]
+     (dommy/set-style! (dommy/sel1 "body") "overflow" "hidden")
      {:state {:open-drawer? true}})
 
    :citrus/close-drawer?
    (fn [state]
-     {:state {:open-drawer? false}})
-
-   :citrus/toggle-drawer?
-   (fn [state]
-     {:state {:open-drawer? (not (:open-drawer? state))}})
-
-
-
-   })
+     (dommy/set-style! (dommy/sel1 "body") "overflow" "inherit")
+     {:state {:open-drawer? false}})})

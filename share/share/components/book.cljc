@@ -139,7 +139,8 @@
              [:i {:style {:margin-left 4
                           :margin-right 12}}
               (util/date-format created_at)]
-             (widgets/subscribe (str "/book/" id "/latest.rss"))
+
+             ;; (widgets/subscribe (str "/book/" id "/latest.rss"))
 
              (when self?
                [:a {:href (str "/book/" id "/edit")
@@ -147,23 +148,20 @@
                 (ui/icon {:type :edit
                           :width 18})])]
 
-             [:div.row {:style {:margin-top 12
+             [:div.row {:style {:margin-top 18
                                 :align-items "center"}}
 
               (when (seq followers)
                 (widgets/followers followers (:stars book)))
 
-              [:a.tag.row1 {:on-click (fn []
-                                        (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                          {:object_type "book"
-                                                           :object_id (:id book)}))
-                            :style {:margin-left 6}}
-               [(ui/icon (if stared?
-                           {:type :star
-                            :color "#D95653"}
-                           {:type :star-border}))
-                [:span {:style {:margin-left 4}}
-                 (if stared? (t :leave) (t :join))]]]]])]
+              (ui/button {:class (if stared? "btn" "btn-primary")
+                          :style {:margin-left 12
+                                  :width 106}
+                          :on-click (fn []
+                                      (citrus/dispatch! (if stared? :user/unstar :user/star)
+                                                        {:object_type "book"
+                                                         :object_id (:id book)}))}
+                (if stared? (t :leave) (t :join)))]])]
 
          [:div.row {:style {:margin-top 24}}
           (post/post-list posts

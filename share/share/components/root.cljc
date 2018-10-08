@@ -164,47 +164,66 @@
        (ui/icon {:type "close"
                  :color colors/shadow})]]]))
 
-(rum/defc modal-panel
-  < rum/reactive
-  {:after-render (fn [state]
-                   #?(:cljs (when-let [anchors (dommy/sel "#modal-panel a:not(.expand)")]
+(rum/defc drawer <
+  {:will-mount (fn [state]
+                 (citrus/dispatch! :citrus/open-drawer?)
+                 state)
+   :will-unmount (fn [state]
+                   (citrus/dispatch! :citrus/close-drawer?)
+                   state)
+   :after-render (fn [state]
+                   #?(:cljs (when-let [anchors (dommy/sel ".drawer a")]
                               (doseq [anchor anchors]
                                 (dommy/listen! anchor :click
                                                (fn [e]
-                                                 (citrus/dispatch! :layout/close-panel))))))
-                   state)
-   }
-  [width mobile? unread? new-report? current-user]
-  [:div#modal-panel {:style {:width width
-                             :padding 24
-                             :z-index 999
-                             :padding-bottom 180
-                             :height "100vh"
-                             :max-height "100vh"
-                             :overflow-y "auto"}}
-   [:div
-    [:div.row1 {:style {:justify-content "space-between"
-                        :align-items "center"
-                        :margin-bottom 24}}
-     (when current-user
-       [:a {:href (str "/@" (:screen_name current-user))}
-        (ui/avatar {:shape "circle"
-                    :src (util/cdn-image (:screen_name current-user))})])
+                                                 (citrus/dispatch! :citrus/close-drawer?))))))
+                   state)}
+  [current-user]
+  [:div.drawer.drawer-left.drawer-open.column {:style {:background "#FFF"
+                                                       :width 300}}
+   [:div.drawer-mask]
+   [:div.drawer-content-wrapper.column
+    [:div.drawer-content
+     [:div {:style {:padding 16
+                    :width 300}}
+      (when-let [name (:screen_name current-user)]
+        [:div.space-between {:style {:align-items "center"}}
+         [:a {:href (str "/@" name)
+              :style {:margin-right 12}}
+          [:img {:src (util/cdn-image name
+                                      :height 100
+                                      :width 100)
+                 :style {:border-radius "50%"
+                         :width 64
+                         :height 64}}]]
+         [:a {:href "/votes"}
+          (ui/icon {:type :thumb_up})]
+         [:a {:href "/settings"
+              :style {:margin-left 24}}
+          (ui/icon {:type :settings})]])
 
-     (when current-user
-       [:a {:href "/settings"}
-        (ui/icon {:type :settings
-                  :color (colors/icon-color)
-                  :width 30
-                  :height 30})])]
+      [:a.row1 {:href "/new-post"
+                :style {:margin-top 24
+                        :color colors/primary}}
+       (ui/icon {:type :edit})
+       [:span {:style {:margin-left 3
+                       :font-size 18}}
+        (t :write-new-post)]]]
+     [:div.divider {:style {:margin 0}}]
 
 
-    (right/right)
-
-    (if current-user
-      (ui/button {:on-click #(citrus/dispatch! :user/logout)
-                  :style {:margin-top 48}}
-        (t :sign-out)))]])
+     [:div {:style {:margin-top -20
+                    :padding "0 4px"}}
+      (right/books)
+      [:div.divider {:style {:margin 0}}]
+      (right/papers)
+      [:div.divider {:style {:margin 0}}]
+      (right/footer)
+      [:div.divider {:style {:margin 0}}]
+      (if current-user
+        (ui/button {:on-click #(citrus/dispatch! :user/logout)
+                    :style {:margin "16px 12px"}}
+          (t :sign-out)))]]]])
 
 (rum/defcs head
   < rum/reactive
@@ -224,7 +243,6 @@
         post-edit-page? (contains? #{:new-post :post-edit} current-path)
         padding 12
         ios? (util/ios?)
-        open-drawer? (citrus/react [:open-drawer?])
 ]
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
@@ -236,14 +254,19 @@
                   :style {:justify-content "space-between"}}
         [:div.row1 {:style {:align-items "center"}}
          (when mobile?
-           (if (and (not= current-path :home)
+           (cond
+             (and (not= current-path :home)
                     ios?)
-             [:a {:style {:margin-right 12
-                          :width 41}
+             [:a {:style {:margin-right 20}
                   :on-click (fn [] (citrus/dispatch! :router/back))}
               (ui/icon {:type :ios_back
                         :color colors/primary})]
-             [:span {:style {:width 53}}]))
+             :else
+             [:a {:style {:margin-right 20}
+                  :on-click (fn []
+                              (citrus/dispatch! :citrus/open-drawer?))}
+              (ui/icon {:type :menu
+                        :color colors/primary})]))
 
          [:div.row1
           (widgets/website-logo)
@@ -255,52 +278,6 @@
                             :color (colors/icon-color)
                             :font-size 13}}
              (t :draft)])]]
-
-        #?(:cljs
-           (when (and
-                  mobile?
-                  (not (and ios? (not= current-path :home))))
-             (ui/drawer {:width 280
-                         :open open-drawer?
-                         :onHandleClick (fn []
-                                          (citrus/dispatch! :citrus/toggle-drawer?))
-                         :onMaskClick (fn []
-                                        (citrus/dispatch! :citrus/close-drawer?))}
-                        [:div.column
-                         [:div.column {:style {:padding 16}}
-                          (when-let [name (:screen_name current-user)]
-                            [:div.space-between {:style {:align-items "center"}}
-                             [:a {:href (str "/@" name)
-                                  :style {:margin-right 12}}
-                              [:img {:src (util/cdn-image name
-                                                          :height 100
-                                                          :width 100)
-                                     :style {:border-radius "50%"
-                                             :width 64
-                                             :height 64}}]]
-                             [:a {:href "/votes"}
-                              (ui/icon {:type :thumb_up})]
-                             [:a {:href "/settings"
-                                  :style {:margin-left 24}}
-                              (ui/icon {:type :settings})]])
-
-                          [:a.row1 {:href "/new-post"
-                                    :style {:margin-top 24
-                                            :color colors/primary}}
-                           (ui/icon {:type :edit})
-                           [:span {:style {:margin-left 3
-                                           :font-size 18}}
-                            (t :write-new-post)]]]
-
-                         [:div.divider {:style {:margin 0}}]
-
-                         [:div {:style {:margin-top -20}}
-                          (right/books)
-                          [:div.divider {:style {:margin 0}}]
-                          (right/papers)
-                          [:div.divider {:style {:margin 0}}]
-                          (right/footer)
-                          ]])))
 
         [:div {:class "row1"
                :style {:align-items "center"}
@@ -497,7 +474,7 @@
                                              (citrus/dispatch-sync! :query/into-back-mode)))))
                    state)}
   [reconciler]
-  (let [show-panel? (citrus/react [:layout :show-panel?])
+  (let [open-drawer? (citrus/react [:open-drawer?])
         width (citrus/react [:layout :current :width])
         {route :handler params :route-params} (citrus/react :router)
         current-user (citrus/react [:user :current])
@@ -509,7 +486,8 @@
                   (citrus/react [:post :form-data :preview?]))
         post-page? (= route :post)
         hide-github-connect? (contains? #{true "true"} (citrus/react [:hide-github-connect?]))
-        theme (citrus/react [:theme])]
+        theme (citrus/react [:theme])
+        ]
     [:div.column
      [:div.main
 
@@ -543,4 +521,5 @@
      ;; report modal
      (report/report)
      (when-not mobile?
-       (widgets/back-to-top))]))
+       (widgets/back-to-top))
+     (if open-drawer? (drawer current-user))]))
