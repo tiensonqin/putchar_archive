@@ -130,7 +130,8 @@
                              :height 48
                              :line-height "30px"
                              :font-size "18px"
-                             :font-weight "600"}
+                             :font-weight "600"
+                             :background "initial"}
                             (util/mobile?)
                             (assoc :max-width 300))
                    :placeholder (t :search-posts)

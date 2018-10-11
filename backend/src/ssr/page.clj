@@ -178,7 +178,7 @@
                       :align-items "center"
                       :justify-content "center"
                       :padding-right "0 !important"
-                      :background "#faf6e3"}}
+                      :background "#fefefe"}}
        [:a {:style {:margin-top "24px"}
             :href "/"}
         [:img {:src "/images/logo.png"}]]

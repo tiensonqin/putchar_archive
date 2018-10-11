@@ -28,10 +28,10 @@
      (if (:cover book)
        (let [style (if mobile?
                      {:width "100%"
-                      :background-color "#faf6e3"}
+                      :background-color "#fefefe"}
                      {:width 230
                       :height 300
-                      :background-color "#faf6e3"})]
+                      :background-color "#fefefe"})]
          [:div {:style style}
           [:img.hover-shadow {:src (:cover book)
                               :style (merge

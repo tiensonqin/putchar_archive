@@ -1,5 +1,5 @@
-html, body, #head, #modal-panel, input, .rc-dialog-content, .divider-text:after {
-  background: #faf6e3;
+#modal-panel, input, .rc-dialog-content, .divider-text:after {
+  background: #fff;
 }
 
 @media screen and (max-width: 768px) {
@@ -166,7 +166,7 @@ a.tag.active {
 }
 
 .highlight-area {
-  background: #ffe4c4;
+  background: #f0f8ff;
 }
 
 .editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .ediptor h6 a {
@@ -220,11 +220,11 @@ a.tag.active {
   -webkit-box-shadow: 0 1px 8px #ddd;
   box-shadow: 0 1px 8px #ddd;
   display: block;
-  background: #faf6e3;
+  background: #fff;
 }
 
 .menu-item:hover {
-  background: #ffe4c4;
+  background: #f0f8ff;
 }
 
 .menu a:hover {
