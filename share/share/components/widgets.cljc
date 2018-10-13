@@ -11,6 +11,7 @@
             [share.content :as content]
             [bidi.bidi :as bidi]
             [share.kit.mixins :as mixins]
+            [share.org-mode :as org]
             #?(:cljs [goog.dom :as gdom])
             #?(:cljs [appkit.macros :refer [oget]])
             #?(:cljs [cljs.core.async :as async]))
@@ -49,25 +50,43 @@
                opts)])
 
 (rum/defcs transform-content < rum/reactive
+  {:init (fn [state props]
+           #?(:cljs
+              (let [org-format? (= :org-mode (keyword (:body-format (second (:rum/args state)))))
+                    org-loaded? (org/loaded?)]
+                (when (and org-format? (not org-loaded?))
+                  (citrus/dispatch-sync! :citrus/default-update
+                                         [:org-loaded?]
+                                         false)
+                  (go
+                    (async/<! (org/load))
+                    (citrus/dispatch! :citrus/default-update
+                                      [:org-loaded?]
+                                      true)))))
+           state)}
   [state body {:keys [style
                 body-format
                 render-opts
                 on-mouse-up]
          :or {body-format :markdown}
                :as attrs}]
-  (let [body-format (keyword body-format)]
-    [:div.column
-     (cond->
-       {:class (str "editor " (name body-format))
-        :style (merge
-                {:word-wrap "break-word"}
-                style)
-        :dangerouslySetInnerHTML {:__html
-                                  (if (str/blank? body)
-                                    ""
-                                    (content/render body body-format))}}
-       on-mouse-up
-       (assoc :on-mouse-up on-mouse-up))]))
+  (let [body-format (keyword body-format)
+        org-loaded? (citrus/react [:org-loaded?])]
+    (if (and (= body-format :org-mode)
+             (false? org-loaded?))
+      [:div (t :loading)]
+      [:div.column
+       (cond->
+         {:class (str "editor " (name body-format))
+          :style (merge
+                  {:word-wrap "break-word"}
+                  style)
+          :dangerouslySetInnerHTML {:__html
+                                    (if (str/blank? body)
+                                      ""
+                                      (content/render body body-format))}}
+         on-mouse-up
+         (assoc :on-mouse-up on-mouse-up))])))
 
 (rum/defc user-card < rum/reactive
   [{:keys [id name screen_name bio github_handle] :as user}]

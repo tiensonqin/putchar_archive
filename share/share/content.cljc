@@ -6,7 +6,7 @@
             [share.emoji :as emoji]
             #?(:cljs ["react-dom/server" :as react-dom-server])
             #?(:cljs [sablono.core :as html])
-            #?(:clj [api.services.org-mode :as org-mode])
+            [share.org-mode :as org-mode]
             [appkit.citrus :as citrus]
             [share.kit.colors :as colors]
             [share.markdown :as md]))
@@ -213,8 +213,7 @@
   (let [body-format (keyword body-format)
         render-fn (case body-format
                     :markdown md/render
-                    :org-mode #?(:clj org-mode/render
-                                 :cljs identity))]
+                    :org-mode org-mode/render)]
     (some-> body
             (pre-transform body-format)
             (render-fn)

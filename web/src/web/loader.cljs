@@ -13,3 +13,7 @@
     (.addCallback loader (fn [_result]
                            (async/put! ch :loaded)))
     ch))
+
+(defn load-mlorg
+  []
+  (load "https://putchar.org/mlorg.js"))
