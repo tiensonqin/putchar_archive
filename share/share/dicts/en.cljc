@@ -201,7 +201,6 @@
    :star "Star"
    :unstar "Unstar"
    :about "About"
-   :back-to-top "BACK TO TOP"
    :report-delete-confirmation "Are you sure you want to delete this?"
    :no-replies-yet "No replies yet."
    :back-to "Back to "

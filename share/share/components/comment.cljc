@@ -6,7 +6,6 @@
             [share.components.report :as report]
             [share.components.widgets :as widgets]
             #?(:cljs [goog.dom :as gdom])
-            #?(:cljs [web.scroll :as scroll])
             [share.kit.colors :as colors]
             [share.dommy :as dommy]
             [share.kit.mixins :as mixins]

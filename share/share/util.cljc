@@ -637,8 +637,8 @@
   #?(:cljs
      (when hash-part
        (when-not (s/blank? hash-part)
-        (when-let [element (gdom/getElement (subs hash-part 1))]
-          (scroll/into-view element))))))
+         (when-let [element (gdom/getElement (subs hash-part 1))]
+           (scroll/into-view element))))))
 
 ;; TODO: remove this
 (defn me?

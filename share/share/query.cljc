@@ -96,7 +96,8 @@
     (let [post-filter :latest]
       {:q {:user {:fields [:id :screen_name :name :bio :github_handle :tags
                            [:posts {:fields post-fields
-                                    :filter post-filter}]]}}
+                                    :filter post-filter
+                                    :cursor {:limit 100}}]]}}
        :args {:user {:screen_name (:screen_name args)}}
        :merge {:user-posts [:posts :by-screen-name (:screen_name args) post-filter]}})))
 

@@ -14,8 +14,7 @@ html {
     -ms-overflow-style: scrollbar;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     line-height: 1.15;
-    background-color: #fff;
-    background-image: url("https://img.putchar.org/noise.png")
+    background-color: #fcfcfc;
 }
 
 body {
@@ -370,6 +369,7 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist,
 
 .col-item {
     overflow: hidden;
+    border-bottom: 1px solid #efefef;
 }
 
 .fadein {

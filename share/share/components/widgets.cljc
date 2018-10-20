@@ -165,7 +165,7 @@
                            :padding "2px 6px 0 6px"}}
            (t :latest-comments)]])]]]))
 
-(rum/defc back-to-top < rum/reactive
+(rum/defc desktop-alerts < rum/reactive
   []
   (let [url (util/get-current-url)
         current-user (citrus/react [:user :current])
@@ -197,24 +197,7 @@
           :href "/reports"}
          [:i {:class "fa fa-flag"
               :style {:font-size 20
-                      :color "#0000ff"}}]]])
-
-     (if (and last-scroll-top (> last-scroll-top 200))
-       [:a#back-to-top.fadein
-        {:style {:position "fixed"
-                 :bottom 20
-                 :right 20
-                 :width 36
-                 :height 36
-                 :z-index 9999
-                 :border-radius 2
-                 :padding-top 6
-                 :text-align "center"}
-         :on-click (fn []
-                     (util/scroll-to-top))}
-        (ui/icon {:type :back-to-top
-                  :color "#efefef"})
-        ])]))
+                      :color "#0000ff"}}]]])]))
 
 (rum/defc website-logo < rum/reactive
   []

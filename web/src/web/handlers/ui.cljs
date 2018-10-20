@@ -21,8 +21,11 @@
          (.scroll js/window #js {:top 0
                                  ;; :behavior "smooth"
                                  }))
-       {:state (assoc-in state [:last-scroll-top current-url] v) })
-     )
+       {:state (assoc-in state [:last-scroll-top current-url] v) }))
+
+   :citrus/set-scroll-top!
+   (fn [state current-url v]
+     {:state (assoc-in state [:last-scroll-top current-url] v) })
 
    :citrus/reset-search-mode?
    (fn [state v]
@@ -31,11 +34,6 @@
    :citrus/toggle-search-mode?
    (fn [state]
      {:state (update state :search-mode? not)})
-
-   :citrus/hide-github-connect
-   (fn [state]
-     {:state (assoc state :hide-github-connect? true)
-      :cookie [:set-forever "hide-github-connect" true]})
 
    :citrus/hide-votes
    (fn [state]
@@ -81,4 +79,5 @@
    :citrus/close-drawer?
    (fn [state]
      (dommy/set-style! (dommy/sel1 "body") "overflow" "inherit")
-     {:state {:open-drawer? false}})})
+     {:state {:open-drawer? false}})
+})

@@ -439,12 +439,7 @@
 
        (mixins/listen state js/window :touchend
                       (fn [e]
-                        (citrus/dispatch! :citrus/touch-end e)))
-
-       (.addEventListener js/window "scroll"
-                          (fn []
-                            (let [scroll-top (util/scroll-top)]
-                              (citrus/dispatch! :citrus/set-scroll-top (util/get-current-url) scroll-top)))))
+                        (citrus/dispatch! :citrus/touch-end e))))
      :clj nil))
 
 (def rendered? (atom false))
@@ -457,22 +452,27 @@
 
 (rum/defc root < rum/reactive
   (mixins/event-mixin attach-listeners)
-  {:will-mount (fn [state]
-                 #?(:cljs
-                    (scroll/close!))
-                 state)
-   :after-render (fn [state]
+  {:after-render (fn [state]
                    #?(:cljs
-                      (do
-                        (let [reconciler (-> state :rum/args first)]
-                         (let [last-position (get-in @reconciler
-                                                     [:last-scroll-top (util/get-current-url)])]
-                           (if (nil? last-position)
-                             (.scrollTo js/window 0 0)
-                             (.scrollTo js/window 0 last-position))))
-                        (.addEventListener js/window "popstate"
-                                           (fn [e]
-                                             (citrus/dispatch-sync! :query/into-back-mode)))))
+                      (let [reconciler (-> state :rum/args first)
+                            current-url (util/get-current-url)
+                            last-position (get-in @reconciler
+                                                  [:last-scroll-top current-url])
+                            hash-part js/window.location.hash]
+                        (cond
+                          (and hash-part (not (str/blank? (str/trim hash-part))))
+                          (util/scroll-to-element hash-part)
+
+                          last-position
+                          (.scrollTo js/window 0 last-position)
+
+                          :else
+                          (do
+                            (.scrollTo js/window 0 0)
+                            (citrus/dispatch-sync!
+                             :citrus/set-scroll-top!
+                             current-url
+                             0)))))
                    state)}
   [reconciler]
   (let [open-drawer? (citrus/react [:open-drawer?])
@@ -485,10 +485,7 @@
         preview? (and
                   (contains? #{:new-post :post-edit} route)
                   (citrus/react [:post :form-data :preview?]))
-        post-page? (= route :post)
-        hide-github-connect? (contains? #{true "true"} (citrus/react [:hide-github-connect?]))
-        theme (citrus/react [:theme])
-        ]
+        post-page? (= route :post)]
     [:div.column
      [:div.main
 
@@ -522,5 +519,5 @@
      ;; report modal
      (report/report)
      (when-not mobile?
-       (widgets/back-to-top))
+       (widgets/desktop-alerts))
      (if open-drawer? (drawer current-user))]))

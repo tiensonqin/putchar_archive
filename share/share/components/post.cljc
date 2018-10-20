@@ -22,7 +22,8 @@
             [share.kit.infinite-list :as inf]
             [share.admins :as admins]
             #?(:cljs [appkit.storage :as storage])
-            #?(:cljs [web.scroll :as scroll])))
+            #?(:cljs [web.scroll :as scroll])
+            ))
 
 (rum/defcs vote < rum/reactive
   (rum/local 0 ::init-tops)
@@ -733,19 +734,19 @@
 
             (let [link (:link post)]
               [:a.post-title.no-decoration (if link
-                                             {:style {:margin-right 6
-                                                      :display "inline-block"}
+                                             {:style {:margin-right 6}
                                               :on-click (fn [e]
                                                           (.stopPropagation e))
                                               :href link
                                               :target "_blank"}
 
-                                             {:style {:margin-right 6
-                                                      :display "inline-block"}
+                                             {:style {:margin-right 6}
                                               :on-click util/stop
                                               :href post-link})
                (:title post)])
-            (tags (:tags post) {:style {:margin-left 6}})
+
+            ;; (when-not mobile?
+            ;;   (tags (:tags post) {:style {:margin-left 6}}))
 
             (when (and self? drafts-path?)
               (ui/menu
@@ -779,15 +780,13 @@
               [:div.space-between
                (let [link (:link post)]
                  [:a.post-title.no-decoration (if link
-                                                {:style {:margin-right 6
-                                                         :display "inline-block"}
+                                                {:style {:margin-right 6}
                                                  :on-click (fn [e]
                                                              (.stopPropagation e))
                                                  :href link
                                                  :target "_blank"}
 
-                                                {:style {:margin-right 6
-                                                         :display "inline-block"}
+                                                {:style {:margin-right 6}
                                                  :on-click util/stop
                                                  :href post-link})
                   (:title post)])
@@ -1086,10 +1085,15 @@
                 avatar (util/cdn-image (:screen_name user))]
             [:div.column.center-area {:key "post"}
              [:div.auto-padding {:style {:margin-top 24}}
+              [:div.row
+               (when (seq (:tags post))
+                 (tags (:tags post) nil))]
+
               [:div.column1 {:style (if mobile?
                                       {}
                                       {:align-items "center"
-                                       :justify-content "center"})}
+                                       :justify-content "center"
+                                       :margin-top 48})}
                [:h1.post-page-title {:style {:color "#000"}}
                 (str/capitalize (:title post))]
 
@@ -1134,11 +1138,7 @@
                        :style {:color colors/primary
                                :margin-left 6
                                :display "block"}}
-                   (:paper_title post)]])
-
-               [:div.row
-                (when (seq (:tags post))
-                  (tags (:tags post) nil))]]
+                   (:paper_title post)]])]
               [:div.post
                (when (:body_html post)
                  (widgets/raw-html {:on-mouse-up (fn [e]

@@ -57,13 +57,6 @@
        (util/clear-interval interval))
      (dissoc state name))})
 
-(def scroll-to-bottom
-  {:did-update (fn [state]
-                 #?(:cljs
-                    (if-let [node (rum/dom-node state)]
-                      (set! (.-scrollTop node) (.-scrollHeight node))))
-                 state)})
-
 (defn esc-listeners
   [state open? & {:keys [on-close stop?]}]
   #?(:clj

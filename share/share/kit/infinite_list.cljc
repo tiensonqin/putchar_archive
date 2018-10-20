@@ -4,7 +4,8 @@
             #?(:cljs [appkit.macros :refer [oget]])
             [share.kit.mixins :as mixins]
             [rum.core :as rum]
-            [share.util :as util]))
+            [share.util :as util]
+            [appkit.citrus :as citrus]))
 
 #?(:cljs
    (defn on-scroll
@@ -17,6 +18,8 @@
                         js/document.body.scrollTop)
            scrolled-bottom (+ scrolled viewport-height)
            bottom-reached? (>= scrolled-bottom (- full-height 200))]
+       (let [scroll-top (util/scroll-top)]
+         (citrus/dispatch! :citrus/set-scroll-top (util/get-current-url) scroll-top))
        (when bottom-reached?
          (on-load)))))
 
@@ -24,7 +27,7 @@
   "Attach scroll and resize listeners."
   [state]
   #?(:cljs (let [opts (-> state :rum/args second)
-                 debounced-on-scroll (util/debounce 300 #(on-scroll (:on-load opts)))]
+                 debounced-on-scroll (util/debounce 500 #(on-scroll (:on-load opts)))]
              (mixins/listen state js/window :scroll debounced-on-scroll))
      :clj nil))
 

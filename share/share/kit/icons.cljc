@@ -368,11 +368,6 @@
 </svg>
 "
                     fill width height))
-   :back-to-top (fn [{:keys [width height fill]}]
-                  (util/format
-                   "<svg class=\"back-to-top\" title=\"BACK TO TOP\" viewBox=\"0 0 24 24\" fill=\"%s\" width=\"%d\" height=\"%d\"><path d=\"M16.036 19.59a1 1 0 0 1-.997.995H9.032a.996.996 0 0 1-.997-.996v-7.005H5.03c-1.1 0-1.36-.633-.578-1.416L11.33 4.29a1.003 1.003 0 0 1 1.412 0l6.878 6.88c.782.78.523 1.415-.58 1.415h-3.004v7.005z\"></path></svg>
-"
-                   fill width height))
    :format-bold (fn [{:keys [width height fill]}]
                   (util/format
                    "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">

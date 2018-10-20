@@ -121,7 +121,7 @@
                                      :where [[:< :flake_id (:flake_id last-post)]]})
 
                                   :voted
-                                  {:after (:id last-post)})}
+                                  {:after (:flake_id last-post)})}
                        (merge params))]
        {:state (-> state
                    (assoc-in [:post :filter] post-filter))

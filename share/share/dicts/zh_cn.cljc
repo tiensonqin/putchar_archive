@@ -207,7 +207,6 @@
    :star "收藏"
    :unstar "取消收藏"
    :about "关于"
-   :back-to-top "回到顶部"
    :set-as-cover "设为封面"
    :save "保存"
    :upload "上传"

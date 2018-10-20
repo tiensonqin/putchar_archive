@@ -105,16 +105,6 @@
      (let [qid (util/md5-query ((get query/queries route-handler) state params))]
        {:state (update-in state (concat [:query :cache qid] ks) merge data)}))
 
-   :query/into-back-mode
-   (fn [state]
-     {:state {:back-mode? true}
-      :timeout {:duration 1000
-                :events [:query/leave-back-mode]}})
-
-   :query/leave-back-mode
-   (fn [state]
-     {:state {:back-mode? false}})
-
    :citrus/cache-server-first-reply
    (fn [{:keys [query initial-query-result] :as state}]
      (if-let [q (:q query)]
