@@ -35,9 +35,7 @@
              :style {:margin "0 12px 0 0"
                      :color colors/primary}
              :key tag}
-         (str "#" tag)])]
-     [:div {:style {:margin-top 6}}
-      (widgets/transform-content (:authors paper) nil)]]))
+         (str "#" tag)])]]))
 
 (rum/defc papers-stream < rum/reactive
   [papers end?]
