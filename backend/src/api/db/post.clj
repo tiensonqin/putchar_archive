@@ -37,7 +37,7 @@
                                   :lang
                                   :body :body_format :body_html :tags
                                   :book_id :book_title
-                                  :cover :video]
+                                  :cover]
                          :from [table]})
 
 ;; user-screen-name => (map of tag * post-count)
@@ -377,7 +377,8 @@
   [id]
   [:and
    [:= :user_id id]
-   [:= :is_draft false]])
+   [:= :is_draft false]
+   [:= :link nil]])
 
 (defn get-drafts
   [db uid cursor]
@@ -394,6 +395,13 @@
    (get-user-new db id (user-post-conditions id) cursor))
   ([db id post-conditions cursor]
    (get-new db post-conditions cursor)))
+
+(defn get-user-links
+  [db id cursor]
+  (get-new db [:and
+               [:= :user_id id]
+               [:= :is_draft false]
+               [:<> :link nil]] cursor))
 
 (defn get-book-posts
   [db book-id cursor]

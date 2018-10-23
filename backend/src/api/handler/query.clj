@@ -167,17 +167,12 @@
                      (get-user-tag-posts conn data)
 
                      (and (:user_id data) (= :latest (:filter data)))
-                     (let [self? (= (:user_id data) uid)]
-                       (post/get-user-new conn (:user_id data)
-                                          (if self?
-                                            [:and
-                                             [:= :user_id (:user_id data)]
-                                             [:= :is_draft false]]
-                                            [:and
-                                             [:= :user_id (:user_id data)]
-                                             [:= :is_draft false]
-                                             [:in :lang languages]])
-                                          cursor))
+                     (post/get-user-new conn (:user_id data)
+                                        cursor)
+
+                     (and (:user_id data) (= :links (:filter data)))
+                     (post/get-user-links conn (:user_id data)
+                                          cursor)
 
                      ;; book
                      (and (:book_id data) (= :latest-reply (:filter data)))

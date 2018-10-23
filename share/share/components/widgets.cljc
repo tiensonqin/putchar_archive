@@ -94,6 +94,7 @@
         current-user (citrus/react [:user :current])
         current-path (citrus/react [:router :handler])
         drafts? (= current-path :drafts)
+        links? (= current-path :links)
         self? (and current-user
                    (= screen_name (:screen_name current-user)))
         comments? (= current-path :comments)]
@@ -157,6 +158,13 @@
                              :margin-left 12
                              :padding "2px 6px 0 6px"}}
              (t :drafts)])
+          [:a.tag {:href (str "/@" screen_name "/links")
+                   :class (if links? "active" "")
+                   :style {:align-items "center"
+                           :margin 0
+                           :margin-left 12
+                           :padding "2px 6px 0 6px"}}
+           (t :links)]
           [:a.tag {:href (str "/@" screen_name "/comments")
                    :class (if comments? "active" "")
                    :style {:align-items "center"

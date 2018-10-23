@@ -15,6 +15,7 @@
         ["notifications"                                          :notifications]
         ["settings"                                               :profile]
         [["@" :screen_name]                                       :user]
+        [["@" :screen_name "/links"]                              :links]
         ["votes"                                                  :votes]
         ["stats"                                                  :stats]
         ["latest"                                                 :latest]
@@ -30,7 +31,8 @@
         ["search"                                                 :search]
         ["reports"                                                :reports]
         ["moderation-logs"                                        :moderation-logs]
-        ["new-post"                                               :new-post]
+        ["new-article"                                               :new-post]
+        ["new-link"                                               :new-link]
         [["@" :screen_name "/comments"]                           :comments]
 
         [["tag/" [#"[^\/]+" :tag]]                                :tag]

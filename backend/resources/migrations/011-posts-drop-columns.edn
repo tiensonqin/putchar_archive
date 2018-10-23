@@ -1,0 +1,4 @@
+{:up ["alter table posts drop column video"
+      "alter table posts drop column paper_id"
+      "alter table posts drop column paper_title"]
+ :down [""]}

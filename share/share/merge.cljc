@@ -115,6 +115,9 @@
 (defmethod mergef :home [state route-handler q result _k]
   state)
 
+(defmethod mergef :links [state route-handler q result _k]
+  state)
+
 (defmethod mergef :drafts [state route-handler q {:keys [current-user] :as result} _k]
   (-> state
       (mergef :user q {:user (dissoc current-user :drafts)} :user)

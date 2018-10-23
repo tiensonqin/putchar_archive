@@ -315,4 +315,7 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
    :join "加入"
    :leave "离开"
    :hot-tags "热门标签"
+   :or-submit-a-link "或者分享链接"
+   :submit-a-link "分享链接"
+   :links "链接"
    })

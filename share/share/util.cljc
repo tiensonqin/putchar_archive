@@ -90,7 +90,7 @@
 
 (defn date-format
   ([date]
-   (date-format date "yyyy/M/dd"))
+   (date-format date "yyyy/MM/dd"))
   ([date format]
    (if date
      #?(:cljs
@@ -590,8 +590,7 @@
   [permalink]
   (let [[screen-name title] (s/split permalink #"/")]
     {:screen_name (subs screen-name 1)
-     :permalink title})
-  )
+     :permalink title}))
 
 (defn encode
   [tag]

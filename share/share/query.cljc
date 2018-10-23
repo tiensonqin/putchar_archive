@@ -3,7 +3,7 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :title :rank :permalink :link :created_at :comments_count :tops :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters :book_id :book_title])
+  [:id :flake_id :user :title :rank :permalink :link :created_at :comments_count :tops :cover :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters :book_id :book_title])
 
 (defn- get-post-filter
   [state]
@@ -45,7 +45,7 @@
                             :last_reply_at
                             :tops
                             :comments_count
-                            :book_id :book_title
+                            :book_id :book_title :link
                             [:user {:fields [:id :screen_name :name :bio]}]
                             [:comments {:fields [:*]
                                         :cursor {:limit 100}}]]}}
@@ -96,6 +96,16 @@
     (let [post-filter :latest]
       {:q {:user {:fields [:id :screen_name :name :bio :github_handle :tags
                            [:posts {:fields post-fields
+                                    :filter post-filter
+                                    :cursor {:limit 100}}]]}}
+       :args {:user {:screen_name (:screen_name args)}}
+       :merge {:user-posts [:posts :by-screen-name (:screen_name args) post-filter]}})))
+
+(def links-query
+  (fn [state args]
+    (let [post-filter :links]
+      {:q {:user {:fields [:id :screen_name :name :bio :github_handle :tags
+                           [:posts {:fields [:id :flake_id :title :permalink :link :created_at :tags :book_id :book_title]
                                     :filter post-filter
                                     :cursor {:limit 100}}]]}}
        :args {:user {:screen_name (:screen_name args)}}
@@ -182,6 +192,8 @@
    :post-edit post-edit-query
 
    :user user-query
+
+   :links links-query
 
    :book book-query
 

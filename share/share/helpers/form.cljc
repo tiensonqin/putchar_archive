@@ -209,13 +209,25 @@
         (:image-upload-error @form)])]))
 
 (rum/defc select
-  [options select-opts]
-  [:select select-opts
-   (for [{:keys [value text selected]} options]
-     [:option (cond-> {:key value}
-                selected
-                (assoc :selected "selected"))
-      text])])
+  [form-data name {:keys [label options select-opts default class]
+                   :as opts}]
+  (when (and (nil? (get @form-data name))
+             default)
+    (swap! form-data assoc name default))
+  [:div {:class (str "field " class)}
+   (if label [:label {:class "label"} label])
+   [:select (merge
+             {:on-change (fn [e]
+                           (let [text (util/ev e)]
+                             (when-let [value (-> (filter #(= text (second %)) options)
+                                                  ffirst)]
+                               (swap! form-data assoc name value))))}
+             select-opts)
+    (for [[value text] options]
+      [:option (cond-> {:key value}
+                 (and default (= default value))
+                 (assoc :selected "selected"))
+       text])]])
 
 (rum/defc submit < rum/reactive
   [on-submit {:keys [submit-text
@@ -334,6 +346,7 @@
           (let [f (case (:type attrs)
                     :checkbox checkbox
                     :radio radio
+                    :select select
                     :image image
                     input)
                 attrs (if (= (:type attrs) :textarea)
@@ -361,7 +374,7 @@
                         (assoc attrs :warning-show? true)
                         attrs)]
             (rum/with-key (cond
-                            (contains? #{input checkbox radio image} f)
+                            (contains? #{input checkbox select radio image} f)
                             (f form-data name attrs)
 
                             :else
@@ -369,9 +382,10 @@
 
        (if footer (footer form-data))
        ;; submit
-       (submit validated-on-submit
-               {:submit-text submit-text
-                :submit-style submit-style
-                :cancel-button? cancel-button?
-                :confirm-attrs confirm-attrs
-                :loading? loading?})])))
+       [:div {:style {:margin-top 12}}
+        (submit validated-on-submit
+                {:submit-text submit-text
+                 :submit-style submit-style
+                 :cancel-button? cancel-button?
+                 :confirm-attrs confirm-attrs
+                 :loading? loading?})]])))

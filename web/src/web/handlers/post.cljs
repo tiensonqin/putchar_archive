@@ -137,17 +137,29 @@
 
    :post/update-failed
    (fn [state result]
-     {:state (cond
-               (and (= (:status result) 400)
-                    (= (get-in result [:body :message]) ":post-title-exists"))
-               {:post-title-exists? true}
+     {:state (->
+              (cond
+                (and (= (:status result) 400)
+                     (= (get-in result [:body :message]) ":post-permalink-exists"))
+                {:post-permalink-exists? true}
 
-               :else
-               state)})
+                (and (= (:status result) 400)
+                     (= (get-in result [:body :message]) ":post-title-exists"))
+                {:post-title-exists? true}
+
+                (and (= (:status result) 400)
+                     (= (get-in result [:body :message]) ":post-link-exists"))
+                {:post-link-exists? true}
+
+                :else
+                state)
+              (assoc :loading? false))})
 
 
    :citrus/update-ready
    (fn [state result]
+     (prn (:permalink result))
+     (prn result)
      (util/set-href! (str config/website "/" (:permalink result)))
      {:state state})
 
@@ -216,6 +228,13 @@
 
    :citrus/set-post-form-data
    set-post-form-data
+
+   :post/new-link
+   (fn [state form-data]
+     {:state {:loading? true}
+      :http {:params [:post/new-link @form-data]
+             :on-load :citrus/update-ready
+             :on-error :post/update-failed}})
 
    ;; server will redirect to post-edit
    :post/new-draft

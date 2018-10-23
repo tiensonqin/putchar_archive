@@ -256,6 +256,35 @@
       (stat/create conn post-id "read" (:remote-addr request))
       (util/ok {:read true}))))
 
+(defmethod handle :post/new-link [[{:keys [uid datasource redis]} data]]
+  (j/with-db-transaction [conn datasource]
+    (if (block/examine conn uid)
+      (let [user (u/get conn uid)
+            screen-name (:screen_name user)
+            permalink (post/permalink screen-name (:title data))]
+        (cond
+          (and (not (str/blank? (:title data)))
+               (du/exists? conn :posts [:and
+                                        [:= :title (:title data)]
+                                        [:= :user_id uid]]))
+          (util/bad :post-title-exists)
+
+          (and permalink
+               (du/exists? conn :posts [:= :permalink permalink]))
+          (util/bad :post-permalink-exists)
+
+         (and (not (str/blank? (:link data)))
+              (du/exists? conn :posts [:= :link (:link data)]))
+         (util/bad :post-link-exists)
+
+         :else
+         (when-let [post (post/create conn (assoc data
+                                                  :user_id uid
+                                                  :permalink permalink
+                                                  :is_draft false))]
+           (util/ok post))))
+      (util/bad "Sorry your account is disabled for now."))))
+
 (defmethod handle :post/new [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
     (if (block/examine conn uid)
@@ -285,10 +314,6 @@
                                                               (or
                                                                (:title data)
                                                                (:title old-post))))
-                       data)
-                data (if (:body data)
-                       (assoc data
-                              :video (content/get-first-youtube-video (:body data)))
                        data)
                 post (post/update conn id (dissoc data :id))]
             (when (and moderator (seq diff))

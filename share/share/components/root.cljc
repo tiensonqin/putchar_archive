@@ -46,14 +46,18 @@
                           (user/profile (atom current-user)))
          :user          (fn [params current-user]
                           (user/user params))
+         :links         (fn [params current-user]
+                          (user/links params))
          :comments      (fn [params current-user]
                           (user/comments params))
          :tag           (fn [params current-user]
                           (post/tag-posts params))
          :user-tag      (fn [params current-user]
                           (post/user-tag-posts params))
-         :new-post (fn [params current-user]
+         :new-post      (fn [params current-user]
                           (post/new))
+         :new-link      (fn [params current-user]
+                          (post/new-link))
          :post          (fn [params current-user]
                           (post/post params))
          :comment       (fn [params current-user]
@@ -272,16 +276,26 @@
                :id "right-head"}
 
          (when (not post?)
-           [:a.row1.no-decoration {:style {:align-items "center"
-                                           :color colors/primary
-                                           :padding-right 12}
-                                   :href "/new-post"}
-            (ui/icon {:type :edit
-                      :color colors/shadow
-                      :width 22
-                      :opts {:style {:margin-right (if mobile? 0 6)}}})
-            (when (not mobile?)
-              (t :write-new-post))])
+           (ui/menu
+             [:a.row1.no-decoration {:style {:align-items "center"
+                                             :color colors/primary
+                                             :padding-right 12}
+                                     :href "/new-article"}
+              (ui/icon {:type :edit
+                        :color colors/shadow
+                        :width 22
+                        :opts {:style {:margin-right (if mobile? 0 6)}}})
+              (when (not mobile?)
+                (t :write-new-post))]
+             [[:a.button-text {:href "/new-link"
+                               :style {:font-size 14}}
+               (t :or-submit-a-link)
+               (ui/icon {:type :link
+                         :color colors/shadow
+                         :width 22
+                         :opts {:style {:margin-left 6}}})]]
+             {:menu-style {:margin-top 18
+                           :width 160}}))
 
          ;; publish
          (if post?
@@ -494,7 +508,7 @@
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats :books :book :book-edit :new-book} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-link :new-post :post-edit :post :comment :comments :drafts :user-tag :login :stats :books :book :book-edit :new-book :links} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 0

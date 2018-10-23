@@ -20,7 +20,8 @@
         stared_books (citrus/react [:user :current :stared_books])
         books (if stared_books stared_books
                   (citrus/react [:books :latest]))
-        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))
+        more? (> (count books) 7)]
     [:div.column1 {:style {:padding 12
                            :margin-top (if mobile? 24 0)}}
      [:a.row1 {:style {:margin-bottom 12
@@ -48,19 +49,21 @@
                                   :white-space "nowrap"
                                   :text-overflow "ellipsis"}}
                       title])]
-       (if (> (count books) 7)
+       (if (and more? (not @expand?))
          [:div.column1
           (for [item (take 7 books)]
             (item-cp item))
           [:a.control {:style {:font-size 14
                                :margin-left 3}
                        :on-click #(swap! expand? not)}
-           (if @expand?
-             (t :collapse)
-             (t :show-all))]]
+           (t :show-all)]]
          [:div.column1
           (for [item books]
-            (item-cp item))]))]))
+            (item-cp item))
+          [:a.control {:style {:font-size 14
+                               :margin-left 3}
+                       :on-click #(swap! expand? not)}
+           (if more? (t :collapse))]]))]))
 
 (rum/defcs tags < rum/reactive
   (rum/local false ::expand?)
@@ -69,7 +72,8 @@
         tags (citrus/react [:user :current :followed_tags])
         tags (if tags tags
                  (map first (citrus/react [:hot-tags])))
-        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))
+        more? (> (count tags) 12)]
     [:div.column1 {:style {:padding 12}}
      [:div.row1 {:style {:margin-bottom 12
                          :color colors/primary
@@ -97,73 +101,67 @@
                                   :white-space "nowrap"
                                   :text-overflow "ellipsis"}}
                       tag])]
-       (if (> (count tags) 20)
+       (if (and more? (not @expand?))
          [:div.row {:style {:flex-wrap "wrap"
                             :width 243}}
-          (for [item (take 20 tags)]
+          (for [item (take 12 tags)]
             (item-cp item))
           [:a.control {:style {:font-size 14
                                :margin-left 3
                                :padding-right 3}
                        :on-click #(swap! expand? not)}
-           (if @expand?
-             (t :collapse)
-             (t :show-all))]]
+           (t :show-all)]]
          [:div.row {:style {:flex-wrap "wrap"
                             :width 243}}
           (for [item tags]
-            (item-cp item))]))]))
+            (item-cp item))
+          [:a.control {:style {:font-size 14
+                               :margin-left 3
+                               :padding-right 3}
+                       :on-click #(swap! expand? not)}
+           (if more? (t :collapse))]]))]))
 
 (rum/defc footer < rum/reactive
   []
   (let [locale (citrus/react :locale)
         zh-cn? (= locale :zh-cn)
         mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div.right-sub.column1 {:style {:font-size 14
-                                     :padding 12}}
+    [:div {:style {:font-size 14
+                   :padding 12
+                   :position "fixed"
+                   :bottom 24}}
 
-     [:div.row1 {:style {:align-items "center"}}
-      [:a.control {:href "/latest"
-                   :on-click (fn []
-                               (citrus/dispatch! :citrus/re-fetch :latest {}))}
-       (t :new-created)]
+     [:div.row1 {:style {:align-items "center"
+                         :flex-wrap "wrap"}}
       [:a.control
-       {:style {:margin-left 24}
-        :key "about"
+       {:key "about"
         :href "/about"}
-       (t :about)]]
+       (t :about)]
 
-     [:div.row1 {:style {:align-items "center"
-                         :margin-top 16}}
+      [:a {:href "/hot.rss"
+           :target "_blank"
+           :style {:margin-left 16}}
 
-      [:a.control {:href "/tag/feature-requests"}
-       (t :feature-requests)]
-
-      [:a.control
-       {:style {:margin-left 24}
-        :href "mailto:tiensonqin@gmail.com"}
-       (t :contact-us)]]
-
-     [:div.row1 {:style {:align-items "center"
-                         :flex-wrap "wrap"
-                         :margin-top 16}}
-      (widgets/subscribe "/hot.rss")
+       (ui/icon {:type :rss
+                 :width 22
+                 :color colors/shadow})]
 
       [:a {:href "https://github.com/tiensonqin/putchar"
-           :style {:margin-left 24}}
+           :style {:margin-left 16}}
+
        (ui/icon {:type :github
                  :width 18
                  :color colors/shadow})]
 
-      [:a {:href "https://twitter.com/putchar_org"
+      [:a {:href "mailto:tiensonqin@gmail.com"
            :style {:margin-left 16}}
-       (ui/icon {:type :twitter
+       (ui/icon {:type :mail_outline
                  :color colors/shadow
-                 :width 20
-                 :height 20
-                 :opts {:style {:margin-top 1}}})]
+                 :width 22
+                 :height 22
+                 :opts {:style {:margin-top 2}}})]
 
-      (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
+      (ui/dropdown {:overlay (ui/button {:style {:margin-top 0}
                                          :on-click (fn [e]
                                                      (util/stop e)
                                                      (citrus/dispatch! :citrus/set-locale (if zh-cn?
@@ -173,7 +171,7 @@
                                  "English"
                                  "简体中文"))
                     :animation "slide-up"}
-                   [:a {:style {:margin-left 12
+                   [:a {:style {:margin-left 15
                                 :margin-top 3}}
                     (ui/icon {:type :translate
                               :width 20

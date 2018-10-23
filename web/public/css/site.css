@@ -286,12 +286,6 @@ input.white:focus {
     box-shadow: none;
 }
 
-.hover-shadow {
-    -moz-box-shadow: 0 4px 8px #aaa;
-    -webkit-box-shadow: 0 4px 8px #aaa;
-    box-shadow: 0 4px 8px #aaa;
-}
-
 .hover-shadow:hover
 {
     -moz-box-shadow: 0 5px 20px #333;

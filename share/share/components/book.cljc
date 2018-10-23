@@ -21,17 +21,14 @@
         mobile? (util/mobile?)]
     [:a.column1 {:key (:id book)
                  :href link
-                 :style {:padding (if mobile?
-                                    "24px 0"
-                                    "12px 24px 12px 0")
+                 :style {:padding 12
                          :color colors/primary}}
      (if (:cover book)
        (let [style (if mobile?
-                     {:width "100%"
-                      :background-color "#fefefe"}
+                     {:width 100
+                      :height 200}
                      {:width 230
-                      :height 300
-                      :background-color "#fefefe"})]
+                      :height 300})]
          [:div {:style style}
           [:img.hover-shadow {:src (:cover book)
                               :style (merge
@@ -197,20 +194,20 @@
 (defn book-fields
   []
   {:title {:label (str (t :title) ": *")
-                  :validators? [util/non-blank?]}
+                  :validators [util/non-blank?]}
    :authors      {:label (str (t :authors) ": *")
                   :placeholder (t :authors-placeholder)
-                  :validators? [util/non-blank?]
+                  :validators [util/non-blank?]
                   :type :textarea
                   :style {:height 80
                           :resize "none"}}
    :description  {:label (t :description)
                   :type :textarea
-                  :validators? [util/non-blank?]
+                  :validators [util/non-blank?]
                   :style {:height 96
                           :resize "none"}}
    :link         {:label (str (t :link) ":")
-                  :validators? [util/link?]}
+                  :validators [util/link?]}
    :cover        {:label (t :cover)
                   :type :image}})
 
@@ -247,7 +244,7 @@
                   :style {:height 80
                           :resize "none"}}
    :link         {:label (str (t :link) ":")
-                  :validators? [util/link?]}
+                  :validators [util/link?]}
    :tags         {:label (t :tags)
                   :value (:tags @form-data)}
    :description  {:label (t :description)
