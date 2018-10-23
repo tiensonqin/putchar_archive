@@ -159,13 +159,13 @@
                         (citrus/react [:lateset-form-data])
                         :markdown)]
     [:div.row {:style {:position "relative"}}
-     (if (< (count value) 254)
+     (if (< (count value) 256)
        [:div {:style {:position "absolute"
                       :top -12
                       :right 0}}
         [:span {:style {:font-size 14
                         :color "#b22222"}}
-         (- 254 (count value))]])
+         (- 256 (count value))]])
      (when-not (and mobile? (:preview? form-data))
        [:div.editor.row {:style {:min-height 800}}
         (post-box/post-box
