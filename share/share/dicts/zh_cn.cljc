@@ -314,4 +314,5 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
    :moderation-logs "管理日志"
    :join "加入"
    :leave "离开"
+   :hot-tags "热门标签"
    })

@@ -16,7 +16,6 @@
         ["settings"                                               :profile]
         [["@" :screen_name]                                       :user]
         ["votes"                                                  :votes]
-        ["votes"                                              :votes]
         ["stats"                                                  :stats]
         ["latest"                                                 :latest]
         ["latest-reply"                                           :latest-reply]
@@ -24,23 +23,24 @@
         ["hot.rss"                                                :hot-rss]
         [["@" :screen_name "/latest.rss"]                         :user-latest-rss]
         ;; tag
-        [["tag/" [#"[^\/]+" :tag] "/latest.rss"]                                             :tag-rss]
+        ["tags"                                                   :tags]
+        [["tag/" [#"[^\/]+" :tag] "/latest.rss"]                  :tag-rss]
         ;; book
-        [["book/" [ #"\d+" :book-id ] "/latest.rss"]                                      :book-rss]
+        [["book/" [ #"\d+" :book-id ] "/latest.rss"]              :book-rss]
         ["search"                                                 :search]
         ["reports"                                                :reports]
-        ["moderation-logs"                                                :moderation-logs]
-        ["new-post"                                                    :new-post]
-        [["@" :screen_name "/comments"]   :comments]
+        ["moderation-logs"                                        :moderation-logs]
+        ["new-post"                                               :new-post]
+        [["@" :screen_name "/comments"]                           :comments]
 
-        [["tag/" [#"[^\/]+" :tag]]                                             :tag]
+        [["tag/" [#"[^\/]+" :tag]]                                :tag]
 
-        [["@" :screen_name "/tag/" [#"[^\/]+" :tag]]                          :user-tag]
+        [["@" :screen_name "/tag/" [#"[^\/]+" :tag]]              :user-tag]
 
         ["drafts"                                                 :drafts]
         [["p/" :post-id "/edit"]                                              :post-edit]
         [["@" :screen_name "/" [#"[^\/]+" :permalink]]                        :post]
-        [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]        :comment]
+        [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]       :comment]
 
         ;; books
         ["books"                                                 :books]

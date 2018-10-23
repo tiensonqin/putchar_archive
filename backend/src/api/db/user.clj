@@ -20,7 +20,8 @@
 
 (defonce ^:private table :users)
 (def ^:private fields [:id :name :screen_name :email :language :languages :bio :stared_books
-                       :github_id :created_at :github_handle :last_seen_at :email_notification])
+                       :github_id :created_at :github_handle :last_seen_at :email_notification
+                       :followed_tags])
 
 (def ^:private base-map {:select fields
                          :from [table]})

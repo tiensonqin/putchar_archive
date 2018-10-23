@@ -17,7 +17,7 @@
                         js/document.documentElement.scrollTop
                         js/document.body.scrollTop)
            scrolled-bottom (+ scrolled viewport-height)
-           bottom-reached? (>= scrolled-bottom (- full-height 200))]
+           bottom-reached? (>= scrolled-bottom (- full-height 500))]
        (let [scroll-top (util/scroll-top)]
          (citrus/dispatch! :citrus/set-scroll-top (util/get-current-url) scroll-top))
        (when bottom-reached?

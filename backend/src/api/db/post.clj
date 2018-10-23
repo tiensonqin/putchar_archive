@@ -43,6 +43,17 @@
 ;; user-screen-name => (map of tag * post-count)
 (def tags-k "post-user-tags")
 
+;; tag => post-count
+(def hot-tags-k "hot-tags")
+
+(defn get-hot-tags
+  [limit]
+  (some->>
+   (cache/wcar*
+    (car/zrevrange hot-tags-k 0 limit :withscores))
+   (partition 2)
+   (map (fn [[k c]]
+          [k (Integer/parseInt c)]))))
 
 (defn normalize
   [db post]

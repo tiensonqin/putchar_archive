@@ -120,14 +120,6 @@
 </svg>
 "
                     fill width height))
-   :add_circle_outline (fn [{:keys [width height fill]}]
-                         (util/format
-                          "<svg fill=\"%s\" width=\"%d\" height=\"%d\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z\"/>
-</svg>
-"
-                          fill width height))
    :add (fn [{:keys [width height fill]}]
           (util/format
            "<svg fill=\"%s\" xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
@@ -263,58 +255,6 @@
 "
            fill width height))
 
-   :drafts (fn [{:keys [width height fill]}]
-             (util/format
-              "<svg xmlns=\"http://www.w3.org/2000/svg\"  fill=\"%s\" width=\"%d\" height=\"%d\"  viewBox=\"0 0 24 24\">
-    <path d=\"M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2l-.01-10zM12 13L3.74 7.84 12 3l8.26 4.84L12 13z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-              fill width height))
-
-   ;; right-up
-   :connect (fn [{:keys [width height fill]}]
-              (util/format
-               "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 48 48\">
-    <path d=\"M0 0h48v48H0z\" fill=\"none\"/>
-    <path d=\"M18 10v4h13.17L8 37.17 10.83 40 34 16.83V30h4V10z\"/>
-</svg>
-
-"
-               fill width height))
-
-   :left-down (fn [{:keys [width height fill]}]
-                (util/format
-                 "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M20 5.41L18.59 4 7 15.59V9H5v10h10v-2H8.41z\"/>
-</svg>
-"
-                 fill width height))
-
-   :rectangle (fn [{:keys [width height fill]}]
-                (util/format
-                 "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M19 5H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 12H5V7h14v10z\"/>
-</svg>
-"
-                 fill width height))
-
-   :t (fn [{:keys [width height fill]}]
-        (util/format
-         "<svg class=\"svg\" fill=\"%s\" width=\"%d\" height=\"%d\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2 5h1V2h5v14H5v1h7v-1H9V2h5v3h1V1H2v4z\"></path></svg>"
-         fill width height))
-
-   :file-download (fn [{:keys [width height fill]}]
-                    (util/format
-                     "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-                     fill width height))
-
    :delete (fn [{:keys [width height fill]}]
              (util/format
               "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%s\" height=\"%s\" viewBox=\"0 0 24 24\">
@@ -323,77 +263,6 @@
 </svg>
 "
               fill width height))
-
-   :person_add (fn [{:keys [width height fill]}]
-                 (util/format
-                  "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%s\" height=\"%s\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\"/>
-</svg>
-"
-                  fill width height))
-
-   :lock (fn [{:keys [width height fill]}]
-           (util/format
-            "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z\"/>
-</svg>
-"
-            fill width height))
-
-   :unlock (fn [{:keys [width height fill]}]
-           (util/format
-            "<svg xmlns=\"http://www.w3.org/2000/svg\"  fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z\"/>
-</svg>
-"
-            fill width height))
-
-   :star (fn [{:keys [width height fill]}]
-           (util/format
-            "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-            fill width height))
-   :star-border (fn [{:keys [width height fill]}]
-                   (util/format
-                    "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-                    fill width height))
-   :format-bold (fn [{:keys [width height fill]}]
-                  (util/format
-                   "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-                   fill width height))
-   :format-italic (fn [{:keys [width height fill]}]
-                    (util/format
-                     "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z\"/>
-</svg>
-
-"
-                     fill width height))
-
-   :format-quote (fn [{:keys [width height fill]}]
-                    (util/format
-                     "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z\"/>
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-</svg>
-"
-                     fill width height))
 
    :title (fn [{:keys [width height fill]}]
                    (util/format
@@ -404,14 +273,11 @@
 "
                     fill width height))
 
-   :photo_library (fn [{:keys [width height fill]}]
+   :library_books (fn [{:keys [width height fill]}]
                     (util/format
-                     "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z\"/>
-</svg>
-"
+                     "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\"><path d=\"M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z\"/></svg>"
                      fill width height))
+
    :arrow_upward (fn [{:keys [width height fill]}]
                    (util/format
                     "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
@@ -434,15 +300,6 @@
 "
                     fill width height))
 
-   :label_outline (fn [{:keys [width height fill]}]
-            (util/format
-             "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16zM16 17H5V7h11l3.55 5L16 17z\"/>
-</svg>
-"
-             fill width height))
-
    :share (fn [{:keys [width height fill]}]
             (util/format
              "<svg fill=\"%s\" width=\"%d\" height=\"%d\"><g transform=\"translate(.9 .9)\" stroke=\"#5b5e6a\" stroke-width=\"1.08\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"13.5\" cy=\"2.7\" r=\"2.7\"></circle><circle cx=\"2.7\" cy=\"8.1\" r=\"2.7\"></circle><circle cx=\"13.5\" cy=\"13.5\" r=\"2.7\"></circle><path d=\"M11.07 3.888L5.13 6.912M5.13 9.288l5.94 3.024\"></path></g></svg>"
@@ -455,14 +312,6 @@
 </svg>
 "
             width height fill))
-   :article (fn [{:keys [width height fill]}]
-           (util/format
-            "<svg width=\"%d\" height=\"%d\" viewBox=\"0 0 71 81\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">
-<path d=\"M44.7109 0.726562C48.6562 0.726562 52.2305 1.3125 55.4336 2.48438C58.6367 3.65625 61.3516 5.25781 63.5781 7.28906C65.8438 9.32031 67.582 11.7031 68.793 14.4375C70.0039 17.1328 70.6094 20.0039 70.6094 23.0508V58.6758C70.6094 61.7227 70.0039 64.6133 68.793 67.3477C67.582 70.043 65.8438 72.4062 63.5781 74.4375C61.3516 76.4688 58.6367 78.0703 55.4336 79.2422C52.2305 80.4141 48.6562 81 44.7109 81H26.6641C22.7188 81 19.1445 80.4141 15.9414 79.2422C12.7383 78.0703 10.0039 76.4688 7.73828 74.4375C5.51172 72.4062 3.79297 70.043 2.58203 67.3477C1.37109 64.6133 0.765625 61.7227 0.765625 58.6758V23.0508C0.765625 20.0039 1.37109 17.1328 2.58203 14.4375C3.79297 11.7031 5.51172 9.32031 7.73828 7.28906C10.0039 5.25781 12.7383 3.65625 15.9414 2.48438C19.1445 1.3125 22.7188 0.726562 26.6641 0.726562H44.7109ZM50.1016 54.457H56.7812L52.1523 10.8047L48.5195 7.17188L40.7266 6H34.457L26.6641 7.17188L23.0898 10.8047L18.2852 54.457H25.2578L26.1953 41.9766L26.7812 36.5859H48.4023L48.9883 41.9766L50.1016 54.457ZM46 13.0898C46.2734 16.2539 46.5859 19.2422 46.9375 22.0547C47.2891 24.8672 47.6211 27.8359 47.9336 30.9609H27.3086L29.0664 13.0898C30.1602 12.9727 31.0977 12.8359 31.8789 12.6797C32.6992 12.5234 33.6562 12.3672 34.75 12.2109H40.4922L46 13.0898Z\" fill=\"%s\"/>
-</svg>
-"
-            width height fill))
-
    :ios_back (fn [{:keys [width height fill]}]
             (util/format
              "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
@@ -471,20 +320,4 @@
                 c0.49,0.49,1.28,0.49,1.77,0h0c0.49-0.49,0.49-1.28,0-1.77L9.38,12l7.25-7.25C17.11,4.27,17.11,3.47,16.62,2.99z\"/>
 </g>
 </svg>"
-             fill width height))
-   :home (fn [{:keys [width height fill]}]
-                 (util/format
-                  "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-<path d=\"M12,5.69l5,4.5V12v6h-2v-4v-2h-2h-2H9v2v4H7v-6v-1.81L12,5.69 M12,3L2,12h3v8h6v-6h2v6h6v-8h3L12,3L12,3z\"/>
-
-</svg>
-"
-                  fill width height))
-   :fullscreen (fn [{:keys [width height fill]}]
-                 (util/format
-                  "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"%s\" width=\"%d\" height=\"%d\" viewBox=\"0 0 24 24\">
-    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>
-    <path d=\"M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z\"/>
-</svg>
-"
-                  fill width height))})
+             fill width height))})

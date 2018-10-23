@@ -54,7 +54,9 @@
     (cache/wcar*
      (doseq [[screen_name tags] tags]
        (car/hset post/tags-k
-                 screen_name tags)))))
+                 screen_name tags)
+       (doseq [[tag c] tags]
+         (car/zincrby post/hot-tags-k c tag))))))
 
 (defn recompute-tags-job
   [db]

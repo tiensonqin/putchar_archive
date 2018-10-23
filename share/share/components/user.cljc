@@ -365,8 +365,7 @@ The posts and comments that you have posted will not be deleted, in order to pre
           (widgets/tags screen_name (:tags user) nil)
 
           (query/query
-            (post/user-post-list id posts posts-path))]
-         ])
+            (post/user-post-list id posts posts-path))]])
       [:div.row {:style {:justify-content "center"}}
        (ui/donut)])))
 

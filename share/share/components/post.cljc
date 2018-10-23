@@ -436,7 +436,8 @@
 
      (edit-toolbox)
 
-     (publish-button form-data)
+     (when current-user
+       (publish-button form-data))
 
      (if modal?
        (ui/dialog
@@ -1103,13 +1104,29 @@
   [{:keys [tag]
     :as params}]
   (let [path [:posts :by-tag tag]
-        posts (citrus/react path)]
+        posts (citrus/react path)
+        current-user (citrus/react [:user :current])
+        followed? (and current-user
+                       (contains? (set (:followed_tags current-user))
+                                  tag))]
     [:div.column.center-area {:style {:margin-bottom 48}}
      [:div.space-between.auto-padding {:style {:align-items "center"
                                                :margin-top 24}}
       [:h1 {:style {:margin 0}}
        (str "#" tag)]
-      (widgets/subscribe (str "/tag/" tag "/latest.rss"))]
+      [:div.row1 {:style {:align-items "center"}}
+       [:a {:href (str "/tag/" tag "/latest.rss")
+            :target "_blank"
+            :style {:margin-right 12}}
+        (ui/icon {:type :rss
+                  :color "#666"})]
+       (ui/button {:class (if followed? "btn" "btn-primary")
+                   :on-click (fn []
+                               (let [action (if followed? :user/unfollow :user/follow)]
+                                 (citrus/dispatch! action tag)))}
+         (if followed?
+           "Unfollow"
+           "Follow"))]]
 
      [:div.divider]
 

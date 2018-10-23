@@ -212,4 +212,19 @@
                  (assoc-in [:user :loading?] false)
                  (assoc-in [:user :current]
                            (:current result)))})
+
+   ;; tags
+   :user/follow
+   (fn [state tag]
+     (let [old-tags (get-in state [:current :followed_tags])
+           new-tags        (vec (distinct (conj old-tags tag)))]
+       {:state (assoc-in state [:current :followed_tags] new-tags)
+        :dispatch [:user/update {:followed_tags new-tags}]}))
+
+   :user/unfollow
+   (fn [state tag]
+     (let [old-tags (get-in state [:current :followed_tags])
+           new-tags (vec (remove #(= tag %) old-tags))]
+       {:state (assoc-in state [:current :followed_tags] new-tags)
+        :dispatch [:user/update {:followed_tags new-tags}]}))
    })

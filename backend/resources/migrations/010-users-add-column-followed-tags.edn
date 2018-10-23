@@ -1,0 +1,4 @@
+{:up ["alter table users add column followed_tags text[] default null"
+      "alter table users drop column stared_papers"]
+ :down ["alter table users add column stared_papers integer[] default null"
+        "alter table users drop column followed_tags"]}

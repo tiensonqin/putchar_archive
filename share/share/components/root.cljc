@@ -19,6 +19,7 @@
             [share.components.widgets :as widgets]
             [share.components.right :as right]
             [share.components.book :as book]
+            [share.components.tags :as tags]
             [share.helpers.image :as image]
             [share.util :as util]
             [share.dommy :as dommy]
@@ -85,7 +86,9 @@
          :new-book      (fn [params current-user]
                           (book/new-book params))
          :book-edit     (fn [params current-user]
-                          (book/book-edit params))}))
+                          (book/book-edit params))
+         :tags          (fn [params current-user]
+                          (tags/tags params))}))
 
 (rum/defc routes
   [reconciler route params current-user]
@@ -199,6 +202,8 @@
      [:div {:style {:margin-top -20
                     :padding "0 4px"}}
       (right/books)
+      [:div.divider {:style {:margin 0}}]
+      (right/tags)
       [:div.divider {:style {:margin 0}}]
       (right/footer)
       [:div.divider {:style {:margin 0}}]
@@ -494,8 +499,8 @@
                       :class "column1"
                       :style {:margin-top 0
                               :margin-left 12
-                              :margin-right 3
-                              :width 243}}
+                              :width 243
+                              :border-left "1px solid #ddd"}}
           (right/right)])
        ]]
      (login/signin-modal mobile?)

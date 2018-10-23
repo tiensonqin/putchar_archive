@@ -106,8 +106,14 @@
                                 :object-fit "contain"}}]])
           (let [authors [:div.row1.book-authors {:style {:align-items "center"}}
                          (widgets/transform-content (:authors book) {:style {:margin 0}})]
-                stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))]
-            [:div.column1
+                stared? (contains? (set (map :object_id (:stared_books current-user))) (:id book))
+                title-cp  [:h1 {:style {:margin 0}} title
+                           (if (:link book)
+                             [:a {:href (:link book)
+                                  :style {:display "inline-block"
+                                          :margin-left 6}}
+                              (ui/icon {:type :link})])]]
+            [:div.column
              (when mobile?
                [:div.row1 {:style {:align-items "center"}}
                 [:img.box {:src cover
@@ -116,11 +122,11 @@
                                    :object-fit "contain"
                                    :margin-right 12}}]
                 [:div.column1
-                 [:h2 {:style {:margin 0}} title]
+                 title-cp
                  authors]])
 
             (when-not mobile?
-              [:h1 {:style {:margin 0}} title])
+              title-cp)
 
              (when-not mobile?
                authors)
@@ -138,30 +144,41 @@
              ", "
              [:i {:style {:margin-left 4
                           :margin-right 12}}
-              (util/date-format created_at)]
-
-             ;; (widgets/subscribe (str "/book/" id "/latest.rss"))
-
-             (when self?
-               [:a {:href (str "/book/" id "/edit")
-                    :style {:margin-left 12}}
-                (ui/icon {:type :edit
-                          :width 18})])]
+              (util/date-format created_at)]]
 
              [:div.row {:style {:margin-top 18
                                 :align-items "center"}}
 
               (when (seq followers)
-                (widgets/followers followers (:stars book)))
+                (widgets/followers followers (:stars book)))]
 
-              (ui/button {:class (if stared? "btn" "btn-primary")
-                          :style {:margin-left 12
-                                  :width 106}
-                          :on-click (fn []
-                                      (citrus/dispatch! (if stared? :user/unstar :user/star)
-                                                        {:object_type "book"
-                                                         :object_id (:id book)}))}
-                (if stared? (t :leave) (t :join)))]])]
+             [:div.space-between {:style {:margin-top 18
+                                          :align-items "center"}}
+              (when-not stared?
+                (ui/button {:class "btn-primary"
+                            :style {:width 106}
+                            :on-click (fn []
+                                        (citrus/dispatch! :user/star
+                                                          {:object_type "book"
+                                                           :object_id (:id book)}))}
+                  (t :join)))
+              (widgets/subscribe (str "/book/" id "/latest.rss"))
+              (if stared?
+                (ui/menu
+                  [:a {:on-click (fn [])}
+                   (ui/icon {:type :more
+                             :color colors/shadow})]
+                  [(when self?
+                     [:a.button-text {:style {:font-size 14}
+                                      :href (str "/book/" id "/edit")}
+                      (t :edit)])
+                   [:a.button-text {:style {:font-size 14}
+                                    :on-click (fn []
+                                                (citrus/dispatch! :user/unstar
+                                                                  {:object_type "book"
+                                                                   :object_id (:id book)}))}
+                    (t :leave)]]
+                  {}))]])]
 
          [:div.row {:style {:margin-top 24}}
           (post/post-list posts
@@ -187,6 +204,13 @@
                   :type :textarea
                   :style {:height 80
                           :resize "none"}}
+   :description  {:label (t :description)
+                  :type :textarea
+                  :validators? [util/non-blank?]
+                  :style {:height 96
+                          :resize "none"}}
+   :link         {:label (str (t :link) ":")
+                  :validators? [util/link?]}
    :cover        {:label (t :cover)
                   :type :image}})
 
@@ -222,6 +246,8 @@
                   :type :textarea
                   :style {:height 80
                           :resize "none"}}
+   :link         {:label (str (t :link) ":")
+                  :validators? [util/link?]}
    :tags         {:label (t :tags)
                   :value (:tags @form-data)}
    :description  {:label (t :description)

@@ -308,4 +308,5 @@ Putchar.org is a place to discuss articles or [books](/books).
    :moderation-logs "Moderation Logs"
    :join "Join"
    :leave "Leave"
+   :hot-tags "Hot tags"
    })

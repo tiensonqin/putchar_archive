@@ -195,7 +195,7 @@ a.scale:hover {
 }
 
 .number {
-    font-family: sans-serif;
+    font-family: Helvetica,Arial,sans-serif;
     color: rgb(127,127,127);
 }
 
@@ -339,7 +339,7 @@ a.delete {
 
 .ver_divider {
     width: 1px!important;
-    background: #ffe4c4;
+    background: #dfdfdf;
 }
 
 .mention {

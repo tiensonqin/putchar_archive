@@ -7,6 +7,7 @@
             [api.db.top :as top]
             [api.db.report :as report]
             [api.db.resource :as resource]
+            [api.db.post :as post]
             [api.services.slack :as slack]
             [share.admins :as admins]
             [share.util :as su]
@@ -41,6 +42,7 @@
                :user         {:current current-user}
                :notification nil
                :image        {}
+               :hot-tags     (post/get-hot-tags 20)
                :post         {:loading? false
                               :current nil
                               :filter :hot

@@ -22,18 +22,19 @@
                   (citrus/react [:books :latest]))
         mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
     [:div.column1 {:style {:padding 12
-                           :margin-bottom (if mobile? 0 16)
-                           :margin-top (if mobile? 24 0)}
-                   :class (if mobile? "" "shadow")}
+                           :margin-top (if mobile? 24 0)}}
      [:a.row1 {:style {:margin-bottom 12
                        :color colors/primary
-                       :font-size (if mobile? 20 15)}
+                       :font-size 15
+                       :align-items "center"}
                :href "/books"}
-      (t :books)
-      (ui/icon {:type :star
-                :color "#D95653"
+      (ui/icon {:type :library_books
+                ;; :color "#D95653"
                 :width 16
-                :height 16})]
+                :height 16
+                :opts {:style {:margin-right 6}}})
+
+      (t :books)]
 
      (let [item-cp (fn [{:keys [object_id title]}]
                      [:a {:key (str "book-" object_id)
@@ -61,13 +62,64 @@
           (for [item books]
             (item-cp item))]))]))
 
+(rum/defcs tags < rum/reactive
+  (rum/local false ::expand?)
+  [state]
+  (let [expand? (get state ::expand?)
+        tags (citrus/react [:user :current :followed_tags])
+        tags (if tags tags
+                 (map first (citrus/react [:hot-tags])))
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
+    [:div.column1 {:style {:padding 12}}
+     [:div.row1 {:style {:margin-bottom 12
+                         :color colors/primary
+                         :align-items "center"}}
+      [:span {:style {:padding-left 2
+                      :margin-right 6
+                      :font-weight "bold"
+                      :font-size 18}}
+       "#"]
+
+      [:a.row1 {:style {:color colors/primary
+                        :font-size 15}
+                :href "/tags"}
+       (t :tags)]]
+
+     (let [item-cp (fn [tag]
+                     [:a {:key (str "tag-" tag)
+                          :href (str "/tag/" tag)
+                          :style {:color colors/primary
+                                  :font-size 14
+                                  :overflow "hidden"
+                                  :margin-left 3
+                                  :padding-right 3
+                                  :margin-bottom 6
+                                  :white-space "nowrap"
+                                  :text-overflow "ellipsis"}}
+                      tag])]
+       (if (> (count tags) 20)
+         [:div.row {:style {:flex-wrap "wrap"
+                            :width 243}}
+          (for [item (take 20 tags)]
+            (item-cp item))
+          [:a.control {:style {:font-size 14
+                               :margin-left 3
+                               :padding-right 3}
+                       :on-click #(swap! expand? not)}
+           (if @expand?
+             (t :collapse)
+             (t :show-all))]]
+         [:div.row {:style {:flex-wrap "wrap"
+                            :width 243}}
+          (for [item tags]
+            (item-cp item))]))]))
+
 (rum/defc footer < rum/reactive
   []
   (let [locale (citrus/react :locale)
         zh-cn? (= locale :zh-cn)
         mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div.right-sub.column1 {:class (if mobile? "" "shadow")
-                             :style {:font-size 14
+    [:div.right-sub.column1 {:style {:font-size 14
                                      :padding 12}}
 
      [:div.row1 {:style {:align-items "center"}}
@@ -130,6 +182,8 @@
 
 (rum/defc right
   []
-  [:div
+  [:div {:style {:position "fixed"
+                 :top 76}}
    (books)
+   (tags)
    (footer)])
