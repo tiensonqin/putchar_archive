@@ -60,7 +60,7 @@
            direction (if (> offset 0) :right :left)
            open? (and (= direction :right) (> offset 30)
                       (< start-x 50))
-           close? (and (= direction :left) (> offset 30))]
+           close? (and (= direction :left) (> (util/abs offset) 30))]
        {:state {:open-drawer? (cond
                                 close?
                                 false

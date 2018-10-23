@@ -400,8 +400,7 @@ The posts and comments that you have posted will not be deleted, in order to pre
     (if user
       (let [{:keys [id name screen_name bio]} user
             avatar (util/cdn-image screen_name)]
-        [:div.column.center-area {:class "user-posts"
-                                  :style {:margin-bottom 48}}
+        [:div.column.center-area {:style {:margin-bottom 48}}
          (widgets/user-card user)
 
          (query/query

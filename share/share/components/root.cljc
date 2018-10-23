@@ -110,7 +110,8 @@
                    (citrus/dispatch-sync! :search/reset)
                    (if (= :search current-path)
                      (citrus/dispatch! :router/back)))]
-    [:div#head
+    [:div#nav-bar
+     [:div#head
      [:div.wrap {:class "row space-between"}
       [:input.row {:id "search"
                    :type "search"
@@ -153,7 +154,7 @@
       [:a {:on-click close-fn
            :style {:margin-top 12}}
        (ui/icon {:type "close"
-                 :color colors/shadow})]]]))
+                 :color colors/shadow})]]]]))
 
 (rum/defc drawer <
   {:will-mount (fn [state]
@@ -191,17 +192,9 @@
           (ui/icon {:type :thumb_up})]
          [:a {:href "/settings"
               :style {:margin-left 24}}
-          (ui/icon {:type :settings})]])
+          (ui/icon {:type :settings})]])]
 
-      [:a.row1 {:href "/new-post"
-                :style {:margin-top 24
-                        :color colors/primary}}
-       (ui/icon {:type :edit})
-       [:span {:style {:margin-left 3
-                       :font-size 18}}
-        (t :write-new-post)]]]
      [:div.divider {:style {:margin 0}}]
-
 
      [:div {:style {:margin-top -20
                     :padding "0 4px"}}
@@ -273,7 +266,7 @@
                :style {:align-items "center"}
                :id "right-head"}
 
-         (when (and (not post?) (not mobile?))
+         (when (not post?)
            [:a.row1.no-decoration {:style {:align-items "center"
                                            :color colors/primary
                                            :padding-right 12}
@@ -281,8 +274,9 @@
             (ui/icon {:type :edit
                       :color colors/shadow
                       :width 22
-                      :opts {:style {:margin-right 6}}})
-            (t :write-new-post)])
+                      :opts {:style {:margin-right (if mobile? 0 6)}}})
+            (when (not mobile?)
+              (t :write-new-post))])
 
          ;; publish
          (if post?

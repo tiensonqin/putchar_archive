@@ -384,7 +384,15 @@ a.delete {
     font-size: 230%;
 }
 
+.user-posts .col-item {
+    border-bottom: none;
+}
+
 @media screen and (min-width: 768px) {
+
+    #nav-bar {
+        margin-bottom: 16px;
+    }
 
     #head {
         height: 60px;

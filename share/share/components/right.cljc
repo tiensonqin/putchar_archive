@@ -64,10 +64,11 @@
 (rum/defc footer < rum/reactive
   []
   (let [locale (citrus/react :locale)
-        zh-cn? (= locale :zh-cn)]
-    [:div.right-sub.column1 {:class (if (util/mobile?) "" "shadow")
+        zh-cn? (= locale :zh-cn)
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
+    [:div.right-sub.column1 {:class (if mobile? "" "shadow")
                              :style {:font-size 14
-                                    :padding 12}}
+                                     :padding 12}}
 
      [:div.row1 {:style {:align-items "center"}}
       [:a.control {:href "/latest"
