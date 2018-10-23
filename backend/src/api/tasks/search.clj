@@ -18,9 +18,6 @@
 
   (let [resources (j/query db ["select object_id, object_type, title from resources"])]
     (doseq [{:keys [object_id object_type title] :as resource} resources]
-      (case object_type
-        "book"
-        (search/add-book resource)
-        "paper"
-        (search/add-paper resource))))
+      (when (= object_type "book")
+        (search/add-book resource))))
   )

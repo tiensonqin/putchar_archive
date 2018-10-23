@@ -61,53 +61,6 @@
           (for [item books]
             (item-cp item))]))]))
 
-(rum/defcs papers < rum/reactive
-  (rum/local false ::expand?)
-  [state]
-  (let [expand? (get state ::expand?)
-        stared_papers (citrus/react [:user :current :stared_papers])
-        papers (if stared_papers stared_papers
-                  (citrus/react [:papers :latest]))
-        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div.column1 {:style {:padding 12
-                           :margin-bottom (if mobile? 0 16)}
-                   :class (if mobile? "" "shadow")}
-     [:a.row1 {:style {:margin-bottom 12
-                       :color colors/primary
-                       :font-size (if mobile? 20 15)}
-               :href "/papers"}
-      (t :papers)
-      (ui/icon {:type :star
-                :color "#D95653"
-                :width 16
-                :height 16})]
-
-     (let [item-cp (fn [{:keys [object_id title]}]
-                     [:a {:key (str "paper-" object_id)
-                          :href (str "/paper/" object_id)
-                          :style {:color colors/primary
-                                  :font-size 14
-                                  :overflow "hidden"
-                                  :max-width 243
-                                  :margin-left 3
-                                  :margin-bottom 6
-                                  :white-space "nowrap"
-                                  :text-overflow "ellipsis"}}
-                      title])]
-       (if (> (count papers) 7)
-         [:div.column1
-          (for [item (take 7 papers)]
-            (item-cp item))
-          [:a.control {:style {:font-size 14
-                               :margin-left 3}
-                       :on-click #(swap! expand? not)}
-           (if @expand?
-             (t :collapse)
-             (t :show-all))]]
-         [:div.column1
-          (for [item papers]
-            (item-cp item))]))]))
-
 (rum/defc footer < rum/reactive
   []
   (let [locale (citrus/react :locale)
@@ -178,5 +131,4 @@
   []
   [:div
    (books)
-   (papers)
    (footer)])

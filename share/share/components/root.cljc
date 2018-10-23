@@ -19,7 +19,6 @@
             [share.components.widgets :as widgets]
             [share.components.right :as right]
             [share.components.book :as book]
-            [share.components.paper :as paper]
             [share.helpers.image :as image]
             [share.util :as util]
             [share.dommy :as dommy]
@@ -86,16 +85,7 @@
          :new-book      (fn [params current-user]
                           (book/new-book params))
          :book-edit     (fn [params current-user]
-                          (book/book-edit params))
-         :papers         (fn [params current-user]
-                          (paper/papers params))
-         :paper          (fn [params current-user]
-                          (paper/paper params))
-         :new-paper      (fn [params current-user]
-                          (paper/new-paper params))
-         :paper-edit     (fn [params current-user]
-                          (paper/paper-edit params))
-         }))
+                          (book/book-edit params))}))
 
 (rum/defc routes
   [reconciler route params current-user]
@@ -126,12 +116,12 @@
                    :type "search"
                    :autoFocus true
                    :style (cond->
-                            {:border "none"
-                             :height 48
-                             :line-height "30px"
-                             :font-size "18px"
-                             :font-weight "600"
-                             :background "initial"}
+                              {:border "none"
+                               :height 48
+                               :line-height "30px"
+                               :font-size "18px"
+                               :font-weight "600"
+                               :background "initial"}
                             (util/mobile?)
                             (assoc :max-width 300))
                    :placeholder (t :search-posts)
@@ -217,8 +207,6 @@
                     :padding "0 4px"}}
       (right/books)
       [:div.divider {:style {:margin 0}}]
-      (right/papers)
-      [:div.divider {:style {:margin 0}}]
       (right/footer)
       [:div.divider {:style {:margin 0}}]
       (if current-user
@@ -247,7 +235,8 @@
 ]
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
-      [:div#head {:key "head"
+      [:div#nav-bar
+       [:div#head {:key "head"
                   :style (cond-> {}
                            (and preview? (not mobile?))
                            (assoc :max-width 1160))}
@@ -382,7 +371,7 @@
                                :style {:font-size 14}}
                (t :sign-out)]]
 
-             {:menu-style {:margin-top 17}}))]]])))
+             {:menu-style {:margin-top 17}}))]]]])))
 
 (defn attach-listeners
   [state]
@@ -506,7 +495,7 @@
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats :books :book :book-edit :new-book :papers :paper :paper-edit :new-paper} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-post :post-edit :post :comment :comments :drafts :user-tag :tag :login :stats :books :book :book-edit :new-book} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 0

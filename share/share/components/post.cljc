@@ -324,63 +324,9 @@
            on-select
            {:item-style {:justify-content "flex-start"}})))]]))
 
-(rum/defc assoc-paper < rum/reactive
-  [form-data style current-paper]
-  (let [result (citrus/react [:search :result :papers])]
-    (when (and current-paper
-               (nil? (:paper_title form-data)))
-      (citrus/dispatch! :citrus/set-post-form-data
-                        {:paper_id (:id current-paper)
-                         :paper_title (:title current-paper)}))
-    [:div#assoc-paper {:style style}
-     [:span {:style {:margin-right 12
-                     :color colors/shadow
-                     :font-weight "600"
-                     :width 50}}
-      "Related Paper(optional): "]
-     [:div.column1 {:style {:position "relative"}}
-      (ui/input
-       {:class "ant-input"
-        :type "text"
-        :autoComplete "off"
-        :name "paper_id"
-        :style {:border "none"
-                :border-bottom "1px solid #aaa"
-                :border-radius 0
-                :padding 0
-                :color colors/primary
-                :font-size 15}
-        :value (or (:paper_title form-data) (:title current-paper) "")
-        :on-change (fn [value]
-                     #?(:cljs
-                        (when-let [value (util/ev value)]
-                          (citrus/dispatch-sync! :citrus/set-post-form-data
-                                                 {:paper_title value})
-                          (when-not (str/blank? value)
-                              (citrus/dispatch! :search/search
-                                             :search/search
-                                             {:q {:paper_title value}}
-                                             :papers)))))})
-      (let [on-select (fn [paper]
-                        (when-let [id (:paper_id paper)]
-                          (citrus/dispatch! :citrus/set-post-form-data
-                                            {:paper_id (util/parse-int id)
-                                             :paper_title (:paper_title paper)})
-                          (citrus/dispatch! :search/reset)))]
-        (when (seq result)
-          (widgets/autocomplete
-           result
-           (fn [paper]
-             (:paper_title paper))
-           [:div {:style {:position "absolute"
-                          :bottom 0
-                          :left 0}}]
-           on-select
-           {:item-style {:justify-content "flex-start"}})))]]))
-
 (rum/defcs publish-dialog < rum/reactive
   (rum/local false ::language-select-update?)
-  [state form-data current-book current-paper]
+  [state form-data current-book]
   (let [language-select-update? (get state ::language-select-update?)
         images (:images form-data)
         images? (seq images)
@@ -407,10 +353,7 @@
                            (assoc :border "4px solid #999"))}]])])
 
      (add-tags form-data {:padding "12px 0"} true)
-     (when (not (:paper_title form-data))
-         (assoc-book form-data {:padding "12px 0"} current-book))
-     (when (not (:book_title form-data))
-         (assoc-paper form-data {:padding "12px 0"} current-paper))
+     (assoc-book form-data {:padding "12px 0"} current-book)
 
      (if (and default-post-language
               (not @language-select-update?))
@@ -451,13 +394,12 @@
         current-user (citrus/react [:user :current])
         current-post (citrus/react [:post :current])
         current-book (citrus/react [:book :current])
-        current-paper (citrus/react [:paper :current])
         submit-fn (fn []
                     (let [data (cond->
                                    (merge {:id (:id current-post)
                                            :is_draft false}
                                           (select-keys form-data
-                                                       [:title :body :body_format :lang :tags :book_id :book_title :paper_id :paper_title]))
+                                                       [:title :body :body_format :lang :tags :book_id :book_title ]))
 
 
                                  (:cover form-data)
@@ -478,10 +420,7 @@
                  (assoc :tags (str/join "," tags))
                  (and current-book (nil? (:book_id form-data)))
                  (assoc :book_id (:id current-book)
-                        :book_title (:book_title current-book))
-                 (and current-paper (nil? (:paper_id form-data)))
-                 (assoc :paper_id (:id current-paper)
-                        :paper_title (:paper_title current-paper)))]
+                        :book_title (:book_title current-book)))]
       (when (seq data)
         (citrus/dispatch-sync! :citrus/set-post-form-data
                                data)))
@@ -516,7 +455,7 @@
                       {:submit-text (t :publish)
                        :cancel-button? false
                        :confirm-attrs {:style {:width "100%"}}})}
-        (publish-dialog form-data current-book current-paper)))]))
+        (publish-dialog form-data current-book)))]))
 
 (rum/defc new < rum/reactive
   {:will-mount (fn [state]
@@ -679,7 +618,6 @@
             user-link (str "/@" (:screen_name user))
             drafts-path? (= current-path :drafts)
             user-draft? (contains? #{:user :drafts} current-path)
-            paper? (= current-path :paper)
             book? (= current-path :book)
             [post-link router] (if drafts-path?
                                  [(str "/p/" (:id post) "/edit")
@@ -694,10 +632,7 @@
             first-tag (if-let [tag (first (:tags post))]
                         (str/lower-case tag)
                         nil)]
-        [:div.post-item.col-item {:style (cond-> {:position "relative"}
-                                           user-draft?
-                                           (assoc :padding-top 24
-                                                  :padding-bottom 24))
+        [:div.post-item.col-item {:style {:position "relative"}
                                   :on-click (fn [e]
                                               (citrus/dispatch! :router/push router true))}
          (cond
@@ -713,20 +648,7 @@
                          :margin-bottom 6
                          :color colors/primary
                          :display "block"}}
-             (:book_title post)]]
-           (and (not paper?)
-                (:paper_id post)
-                (:paper_title post))
-           [:div.row1 {:style {:font-size 14}}
-            [:span "Paper:"]
-            [:a {:href (str "/paper/" (:paper_id post))
-                 :on-click util/stop
-                 :style {:margin-left 6
-                         :margin-right 12
-                         :margin-bottom 6
-                         :color colors/primary
-                         :display "block"}}
-             (:paper_title post)]])
+             (:book_title post)]])
          (if user-draft?
            [:span
             [:span {:style {:margin-right 12}}
@@ -955,7 +877,7 @@
       (when (and post (nil? (:title form-data)))
         (citrus/dispatch! :citrus/set-post-form-data
                           (cond->
-                              (select-keys post [:title :body :body_format :lang :book_id :book_title :paper_id :paper_title])
+                              (select-keys post [:title :body :body_format :lang :book_id :book_title])
                             (:body form-data)
                             (assoc :body (:body form-data)))))
       [:div.column.center-area.auto-padding {:class "post-edit editor"
@@ -1129,16 +1051,7 @@
                        :style {:color colors/primary
                                :display "block"
                                :margin-left 6}}
-                   (:book_title post)]]
-                 (and (:paper_id post)
-                      (:paper_title post))
-                 [:div.row1 {:style {:margin-bottom 12}}
-                  [:span "On paper: "]
-                  [:a {:href (str "/paper/" (:paper_id post))
-                       :style {:color colors/primary
-                               :margin-left 6
-                               :display "block"}}
-                   (:paper_title post)]])]
+                   (:book_title post)]])]
               [:div.post
                (when (:body_html post)
                  (widgets/raw-html {:on-mouse-up (fn [e]

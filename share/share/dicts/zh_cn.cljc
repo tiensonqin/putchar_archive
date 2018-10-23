@@ -65,7 +65,7 @@
    :replies "条评论"
    :invite "邀请朋友"
    :signin "登录"
-   :slogan "A place to discuss tech articles, books and papers."
+   :slogan "A place to discuss tech articles or books."
    :members "成员"
    :admins "管理员"
    :support "支持"
@@ -122,8 +122,8 @@
    :reports "举报"
    :write-new-post "写文章"
    :new-post-description "写一篇新的文章。"
-   :root-title "A place to discuss tech articles, books and papers."
-   :root-description "Putchar.org 是一个纯粹的技术讨论和分享社区。大家可以在这里讨论和分享文章，书籍和论文。"
+   :root-title "A place to discuss tech articles or books."
+   :root-description "Putchar.org 是一个纯粹的技术讨论和分享社区。大家可以在这里讨论和分享文章以及书籍。"
    :go-to-profile "文章"
    :profile-updated "已保存!"
    :sign-out "注销"
@@ -247,7 +247,7 @@
    :about-text "
 
 ## 关于 Putchar.org
-Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享文章, [书](/books) 还有 [论文](/papers)。
+Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享文章或者 [书](/books)。
 
 ### 功能
 
@@ -300,7 +300,6 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
    :is-my-default-language-choice " 是我的默认文章语言, "
    :change-it-to "修改为 "
    :comments "条评论"
-   :share-news "分享文章，论文或者你正在读的书..."
    :name "名称"
    :authors "作者"
    :authors-placeholder "支持 Markdown"
@@ -309,8 +308,6 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
    :no-votes-yet "暂时还没有顶的文章。"
    :books "书"
    :book "书"
-   :papers "论文"
-   :paper "论文"
    :add-a-book "添加一本书"
    :website "网站"
    :introduction "查看介绍"

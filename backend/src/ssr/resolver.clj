@@ -28,9 +28,8 @@
         route-params (if (and (= handler :home) uid)
                        (assoc route-params :current-user current-user)
                        route-params)
-        [latest-books latest-papers] (when-not current-user
-                                       [(resource/get-resources db "book" {:limit 7} [:object_id :title])
-                                        (resource/get-resources db "paper" {:limit 7} [:object_id :title])])
+        latest-books (when-not current-user
+                       (resource/get-resources db "book" {:limit 7} [:object_id :title]))
 
         state {:search-mode? false
                :router       (:ui/route req)
@@ -51,8 +50,7 @@
                                       (report/has-new? db (:screen_name current-user))
                                       false)}
                :search       nil
-               :books   {:latest latest-books}
-               :papers  {:latest latest-papers}}
+               :books   {:latest latest-books}}
         state (if q-fn
                 (let [query (q-fn nil route-params)]
                   (if query

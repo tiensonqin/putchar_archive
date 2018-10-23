@@ -37,7 +37,6 @@
                                   :lang
                                   :body :body_format :body_html :tags
                                   :book_id :book_title
-                                  :paper_id :paper_title
                                   :cover :video]
                          :from [table]})
 
@@ -390,14 +389,6 @@
   (get-latest-reply db
                     [:and
                      [:= :book_id book-id]
-                     [:= :is_draft false]]
-                    cursor))
-
-(defn get-paper-posts
-  [db paper-id cursor]
-  (get-latest-reply db
-                    [:and
-                     [:= :paper_id paper-id]
                      [:= :is_draft false]]
                     cursor))
 

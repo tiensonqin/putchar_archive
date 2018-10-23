@@ -1,12 +1,12 @@
 # Putchar
 
-Putchar.org is a place to discuss tech articles, [books](https://putchar.org/books) and [papers](https://putchar.org/papers).
+Putchar.org is a place to discuss tech articles or [books](https://putchar.org/books).
 
 [![Logo](https://putchar.org/logo-2x.png)](https://putchar.org)
 
 ### Features
 
-* Each book or paper has its own posts and followers.
+* Each book has its own posts and followers.
 
   For example, [Purely functional data structures](https://putchar.org/book/7).
 

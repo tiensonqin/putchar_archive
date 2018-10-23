@@ -384,14 +384,10 @@ a.delete {
     font-size: 230%;
 }
 
-.user-posts .col-item {
-    border-bottom: none;
-}
-
 @media screen and (min-width: 768px) {
 
     #head {
-        height: 80px;
+        height: 60px;
     }
 
     .heading-1 {

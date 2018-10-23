@@ -206,17 +206,6 @@
                          :description (str "Latest posts on book: " (:title book))}
                         (post/->rss (post/get-book-posts conn book-id {:limit 20}))))))
 
-        ;; paper
-        (= :paper-rss (:handler route))
-        (when-let [paper-id (:paper-id (:route-params route))]
-          (j/with-db-connection [conn datasource]
-            (when-let [paper (resource/get conn {:object_type "paper"
-                                                :object_id paper-id})]
-              (util/rss {:title "putchar"
-                         :link (website-path "hot")
-                         :description (str "Latest posts on paper: " (:title paper))}
-                        (post/->rss (post/get-paper-posts conn paper-id {:limit 20}))))))
-
         (= :tag-rss (:handler route))
         (when-let [tag (:tag (:route-params route))]
           (util/rss {:title "putchar"

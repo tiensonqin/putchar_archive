@@ -72,30 +72,6 @@
                   book-title
                   analyzer))
 
-(defn add-paper [paper]
-  (let [paper {:paper_id (:object_id paper)
-              :paper_title (:title paper)}]
-    (lucene/add! @index-store
-                 [paper]
-                 [:paper_id :paper_title]
-                 analyzer)))
-
-(defn update-paper [paper]
-  (when (:title paper)
-    (let [paper {:paper_title (:title paper)}]
-      (lucene/update! @index-store
-                      paper
-                      [:paper_title]
-                      :paper_id
-                      (:object_id paper)
-                      analyzer))))
-
-(defn delete-paper [paper-title]
-  (lucene/delete! @index-store
-                  :paper-title
-                  paper-title
-                  analyzer))
-
 (defn add-post [post]
   (when (not (:is_draft post))
     (let [post {:post_id (:id post)

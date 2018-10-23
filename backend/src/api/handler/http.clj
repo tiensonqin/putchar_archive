@@ -166,7 +166,6 @@
   (j/with-db-transaction [conn datasource]
     (case (:object_type data)
       "book" (resource/star conn "book" (:object_id data) uid)
-      "paper" (resource/star conn "paper" (:object_id data) uid)
       (slack/error "star wrong type: " (:object_type data) uid)))
   (j/with-db-connection [conn datasource]
     (let [user (u/get conn uid)]
@@ -176,7 +175,6 @@
   (j/with-db-transaction [conn datasource]
     (let [result (case (:object_type data)
                    "book" (resource/unstar conn "book" (:object_id data) uid)
-                   "paper" (resource/unstar conn "paper" (:object_id data) uid)
                    (slack/error "unstar wrong type: " (:object_type data) uid))]
       (util/ok {:current (u/get conn uid)}))))
 

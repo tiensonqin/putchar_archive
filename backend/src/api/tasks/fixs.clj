@@ -78,8 +78,6 @@
       (cond
         (= (:object_type resource) "book")
         (api.db.search/add-book resource)
-        (= (:object_type resource) "paper")
-        (api.db.search/add-paper resource)
         :else
         nil))))
 

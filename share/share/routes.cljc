@@ -27,9 +27,6 @@
         [["tag/" [#"[^\/]+" :tag] "/latest.rss"]                                             :tag-rss]
         ;; book
         [["book/" [ #"\d+" :book-id ] "/latest.rss"]                                      :book-rss]
-        ;; paper
-        [["paper/" [ #"\d+" :paper-id ] "/latest.rss"]                                     :paper-rss]
-
         ["search"                                                 :search]
         ["reports"                                                :reports]
         ["moderation-logs"                                                :moderation-logs]
@@ -49,13 +46,7 @@
         ["books"                                                 :books]
         [["book/" [ #"\d+" :book-id ]]                                      :book]
         ["new-book"                                                 :new-book]
-        [["book/" [ #"\d+" :book-id ] "/edit"]                              :book-edit]
-
-        ;; papers
-        ["papers"                                                 :papers]
-        [["paper/" [ #"\d+" :paper-id ]]                                     :paper]
-        ["new-paper"                                                 :new-paper]
-        [["paper/" [ #"\d+" :paper-id ] "/edit"]                             :paper-edit]]])
+        [["book/" [ #"\d+" :book-id ] "/edit"]                              :book-edit]]])
 
 (defn match-route-with-query-params
   [path & {:as options}]
@@ -71,9 +62,6 @@
                              params)
                     params (if (seq query-params)
                              (merge params query-params)
-                             params)
-                    params (if (:paper-id params)
-                             (update params :paper-id util/parse-int)
                              params)
                     params (if (:book-id params)
                              (update params :book-id util/parse-int)

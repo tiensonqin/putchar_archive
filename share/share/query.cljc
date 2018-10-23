@@ -3,7 +3,7 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :title :rank :permalink :link :created_at :comments_count :tops :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters :book_id :book_title :paper_id :paper_title])
+  [:id :flake_id :user :title :rank :permalink :link :created_at :comments_count :tops :cover :video :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters :book_id :book_title])
 
 (defn- get-post-filter
   [state]
@@ -45,7 +45,7 @@
                             :last_reply_at
                             :tops
                             :comments_count
-                            :book_id :book_title :paper_id :paper_title
+                            :book_id :book_title
                             [:user {:fields [:id :screen_name :name :bio]}]
                             [:comments {:fields [:*]
                                         :cursor {:limit 100}}]]}}
@@ -65,7 +65,7 @@
                                     :permalink
                                     :is_draft
                                     :tags
-                                    :book_id :book_title :paper_id :paper_title]}}
+                                    :book_id :book_title]}}
              :args {:post {:id id}}}]
       #?(:clj q
          :cljs (let [current (get-in state [:post :current])]
@@ -119,25 +119,6 @@
   (fn [state args]
     {:q {:books {:fields [:id :title :description :stars :cover :authors
                           :object_id :created_at :tags]}}}))
-
-(def paper-query
-  (fn [state args]
-    (let [post-filter :latest-reply]
-      {:q {:paper {:fields [:id :object_id :object_type :screen_name :title :authors :description :tags :link :stars :created_at :updated_at :followers
-                           [:posts {:fields post-fields
-                                    :filter post-filter}]]}}
-       :args {:paper {:id (:paper-id args)}}
-       :merge {:paper-posts [:posts :by-paper-id (:paper-id args) post-filter]}})))
-
-(def paper-edit-query
-  (fn [state args]
-    {:q {:paper {:fields [:id :object_id :object_type :screen_name :title :authors :description :tags :link :created_at :updated_at]}}
-     :args {:paper {:id (:paper-id args)}}}))
-
-(def papers-query
-  (fn [state args]
-    {:q {:papers {:fields [:id :title :description :stars :authors
-                           :object_id :created_at :tags]}}}))
 
 (def drafts-query
   (fn [state args]
@@ -207,12 +188,6 @@
    :books books-query
 
    :book-edit book-edit-query
-
-   :paper paper-query
-
-   :papers papers-query
-
-   :paper-edit paper-edit-query
 
    :drafts drafts-query
 

@@ -19,7 +19,7 @@
             [api.db.util :as du]))
 
 (defonce ^:private table :users)
-(def ^:private fields [:id :name :screen_name :email :language :languages :bio :stared_books :stared_papers
+(def ^:private fields [:id :name :screen_name :email :language :languages :bio :stared_books
                        :github_id :created_at :github_handle :last_seen_at :email_notification])
 
 (def ^:private base-map {:select fields
@@ -27,21 +27,14 @@
 
 (defn get-user-stared-books
   [db user]
-  (let [{:keys [stared_books stared_papers]} user
+  (let [{:keys [stared_books]} user
         books (if (seq stared_books)
                 (util/query db {:from [:resources]
                                 :select [:object_id :title]
                                 :where [:and
                                         [:= :object_type "book"]
-                                        [:in :object_id stared_books]]}))
-        papers (if (seq stared_papers)
-                 (util/query db {:from [:resources]
-                                 :select [:object_id :title]
-                                 :where [:and
-                                         [:= :object_type "paper"]
-                                         [:in :object_id stared_papers]]}))]
-    {:stared_books books
-     :stared_papers papers}))
+                                        [:in :object_id stared_books]]}))]
+    {:stared_books books}))
 
 (defn db-get
   [db id]

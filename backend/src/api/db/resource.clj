@@ -82,9 +82,6 @@
         "book"
         (j/execute! db ["update users set stared_books = stared_books || ? where id = ?"
                         object-id user-id])
-        "paper"
-        (j/execute! db ["update users set stared_papers = stared_papers || ? where id = ?;"
-                        object-id user-id])
         nil)
 
       (u/cache-reload db user-id))))
@@ -102,9 +99,6 @@
       (case object-type
         "book"
         (j/execute! db ["update users set stared_books = array_remove(stared_books, ?) where id = ?"
-                        object-id user-id])
-        "paper"
-        (j/execute! db ["update users set stared_papers = array_remove(stared_papers, ?) where id = ?"
                         object-id user-id])
         nil)
 

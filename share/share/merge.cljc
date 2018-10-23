@@ -76,27 +76,6 @@
   (-> state
       (assoc-in [:books :latest] books)))
 
-(defmethod mergef :papers [state route-handler q {:keys [papers] :as result} _k]
-  (-> state
-      (assoc-in [:papers :latest] papers)))
-
-(defmethod mergef :paper-posts [state route-handler q {:keys [paper] :as result} _k]
-  (let [q (let [m (get-in q [:merge :paper-posts])]
-            (-> q
-                (util/dissoc-in [:merge :paper-posts])
-                (assoc-in [:merge :posts] m)))]
-    (-> state
-        (mergef :paper q {:paper (dissoc paper :posts)} :paper)
-        (mergef :posts q {:posts (:posts paper)} :posts))))
-
-(defmethod mergef :paper [state route-handler q {:keys [paper] :as result} _k]
-  (-> state
-      (assoc-in [:paper :current] paper)
-      (update-merge [:paper :by-id (:id paper)] paper)))
-
-(defmethod mergef :paper-edit [state route-handler q {:keys [paper] :as result} _k]
-  (mergef state :paper q result :paper))
-
 (defmethod mergef :comments [state route-handler q {:keys [comments] :as result} _k]
   (update-in state (get-in q [:merge :comments])
              (fn [old]

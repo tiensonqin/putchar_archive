@@ -64,7 +64,7 @@
    :replies "replies"
    :hot-posts "Hot posts"
    :signin "Sign In"
-   :slogan "A place to discuss tech articles, books and papers."
+   :slogan "A place to discuss tech articles or books."
    :members "members"
    :admins "Moderators"
    :support "support"
@@ -119,8 +119,8 @@
    :reports "Reports"
    :write-new-post "Write new post"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
-   :root-title "A place to discuss tech articles, books and papers."
-   :root-description "Putchar is a place to discuss articles, books and papers. Posts support multiple formats include Markdown and Org mode."
+   :root-title "A place to discuss tech articles or books."
+   :root-description "Putchar is a place to discuss tech articles or books. Posts support multiple formats include Markdown and Org mode."
    :go-to-profile "Posts"
    :profile-updated "Profile updated!"
    :sign-out "Sign Out"
@@ -238,11 +238,11 @@
 
 # About
 
-Putchar.org is a place to discuss articles, [books](/books) and [papers](/papers).
+Putchar.org is a place to discuss articles or [books](/books).
 
 ## Features
 
-* Each book or paper has its own posts and followers.
+* Each book has its own posts and followers.
 
   For example, [Purely functional data structures](/book/7).
 
@@ -294,7 +294,6 @@ Putchar.org is a place to discuss articles, [books](/books) and [papers](/papers
    :change-it-to "change it to "
    :privacy "Privacy"
    :comments "comments"
-   :share-news "Share news, papers or your favorite books ..."
    :name "Name"
    :authors "Authors"
    :authors-placeholder "Markdown links are supported..."
@@ -305,9 +304,6 @@ Putchar.org is a place to discuss articles, [books](/books) and [papers](/papers
    :book "book"
    :add-a-book "Add a book"
    :website "Website"
-   :papers "Papers"
-   :paper "paper"
-   :add-a-paper "Add a paper"
    :introduction "View introduction"
    :moderation-logs "Moderation Logs"
    :join "Join"

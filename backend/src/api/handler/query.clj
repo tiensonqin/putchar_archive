@@ -183,10 +183,6 @@
                      (and (:book_id data) (= :latest-reply (:filter data)))
                      (post/get-book-posts conn (:book_id data) cursor)
 
-                     ;; paper
-                     (and (:paper_id data) (= :latest-reply (:filter data)))
-                     (post/get-paper-posts conn (:paper_id data) cursor)
-
                      (= :toped (:filter data))
                      (post/get-toped conn uid cursor)
 
@@ -231,25 +227,6 @@
                  result)]
     (wrap-end? result (get (:cursor data) :limit 10))))
 
-(defn get-paper
-  [{:keys [uid datasource]} data]
-  (if-let [paper (j/with-db-connection [conn datasource]
-                  (resource/get conn {:object_type "paper"
-                                      :object_id (:id data)}))]
-    (expose-object-id paper)
-    :not-found))
-
-(defn get-papers
-  [{:keys [uid datasource]} data]
-  (let [result (j/with-db-connection [conn datasource]
-                 (resource/get-resources conn
-                                         "paper"
-                                         (:cursor data)))
-        result (if (seq result)
-                 (mapv expose-object-id result)
-                 result)]
-    (wrap-end? result (get (:cursor data) :limit 10))))
-
 (def resolvers
   {
    ;; get current user
@@ -279,8 +256,6 @@
 
    :book get-book
    :books get-books
-   :paper get-paper
-   :papers get-papers
    })
 
 (defn one-to-many?

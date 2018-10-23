@@ -44,7 +44,7 @@
 
 (def query-whitelist
   #{:user :post :login :posts :tag :user-tag :moderation-logs
-    :books :book :papers :paper})
+    :books :book})
 
 (defn- auth-whitelist?
   [request]

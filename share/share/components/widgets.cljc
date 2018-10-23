@@ -281,8 +281,9 @@
                  (take 6 tags)
                  tags)]
       [:div#tags.auto-padding {:class "row1"
-                                      :style {:flex-wrap "wrap"
-                                              :align-items "center"}}
+                               :style {:flex-wrap "wrap"
+                                       :align-items "center"
+                                       :margin-bottom 12}}
 
        (for [[tag count] tags]
          (let [this? (= current-tag (name tag))]
