@@ -59,7 +59,17 @@
     100% {transform: translate(0em,0);}
 }
 
-.drawer-content-wrapper {
+@keyframes swipe-out {
+    0%   {transform: translate(0, -300px);}
+    100% {transform: translate(0em,0);}
+}
+
+.swipe-in {
     transform: translate(0em,0);
     animation: swipe-in 0.18s;
+}
+
+.swipe-out {
+    transform: translate(0em,0);
+    animation: swipe-out 0.18s;
 }

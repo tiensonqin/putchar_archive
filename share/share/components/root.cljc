@@ -178,10 +178,9 @@
                                                  (citrus/dispatch! :citrus/close-drawer?))))))
                    state)}
   [current-user]
-  [:div.drawer.drawer-left.drawer-open.column {:style {:background "#FFF"
-                                                       :width 300}}
+  [:div.drawer.drawer-left.drawer-open.column {:style {:width 300}}
    [:div.drawer-mask]
-   [:div.drawer-content-wrapper.column
+   [:div.drawer-content-wrapper.column.swipe-in
     [:div.drawer-content
      [:div {:style {:padding 16
                     :width 300}}
@@ -276,26 +275,34 @@
                 :id "right-head"}
 
           (when (not post?)
-            (ui/menu
+            (if mobile?
               [:a.row1.no-decoration {:style {:align-items "center"
                                               :color colors/primary
                                               :padding-right 12}
-                                      :href "/new-article"}
+                                      :href "/new-link"}
                (ui/icon {:type :edit
                          :color colors/shadow
-                         :width 22
-                         :opts {:style {:margin-right (if mobile? 0 6)}}})
-               (when (not mobile?)
-                 (t :write-new-post))]
-              [[:a.button-text {:href "/new-link"
-                                :style {:font-size 14}}
-                (t :or-submit-a-link)
-                (ui/icon {:type :link
+                         :width 22})]
+              (ui/menu
+               [:a.row1.no-decoration {:style {:align-items "center"
+                                               :color colors/primary
+                                               :padding-right 12}
+                                       :href "/new-article"}
+                (ui/icon {:type :edit
                           :color colors/shadow
                           :width 22
-                          :opts {:style {:margin-left 6}}})]]
-              {:menu-style {:margin-top 18
-                            :width 160}}))
+                          :opts {:style {:margin-right (if mobile? 0 6)}}})
+                (when (not mobile?)
+                  (t :write-new-post))]
+               [[:a.button-text {:href "/new-link"
+                                 :style {:font-size 14}}
+                 (t :or-submit-a-link)
+                 (ui/icon {:type :link
+                           :color colors/shadow
+                           :width 22
+                           :opts {:style {:margin-left 6}}})]]
+               {:menu-style {:margin-top 18
+                             :width 160}})))
 
           ;; publish
           (if post?
