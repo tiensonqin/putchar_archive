@@ -210,8 +210,7 @@
       [:div.divider {:style {:margin 0}}]
       (right/tags)
       [:div.divider {:style {:margin 0}}]
-      (right/footer)
-      [:div.divider {:style {:margin 0}}]
+      (right/footer 12)
       (if current-user
         (ui/button {:on-click #(citrus/dispatch! :user/logout)
                     :style {:margin "16px 12px"}}
@@ -346,10 +345,11 @@
 
           (when (and (not mobile?)
                      (not post?))
-            (ui/dropdown {:overlay [:div.shadow {:style {:background "#FFF"
-                                                         :padding 12
-                                                         :margin-top 24}}
-                                    (right/footer)]
+            (ui/dropdown {:overlay [:div.shadow
+                                    {:style {:background "#FFF"
+                                             :padding 12
+                                             :margin-top 24}}
+                                    (right/footer "12px 12px 0 12px")]
                           :animation "slide-up"
                           :trigger ["click"]}
                          [:a {:style {:margin-left 12

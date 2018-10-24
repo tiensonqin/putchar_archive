@@ -234,7 +234,7 @@ a.tag.active {
   color: #FFF;
 }
 
-.disabled:hover {
+.disabled:hover, .disabled:focus, .disabled:visited {
   color: #FFF;
 }
 

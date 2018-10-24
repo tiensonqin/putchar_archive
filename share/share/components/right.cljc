@@ -122,11 +122,11 @@
            (if more? (t :collapse))]]))]))
 
 (rum/defc footer < rum/reactive
-  []
+  [padding]
   (let [locale (citrus/react :locale)
         zh-cn? (= locale :zh-cn)]
     [:div.right-sub.column1 {:style {:font-size 14
-                                     :padding 12}}
+                                     :padding padding}}
 
      [:div.row1 {:style {:align-items "center"}}
       [:a.control {:href "/latest"

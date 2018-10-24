@@ -238,6 +238,6 @@ a.tag.active {
     background: #071839;
     color: #FFF;
 }
-.disabled:hover {
+.disabled:hover, .disabled:focus, .disabled:visited {
     color: #FFF;
 }

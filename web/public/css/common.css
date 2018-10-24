@@ -207,16 +207,10 @@ a.control:hover, .header a:hover, .btn:hover, a.comments_count:hover, a.no-decor
     display: block;
 }
 
-#hot-posts-btn .btn {
-    -webkit-box-shadow: 0 1px 8px #ddd;
-    box-shadow: 0 1px 8px #ddd;
-}
-
 .text-hover-button-primary:focus, .text-hover-button-primary:visited, .hover-button-primary:focus, .hover-button-primary:visited, #hot-posts-btn .btn:hover, .btn:hover, .btn:focus, .btn:visited {
     -webkit-box-shadow:0 5px 10px rgba(127,127,127,.6);
     box-shadow:0 5px 10px rgba(127,127,127,.6);
     color: #2c2c2c;
-
 }
 
 .btn-lg {
@@ -434,10 +428,6 @@ span.active {
     color: #FFF;
 }
 
-.display-flex {
-    display: flex;
-}
-
 .box {
     transition: opacity 2s linear;
     transform:translate(0);
@@ -461,12 +451,6 @@ span.active {
 @keyframes rotate {
     0%    { transform: rotate(0deg); }
     100%  { transform: rotate(360deg); }
-}
-
-a.dot-seperator:before {
-    content:'\00B7';
-    padding-left: 5px;
-    padding-right: 5px;
 }
 
 textarea, input {
