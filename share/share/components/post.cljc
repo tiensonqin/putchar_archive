@@ -126,7 +126,7 @@
                                                 :title v})))
               :on-blur (fn [e]
                          (let [v (util/ev e)]
-                           (if (or (> (count v) 80)
+                           (if (or (> (count v) 128)
                                    (< (count v) 8))
                              (citrus/dispatch! :citrus/set-post-form-data
                                                {:title-validated? false
@@ -159,13 +159,13 @@
                         (citrus/react [:lateset-form-data])
                         :markdown)]
     [:div.row {:style {:position "relative"}}
-     (if (< (count value) 256)
+     (if (< (count value) 128)
        [:div {:style {:position "absolute"
                       :top -12
                       :right 0}}
         [:span {:style {:font-size 14
                         :color "#b22222"}}
-         (- 256 (count value))]])
+         (- 128 (count value))]])
      (when-not (and mobile? (:preview? form-data))
        [:div.editor.row {:style {:min-height 800}}
         (post-box/post-box
@@ -387,7 +387,7 @@
   (let [loading? (citrus/react [:post :loading?])]
     (let [ok? (and (util/post-title? (:title form-data))
                    (not (str/blank? (:body form-data)))
-                   (>= (count (:body form-data)) 256))]
+                   (>= (count (:body form-data)) 128))]
       (ui/button {:class (str (if ok?
                                 " btn-primary "
                                 " disabled"))
@@ -500,7 +500,7 @@
   [default-post-language]
   {:title {:label (str (t :title) ": *")
            :validators [util/non-blank? (util/length? {:min 8
-                                                       :max 80})]}
+                                                       :max 128})]}
    :link  {:label (str (t :link) ": *")
            :validators [util/link?]}
    :tags  {:label (str (t :tags) ":")

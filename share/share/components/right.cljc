@@ -124,44 +124,52 @@
 (rum/defc footer < rum/reactive
   []
   (let [locale (citrus/react :locale)
-        zh-cn? (= locale :zh-cn)
-        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
-    [:div {:style {:font-size 14
-                   :padding 12
-                   :position "fixed"
-                   :bottom 24}}
+        zh-cn? (= locale :zh-cn)]
+    [:div.right-sub.column1 {:style {:font-size 14
+                                     :padding 12}}
+
+     [:div.row1 {:style {:align-items "center"}}
+      [:a.control {:href "/latest"
+                   :on-click (fn []
+                               (citrus/dispatch! :citrus/re-fetch :latest {}))}
+       (t :new-created)]
+      [:a.control
+       {:style {:margin-left 24}
+        :key "about"
+        :href "/about"}
+       (t :about)]]
 
      [:div.row1 {:style {:align-items "center"
-                         :flex-wrap "wrap"}}
+                         :margin-top 16}}
+
+      [:a.control {:href "/tag/feature-requests"}
+       (t :feature-requests)]
+
       [:a.control
-       {:key "about"
-        :href "/about"}
-       (t :about)]
+       {:style {:margin-left 24}
+        :href "mailto:tiensonqin@gmail.com"}
+       (t :contact-us)]]
 
-      [:a {:href "/hot.rss"
-           :target "_blank"
-           :style {:margin-left 16}}
-
-       (ui/icon {:type :rss
-                 :width 22
-                 :color colors/shadow})]
+     [:div.row1 {:style {:align-items "center"
+                         :flex-wrap "wrap"
+                         :margin-top 16}}
+      (widgets/subscribe "/hot.rss")
 
       [:a {:href "https://github.com/tiensonqin/putchar"
-           :style {:margin-left 16}}
-
+           :style {:margin-left 24}}
        (ui/icon {:type :github
                  :width 18
                  :color colors/shadow})]
 
-      [:a {:href "mailto:tiensonqin@gmail.com"
+      [:a {:href "https://twitter.com/putchar_org"
            :style {:margin-left 16}}
-       (ui/icon {:type :mail_outline
+       (ui/icon {:type :twitter
                  :color colors/shadow
-                 :width 22
-                 :height 22
-                 :opts {:style {:margin-top 2}}})]
+                 :width 20
+                 :height 20
+                 :opts {:style {:margin-top 1}}})]
 
-      (ui/dropdown {:overlay (ui/button {:style {:margin-top 0}
+      (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
                                          :on-click (fn [e]
                                                      (util/stop e)
                                                      (citrus/dispatch! :citrus/set-locale (if zh-cn?
@@ -171,7 +179,7 @@
                                  "English"
                                  "简体中文"))
                     :animation "slide-up"}
-                   [:a {:style {:margin-left 15
+                   [:a {:style {:margin-left 12
                                 :margin-top 3}}
                     (ui/icon {:type :translate
                               :width 20
@@ -183,5 +191,4 @@
   [:div {:style {:position "fixed"
                  :top 76}}
    (books)
-   (tags)
-   (footer)])
+   (tags)])

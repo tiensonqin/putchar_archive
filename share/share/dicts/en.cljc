@@ -87,7 +87,7 @@
    :new-comment-to-my-comment "New reply to my comment"
    :dismiss-all "Dismiss all"
    :photo-upload "Add photos, support at most 9 pictures once."
-   :post-title-warning "Title should be 8 ~ 80 characters long."
+   :post-title-warning "Title should be 8 ~ 128 characters long."
    :post-tags-warning "Please specify at least 1 tag."
    :post-body-placeholder "Write your thoughts..."
    :publish "Publish"
