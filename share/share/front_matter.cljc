@@ -27,7 +27,7 @@
       (-> (assoc spec
                  :body content
                  :lang (or (:language spec) "en")
-                 :is_draft (if (false? (:published spec)) true false)
+                 :is_draft (if-not (:published spec) true false)
                  :cover (:cover_image spec))
           (select-keys [:title :tags :is_draft :lang :description :canonical_url :cover :book_id :body])))))
 

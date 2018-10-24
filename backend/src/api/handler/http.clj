@@ -317,20 +317,7 @@
                                             [:= :user_id uid]
                                             [:<> :id id]]))
             (util/bad :post-title-exists)
-            (let [publish? (false? is_draft)
-                  post (post/update conn id (dissoc data :id))]
-              (cond
-                (and (:body data) publish?)
-                (future
-                  (if publish?
-                    (slack/new (str "New post: "
-                                    "Title: " (:title data)
-                                    ", Link: <" (str "https://putchar.org/" (:permalink post))
-                                    ">."))))
-
-
-                :else
-                nil)
+            (let [post (post/update conn id (dissoc data :id))]
               (util/ok post)))))))))
 
 (defmethod handle :post/delete [[{:keys [uid datasource redis]} data]]
