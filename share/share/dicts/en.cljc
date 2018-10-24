@@ -119,7 +119,7 @@
    :reports "Reports"
    :write-new-post "Write an article"
    :new-post-description "Had a question, or got something inspiring to share? Your friends are waiting!"
-   :root-title "A place to discuss tech articles or books."
+   :root-title "Putchar"
    :root-description "Putchar is a place to discuss tech articles or books. Posts support multiple formats include Markdown and Org mode."
    :go-to-profile "Posts"
    :profile-updated "Profile updated!"

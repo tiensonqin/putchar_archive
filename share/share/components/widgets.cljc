@@ -149,7 +149,7 @@
        (let [url (str config/website "/@" screen_name "/latest.rss")]
          [:div.row1 {:style {:margin-top 12
                              :flex-wrap "wrap"}}
-          (subscribe url)
+          (when-not mobile? (subscribe url))
           (when self?
             [:a.tag {:href "/drafts"
                      :class (if drafts? "active" "")

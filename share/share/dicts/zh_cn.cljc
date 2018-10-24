@@ -122,7 +122,7 @@
    :reports "举报"
    :write-new-post "写文章"
    :new-post-description "写一篇新的文章。"
-   :root-title "A place to discuss tech articles or books."
+   :root-title "Putchar"
    :root-description "Putchar.org 是一个纯粹的技术讨论和分享社区。大家可以在这里讨论和分享文章以及书籍。"
    :go-to-profile "文章"
    :profile-updated "已保存!"
