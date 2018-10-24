@@ -23,11 +23,12 @@
         post-id (:id post)]
     (if (map? post)
       (-> state
-         (update-merge [:post :by-permalink permalink] (dissoc post :comments))
-         (update-merge [:post :current] (dissoc post :comments))
-         (assoc-in [:comment :posts post-id] (if (:comments post)
-                                               (update (:comments post) :result util/normalize)
-                                               (:comments post))))
+          (update-merge [:post :by-permalink permalink] (dissoc post :comments))
+          (update-merge [:post :by-id post-id] (dissoc post :comments))
+          (update-merge [:post :current] (dissoc post :comments))
+          (assoc-in [:comment :posts post-id] (if (:comments post)
+                                                (update (:comments post) :result util/normalize)
+                                                (:comments post))))
       state)))
 
 (defmethod mergef :post-edit [state route-handler q {:keys [post] :as result} _k]

@@ -40,6 +40,7 @@
         [["@" :screen_name "/tag/" [#"[^\/]+" :tag]]              :user-tag]
 
         ["drafts"                                                 :drafts]
+        [["p/" :post-id]                                          :draft]
         [["p/" :post-id "/edit"]                                              :post-edit]
         [["@" :screen_name "/" [#"[^\/]+" :permalink]]                        :post]
         [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]       :comment]

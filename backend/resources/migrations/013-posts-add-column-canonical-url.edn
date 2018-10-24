@@ -1,0 +1,2 @@
+{:up ["alter table posts add column canonical_url text default null unique"]
+ :down ["alter table posts drop column canonical_url"]}

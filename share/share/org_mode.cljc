@@ -3,7 +3,8 @@
             #?(:clj [api.services.slack :as slack])
             #?(:cljs [web.loader :as loader])
             [share.config :as config]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [share.front-matter :as fm]))
 
 (defn loaded? []
   #?(:cljs js/window.Orgmode
@@ -18,7 +19,8 @@
   [content]
   #?(:clj
      (when (and content (not (str/blank? content)))
-       (let [{:keys [exit out err]}
+       (let [content (fm/remove-front-matter content)
+             {:keys [exit out err]}
              (shell/sh "/usr/local/bin/mlorg"
                        :in content)]
          (if (not (zero? exit))

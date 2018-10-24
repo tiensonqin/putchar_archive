@@ -1,9 +1,11 @@
 (ns share.markdown
   (:require #?(:clj [clojure.java.io :as io])
             #?(:cljs [marked :as marked])
+            #?(:cljs [share.front-matter :as fm])
             [clojure.string :as string])
   #?(:clj
      (:import com.vladsch.flexmark.ext.toc.TocExtension
+              com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterExtension
               com.vladsch.flexmark.ext.typographic.TypographicExtension
               com.vladsch.flexmark.ext.autolink.AutolinkExtension
               com.vladsch.flexmark.ext.footnotes.FootnoteExtension
@@ -41,7 +43,8 @@
                           (DefinitionExtension/create)
                           (AbbreviationExtension/create)
                           (SuperscriptExtension/create)
-                          (TypographicExtension/create)])))))
+                          (TypographicExtension/create)
+                          (YamlFrontMatterExtension/create)])))))
 
 #?(:clj
    (defn parser-builder
@@ -61,9 +64,7 @@
    (def markdown-html-renderer ^HtmlRenderer$Builder
      (renderer (build-options))))
 
-(def test-str (atom nil))
 (defn render [str]
-  (reset! test-str str)
   #?(:clj
      (let [doc (.parse markdown-parser str)]
 

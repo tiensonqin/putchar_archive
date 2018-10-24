@@ -36,7 +36,8 @@
             [share.emoji :as emoji]
             [share.content :as content]
             [cheshire.core :refer [generate-string]]
-            [share.admins :as admins]))
+            [share.admins :as admins]
+            [share.front-matter :as fm]))
 
 ;; TODO: move search to graphql
 
@@ -121,7 +122,6 @@
     (util/bad :invalid-email)))
 
 (defmethod handle :opengraph/query [[{:keys [datasource redis]} {:keys [link] :as data}]]
-  (prn link)
   (if link
     (if-let [data (opengraph/block-query link (fn [e url]
                                                 (slack/error "Opengraph link: " url ", Error: " e)))]
@@ -310,52 +310,28 @@
       (reject-not-owner-or-admin?
        conn uid :posts id
        (fn [moderator]
-         (if (and (not (str/blank? (:title data)))
-                 (du/exists? conn :posts [:and
-                                          [:= :title (:title data)]
-                                          [:= :user_id uid]
-                                          [:<> :id id]]))
-          (util/bad :post-title-exists)
-          (let [publish? (false? (:is_draft data))
-                old-post (post/get conn id)
-                diff (su/map-difference (select-keys data [:title :body :tags :non_tech :lang])
-                                        (select-keys old-post [:title :body :tags :non_tech :lang]))
-                data (if (and publish? (nil? (:permalink old-post)))
-                       (assoc data :permalink (post/permalink (:user_screen_name old-post)
-                                                              (or
-                                                               (:title data)
-                                                               (:title old-post))))
-                       data)
-                post (post/update conn id (dissoc data :id))]
-            (when (and moderator (seq diff))
-              (mlog/create conn {:moderator moderator
-                                 :post_permalink (:permalink old-post)
-                                 :type "Post Update"
-                                 :data {:new diff
-                                        :old (select-keys old-post (vec (keys diff)) )}}))
-            (cond
-              (and (or
-                    (:title data)
-                    (:body data)) publish?)
-              (future
-                (search/add-post post)
+         (let [{:keys [title is_draft] :as m} (fm/extract (:body data))]
+           (if (and (not (str/blank? title))
+                   (du/exists? conn :posts [:and
+                                            [:= :title title]
+                                            [:= :user_id uid]
+                                            [:<> :id id]]))
+            (util/bad :post-title-exists)
+            (let [publish? (false? is_draft)
+                  post (post/update conn id (dissoc data :id))]
+              (cond
+                (and (:body data) publish?)
+                (future
+                  (if publish?
+                    (slack/new (str "New post: "
+                                    "Title: " (:title data)
+                                    ", Link: <" (str "https://putchar.org/" (:permalink post))
+                                    ">."))))
 
-                (j/with-db-connection [conn datasource]
-                  (let [post (post/get conn id)
-                        {:keys [github_id]} (u/get conn uid)]
 
-                    (if publish?
-                      (slack/new (str "New post: "
-                                      "Title: " (:title data)
-                                      ", Link: <" (str "https://putchar.org/" (:permalink post))
-                                      ">."))))))
-
-              (or (:title data) (:body data))
-              (future (search/update-post post))
-
-              :else
-              nil)
-            (util/ok post))))))))
+                :else
+                nil)
+              (util/ok post)))))))))
 
 (defmethod handle :post/delete [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]

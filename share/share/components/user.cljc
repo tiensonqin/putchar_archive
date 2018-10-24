@@ -27,33 +27,33 @@
                         (t :email-exists)
                         (t :invalid-email))]
     {:screen_name  (cond->
-                     {:label (t :username)
-                      :required? true
-                      :placeholder (t :pick-a-username)
-                      :warning screen-name-warning
-                      :validators [(fn [x]
-                                     (and (util/username? x)
-                                          (not username-taken?)))]
-                      :on-change (fn [form-data v]
-                                   (when-not (str/blank? v)
-                                     (citrus/dispatch! :citrus/default-update
-                                                       [:user :username-taken?] nil)))}
+                       {:label (t :username)
+                        :required? true
+                        :placeholder (t :pick-a-username)
+                        :warning screen-name-warning
+                        :validators [(fn [x]
+                                       (and (util/username? x)
+                                            (not username-taken?)))]
+                        :on-change (fn [form-data v]
+                                     (when-not (str/blank? v)
+                                       (citrus/dispatch! :citrus/default-update
+                                                         [:user :username-taken?] nil)))}
                      (:screen_name user)
                      (assoc :value (:screen_name user)))
      :email        (let [email (or email (:email user) "")]
                      (cond->
-                      {:label (t :email)
-                       :required? true
-                       :placeholder (t :required)
-                       :warning email-warning
-                       :validators [(fn [x]
-                                      (and (not email-taken?)
-                                           (form/email? x)))]
-                       :on-change (fn [form-data v]
-                                    (when-not (str/blank? v)
-                                      (citrus/dispatch! :citrus/default-update
-                                                        [:user :email-taken?] nil)))
-                       :value email}))
+                         {:label (t :email)
+                          :required? true
+                          :placeholder (t :required)
+                          :warning email-warning
+                          :validators [(fn [x]
+                                         (and (not email-taken?)
+                                              (form/email? x)))]
+                          :on-change (fn [form-data v]
+                                       (when-not (str/blank? v)
+                                         (citrus/dispatch! :citrus/default-update
+                                                           [:user :email-taken?] nil)))
+                          :value email}))
      :name         {:label (t :full-name)
                     :placeholder (str/capitalize (t :optional))
                     :warning (t :full-name-warning)
@@ -108,42 +108,42 @@
         temp-user (citrus/react [:user :temp])]
     [:div.signup.row
      (case signup-step
-      :add-avatar
-      (add-avatar temp-user)
+       :add-avatar
+       (add-avatar temp-user)
 
-      (let [github-avatar (:avatar_url temp-user)
-            user (select-keys temp-user [:id :name :email])
-            user (-> user
-                     (assoc :bio (or (:bio temp-user) (:description temp-user)))
-                     (assoc :screen_name (or (:screen_name temp-user) (:login temp-user)))
-                     (util/map-remove-nil?))
-            username-taken? (citrus/react [:user :username-taken?])
-            email-taken? (citrus/react [:user :email-taken?])]
-        [:div {:style {:margin "0 auto"}}
-         (if (seq user)
-           (form/render
-             {:init-state user
-              :loading? [:user :loading?]
-              :title (str (t :welcome) ", " (or (:name user)
-                                                (:screen_name user)))
-              :fields (signup-fields user username-taken? email-taken? email)
-              :submit-text (t :signup)
-              :submit-style {:margin-top 12}
-              :on-submit (fn [form-data]
-                           (let [data (merge
-                                       @form-data
-                                       {:avatar github-avatar}
-                                       {:github_id (str (:id user))
-                                        :github_handle (:login temp-user)})]
-                             (citrus/dispatch! :user/new data form-data)))})
-           (form/render
-             {:title (t :welcome)
-              :init-state {:email email}
-              :loading? [:user :loading?]
-              :fields (signup-fields user username-taken? email-taken? email)
-              :submit-text (t :signup)
-              :on-submit (fn [form-data]
-                           (citrus/dispatch! :user/new @form-data form-data))}))]))]))
+       (let [github-avatar (:avatar_url temp-user)
+             user (select-keys temp-user [:id :name :email])
+             user (-> user
+                      (assoc :bio (or (:bio temp-user) (:description temp-user)))
+                      (assoc :screen_name (or (:screen_name temp-user) (:login temp-user)))
+                      (util/map-remove-nil?))
+             username-taken? (citrus/react [:user :username-taken?])
+             email-taken? (citrus/react [:user :email-taken?])]
+         [:div {:style {:margin "0 auto"}}
+          (if (seq user)
+            (form/render
+              {:init-state user
+               :loading? [:user :loading?]
+               :title (str (t :welcome) ", " (or (:name user)
+                                                 (:screen_name user)))
+               :fields (signup-fields user username-taken? email-taken? email)
+               :submit-text (t :signup)
+               :submit-style {:margin-top 12}
+               :on-submit (fn [form-data]
+                            (let [data (merge
+                                        @form-data
+                                        {:avatar github-avatar}
+                                        {:github_id (str (:id user))
+                                         :github_handle (:login temp-user)})]
+                              (citrus/dispatch! :user/new data form-data)))})
+            (form/render
+              {:title (t :welcome)
+               :init-state {:email email}
+               :loading? [:user :loading?]
+               :fields (signup-fields user username-taken? email-taken? email)
+               :submit-text (t :signup)
+               :on-submit (fn [form-data]
+                            (citrus/dispatch! :user/new @form-data form-data))}))]))]))
 
 (defn profile-fields
   [form-data]
@@ -183,6 +183,37 @@
                   :margin-right 12}}]]
     (t :email-notification-settings-text)]])
 
+
+(rum/defc github-repo < rum/reactive
+  [user]
+  [:div#github-repo {:style {:padding "24px 12px"}}
+   [:h3 (t :github-sync)]
+
+   [:div.row1 {:style {:flex-wrap "wrap"
+                       :align-items "center"}}
+    [:span {:style {:margin-right 2}}
+     "https://github.com/"]
+    (ui/input {:class "ant-input"
+               :type "text"
+               :autoComplete "off"
+               :style {:border "none"
+                       :border-bottom "1px solid #aaa"
+                       :border-radius 0
+                       :padding 0
+                       :color colors/primary
+                       :font-size 15
+                       :width 200}
+               :placeholder (t :github-repo-link-placeholder)
+               :default-value (or (:github_repo @user) "")
+               :on-blur (fn [e]
+                          (let [repo (util/ev e)]
+                            (when (and
+                                   (not (str/blank? repo))
+                                   (not (str/starts-with? repo "http"))
+                                   (not= repo
+                                         (:github_repo @user)))
+                              (citrus/dispatch! :user/update {:github_repo repo}))))})]])
+
 (rum/defcs languages-settings <
   (rum/local nil ::languages)
   [state {:keys [languages] :as user}]
@@ -201,9 +232,9 @@
                                                             (vec (distinct (conj @languages-atom value))))]
                                                 (reset! languages-atom value)
                                                 (citrus/dispatch! :user/update {:languages value})))}
-                       lang)))]
+                        lang)))]
     [:div#languages {:style {:padding "24px 12px"}}
-    [:h3 (t :languages)]
+     [:h3 (t :languages)]
      [:p {:style {:margin-bottom "24px"
                   :font-size 16}}
       (t :select-which-languages)]
@@ -223,21 +254,21 @@
   []
   (let [hide-votes? (citrus/react [:hide-votes?])]
     [:div#misc {:style {:padding "24px 12px"}}
-    [:h3 {:style {:margin-bottom 24}}
-     (t :misc)]
+     [:h3 {:style {:margin-bottom 24}}
+      (t :misc)]
 
-    [:div.row1
-     [:a {:on-click (fn []
-                      (citrus/dispatch!
-                       (if hide-votes?
-                         :citrus/show-votes
-                         :citrus/hide-votes)))}
-      [:i {:class (if hide-votes?
-                    "fa fa-check-square"
-                    "fa fa-square-o")
-           :style {:font-size 20
-                   :margin-right 12}}]]
-     (t :dont-show-vote-numbers)]]))
+     [:div.row1
+      [:a {:on-click (fn []
+                       (citrus/dispatch!
+                        (if hide-votes?
+                          :citrus/show-votes
+                          :citrus/hide-votes)))}
+       [:i {:class (if hide-votes?
+                     "fa fa-check-square"
+                     "fa fa-square-o")
+            :style {:font-size 20
+                    :margin-right 12}}]]
+      (t :dont-show-vote-numbers)]]))
 
 (rum/defcs profile < rum/reactive
   < (rum/local false ::uploading?)
@@ -284,10 +315,10 @@
                        [:a {:title (t :change-avatar)
                             ;; :style {:cursor "pointer"}
                             :on-click #?(:cljs
-                                           (fn []
-                                             (.click (gdom/getElement "photo_upload")))
-                                           :clj
-                                           identity)}
+                                         (fn []
+                                           (.click (gdom/getElement "photo_upload")))
+                                         :clj
+                                         identity)}
                         [:span
                          {:class "ant-avatar ant-avatar-circle" }
                          [:img {:src avatar}]]]])))
@@ -297,6 +328,9 @@
         :on-submit (fn [form-data]
                      (let [data @form-data]
                        (citrus/dispatch! :user/update data)))})
+
+     ;; Github sync
+     (github-repo user)
 
      ;; email notification settings
      (email-notification-settings user)

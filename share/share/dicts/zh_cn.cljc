@@ -318,4 +318,7 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享
    :or-submit-a-link "或者分享链接"
    :submit-a-link "分享链接"
    :links "链接"
+   :github-sync "Github 同步"
+   :github-repo-link-placeholder "你的仓库地址"
+   :your-github-repo "你的 Github 仓库: "
    })

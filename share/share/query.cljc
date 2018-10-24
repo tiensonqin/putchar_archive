@@ -34,25 +34,29 @@
 
 (def post-query
   (fn [state args]
-    {:q    {:post {:fields [:id
-                            :title
-                            :body_html
-                            :body_format
-                            :tags
-                            :permalink
-                            :created_at
-                            :updated_at
-                            :last_reply_at
-                            :tops
-                            :comments_count
-                            :book_id :book_title :link :cover
-                            [:user {:fields [:id :screen_name :name :bio]}]
-                            [:comments {:fields [:*]
-                                        :cursor {:limit 100}}]]}}
-     :args {:post {:permalink (str "@"
-                                   (:screen_name args)
-                                   "/"
-                                   (:permalink args))}}}))
+    (let [args (if (and (:screen_name args)
+                        (:permalink args))
+                 {:permalink (str "@"
+                                  (:screen_name args)
+                                  "/"
+                                  (:permalink args))}
+                 {:id (:post-id args)})]
+      {:q    {:post {:fields [:id
+                             :title
+                             :body_html
+                             :body_format
+                             :tags
+                             :permalink
+                             :created_at
+                             :updated_at
+                             :last_reply_at
+                             :tops
+                             :comments_count
+                             :book_id :book_title :link :cover
+                             [:user {:fields [:id :screen_name :name :bio]}]
+                             [:comments {:fields [:*]
+                                         :cursor {:limit 100}}]]}}
+       :args {:post args}})))
 
 (def post-edit-query
   (fn [state args]

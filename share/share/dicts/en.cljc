@@ -312,4 +312,7 @@ Putchar.org is a place to discuss articles or [books](/books).
    :or-submit-a-link "Or submit a link"
    :submit-a-link "Submit a link"
    :links "Links"
+   :github-sync "Github Sync"
+   :github-repo-link-placeholder "Your repo link"
+   :your-github-repo "Github repo: "
    })

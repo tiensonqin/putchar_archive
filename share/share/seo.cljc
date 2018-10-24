@@ -15,6 +15,13 @@
   (let [website-logo (str config/website "/logo-2x.png")
         [title description photo]
         (case handler
+          :book
+          (let [book (get-in state [:book :by-id
+                                    (:book-id route-params)])]
+            [(:title book)
+             (:description book)
+             (:cover book)])
+
           :post
           ;; by-permalink
           (let [post (get-in state [:post :by-permalink
@@ -22,7 +29,7 @@
                                          (:screen_name route-params)
                                          "/"
                                          (:permalink route-params))])]
-            [(:title post)
+            [(or (:title post) "Untitled")
              (get-description (:body post))
              (if (:cover post)
                (:cover post)

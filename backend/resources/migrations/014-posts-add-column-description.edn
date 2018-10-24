@@ -1,0 +1,4 @@
+{:up ["alter table posts add column description text default null"
+      "alter table users add column github_repo_map text default null"]
+ :down ["alter table posts drop column description"
+        "alter table users drop column github_repo_map"]}

@@ -382,12 +382,11 @@ a.delete {
     border-bottom: none;
 }
 
+#nav-bar {
+    position: fixed;
+}
+
 @media screen and (min-width: 768px) {
-
-    #nav-bar {
-        margin-bottom: 16px;
-    }
-
     #head {
         height: 60px;
     }

@@ -66,26 +66,15 @@
          form-data (merge form-data v)
          current-path (get-in state [:router :handler])
          body (:body form-data)
-         current-user (get-in state [:user :current])
-         save-draft? (and current-user
-                          (= current-path :new-post)
-                          (or (:title form-data)
-                              body)
-                          (not (get-in state [:post :saving?])))]
+         current-user (get-in state [:user :current])]
      (cond->
-       {:state (cond->
-                 (assoc-in state [:post :form-data] form-data)
-                 save-draft?
-                 (assoc-in [:post :saving?] true)
-                 (not (str/blank? (:title v)))
-                 (assoc-in [:post :post-title-exists?] false))}
+         {:state (-> state
+                     (assoc-in [:post :form-data] form-data)
+                     (assoc-in [:post :post-title-exists?] false))}
 
        (and body
             (not completed?))
-       (assoc :dispatch [:citrus/auto-complete body])
-
-       save-draft?
-       (assoc :dispatch [:post/new-draft form-data])))))
+       (assoc :dispatch [:citrus/auto-complete body])))))
 
 (def handlers
   {:citrus/load-more-posts
@@ -237,13 +226,20 @@
              :on-error :post/update-failed}})
 
    ;; server will redirect to post-edit
-   :post/new-draft
-   (fn [state form-data]
-     {:state {:saving? true}
-      :http {:params [:post/new (-> (select-keys form-data [:title :body :body_format])
-                                    (assoc :is_draft true))]
-             :on-load :post/new-draft-ready
-             :on-error :post/new-draft-failed}})
+   :citrus/new-draft
+   (fn [state]
+     (if (get-in state [:user :current])
+       {:state (assoc-in state [:post :saving?] true)
+        :http {:params [:post/new {:is_draft true
+                                   :body "---
+title:
+tags:
+lang: en
+---"
+                                   :body_format (get-in state [:form-data :body_format] "markdown")}]
+               :on-load :post/new-draft-ready
+               :on-error :post/new-draft-failed}}
+       {:state state}))
 
    ;; TODO: add to drafts
    :post/new-draft-ready
@@ -262,31 +258,24 @@
    (fn [state]
      (let [{:keys [images] :as form-data} (:form-data state)]
        (if (seq (select-keys form-data [:title :body]))
-         (let [first-image (and (= 1 (count images))
-                                (:url (second (first images))))
-               remove-nil? (partial util/remove-v-nil? :v)]
-           (if-let [current (:current state)]
-             (let [data (assoc (select-keys form-data
-                                            [:title :body :body_format])
-                               :id (:id current))
-                   data (if (and (nil? (:cover current))
-                                 first-image)
-                          (assoc data :cover first-image)
-                          data)]
+         (if-let [current (:current state)]
+           (let [cover (if (and (nil? (:cover current))
+                                (seq images))
+                         (:url (second (first images)))
+                         nil)
+                 data (assoc (select-keys form-data
+                                          [:body :body_format])
+                             :id (:id current)
+                             :cover cover)]
 
-               (if (or (and
-                        (:title form-data)
-                        (not= (:title current) (:title form-data)))
-                       (and
-                        (:body form-data)
-                        (not= (:body current) (:body form-data))))
-                 {:state {:saving? true}
-                  :http {:params [:post/update (dissoc data
-                                                       :title-validated?)]
-                         :on-load :post/save-ready
-                         :on-error :post/save-failed}}
-                 {:state state}))
-             {:state state}))
+             (if (not= (str/trim (:body current))
+                       (str/trim (:body form-data)))
+               {:state {:saving? true}
+                :http {:params [:post/update data]
+                       :on-load :post/save-ready
+                       :on-error :post/save-failed}}
+               {:state state}))
+           {:state state})
          {:state state})))
 
    :post/save-ready
@@ -316,7 +305,7 @@
      (let [format (or (:latest-body-format state)
                       :markdown)]
        {:state (assoc-in state [:post :form-data]
-                        {:body_format format})}))
+                         {:body_format format})}))
 
    :citrus/save-latest-body-format
    (fn [state body-format]

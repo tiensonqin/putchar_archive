@@ -22,7 +22,8 @@
             [share.components.root :as root]
             [api.db.task :as task]
             [cheshire.core :refer [generate-string]]
-            [cemerick.url :as url]))
+            [cemerick.url :as url]
+            [api.services.github.webhook-push :as push]))
 
 (defn get-referer
   [req]
@@ -73,6 +74,14 @@
           (task/delete-account conn uid)
           (-> (resp/redirect (:website-uri config/config))
               (assoc :cookies cookie/delete-token)))
+
+        ;; github push events
+        (= "/github/push" (:uri req))
+        (do
+          (j/with-db-connection [conn datasource]
+            (push/handle conn req))
+          {:status 200
+           :body "ok"})
 
         ;; github login
         (= "/auth/github" (:uri req))

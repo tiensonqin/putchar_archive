@@ -33,6 +33,7 @@ body {
     width: 100%;
     box-shadow: 0 4px 8px #ddd;
     background: #FFFFFF;
+    z-index: 999;
 }
 
 #head {

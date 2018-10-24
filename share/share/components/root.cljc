@@ -83,6 +83,8 @@
 
          :drafts       (fn [params current-user]
                          (user/drafts params))
+         :draft         (fn [params current-user]
+                          (post/post params))
          :books         (fn [params current-user]
                           (book/books params))
          :book          (fn [params current-user]
@@ -526,19 +528,18 @@
        ;; left
        [:div#left {:key "left"
                    :class "row full-height"
-                   :style {:margin-top (if mobile? 12 0)
+                   :style {:margin-top 76
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-link :new-post :post-edit :post :comment :comments :drafts :user-tag :login :stats :books :book :book-edit :new-book :links} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-link :new-post :post-edit :post :comment :comments :drafts :draft :user-tag :login :stats :books :book :book-edit :new-book :links} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 0
                               :margin-left 12
                               :width 243
                               :border-left "1px solid #ddd"}}
-          (right/right)])
-       ]]
+          (right/right)])]]
      (login/signin-modal mobile?)
      ;; report modal
      (report/report)

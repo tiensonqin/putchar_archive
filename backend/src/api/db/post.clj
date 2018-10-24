@@ -4,6 +4,7 @@
             [api.db.util :as util]
             [api.db.cache :as cache]
             [api.db.user :as u]
+            [api.db.resource :as resource]
             [api.db.top :as top]
             [api.db.search :as search]
             [clojure.string :as str]
@@ -26,7 +27,8 @@
             [api.db.moderation-log :as mlog]
             [api.services.pygments :as pygments]
             [share.content :as content]
-            [api.services.opengraph :as opengraph]))
+            [api.services.opengraph :as opengraph]
+            [share.front-matter :as fm]))
 
 (defonce ^:private table :posts)
 (defonce ^:private fields [:*])
@@ -34,7 +36,7 @@
                                   :title :tops
                                   :rank :comments_count :permalink :link
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
-                                  :lang
+                                  :lang :canonical_url
                                   :body :body_format :body_html :tags
                                   :book_id :book_title
                                   :cover]
@@ -95,7 +97,8 @@
    (apply str)
    (#(str/replace % #"-+" "-"))
    (bidi.bidi/url-encode)
-   (str "@" screen-name "/")))
+   (str "@" screen-name "/")
+   (su/trimr-punctuations)))
 
 (defn safe-trim
   [x]
@@ -151,15 +154,40 @@
            :body body
            :body_html body-html)))
 
+(defn with-book
+  [db data]
+  (if-let [book-id (:book_id data)]
+    (assoc data :book_title
+           (util/select-one-field db :resources
+                                  {:object_type "book"
+                                   :object_id book-id}
+                                  :title))
+    data))
+
+(defn extract-process
+  [db m screen-name]
+  (let [{:keys [is_draft] :as m}
+        (-> (with-book db (merge (fm/extract (:body m)) m))
+            (assoc-body-html (clojure.core/get m :body_format :markdown))
+            (clojure.core/update :tags su/->tags))
+        m (if (nil? (:cover m))
+            (dissoc m :cover)
+            m)]
+    (cond
+      (and (not is_draft)
+           screen-name
+           (:title m))
+      (assoc m :permalink (permalink screen-name (:title m)))
+
+      :else
+      m)))
+
 (defn create
   [db data]
-  (let [m (-> (assoc-body-html data (clojure.core/get data :body_format :markdown))
-              (clojure.core/update :title safe-trim))
-        tags (su/->tags (:tags m))
-        m (assoc m :tags tags)
-        screen-name (or
+  (let [screen-name (or
                      (:screen_name data)
-                     (:screen_name (u/get db (:user_id m) [:screen_name])))
+                     (:screen_name (u/get db (:user_id data) [:screen_name])))
+        {:keys [tags] :as m} (extract-process db data screen-name)
 
         result (util/create db table (assoc m :user_screen_name screen-name) :flake? true)]
     (when (seq tags)
@@ -170,24 +198,11 @@
   [db id m]
   (when-let [post (get db id)]
     (let [old-tags (:tags post)
+
           m (dissoc m :flake_id)]
       (when (seq m)
-        (let [m (cond-> m
-                  (:body m)
-                  (assoc-body-html (:body_format m))
-
-                  (:title m)
-                  (clojure.core/update :title safe-trim))
-              tags (su/->tags (:tags m))
-              m (if tags
-                  (assoc m :tags tags)
-                  m)
-              link (if (:body m)
-                     (extract-link (:body m)))]
-          (util/update db table id (cond->
-                                       (assoc m :updated_at (util/sql-now))
-                                     link
-                                     (assoc :link link)))
+        (let [{:keys [tags] :as m} (extract-process db m (:user_screen_name post))]
+          (util/update db table id (assoc m :updated_at (util/sql-now)))
           (when (seq tags)
             (let [s1 (set tags)
                   s2 (if (seq old-tags)
