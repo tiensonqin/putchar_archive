@@ -129,24 +129,19 @@
 
                                           :else
                                           "\n\n")
-                                        "!["
-                                        (util/get-file-base-name (gobj/get (:file picture) "name"))
-                                        "]("
-                                        (:url picture)
-                                        ")"
+                                        (util/format "![%s](%s)"
+                                                     (util/get-file-base-name (gobj/get (:file picture) "name"))
+                                                     (:url picture))
                                         "\n")
                                        (str
                                         (cond
                                           (str/blank? body)
                                           ""
-
                                           :else
                                           "\n\n")
-                                        "image::"
-                                        (:url picture)
-                                        "["
-                                        (util/get-file-base-name (gobj/get (:file picture) "name"))
-                                        "]"
+                                        (util/format "[[%s][%s]]"
+                                                     (:url picture)
+                                                     (util/get-file-base-name (gobj/get (:file picture) "name")))
                                         "\n"))]
                       (if (str/blank? body)
                         image-part

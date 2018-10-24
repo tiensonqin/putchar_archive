@@ -79,7 +79,7 @@
                          :color colors/primary
                          :align-items "center"}}
       [:span {:style {:padding-left 2
-                      :margin-right 6
+                      :margin-right 4
                       :font-weight "bold"
                       :font-size 18}}
        "#"]
