@@ -136,7 +136,7 @@
                                   (meta-property "og:article:tag")
                                   [:.tag]
                                   (meta-name "keywords"))
-                     (s/split ","))
+                     (s/split #","))
              (some->> (map (comp first :content) (html/select node [:.tag]))))
             (map ->tag)
             (take 3))
