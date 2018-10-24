@@ -235,6 +235,7 @@
 title:
 tags:
 lang: en
+published: false
 ---"
                                    :body_format (get-in state [:form-data :body_format] "markdown")}]
                :on-load :post/new-draft-ready
