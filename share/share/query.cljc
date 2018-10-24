@@ -45,7 +45,7 @@
                             :last_reply_at
                             :tops
                             :comments_count
-                            :book_id :book_title :link
+                            :book_id :book_title :link :cover
                             [:user {:fields [:id :screen_name :name :bio]}]
                             [:comments {:fields [:*]
                                         :cursor {:limit 100}}]]}}

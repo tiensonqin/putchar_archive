@@ -18,6 +18,7 @@
             [api.db.notification :as notification]
             [api.handler.query :as query]
             [api.services.s3 :as s3]
+            [api.services.opengraph :as opengraph]
             [api.cookie :as cookie]
             [api.jwt :as jwt]
             [share.helpers.form :as form]
@@ -118,6 +119,16 @@
       {:status 200
        :body {:result true}})
     (util/bad :invalid-email)))
+
+(defmethod handle :opengraph/query [[{:keys [datasource redis]} {:keys [link] :as data}]]
+  (prn link)
+  (if link
+    (if-let [data (opengraph/block-query link (fn [e url]
+                                                (slack/error "Opengraph link: " url ", Error: " e)))]
+      {:status 200
+       :body data}
+      (util/bad :invalid-link))
+    (util/bad :invalid-link)))
 
 (defmethod handle :user/new [[{:keys [datasource redis]} data req]]
   (let [locale (name (su/get-locale req))]

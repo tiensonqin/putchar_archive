@@ -31,7 +31,9 @@
      :clj nil))
 
 (rum/defc input < rum/static
-  [form-data name {:keys [id textarea? label value icon warning disabled placeholder type on-change validators style class auto-focus]
+  [form-data name {:keys [id textarea? label value icon warning disabled placeholder type
+                          on-change on-blur reactive?
+                          validators style class auto-focus]
                    :or {disabled false
                         auto-focus false
                         type "text"}
@@ -78,7 +80,12 @@
                                         (doseq [validator validators]
                                           (if-not (validator v)
                                             (swap! form-data (fn [v]
-                                                               (assoc-in v [:validators name] false))))))))}
+                                                               (assoc-in v [:validators name] false)))))
+                                        (when (and
+                                               on-blur
+                                               (not (false? (get-in @form-data [:validators name]))))
+                                          (on-blur form-data v)))))}
+                  (and value reactive?) (assoc :value value)
                   value (assoc :default-value value)
                   style (assoc :style style))]
 

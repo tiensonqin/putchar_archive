@@ -1,6 +1,7 @@
 (ns api.services.opengraph
-  (:require [api.services.opengraph.core :refer [parse]]
-            [api.services.opengraph.cache :as cache]))
+  (:require [api.services.opengraph.core :refer [parse block-parse]]
+            [api.services.opengraph.cache :as cache]
+            [org.httpkit.client :as http]))
 
 ;; TODO: run as a standalone process
 
@@ -13,6 +14,12 @@
              (cache/insert url data)
              (ok-handler data))
            error-handler)))
+
+(defn block-query
+  [url error-handler]
+  (if-let [result (cache/get url)]
+    result
+    (block-parse url error-handler)))
 
 (comment
   (query "https://putchar.org"

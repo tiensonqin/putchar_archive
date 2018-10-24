@@ -498,13 +498,25 @@
 
 (defn link-fields
   [default-post-language]
-  {:title {:label (str (t :title) ": *")
+  {:link  {:label (str (t :link) ": *")
+           :validators [util/link?]
+           :auto-focus true
+           :on-blur (fn [form-data link]
+                      (citrus/dispatch! :post/opengraph-query link
+                                        (fn [result]
+                                          (when (str/blank? (:title @form-data))
+                                              (swap! form-data merge
+                                                     {:title (:title result)
+                                                      :body (:description result)
+                                                      :cover (:image result)
+                                                      :tags (str/join ", " (:tags result))})))))}
+   :title {:label (str (t :title) ": *")
            :validators [util/non-blank? (util/length? {:min 8
-                                                       :max 128})]}
-   :link  {:label (str (t :link) ": *")
-           :validators [util/link?]}
+                                                       :max 128})]
+           :reactive? true}
    :tags  {:label (str (t :tags) ":")
-           :placeholder (t :add-tags)}
+           :placeholder (t :add-tags)
+           :reactive? true}
    :lang  {:label (str (t :select-primary-language) ":")
            :type :select
            :options dicts/langs
@@ -524,12 +536,10 @@
      (form/render {:title (t :submit-a-link)
                    :fields (link-fields default-post-language)
                    :on-submit (fn [form-data]
-                                (prn form-data)
                                 (let [form-data (do
                                                   (swap! form-data update :title str/capitalize)
                                                   form-data)]
-                                  (citrus/dispatch! :post/new-link form-data))
-                                )
+                                  (citrus/dispatch! :post/new-link form-data)))
                    :loading? [:post :loading?]
                    :footer (fn [form-data]
                              [:div
@@ -736,9 +746,6 @@
                                               :on-click util/stop
                                               :href post-link})
                (:title post)])
-
-            ;; (when-not mobile?
-            ;;   (tags (:tags post) {:style {:margin-left 6}}))
 
             (when (and self? drafts-path?)
               (ui/menu
@@ -1078,10 +1085,9 @@
                 avatar (util/cdn-image (:screen_name user))]
             [:div.column.center-area {:key "post"}
              [:div.auto-padding {:style {:margin-top 24}}
-              [:div.row {:style (if link
-                                  {:margin-bottom 24})}
-               (when (seq (:tags post))
-                 (tags (:tags post) nil))]
+              (when (seq (:tags post))
+                [:div.row {:style {:margin-bottom 24}}
+                 (tags (:tags post) nil)])
 
               [:div.column1 {:style (if (or mobile? link)
                                       {}
@@ -1089,11 +1095,10 @@
                                        :justify-content "center"
                                        :margin-top 48})}
                (if link
-                 [:div.row1 {:style {:align-items "center"
-                                     :margin-bottom 6}}
+                 [:span {:style {:margin-bottom 6}}
                   [:a {:href link
                        :style {:color colors/primary
-                               :font-size 18}}
+                               :font-size "1.4em"}}
                    (str/capitalize (:title post))]
                   [:a {:href link
                        :style {:color colors/primary}}
@@ -1139,9 +1144,14 @@
                        :style {:color colors/primary
                                :display "block"
                                :margin-left 6}}
-                   (:book_title post)]])]
+                   (:book_title post)]])
+
+               (when (and (:link post) (:cover post))
+                 [:div.editor
+                  [:img {:style {:margin-bottom 0}
+                         :src (:cover post)}]])]
               [:div.post
-               (when (:body_html post)
+               (if (:body_html post)
                  (widgets/raw-html {:on-mouse-up (fn [e]
                                                    (let [text (util/get-selection-text)]
                                                      (when-not (str/blank? text)
@@ -1151,7 +1161,11 @@
                                     :style {:word-wrap "break-word"
                                             :font-size "1.127em"}
                                     :id "post-body"}
-                                   (:body_html post)))]
+                                   (:body_html post))
+                 (if (:link post)
+                   (let [s (content/embed-youtube (:link post))]
+                     (when (not= s (:link post))
+                       (widgets/raw-html {:style {:margin-top 24}} s)))))]
 
               [:div.center-area
                (toolbox post)
@@ -1206,13 +1220,16 @@
             :target "_blank"
             :style {:margin-right 12}}
         (ui/icon {:type :rss
-                  :color "#666"})]
-       (ui/button {:class (if followed? "btn" "btn-primary")
-                   :on-click (fn []
-                               (let [action (if followed? :user/unfollow :user/follow)]
-                                 (citrus/dispatch! action tag)))}
-         (if followed?
-           "Unfollow"
+                  :color "#666"
+                  :width 21
+                  :height 21})]
+       (if followed?
+         [:a.control {:on-click (fn []
+                                  (citrus/dispatch! :user/unfollow tag))}
+          "Unfollow"]
+         (ui/button {:class "btn-primary"
+                    :on-click (fn []
+                                (citrus/dispatch! :user/follow tag))}
            "Follow"))]]
 
      [:div.divider]

@@ -66,7 +66,7 @@
      "\n")))
 
 (defn embed-youtube
-  [body body-format]
+  [body]
   (let [replace-fn (fn [l]
                      (let [l (remove #{"www."} l)
                            [youtube-id start] (if (= 3 (count l))
@@ -195,7 +195,7 @@
 (defn pre-transform
   [body body-format]
   (some-> body
-          (embed-youtube body-format)
+          (embed-youtube)
           (quotes body-format)
           (mentions body-format)
           (emojis body-format)

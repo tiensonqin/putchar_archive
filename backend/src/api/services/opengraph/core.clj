@@ -71,6 +71,12 @@
   (if (and s (string? s))
     (s/trim s)))
 
+(defn ->tag
+  [s]
+  (some-> s
+          safe-trim
+          (s/replace "#" "")))
+
 (defn first-match
   [node & selectors]
   (when (and node (seq selectors))
@@ -120,22 +126,36 @@
                                (meta-name "twitter:description")
                                [:#description]
                                [:p])
+     :lang (first-match node
+                        (meta-property "og:locale")
+                        {:selector [:html]
+                         :attr :lang})
+     :tags (some->>
+            (or
+             (some->> (map (comp first :content) (html/select node [:.tag])))
+             (some-> (first-match node
+                                  (meta-property "og:article:tag")
+                                  [:.tag]
+                                  (meta-name "keywords"))
+                     (s/split ",")))
+            (map ->tag)
+            (take 3))
      :image (when-let [image (first-match node
-                                        (meta-property "og:image:secure_url")
-                                        (meta-property "og:image:url")
-                                        (meta-property "og:image")
-                                        (meta-name "twitter:image:src")
-                                        (meta-name "twitter:image")
-                                        (meta-itemprop "image")
-                                        {:selector [:article :img]
-                                         :attr :src}
-                                        {:selector [:#content :img]
-                                         :attr :src}
-                                        {:selector [:img (attr= :alt "author")]
-                                         :attr :src}
-                                        ;; {:selector [:img]
-                                        ;;  :attr :src}
-                                        )]
+                                          (meta-property "og:image:secure_url")
+                                          (meta-property "og:image:url")
+                                          (meta-property "og:image")
+                                          (meta-name "twitter:image:src")
+                                          (meta-name "twitter:image")
+                                          (meta-itemprop "image")
+                                          {:selector [:article :img]
+                                           :attr :src}
+                                          {:selector [:#content :img]
+                                           :attr :src}
+                                          {:selector [:img (attr= :alt "author")]
+                                           :attr :src}
+                                          ;; {:selector [:img]
+                                          ;;  :attr :src}
+                                          )]
               (if (= \/ (first image))
                 (str (get-root-url url) image)
                 image))}))
@@ -155,14 +175,38 @@
                   (fn [{:keys [status headers body error]}] ;; asynchronous response handling
                     (try
                       (if error
-                        (error-handler error)
+                        (error-handler error url)
 
-                        (when-let [node (html/html-resource body)]
-                          (ok-handler (default-parser url node))))
+                        (if (<= 200 status 299)
+                          (when-let [node (html/html-resource body)]
+                            (ok-handler (default-parser url node)))
+                          (error-handler :bad-status url)))
                       (catch Exception e
-                        (error-handler e))))))
+                        (error-handler e url))))))
       (catch Exception e
-        (error-handler e)))))
+        (error-handler e url)))))
+
+(defn block-parse
+  [url error-handler]
+  (when url
+    (try
+      (let [test-url (java.net.URL. url)
+            response @(http/get url {:headers {"User-Agent" user-agent}
+                                     :as :stream
+                                     :timeout connection-timeout})]
+        (let [{:keys [status headers body error]} response]
+          (try
+            (if error
+              (error-handler error url)
+
+              (if (<= 200 status 299)
+                (when-let [node (html/html-resource body)]
+                  (default-parser url node))
+                (error-handler :bad-status url)))
+            (catch Exception e
+              (error-handler e url)))))
+      (catch Exception e
+        (error-handler e url)))))
 
 (comment
   (def node (fetch-url "https://github.com/cgrand/enlive"))

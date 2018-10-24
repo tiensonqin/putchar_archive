@@ -343,4 +343,28 @@
    (fn [state error]
      (prn "mark as read failed, should retry several times.")
      {:state state})
+
+   :post/opengraph-query
+   (fn [state url ok-handler]
+     (prn url)
+     {:state {:opengraph-processing? true}
+      :http {:params [:opengraph/query {:link url}]
+             :on-load [:post/opengraph-query-success url ok-handler]
+             :on-error [:post/opengraph-query-failed url]}})
+
+   :post/opengraph-query-success
+   (fn [state url ok-handler result]
+     (prn "opengraph query result: " result)
+     (ok-handler result)
+     {:state {:opengraph-processing? false
+              :opengraph (assoc (:opengraph state) url result)}})
+
+   :post/opengraph-query-failed
+   (fn [state url error]
+     (prn "opengraph query error: " error)
+     {:state {:opengraph-processing? false
+              :opengraph-errors (assoc (:opengraph-errors state)
+                                       url
+                                       error)}})
+
    })

@@ -199,7 +199,8 @@
           zh-cn? (= locale :zh-cn)
           theme "white-theme"]
       (h/html5
-       {:class theme}
+       {:class theme
+        :lang "en"}
        (head req handler zh-cn? seo-content seo-title seo-image)
        [:body
         [:div#app

@@ -165,8 +165,8 @@ code {
     max-width: 100%;
     display: block;
     margin: 0 auto;
-    margin-top: 48px;
-    margin-bottom: 48px;
+    margin-top: 24px;
+    margin-bottom: 24px;
 }
 
 .home .editor img {
