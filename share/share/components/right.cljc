@@ -43,7 +43,7 @@
                           :style {:color colors/primary
                                   :font-size 14
                                   :overflow "hidden"
-                                  :max-width 243
+                                  :max-width 225
                                   :margin-left 3
                                   :margin-bottom 6
                                   :white-space "nowrap"

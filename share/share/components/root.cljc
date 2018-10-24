@@ -342,6 +342,21 @@
                                        :color colors/primary}}
              (t :signin)])
 
+          (when (and (not mobile?)
+                     (not post?))
+            (ui/dropdown {:overlay [:div.shadow {:style {:background "#FFF"
+                                                         :padding 12
+                                                         :margin-top 24}}
+                                    (right/footer)]
+                          :animation "slide-up"
+                          :trigger ["click"]}
+                         [:a {:style {:margin-left 12
+                                      :margin-right 12}}
+                          (ui/icon {:type :more
+                                    :width 20
+                                    :height 20
+                                    :color colors/shadow})]))
+
           (when (and (not post?)
                      (not mobile?)
                      current-user)
@@ -391,20 +406,7 @@
                                 :style {:font-size 14}}
                 (t :sign-out)]]
 
-              {:menu-style {:margin-top 17}}))
-
-          (when-not mobile?
-            (ui/dropdown {:overlay [:div.shadow {:style {:background "#FFF"
-                                                  :padding 12
-                                                  :margin-top 24}}
-                                    (right/footer)]
-                          :animation "slide-up"
-                          :trigger ["click"]}
-                         [:a {:style {:margin-left 24}}
-                          (ui/icon {:type :more
-                                    :width 20
-                                    :height 20
-                                    :color colors/shadow})]))]]]])))
+              {:menu-style {:margin-top 17}}))]]]])))
 
 (defn attach-listeners
   [state]

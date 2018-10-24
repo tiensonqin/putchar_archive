@@ -37,7 +37,7 @@ a#quote-selection {
 }
 
 .btn-primary {
-  background-color: #3057a0;
+  background-color: #4169e1;
   color: #FFF;
 }
 
@@ -230,7 +230,7 @@ a.tag.active {
 }
 
 .disabled {
-  background: #3057a0;
+  background: #071839;
   color: #FFF;
 }
 
