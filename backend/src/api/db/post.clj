@@ -201,7 +201,10 @@
 
           m (dissoc m :flake_id)]
       (when (seq m)
-        (let [{:keys [tags] :as m} (extract-process db m (:user_screen_name post))]
+        (let [m (if (:body m)
+                  (extract-process db m (:user_screen_name post))
+                  m)
+              {:keys [tags] :as m} m]
           (util/update db table id (assoc m :updated_at (util/sql-now)))
           (when (seq tags)
             (let [s1 (set tags)

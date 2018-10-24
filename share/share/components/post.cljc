@@ -227,9 +227,7 @@ lang: en
   {:will-mount (fn [state]
                  #?(:cljs
                     (citrus/dispatch! :citrus/new-draft))
-                 state)
-   :will-unmount (fn [state]
-                   state)}
+                 state)}
   []
   (let [form-data (citrus/react [:post :form-data])
         width (citrus/react [:layout :current :width])
