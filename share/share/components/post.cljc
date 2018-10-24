@@ -507,7 +507,6 @@
                                           (when (str/blank? (:title @form-data))
                                               (swap! form-data merge
                                                      {:title (:title result)
-                                                      :body (:description result)
                                                       :cover (:image result)
                                                       :tags (str/join ", " (:tags result))})))))}
    :title {:label (str (t :title) ": *")
@@ -1148,8 +1147,7 @@
 
                (when (and (:link post) (:cover post))
                  [:div.editor
-                  [:img {:style {:margin-bottom 0}
-                         :src (:cover post)}]])]
+                  [:img {:src (:cover post)}]])]
               [:div.post
                (if (:body_html post)
                  (widgets/raw-html {:on-mouse-up (fn [e]

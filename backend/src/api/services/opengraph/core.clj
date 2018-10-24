@@ -132,12 +132,12 @@
                          :attr :lang})
      :tags (some->>
             (or
-             (some->> (map (comp first :content) (html/select node [:.tag])))
              (some-> (first-match node
                                   (meta-property "og:article:tag")
                                   [:.tag]
                                   (meta-name "keywords"))
-                     (s/split ",")))
+                     (s/split ","))
+             (some->> (map (comp first :content) (html/select node [:.tag]))))
             (map ->tag)
             (take 3))
      :image (when-let [image (first-match node
@@ -158,7 +158,8 @@
                                           )]
               (if (= \/ (first image))
                 (str (get-root-url url) image)
-                image))}))
+                (if (s/starts-with? image "http")
+                  image)))}))
 
 (defn parse
   "Given a url, return it's open graph metadata."
