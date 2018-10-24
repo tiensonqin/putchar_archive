@@ -171,9 +171,8 @@
               body (str v
                         (if-not (str/blank? v) "\n" "")
                         (util/format "[quote, @%s%s]\n" screen_name (if idx (str ", " idx) ""))
-                        "____\n"
                         text
-                        "\n____\n")]
+                        "\n[/quote]\n")]
           (oset! ref "value" body)
           {:state state
            :dispatch [[:comment/save-local current-box-k body]

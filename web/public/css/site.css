@@ -481,16 +481,18 @@ a.delete {
     padding-left: .625rem;
 }
 
-blockquote {
+blockquote, .quote-header {
     margin: 0.5em 0;
-    border-left: 5px solid #3b91af;
+    border-left: 5px solid #d9d9d9;
     padding: 6px 12px;
-    font-size: 1.15rem;
-    line-height: 1.5;
-    word-spacing: 0.1em;
     letter-spacing: 0;
-    font-style: italic;
     text-align: justify;
+    background: #f2f2f2;
+}
+
+.quote-header {
+    margin-bottom: -1em;
+    padding: 10px 0 6px 12px;
 }
 
 blockquote p {

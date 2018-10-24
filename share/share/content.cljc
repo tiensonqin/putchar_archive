@@ -77,32 +77,38 @@
         (s/replace youtube-re replace-fn)
         (s/replace youtube-re-2 replace-fn))))
 
-(def quote-pattern #"\[quote, @(\w+),?\s?(\d+)?\]")
+(def quote-pattern #"\[quote, @(\w+),?\s?(\d+)?\]([\S\s]*)\[/quote\]")
 
 (rum/defc quote-header
   [screen_name idx]
   [:div.column.quote-header
    [:a.space-between.no-decoration {:quoteidx idx
-                                    :style {:align-items "center"}}
+                                    :style {:align-items "center"
+                                            :padding-right 6}}
     [:div.row1 {:style {:align-items "center"}}
      (ui/avatar {:src (util/cdn-image screen_name)
                  :class "ant-avatar-sm"})
      [:span {:style {:margin-left 6
                      :font-size 13
-                     :color "#bbb"}}
+                     :color "#999"}}
       (str screen_name ":")]]
 
     (ui/icon {:type :arrow_upward
               :width 18
               :height 18
-              :color "#bbb"})]])
+              :color "#999"})]])
 
 (defn quotes
   [body body-format]
-  (let [replace-fn (fn [[_ screen_name idx]]
-                     (str "[role=\"concate\"]\n[quote]\n"
-                          (-> (quote-header screen_name idx)
-                              (wrap-render body-format))))]
+  (let [replace-fn (fn [[_ screen_name idx content]]
+                     (str
+                      (-> (quote-header screen_name idx)
+                          (wrap-render body-format))
+                      "\n\n"
+                      (->> (s/trim content)
+                           (s/split-lines)
+                           (map #(str "> " %))
+                           (s/join "\n"))))]
     (-> body
         (s/replace quote-pattern replace-fn))))
 
