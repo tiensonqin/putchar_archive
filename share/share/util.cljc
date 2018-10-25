@@ -486,7 +486,10 @@
           (bidi/url-encode)))
 
 (def tags-map
-  {"ocaml" "OCaml"})
+  {"ocaml" "OCaml"
+   "sql" "SQL"
+   "php" "PHP"
+   "llvm" "LLVM"})
 
 (defn tag-decode
   [tag-name]

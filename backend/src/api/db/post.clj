@@ -305,6 +305,8 @@
   ([db user_screen_name tag where cursor]
    (get-posts db where cursor)))
 
+;; TODO: bug `>=`
+;; IllegalArgumentException Comparison method violates its general contract!  java.util.TimSort.mergeHi (TimSort.java:899)
 (defn get-user-tags
   [screen-name]
   (some->>
@@ -315,7 +317,7 @@
    (filter (fn [[_ v]]
              (> v 0)))
    (sort (fn [x1 x2]
-           (>= (second x1) (second x2))))))
+           (> (second x1) (second x2))))))
 
 (defn get-latest-reply
   ([db cursor]

@@ -16,10 +16,10 @@
 
    (let [tags (citrus/react [:hot-tags])]
      (for [[tag count] tags]
-       [:div.row {:style {:margin-left 3}}
-        [:a {:key tag
-             :href (str "/tag/" tag)
-             :style {:color colors/primary}}
-         tag]
-        [:span {:style {:margin-left 12}}
-         count]]))])
+       [:a.no-decoration {:key tag
+                          :href (str "/tag/" tag)
+                          :style {:color colors/primary
+                                  :font-size "1.2em"
+                                  :margin-bottom 12
+                                  :margin-left 3}}
+        (util/format "%s (%d posts)" (util/tag-decode tag) count)]))])
