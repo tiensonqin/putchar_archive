@@ -100,7 +100,7 @@
                                   :margin-bottom 6
                                   :white-space "nowrap"
                                   :text-overflow "ellipsis"}}
-                      tag])]
+                      (util/tag-decode tag)])]
        (if (and more? (not @expand?))
          [:div.row {:style {:flex-wrap "wrap"
                             :width 243}}

@@ -425,7 +425,7 @@ published: false
            :style {:margin-right 12
                    :white-space "nowrap"
                    :color colors/primary}}
-          (str "#" (name tag))]))]))
+          (str "#" (util/tag-decode tag))]))]))
 
 (rum/defcs post-item < {:key-fn (fn [post]
                                   (:id post))}
@@ -456,7 +456,7 @@ published: false
             {:keys [last_reply_at created_at]} post
             self? (and current-user self?)
             first-tag (if-let [tag (first (:tags post))]
-                        (str/lower-case tag)
+                        (util/tag-decode tag)
                         nil)]
         [:div.post-item.col-item {:style {:position "relative"}
                                   :on-click (fn [e]
@@ -550,7 +550,6 @@ published: false
                                           :margin-top 8}}
               [:div.row1 {:style {:align-items "center"}}
                (vote post)]
-
 
               [:div.row1 {:style {:color "rgb(127,127,127)"
                                   :font-size 14}}
@@ -954,23 +953,26 @@ published: false
      [:div.space-between.auto-padding {:style {:align-items "center"
                                                :margin-top 24}}
       [:h1 {:style {:margin 0}}
-       (str "#" tag)]
+       (str "#" (util/tag-decode tag))]
       [:div.row1 {:style {:align-items "center"}}
        [:a {:href (str "/tag/" tag "/latest.rss")
             :target "_blank"
             :style {:margin-right 12}}
         (ui/icon {:type :rss
                   :color "#666"
-                  :width 21
-                  :height 21})]
+                  :width 20
+                  :height 20})]
        (if followed?
          [:a.control {:on-click (fn []
                                   (citrus/dispatch! :user/unfollow tag))}
           "Unfollow"]
-         (ui/button {:class "btn-primary"
-                    :on-click (fn []
-                                (citrus/dispatch! :user/follow tag))}
-           "Follow"))]]
+
+         [:a {:on-click (fn []
+                          (citrus/dispatch! :user/follow tag))
+              :style {:color colors/primary
+                      :font-weight 700}}
+          "Follow"]
+         )]]
 
      [:div.divider]
 

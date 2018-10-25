@@ -485,14 +485,19 @@
           (s/replace #"[_&\(\)\[\],\.\;\*\`\。\，\s]+" "-")
           (bidi/url-encode)))
 
+(def tags-map
+  {"ocaml" "OCaml"})
+
 (defn tag-decode
   [tag-name]
   (if tag-name
-    (some->> (s/split tag-name #"-")
-             (map s/capitalize)
-             (interpose " ")
-             (apply str)
-             (bidi/url-decode))))
+    (some->>
+     (s/split tag-name #"-")
+     (map (fn [x]
+            (get tags-map x (s/capitalize x))))
+     (interpose " ")
+     (apply str)
+     (bidi/url-decode))))
 
 (defn cdn-version
   [x]
