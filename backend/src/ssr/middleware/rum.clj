@@ -134,9 +134,7 @@
                                          (str (get-in config/config
                                                       [:oauth :github :redirect-uri])
                                               "?referer=" (get-in req [:headers "referer"] ""))
-                                         :state (str (util/uuid))
-                                         ;; :scope "public_repo"
-                                         )
+                                         :state (str (util/uuid)))
                   url (social/getAuthorizationUrl tt)]
               (resp/redirect url))))
 

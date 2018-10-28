@@ -54,4 +54,6 @@
      :website-uri config/website
      :cookie-secret "xxx"
      :jwt-secret "xxx"
-     :slack-hook "xxx"}))
+     :slack-hook "xxx"
+     :algolia {:application-id "xxx"
+               :key "xxx"}}))

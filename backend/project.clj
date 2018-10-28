@@ -29,14 +29,15 @@
                  [amazonica "0.3.115"]
                  [tick "0.3.5"]
                  [jarohen/chime "0.2.2"]
-                 [clucie "0.3.0"]
                  [org.clojure/core.async "0.3.465"]
                  [bk/ring-gzip "0.2.1"]
                  [bidi "2.1.2"]
                  [org.flatland/ordered "1.5.6"]
                  [frankiesardo/linked "1.3.0"]
                  [tiensonqin/appkit "0.1.7"]
-
+                 ;; search
+                 [com.algolia/algoliasearch "2.20.0"]
+                 [clucie "0.3.0"]
                  ;; server side rendering
                  [org.clojure/clojurescript "1.9.946"]
                  [com.vladsch.flexmark/flexmark-all "0.32.18"]
@@ -48,6 +49,7 @@
                  [enlive "1.1.6"]]
 
   :source-paths ["src" "../share"]
+  :java-source-paths ["src/jvm"]
   :jvm-opts ["-Duser.timezone=UTC" "-Dclojure.spec.check-asserts=true"]
 
   :plugins [[lein-environ "1.1.0"]]
@@ -69,7 +71,8 @@
 
   :profiles {:dev {:dependencies [[org.clojure/tools.nrepl "0.2.13"]
                                   [reloaded.repl "0.2.3"]
-                                  [expound "0.6.0"]]
+                                  [expound "0.6.0"]
+                                  ]
                    :source-paths ["dev"]}
              ;; :uberjar {:main backend.application
              ;;           :aot [backend.application com.stuartsierra.component com.stuartsierra.dependency]}

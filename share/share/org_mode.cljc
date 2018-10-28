@@ -1,4 +1,5 @@
 (ns share.org-mode
+  (:refer-clojure :exclude [load])
   (:require #?(:clj [clojure.java.shell :as shell])
             #?(:clj [api.services.slack :as slack])
             #?(:cljs [web.loader :as loader])

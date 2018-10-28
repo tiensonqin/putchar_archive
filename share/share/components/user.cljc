@@ -60,90 +60,43 @@
                     :validators [util/optional-non-blank?]
                     :disabled (if (:name user) true)}}))
 
-(rum/defcs add-avatar < rum/reactive
-  < (rum/local false ::uploading?)
-  [state user]
-  (let [uploading? (get state ::uploading?)
-        avatar (get state ::avatar)]
-    [:div.column {:style {:align-items "center"}}
-     [:h1 (t :click-circle-add-avatar)]
-     (if @uploading?
-       [:div {:style {:padding "12px 0"}}
-        (ui/donut)]
-
-       [:div {:style {:padding "12px 0"
-                      :cursor "pointer"}
-              :on-click #?(:cljs
-                           (fn []
-                             (.click (gdom/getElement "photo_upload")))
-                           :clj
-                           identity)}
-        [:div {:style {:border-radius "50%"
-                       :width "8rem"
-                       :height "8rem"
-                       :background "#ccc"}}]])
-
-     [:input
-      {:id "photo_upload"
-       :type "file"
-       :on-change (fn [e]
-                    (image/upload
-                     (.-files (.-target e))
-                     (fn [file file-form-data]
-                       (reset! uploading? true)
-                       (.append file-form-data "name" (str (:screen_name user)))
-                       (citrus/dispatch!
-                        :image/upload
-                        file-form-data
-                        (fn [url]
-                          (reset! uploading? false))))
-                     :max-width 100
-                     :max-height 100
-                     ))
-       :hidden true}]]))
-
 (rum/defc signup < rum/reactive
   [{:keys [email] :as params}]
-  (let [signup-step (citrus/react [:user :signup-step])
-        temp-user (citrus/react [:user :temp])]
+  (let [temp-user (citrus/react [:user :temp])]
     [:div.signup.row
-     (case signup-step
-       :add-avatar
-       (add-avatar temp-user)
-
-       (let [github-avatar (:avatar_url temp-user)
-             user (select-keys temp-user [:id :name :email])
-             user (-> user
-                      (assoc :bio (or (:bio temp-user) (:description temp-user)))
-                      (assoc :screen_name (or (:screen_name temp-user) (:login temp-user)))
-                      (util/map-remove-nil?))
-             username-taken? (citrus/react [:user :username-taken?])
-             email-taken? (citrus/react [:user :email-taken?])]
-         [:div {:style {:margin "0 auto"}}
-          (if (seq user)
-            (form/render
-              {:init-state user
-               :loading? [:user :loading?]
-               :title (str (t :welcome) ", " (or (:name user)
-                                                 (:screen_name user)))
-               :fields (signup-fields user username-taken? email-taken? email)
-               :submit-text (t :signup)
-               :submit-style {:margin-top 12}
-               :on-submit (fn [form-data]
-                            (let [data (merge
-                                        @form-data
-                                        {:avatar github-avatar}
-                                        {:github_id (str (:id user))
-                                         :github_handle (:login temp-user)})]
-                              (citrus/dispatch! :user/new data form-data)))})
-            (form/render
-              {:title (t :welcome)
-               :init-state {:email email}
-               :loading? [:user :loading?]
-               :fields (signup-fields user username-taken? email-taken? email)
-               :submit-text (t :signup)
-               :on-submit (fn [form-data]
-                            (citrus/dispatch! :user/new @form-data form-data))}))]))]))
+     (let [github-avatar (:avatar_url temp-user)
+           user (select-keys temp-user [:id :name :email])
+           user (-> user
+                    (assoc :bio (or (:bio temp-user) (:description temp-user)))
+                    (assoc :screen_name (or (:screen_name temp-user) (:login temp-user)))
+                    (util/map-remove-nil?))
+           username-taken? (citrus/react [:user :username-taken?])
+           email-taken? (citrus/react [:user :email-taken?])]
+       [:div {:style {:margin "0 auto"}}
+        (if (seq user)
+          (form/render
+            {:init-state user
+             :loading? [:user :loading?]
+             :title (str (t :welcome) ", " (or (:name user)
+                                               (:screen_name user)))
+             :fields (signup-fields user username-taken? email-taken? email)
+             :submit-text (t :signup)
+             :submit-style {:margin-top 12}
+             :on-submit (fn [form-data]
+                          (let [data (merge
+                                      @form-data
+                                      {:avatar github-avatar}
+                                      {:github_id (str (:id user))
+                                       :github_handle (:login temp-user)})]
+                            (citrus/dispatch! :user/new data form-data)))})
+          (form/render
+            {:title (t :welcome)
+             :init-state {:email email}
+             :loading? [:user :loading?]
+             :fields (signup-fields user username-taken? email-taken? email)
+             :submit-text (t :signup)
+             :on-submit (fn [form-data]
+                          (citrus/dispatch! :user/new @form-data form-data))}))])]))
 
 (defn profile-fields
   [form-data]

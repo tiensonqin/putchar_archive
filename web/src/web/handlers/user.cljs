@@ -52,27 +52,11 @@
 
    :citrus/authenticate-ready
    (fn [state new? result]
-     (let [user (:user result)
-           social? (:github_id user)]
-       (cond
-         (and new? social?)
-         {:state (-> state
-                     (assoc-in [:user :signup-step] :continue)
-                     (assoc-in [:user :loading?] false)
-                     (assoc-in [:user :temp] user))}
-
-         ;; email
-         (and new? (not social?))
-         {:state (-> state
-                     (assoc-in [:user :signup-step] :add-avatar)
-                     (assoc-in [:user :loading?] false)
-                     (assoc-in [:user :temp] user))}
-
-         :else
-         {:state (-> state
-                     (assoc-in [:user :loading?] false)
-                     (assoc-in [:user :current] user))
-          :redirect {:handler :home}})))
+     (let [user (:user result)]
+       {:state (-> state
+                   (assoc-in [:user :loading?] false)
+                   (assoc-in [:user :current] user))
+        :redirect {:handler :home}}))
 
    :user/update
    (fn [state data]
@@ -89,7 +73,6 @@
                  (assoc :loading? false)
                  (update :current merge result))
       :dispatch [:notification/add :success (t :profile-updated)]})
-
 
    :user/logout
    (fn [state]

@@ -22,3 +22,5 @@
     ".your-domain"))
 
 (def img-cdn "https://your-img-cdn")
+
+(def algolia-api-key "***")
