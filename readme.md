@@ -1,16 +1,16 @@
 # Putchar
 
-Putchar.org is a place to discuss tech articles or [books](https://putchar.org/books).
+Putchar.org is a place to publish and discuss tech articles.
 
 [![Logo](https://putchar.org/logo-2x.png)](https://putchar.org)
 
 ### Features
 
+* Post format supports Markdown and Emacs Org mode.
+
 * Each book has its own posts and followers.
 
   For example, [Purely functional data structures](https://putchar.org/book/7).
-
-* Post format supports Markdown and Emacs Org mode.
 
 * You can select multiple languages you'd like to see throughout the site.
 

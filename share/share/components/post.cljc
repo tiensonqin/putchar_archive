@@ -283,7 +283,7 @@ published: false
                    :fields (link-fields default-post-language)
                    :on-submit (fn [form-data]
                                 (let [form-data (do
-                                                  (swap! form-data update :title str/capitalize)
+                                                  (swap! form-data update :title util/capitalize-first-char)
                                                   form-data)]
                                   (citrus/dispatch! :post/new-link form-data)))
                    :loading? [:post :loading?]
@@ -839,7 +839,7 @@ published: false
                   [:a {:href link
                        :style {:color colors/primary
                                :font-size "1.4em"}}
-                   (str/capitalize (:title post))]
+                   (util/capitalize-first-char (:title post))]
                   [:a {:href link
                        :style {:color colors/primary}}
                    [:span {:style {:color "#999"
@@ -850,7 +850,7 @@ published: false
                          ")")]]]
                  (if (:title post)
                    [:h1.post-page-title {:style {:color "#000"}}
-                   (str/capitalize (:title post))]))
+                    (util/capitalize-first-char (:title post))]))
 
                [:div#post-user {:style {:font-style "italic"
                                         :font-size (if link 15 "1.1em")}}

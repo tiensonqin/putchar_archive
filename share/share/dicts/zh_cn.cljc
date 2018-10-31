@@ -65,7 +65,7 @@
    :replies "条评论"
    :invite "邀请朋友"
    :signin "登录"
-   :slogan "A place to discuss tech articles or books."
+   :slogan "A place to publish and discuss tech articles."
    :members "成员"
    :admins "管理员"
    :support "支持"
@@ -247,7 +247,7 @@
    :about-text "
 
 ## 关于 Putchar.org
-Putchar.org 是一个纯粹的技术社区, 大家可以在这里讨论和分享文章或者 [书](/books)。
+Putchar.org 是一个纯粹的技术社区, 大家可以在这里发布和讨论文章或者 [书](/books)。
 
 ### 功能
 
