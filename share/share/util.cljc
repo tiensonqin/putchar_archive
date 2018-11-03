@@ -837,8 +837,8 @@
            (seq)))
 
 (defn ios? []
-  (if (re-find #"iPhone|iPad|iPod" #?(:cljs js/navigator.userAgent
-                                      :clj @user-agent))
+  (if (re-find #"iPhone|iPad|iPod" #?(:cljs (or js/navigator.userAgent "")
+                                      :clj (or @user-agent "")))
     true
     false))
 
