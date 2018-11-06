@@ -23,7 +23,6 @@
   [:a.tag.row1 {:href url
                 :target "_blank"
                 :style {:align-items "center"
-                        :width 95
                         :height 24
                         :margin 0
                         :padding "0 6px"}}
