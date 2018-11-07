@@ -65,7 +65,7 @@
    :replies "条评论"
    :invite "邀请朋友"
    :signin "登录"
-   :slogan "A place to publish and discuss tech articles."
+   :slogan "Medium for programmers."
    :members "成员"
    :admins "管理员"
    :support "支持"

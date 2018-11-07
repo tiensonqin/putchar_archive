@@ -64,7 +64,7 @@
    :replies "replies"
    :hot-posts "Hot posts"
    :signin "Sign In"
-   :slogan "A place to publish and discuss tech articles."
+   :slogan "Medium for programmers."
    :members "members"
    :admins "Moderators"
    :support "support"

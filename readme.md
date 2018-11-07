@@ -1,6 +1,6 @@
 # Putchar
 
-Putchar.org is a place to publish and discuss tech articles.
+Putchar.org is Medium for programmers, which is a place to publish and discuss tech articles.
 
 [![Logo](https://putchar.org/logo-2x.png)](https://putchar.org)
 
