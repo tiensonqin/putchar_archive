@@ -141,7 +141,7 @@
                      (s/split #","))
              (some->> (map (comp first :content) (html/select node [:.tag]))))
             (map ->tag)
-            (take 3))
+            (take 5))
      :image (when-let [image (first-match node
                                           (meta-property "og:image:secure_url")
                                           (meta-property "og:image:url")

@@ -240,7 +240,7 @@
    ;; post tags
    :tags "Tags"
    :add-tags-label "添加标签(最少 1 个):"
-   :add-tags "最多 3 个标签， 逗号分隔..."
+   :add-tags "最多 5 个标签， 逗号分隔..."
    :email-notification-settings "邮件通知"
    :email-notification-settings-text "当别人回复我或者提及我的用户名邮件通知我"
    :my-data "我的数据"

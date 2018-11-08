@@ -230,7 +230,7 @@
    :delete-this-comment "Delete this comment"
    :tags "Tags"
    :add-tags-label "Add tags (at least 1 tag):"
-   :add-tags "Up to 3 tags, seperated by commas..."
+   :add-tags "Up to 5 tags, seperated by commas..."
    :email-notification-settings "Email notification settings"
    :email-notification-settings-text "Email me when someone replies to my post or mentions my @username."
    :my-data "My Data"

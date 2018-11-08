@@ -833,7 +833,7 @@
            (remove s/blank?)
            (distinct)
            (map tag-encode)
-           (take 3)
+           (take 5)
            (seq)))
 
 (defn ios? []
