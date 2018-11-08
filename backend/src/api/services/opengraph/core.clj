@@ -1,7 +1,9 @@
 (ns api.services.opengraph.core
   (:require [net.cgrand.enlive-html :as html :refer [attr=]]
             [clojure.string :as s]
-            [org.httpkit.client :as http]
+            [aleph.http :as http]
+            [byte-streams :as bs]
+            [manifold.deferred :as d]
             [api.services.slack :as slack]))
 
 (defonce user-agent
@@ -170,20 +172,17 @@
   (when url
     (try
       (let [test-url (java.net.URL. url)]
-        (http/get url {:headers {"User-Agent" user-agent}
-                       :as :stream
-                       :timeout connection-timeout}
-                  (fn [{:keys [status headers body error]}] ;; asynchronous response handling
-                    (try
-                      (if error
-                        (error-handler error url)
-
-                        (if (<= 200 status 299)
-                          (when-let [node (html/html-resource body)]
-                            (ok-handler (default-parser url node)))
-                          (error-handler :bad-status url)))
-                      (catch Exception e
-                        (error-handler e url))))))
+        (d/on-realized
+         (http/get url {:headers {"User-Agent" user-agent}
+                        :timeout connection-timeout})
+         (fn [{:keys [status headers body] :as response}] ;; asynchronous response handling
+           (try
+             (when-let [node (html/html-resource body)]
+               (ok-handler (default-parser url node)))
+             (catch Exception e
+               (error-handler e url))))
+         (fn [resp]
+           (error-handler nil url))))
       (catch Exception e
         (error-handler e url)))))
 
@@ -193,17 +192,13 @@
     (try
       (let [test-url (java.net.URL. url)
             response @(http/get url {:headers {"User-Agent" user-agent}
-                                     :as :stream
                                      :timeout connection-timeout})]
-        (let [{:keys [status headers body error]} response]
+        (let [{:keys [status headers body]} response]
           (try
-            (if error
-              (error-handler error url)
-
-              (if (<= 200 status 299)
-                (when-let [node (html/html-resource body)]
-                  (default-parser url node))
-                (error-handler :bad-status url)))
+            (if (<= 200 status 299)
+              (when-let [node (html/html-resource body)]
+                (default-parser url node))
+              (error-handler :bad-status url))
             (catch Exception e
               (error-handler e url)))))
       (catch Exception e

@@ -89,7 +89,6 @@
 
 (defn get-post
   [{:keys [uid datasource]} data]
-  (prn {:data data})
   (->
    (let [where (if (:id data)
                  (:id data)

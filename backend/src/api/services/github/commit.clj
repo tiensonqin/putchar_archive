@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [get update])
   (:require [api.services.github :as github]
             [api.services.github.contents :as contents]
-            [org.httpkit.client :as http]
+            [aleph.http :as http]
+            [byte-streams :as bs]
             [cheshire.core :refer [parse-string]]))
 
 (defn get-commit
@@ -19,6 +20,7 @@
   [url]
   (-> @(http/get url)
       :body
+      bs/to-string
       (parse-string true)))
 
 (defn create-blob

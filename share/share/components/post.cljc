@@ -261,8 +261,7 @@ published: false
                                                        :max 128})]
            :reactive? true}
    :tags  {:label (str (t :tags) ":")
-           :placeholder (t :add-tags)
-           :reactive? true}
+           :placeholder (t :add-tags)}
    :lang  {:label (str (t :select-primary-language) ":")
            :type :select
            :options dicts/langs

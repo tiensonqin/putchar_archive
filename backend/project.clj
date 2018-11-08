@@ -6,7 +6,7 @@
                  [hiccup "2.0.0-alpha1"]
                  [org.clojure/tools.nrepl "0.2.12"]
                  [pinyin4clj "0.2.0"]
-                 ;; [aleph "0.4.4"]
+                 [aleph "0.4.6"]
                  [primitive-math "0.1.6"]
                  [org.clojure/data.xml "0.0.8"]
                  [com.taoensso/encore "2.87.0"]
@@ -35,9 +35,9 @@
                  [org.flatland/ordered "1.5.6"]
                  [frankiesardo/linked "1.3.0"]
                  [tiensonqin/appkit "0.1.7"]
+                 [javax.xml.bind/jaxb-api "2.3.0"]
                  ;; search
-                 [com.algolia/algoliasearch "2.20.0"]
-                 [clucie "0.3.0"]
+                 [clucie "0.4.1"]
                  ;; server side rendering
                  [org.clojure/clojurescript "1.9.946"]
                  [com.vladsch.flexmark/flexmark-all "0.32.18"]

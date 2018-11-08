@@ -1,7 +1,6 @@
 (ns api.services.github.repo
   (:refer-clojure :exclude [get update])
   (:require [api.services.github :as github]
-            [org.httpkit.client :as http]
             [cheshire.core :refer [parse-string]]))
 
 (defn create

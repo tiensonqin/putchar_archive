@@ -88,6 +88,7 @@
      (.deleteDocuments writer
                        ^"[Lorg.apache.lucene.index.Term;"
                        (into-array [(Term. (name search-key) (stringify-value search-val))]))
+     (.commit writer)
      nil)))
 
 (defn- document->map

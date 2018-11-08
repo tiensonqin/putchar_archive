@@ -1,7 +1,6 @@
 (ns api.services.opengraph
   (:require [api.services.opengraph.core :refer [parse block-parse]]
-            [api.services.opengraph.cache :as cache]
-            [org.httpkit.client :as http]))
+            [api.services.opengraph.cache :as cache]))
 
 ;; TODO: run as a standalone process
 

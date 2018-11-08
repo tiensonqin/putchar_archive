@@ -1,9 +1,7 @@
 (ns backend.application
   (:gen-class)
   (:require [com.stuartsierra.component :as component]
-            ;; [api.components.aleph :as aleph]
-
-            [api.components.http-kit :as http-kit]
+            [api.components.aleph :as aleph]
             [api.components.hikari :as hikari]
             [api.components.redis :as redis]
             [api.components.repl :as repl]
@@ -38,8 +36,7 @@
                     [:hikari])
 
    :web-server     (component/using
-                    ;; (aleph/new-web-server http-port)
-                    (http-kit/new-web-server http-port)
+                    (aleph/new-web-server http-port)
                     [:hikari :redis])
    :ssr-server     (component/using
                     ;; (aleph/new-web-server http-port)
@@ -47,6 +44,7 @@
                     [:hikari :redis])))
 
 (defn -main [& _]
+  (System/setProperty "https.protocols" "TLSv1.2,TLSv1.1,SSLv3")
   ;; log
   (timbre/merge-config! (cond->
                           {:appenders {:spit (appenders/spit-appender {:fname (:log-path config/config)})}}

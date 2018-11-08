@@ -1,5 +1,6 @@
 (ns api.services.github
-  (:require [org.httpkit.client :as http]
+  (:require [aleph.http :as http]
+            [byte-streams :as bs]
             [cheshire.core :as json]
             [clojure.string :as str]
             [cemerick.url :as url])
@@ -48,6 +49,12 @@
   [obj]
   (:api-meta (meta obj)))
 
+(defn- ->body
+  [body]
+  (-> body
+      bs/to-string
+      (json/parse-string true)))
+
 (defn safe-parse
   "Takes a response and checks for certain status codes. If 204, return nil.
    If 400, 401, 204, 422, 403, 404 or 500, return the original response with the body parsed
@@ -59,12 +66,12 @@
     (= 304 status)
     ::not-modified
     (#{400 401 204 422 403 404 500} status)
-    (update-in resp [:body] parse-json)
+    (update resp :body ->body)
     :else (let [links (parse-links (get headers :link ""))
                 content-type (get headers :content-type)
                 metadata (extract-useful-meta headers)]
             (if-not (.contains content-type "raw")
-              (let [parsed (parse-json body)]
+              (let [parsed (->body body)]
                 (if (map? parsed)
                   (with-meta parsed {:links links :api-meta metadata})
                   (with-meta (map #(with-meta % metadata) parsed)
@@ -141,15 +148,6 @@
                                   resp
                                   :else nil)))]
        (exec-request req))))
-
-(defn raw-api-call
-  ([method end-point] (raw-api-call method end-point nil nil))
-  ([method end-point positional] (raw-api-call method end-point positional nil))
-  ([method end-point positional query]
-     (let [query (or query {})
-           all-pages? (query :all-pages)
-           req (make-request method end-point positional query)]
-       @(http/request req))))
 
 (defn environ-auth
   "Lookup :gh-username and :gh-password in environ (~/.lein/profiles.clj or .lein-env) and return a string auth.

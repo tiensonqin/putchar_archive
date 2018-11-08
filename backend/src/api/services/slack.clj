@@ -1,5 +1,5 @@
 (ns api.services.slack
-  (:require [org.httpkit.client :as http-client]
+  (:require [aleph.http :as http]
             [cheshire.core :refer [generate-string]]
             [api.util :refer [production?]]
             [clojure.string :as str]
@@ -19,10 +19,10 @@
            body (if specific-user
                   (assoc body "channel" (str "@" specific-user))
                   body)]
-       (http-client/post hook
-                         {:headers {"content-type" "application/json"
-                                    "accept" "application/json"}
-                          :body (generate-string body)})))))
+       (http/post hook
+                  {:headers {"content-type" "application/json"
+                             "accept" "application/json"}
+                   :body (generate-string body)})))))
 
 (def rules {:new {:webhook (:slack-hook config)}
             :api-exception {:webhook (:slack-hook config)}

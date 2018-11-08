@@ -301,6 +301,9 @@
     (if (block/examine conn uid)
       (when-let [post (post/create conn (assoc data
                                                :user_id uid))]
+        (when (not (:is_draft post))
+          (future
+            (search/add-post post)))
         (util/ok post))
       (util/bad "Sorry your account is disabled for now."))))
 
@@ -318,6 +321,8 @@
                                             [:<> :id id]]))
             (util/bad :post-title-exists)
             (let [post (post/update conn id (dissoc data :id))]
+              (when (not (:is_draft post))
+                (future (search/update-post post)))
               (util/ok post)))))))))
 
 (defmethod handle :post/delete [[{:keys [uid datasource redis]} data]]

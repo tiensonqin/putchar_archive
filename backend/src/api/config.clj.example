@@ -55,5 +55,4 @@
      :cookie-secret "xxx"
      :jwt-secret "xxx"
      :slack-hook "xxx"
-     :algolia {:application-id "xxx"
-               :key "xxx"}}))
+}))

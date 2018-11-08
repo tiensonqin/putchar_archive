@@ -9,7 +9,7 @@
             [ssr.middleware.auth :refer [wrap-auth]]
             [api.handler.middleware :refer [inject-context wrap-exception wrap-authenticate custom-wrap-cors wrap-production-etag wrap-production-gzip ssr-wrap-stats]]
             [ring.middleware.reload :refer [wrap-reload]]
-            [org.httpkit.server :as httpkit]
+            [aleph.http :refer [start-server]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [share.config :as config]
@@ -19,7 +19,7 @@
             [clojure.java.jdbc :as j]
             [clojure.string :as str]
             ;; only for dev usage
-            [api.components.http-kit :as api]
+            [api.components.aleph :as api]
             [share.util :as su]))
 
 (def app
@@ -32,8 +32,8 @@
   (fn [req]
     (cond->
       (if config/development?
-       ((wrap-file handler "../web/public") req)
-       ((resource/wrap-resource handler "public") req))
+        ((wrap-file handler "../web/public") req)
+        ((resource/wrap-resource handler "public") req))
       (str/ends-with? (:uri req) ".js")
       (assoc-in [:headers "Content-Type"] "application/javascript"))))
 
@@ -80,12 +80,13 @@
                       :ssr-server
                       ssr-port
                       (fn []
-                        (httpkit/run-server handler {:port ssr-port})))]
+                        (start-server handler {:port ssr-port
+                                               :join? false})))]
       (assoc component
-            :ssr-server ssr-server)))
+             :ssr-server ssr-server)))
   (stop [component]
     (when ssr-server
-      (ssr-server))
+      (.close ssr-server))
     (dissoc component :ssr-server)))
 
 (defn new-ssr-server [ssr-port root-ui routes resolver render-page]
