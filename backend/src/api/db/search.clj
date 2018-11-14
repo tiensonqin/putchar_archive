@@ -56,21 +56,16 @@
                  [:book_id :book_title]
                  analyzer)))
 
-(defn update-book [book]
-  (when (:title book)
-    (let [book {:book_title (:title book)}]
-      (lucene/update! @index-store
-                      book
-                      [:book_title]
-                      :book_id
-                      (:object_id book)
-                      analyzer))))
-
 (defn delete-book [book-title]
   (lucene/delete! @index-store
                   :book-title
                   book-title
                   analyzer))
+
+(defn update-book [book]
+  (when (and (:title book) (:object_id book))
+    (delete-book (:title book))
+    (add-book book)))
 
 (defn add-post [post]
   (when (not (:is_draft post))
@@ -81,21 +76,16 @@
                    [:post_id :post_title]
                    analyzer))))
 
-(defn update-post [post]
-  (when (:title post)
-    (let [post {:post_title (:title post)}]
-      (lucene/update! @index-store
-                      post
-                      [:post_title]
-                      :post_id
-                      (:id post)
-                      analyzer))))
-
 (defn delete-post [id]
   (lucene/delete! @index-store
                   :post_id
                   id
                   analyzer))
+
+(defn update-post [post]
+  (when (and (:title post) (:id post))
+    (delete-post (:id post))
+    (add-post post)))
 
 (defn search
   [q & {:keys [limit]}]

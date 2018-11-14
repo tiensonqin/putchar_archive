@@ -38,6 +38,7 @@
                  [javax.xml.bind/jaxb-api "2.3.0"]
                  ;; search
                  [clucie "0.4.1"]
+                 [org.apache.lucene/lucene-codecs "7.5.0"]
                  ;; server side rendering
                  [org.clojure/clojurescript "1.9.946"]
                  [com.vladsch.flexmark/flexmark-all "0.32.18"]
