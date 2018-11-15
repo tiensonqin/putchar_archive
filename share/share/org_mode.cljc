@@ -8,7 +8,7 @@
             [share.front-matter :as fm]))
 
 (defn loaded? []
-  #?(:cljs js/window.Orgmode
+  #?(:cljs js/window.MldocOrg
      :clj true))
 
 (defn load []
@@ -20,15 +20,18 @@
   [content]
   #?(:clj
      (when (and content (not (str/blank? content)))
-       (let [content (fm/remove-front-matter content)
+       (let [content content
+             _ (prn {:content content})
              {:keys [exit out err]}
-             (shell/sh "/usr/local/bin/mlorg"
+             (shell/sh "/usr/local/bin/mldoc_org"
                        :in content)]
          (if (not (zero? exit))
            (do
-             (slack/error "mlorg parser error:" err content)
+             (slack/error "mldoc_org parser error:" err content)
              content)
-           out)))
+           (do
+             (prn out)
+             out))))
      :cljs
      (when (loaded?)
-       (.parse js/window.Orgmode content))))
+       (.parseHtml js/window.MldocOrg content))))

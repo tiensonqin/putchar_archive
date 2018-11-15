@@ -81,7 +81,7 @@
       [:span {:style {:padding-left 2
                       :margin-right 4
                       :font-weight "bold"
-                      :font-size 18}}
+                      :font-size 17}}
        "#"]
 
       [:a.row1 {:style {:color colors/primary
@@ -190,5 +190,6 @@
   []
   [:div {:style {:position "fixed"
                  :top 76}}
+   (tags)
    (books)
-   (tags)])
+   ])

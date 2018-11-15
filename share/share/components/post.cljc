@@ -89,7 +89,7 @@
                            identity)
               :style {:margin-left margin}}
           (ui/icon {:type :photo
-                    :color colors/shadow})]))
+                    :color colors/icon-color})]))
      [:input
       {:id "photo_upload"
        :multiple true
@@ -188,9 +188,8 @@ published: false
                  (and title
                       (not (str/blank? title))
                       (<= 4 (count title) 128))))]
-      (ui/button {:class (str (if ok?
-                                " btn-primary "
-                                " disabled"))
+      (ui/button {:class (if ok? "btn-primary" "disabled")
+                  :style (if ok? {:background colors/primary})
                   :on-click (fn []
                               (when ok?
                                 (on-publish)))}
@@ -961,17 +960,8 @@ published: false
                   :color "#666"
                   :width 20
                   :height 20})]
-       (if followed?
-         [:a.control {:on-click (fn []
-                                  (citrus/dispatch! :user/unfollow tag))}
-          "Unfollow"]
 
-         [:a {:on-click (fn []
-                          (citrus/dispatch! :user/follow tag))
-              :style {:color colors/primary
-                      :font-weight 700}}
-          "Follow"]
-         )]]
+       (widgets/follow-tag followed? tag)]]
 
      [:div.divider]
 

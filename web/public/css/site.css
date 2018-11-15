@@ -36,10 +36,6 @@ div.editor {
     background: transparent;
 }
 
-.post ul li {
-    list-style-type: initial;
-}
-
 .post ul, .post ol {
     margin-bottom: 24px;
 }
@@ -54,14 +50,6 @@ div.editor {
 
 .post #toc li {
     margin: 6px 0;
-}
-
-.org-mode .tableofcontents {
-    margin-bottom: 24px;
-}
-
-.org-mode .tableofcontents p {
-    margin: 0;
 }
 
 .org-mode .timestamp {
@@ -278,7 +266,7 @@ input[type=checkbox] + label:before {
 }
 
 input.white::placeholder {
-    color: #FFF;
+    color: #ccc;
 }
 
 input.white:focus {
@@ -301,13 +289,12 @@ a.set-cover {
     display: block;
 }
 
+.user-card {
+    box-shadow: 0 4px 20px #dfdfdf;
+}
 .user-card .editor p, .comment .editor p {
     margin-bottom: 0;
     margin-top: 0;
-}
-
-#back-to-top svg:hover {
-    fill: #fff;
 }
 
 .twitter svg:hover {
@@ -327,7 +314,12 @@ a.delete {
     color: #696969;
 }
 
-.logo svg:hover {
+
+a.logo:hover span {
+    color: #FFF;
+}
+
+a.logo:hover svg, .logo svg:hover {
     fill: #FFF;
 }
 
@@ -446,8 +438,8 @@ a.delete {
     }
 
     .auto-padding {
-        padding-left: 12px;
-        padding-right: 12px;
+        padding-left: 24px;
+        padding-right: 24px;
     }
 
     .posts-headers {
@@ -543,7 +535,7 @@ blockquote p {
 }
 
 input#search {
-    color: #000;
+    color: #fff;
 }
 
 pre, pre > code { line-height: 1.4; font-family: "Droid Sans Mono","DejaVu Sans Mono","Monospace",monospace; font-weight: normal; }
@@ -555,16 +547,6 @@ pre code {
 /** Improve readability of pre-formatted text in all browsers. */
 pre { white-space: pre-wrap; }
 
-/* ========================================================================== Tables ========================================================================== */
-/** Remove most spacing between table cells. */
-table { border-collapse: collapse; border-spacing: 0; }
-table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
-table thead, table tfoot { background: whitesmoke; font-weight: bold; }
-table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
-table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
-table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
-table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.6; }
-
 .hr-divider {
     display: block;
     margin: 1.25rem 0;
@@ -572,3 +554,15 @@ table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoo
     width: 100%;
     border: 0;
 }
+
+.org-left { margin-left: 0px;  margin-right: auto; text-align: left; }
+table { border-collapse:collapse; }
+caption.t-above { caption-side: top; }
+caption.t-bottom { caption-side: bottom; }
+td, th { vertical-align:top;  }
+th.org-right  { text-align: center;  }
+th.org-left   { text-align: center;   }
+th.org-center { text-align: center; }
+td.org-right  { text-align: right;  }
+td.org-left   { text-align: left;   }
+td.org-center { text-align: center; }

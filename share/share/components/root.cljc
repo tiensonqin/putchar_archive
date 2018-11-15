@@ -122,48 +122,49 @@
     [:div#nav-bar
      [:div#head
       [:div.wrap {:class "row space-between"}
-       [:input.row {:id "search"
-                    :type "search"
-                    :autoFocus true
-                    :style (cond->
-                               {:border "none"
-                                :height 48
-                                :line-height "30px"
-                                :font-size "18px"
-                                :font-weight "600"
-                                :background "initial"}
-                             (util/mobile?)
-                             (assoc :max-width 300))
-                    :placeholder (t :search-posts)
-                    :value (or q "")
-                    :on-change (fn [e]
-                                 (let [v (util/ev e)]
-                                   (citrus/dispatch! :search/q (util/ev e))))
-                    :on-key-down (fn [e]
-                                   (case (.-keyCode e)
-                                     ;; backspace
-                                     8
-                                     (citrus/dispatch-sync! :search/reset-result)
+       [:input.row.white
+        {:id "search"
+         :type "search"
+         :autoFocus true
+         :style (cond->
+                    {:border "none"
+                     :height 48
+                     :line-height "30px"
+                     :font-size "18px"
+                     :font-weight "600"
+                     :background "initial"}
+                  (util/mobile?)
+                  (assoc :max-width 300))
+         :placeholder (t :search-posts)
+         :value (or q "")
+         :on-change (fn [e]
+                      (let [v (util/ev e)]
+                        (citrus/dispatch! :search/q (util/ev e))))
+         :on-key-down (fn [e]
+                        (case (.-keyCode e)
+                          ;; backspace
+                          8
+                          (citrus/dispatch-sync! :search/reset-result)
 
-                                     ;; Esc
-                                     27 (close-fn)
-                                     nil)
-                                   )
-                    :on-key-press (fn [e]
-                                    (citrus/dispatch-sync! :search/q (util/ev e))
-                                    (when (= (.-key e) "Enter")
-                                      (search-fn q current-path)))
-                    }]
+                          ;; Esc
+                          27 (close-fn)
+                          nil)
+                        )
+         :on-key-press (fn [e]
+                         (citrus/dispatch-sync! :search/q (util/ev e))
+                         (when (= (.-key e) "Enter")
+                           (search-fn q current-path)))
+         }]
        [:a {:on-click (fn [] (search-fn q current-path))
             :style {:margin-right 24
                     :margin-top 12}}
         (ui/icon {:type "search"
-                  :color colors/shadow})]
+                  :color colors/icon-color})]
 
        [:a {:on-click close-fn
             :style {:margin-top 12}}
         (ui/icon {:type "close"
-                  :color colors/shadow})]]]]))
+                  :color colors/icon-color})]]]]))
 
 (rum/defc drawer <
   {:will-mount (fn [state]
@@ -252,13 +253,13 @@
               [:a {:style {:margin-right 20}
                    :on-click (fn [] (citrus/dispatch! :router/back))}
                (ui/icon {:type :ios_back
-                         :color colors/primary})]
+                         :color colors/icon-color})]
               :else
               [:a {:style {:margin-right 20}
                    :on-click (fn []
                                (citrus/dispatch! :citrus/open-drawer?))}
                (ui/icon {:type :menu
-                         :color colors/primary})]))
+                         :color colors/icon-color})]))
 
           [:div.row1
            (widgets/website-logo)
@@ -267,7 +268,7 @@
                     post-edit-page?)
              [:span {:style {:margin-left 12
                              :font-weight "600"
-                             :color (colors/icon-color)
+                             :color colors/icon-color
                              :font-size 13}}
               (t :draft)])]]
 
@@ -278,30 +279,20 @@
           (when (not post?)
             (if mobile?
               [:a.row1.no-decoration {:style {:align-items "center"
-                                              :color colors/primary
+                                              :color colors/icon-color
                                               :padding-right 12}
                                       :href "/new-link"}
                (ui/icon {:type :edit
-                         :color colors/shadow
+                         :color colors/icon-color
                          :width 22})]
               (ui/menu
-               [:a.row1.no-decoration {:style {:align-items "center"
-                                               :color colors/primary
-                                               :padding-right 12}
-                                       :href "/new-article"}
-                (ui/icon {:type :edit
-                          :color colors/shadow
-                          :width 22
-                          :opts {:style {:margin-right (if mobile? 0 6)}}})
-                (when (not mobile?)
-                  (t :write-new-post))]
-               [[:a.button-text {:href "/new-link"
+                [:a.no-decoration {:style {:color "#FFF"
+                                           :padding-right 12}
+                                   :href "/new-article"}
+                 (t :write-new-post)]
+                [[:a.button-text {:href "/new-link"
                                  :style {:font-size 14}}
-                 (t :or-submit-a-link)
-                 (ui/icon {:type :link
-                           :color colors/shadow
-                           :width 22
-                           :opts {:style {:margin-left 6}}})]]
+                 (t :or-submit-a-link)]]
                {:menu-style {:margin-top 18
                              :width 160}})))
 
@@ -316,7 +307,7 @@
               :style {:padding padding}}
              [:i {:class "fa fa-flag"
                   :style {:font-size 20
-                          :color "#0000ff"}}]])
+                          :color colors/icon-color}}]])
 
           ;; login or notification
           (when (and current-user unread? (not post?))
@@ -332,7 +323,7 @@
                  :on-click #(citrus/dispatch! :citrus/toggle-search-mode?)
                  :style {:padding padding}}
              (ui/icon {:type "search"
-                       :color (colors/icon-color)})])
+                       :color colors/icon-color})])
 
           (when-not current-user
             [:a.no-decoration {:on-click (fn []
@@ -340,7 +331,7 @@
                                :style {:padding-left padding
                                        :font-weight "500"
                                        :font-size 15
-                                       :color colors/primary}}
+                                       :color colors/icon-color}}
              (t :signin)])
 
           (when (and (not mobile?)
@@ -357,7 +348,7 @@
                           (ui/icon {:type :more
                                     :width 20
                                     :height 20
-                                    :color colors/shadow})]))
+                                    :color colors/icon-color})]))
 
           (when (and (not post?)
                      (not mobile?)

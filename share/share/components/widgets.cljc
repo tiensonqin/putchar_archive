@@ -38,8 +38,8 @@
         :href (str "/@" (:screen_name user))}
     [:div.column1
      (ui/avatar (cond->
-                  {:src (util/cdn-image (:screen_name user))
-                   :shape "circle"}
+                    {:src (util/cdn-image (:screen_name user))
+                     :shape "circle"}
                   class
                   (assoc :class class)))]]])
 
@@ -64,10 +64,10 @@
                                       true)))))
            state)}
   [state body {:keys [style
-                body-format
-                render-opts
-                on-mouse-up]
-         :or {body-format :markdown}
+                      body-format
+                      render-opts
+                      on-mouse-up]
+               :or {body-format :markdown}
                :as attrs}]
   (let [body-format (keyword body-format)
         org-loaded? (citrus/react [:org-loaded?])]
@@ -76,14 +76,14 @@
       [:div (t :loading)]
       [:div.column
        (cond->
-         {:class (str "editor " (name body-format))
-          :style (merge
-                  {:word-wrap "break-word"}
-                  style)
-          :dangerouslySetInnerHTML {:__html
-                                    (if (str/blank? body)
-                                      ""
-                                      (content/render body body-format))}}
+           {:class (str "editor " (name body-format))
+            :style (merge
+                    {:word-wrap "break-word"}
+                    style)
+            :dangerouslySetInnerHTML {:__html
+                                      (if (str/blank? body)
+                                        ""
+                                        (content/render body body-format))}}
          on-mouse-up
          (assoc :on-mouse-up on-mouse-up))])))
 
@@ -105,8 +105,7 @@
                                                     :margin-right 12}
                                                    {:margin-top 64
                                                     :margin-bottom 64
-                                                    :padding 24})
-                                          :class "shadow"}
+                                                    :padding 24})}
      [:div {:class "space-between"}
       [:a {:href (str "/@" screen_name)
            :style {:margin-right (if mobile? 12 24)}}
@@ -211,26 +210,26 @@
   (let [current-handler (citrus/react [:router :handler])
         theme (citrus/react [:theme])
         mobile? (util/mobile?)]
-    [:a.row1.no-decoration {:href "/"
-                            :on-click (fn []
-                                        (citrus/dispatch! :citrus/re-fetch :home {})
-                                        #?(:cljs (.scroll js/window #js {:top 0})))}
+    [:a.logo.row1.no-decoration {:href "/"
+                                 :style {:color "#fff8dc"}
+                                 :on-click (fn []
+                                             (citrus/dispatch! :citrus/re-fetch :home {})
+                                             #?(:cljs (.scroll js/window #js {:top 0})))}
      (ui/icon {:type :logo
-               :color colors/primary
-               :width 28
-               :height 28})
+               :color "#fff8dc"
+               :width 32
+               :height 32})
      (when-not mobile?
        [:span {:style {:font-size 20
                        :margin-top -3
                        :font-weight "bold"
-                       :letter-spacing "0.05em"
-                       :color colors/primary}}
+                       :letter-spacing "0.05em"}}
         "utchar"])
      (when-not mobile?
        [:span {:style {:margin-left 6
                        :font-size 10
                        :color colors/primary}}
-       "beta"])]))
+        "beta"])]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]
@@ -247,7 +246,8 @@
              others (remove #{body-format} all-formats)]
          (ui/menu
            [:a.no-decoration.control {:style {:padding 12
-                                              :font-size 14}}
+                                              :font-size 14
+                                              :color colors/icon-color}}
             (str/capitalize (name body-format))]
            (for [body-format others]
              [:a.button-text {:style {:font-size 14}
@@ -256,16 +256,16 @@
                    (str/capitalize (name body-format)))])
            {})))
 
-    [:a {:title (if (:preview? form-data)
-                  (t :back)
-                  (t :preview))
-         :on-click (fn []
-                     (citrus/dispatch!
-                      :citrus/default-update
-                      [:post :form-data :preview?]
-                      (not (:preview? form-data))))}
-     (ui/icon {:type "visibility"
-               :color (if (:preview? form-data) colors/primary colors/shadow)})]]))
+     [:a {:title (if (:preview? form-data)
+                   (t :back)
+                   (t :preview))
+          :on-click (fn []
+                      (citrus/dispatch!
+                       :citrus/default-update
+                       [:post :form-data :preview?]
+                       (not (:preview? form-data))))}
+      (ui/icon {:type "visibility"
+                :color (if (:preview? form-data) colors/primary colors/icon-color)})]]))
 
 (rum/defc github-connect
   []
@@ -307,8 +307,8 @@
        (cond
          show-expand?
          [:a.row1.control {:style {:margin-left 12}
-                   :on-click (fn [e]
-                               (reset! expand? true))}
+                           :on-click (fn [e]
+                                       (reset! expand? true))}
           (t :expand)
           " >>"
           ]
@@ -381,32 +381,32 @@
   #?(:cljs
      (let [show? (rum/react show-autocomplete?)]
        (when show?
-        (let [width (citrus/react [:layout :current :width])
-              tab-pressed? (rum/react tab-pressed?)
-              enter-pressed? (rum/react enter-pressed?)
-              current-idx (or (rum/react current-idx) 0)]
-          (when (seq col)
-            (when tab-pressed?
-              (on-select (first col)))
-            (when enter-pressed?
-              (on-select (nth col current-idx)))
-            (let [c-idx (if current-idx (min current-idx (dec (count col))))]
-              (ui/menu
-                element
-                (for [[idx item] (util/indexed col)]
-                  [:a.button-text.row1.complete-item
-                   {:key idx
-                    :tab-index 0
-                    :class (if (= c-idx idx) "active" "")
-                    :style {:padding 12
-                            :display "block"}
-                    :on-click #(on-select item)
-                    :on-key-down (fn [e]
-                                   (when (= 13 (.-keyCode e))
-                                     (on-select item)))}
-                   (item-cp item)])
-                (merge {:visible true}
-                       menu-opts)))))))))
+         (let [width (citrus/react [:layout :current :width])
+               tab-pressed? (rum/react tab-pressed?)
+               enter-pressed? (rum/react enter-pressed?)
+               current-idx (or (rum/react current-idx) 0)]
+           (when (seq col)
+             (when tab-pressed?
+               (on-select (first col)))
+             (when enter-pressed?
+               (on-select (nth col current-idx)))
+             (let [c-idx (if current-idx (min current-idx (dec (count col))))]
+               (ui/menu
+                 element
+                 (for [[idx item] (util/indexed col)]
+                   [:a.button-text.row1.complete-item
+                    {:key idx
+                     :tab-index 0
+                     :class (if (= c-idx idx) "active" "")
+                     :style {:padding 12
+                             :display "block"}
+                     :on-click #(on-select item)
+                     :on-key-down (fn [e]
+                                    (when (= 13 (.-keyCode e))
+                                      (on-select item)))}
+                    (item-cp item)])
+                 (merge {:visible true}
+                        menu-opts)))))))))
 
 (rum/defcs more-content
   < (rum/local false ::expand?)
@@ -420,14 +420,14 @@
          [:a {:style {:margin-left 3}
               :on-click #(reset! expand? false)}
           "(less)"]]
-       (and (not @expand?)
-            (> (count content) limit))
-       [:p (util/trimr-punctuations (subs content 0 limit))
-        [:a {:style {:margin-left 3}
-             :on-click #(reset! expand? true)}
-         "...more"]]
-       :else
-       [:p content]))))
+        (and (not @expand?)
+             (> (count content) limit))
+        [:p (util/trimr-punctuations (subs content 0 limit))
+         [:a {:style {:margin-left 3}
+              :on-click #(reset! expand? true)}
+          "...more"]]
+        :else
+        [:p content]))))
 
 (rum/defc followers
   [followers count]
@@ -441,3 +441,17 @@
               :style {:margin-right 6}}
         (avatar {:screen_name follower}
                 {:class "ant-avatar-mm"})])]))
+
+(rum/defc follow-tag
+  [followed? tag]
+  (if followed?
+    (ui/button {:class "btn-sm"
+                :on-click (fn []
+                            (citrus/dispatch! :user/unfollow tag))}
+      "Unfollow")
+
+    (ui/button {:class "btn-sm btn-primary"
+                :style {:min-width 87}
+                :on-click (fn []
+                            (citrus/dispatch! :user/follow tag))}
+      "Follow")))

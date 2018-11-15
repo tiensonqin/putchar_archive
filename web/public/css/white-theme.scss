@@ -42,7 +42,7 @@ a#quote-selection {
 }
 
 .btn-primary {
-    background-color: $primary-color;
+    background-color: #778899;
     color: #FFF;
 }
 
@@ -85,11 +85,6 @@ label {
 
 .button-text {
     color: #696969;
-}
-
-input#search:focus, input#search:active {
-    outline:none;
-    color: #000;
 }
 
 span.logo {
@@ -191,10 +186,6 @@ a.tag.active {
 
 .org-mode .highlight {
     padding: 0;
-}
-
-.org-mode table {
-    width: 100%;
 }
 
 .org-mode table.highlighttable {

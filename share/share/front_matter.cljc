@@ -33,7 +33,10 @@
 
 (defn remove-front-matter
   [content]
-  (str/triml (str/replace-first content spec-re "")))
+  (str/triml content)
+  ;; TODO: better regex
+  ;; (str/triml (str/replace-first content spec-re ""))
+  )
 
 (defn extract-title
   [content]
