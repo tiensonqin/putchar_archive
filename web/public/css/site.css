@@ -35,22 +35,9 @@ div.editor {
     margin: 12px 0 64px 0;
     background: transparent;
 }
-
-.post ul, .post ol {
-    margin-bottom: 24px;
-}
-
-.post .org-mode ul, .post .org-mode ol {
-    margin-bottom: 0;
-}
-
-.post #toc ul {
-    margin-bottom: 0px;
-}
-
-.post #toc li {
-    margin: 6px 0;
-}
+/* .post #toc li { */
+/*     margin: 6px 0; */
+/* } */
 
 .org-mode .timestamp {
     background: bisque;
@@ -315,11 +302,7 @@ a.delete {
 }
 
 
-a.logo:hover span {
-    color: #FFF;
-}
-
-a.logo:hover svg, .logo svg:hover {
+a.logo:hover svg {
     fill: #FFF;
 }
 
@@ -376,6 +359,10 @@ a.logo:hover svg, .logo svg:hover {
 
 #nav-bar {
     position: fixed;
+}
+
+.post-title {
+    font-size: 1.1487em;
 }
 
 @media screen and (min-width: 768px) {

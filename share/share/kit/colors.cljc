@@ -6,6 +6,6 @@
 
 (def shadow "#696969")
 
-(def icon-color "#efefef")
+(def icon-color "#ddd")
 
-(def like "#E0245E")
+(def like "#fa6c8d")

@@ -286,8 +286,7 @@
                          :color colors/icon-color
                          :width 22})]
               (ui/menu
-                [:a.no-decoration {:style {:color "#FFF"
-                                           :padding-right 12}
+                [:a.no-decoration {:style {:padding-right 12}
                                    :href "/new-article"}
                  (t :write-new-post)]
                 [[:a.button-text {:href "/new-link"
@@ -518,7 +517,7 @@
                  :style {:overflow-y "hidden"}}
        ;; left
        [:div#left {:key "left"
-                   :class "row full-height"
+                   :class "row"
                    :style {:margin-top 76
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]

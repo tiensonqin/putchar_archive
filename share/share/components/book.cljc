@@ -109,7 +109,8 @@
                              [:a {:href (:link book)
                                   :style {:display "inline-block"
                                           :margin-left 6}}
-                              (ui/icon {:type :link})])]]
+                              [:i {:class "fa fa-external-link"
+                                   :style {:font-size 16}}]])]]
             [:div.column
              (when mobile?
                [:div.row1 {:style {:align-items "center"}}
@@ -164,7 +165,9 @@
                 (ui/menu
                   [:a {:on-click (fn [])}
                    (ui/icon {:type :more
-                             :color colors/shadow})]
+                             :color "#999"
+                             :width 20
+                             :height 20})]
                   [(when self?
                      [:a.button-text {:style {:font-size 14}
                                       :href (str "/book/" id "/edit")}
@@ -175,7 +178,7 @@
                                                                   {:object_type "book"
                                                                    :object_id (:id book)}))}
                     (t :leave)]]
-                  {}))]])]
+                  {:other-attrs {:trigger ["click"]}}))]])]
 
          [:div.row {:style {:margin-top 24}}
           (post/post-list posts

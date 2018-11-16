@@ -184,12 +184,12 @@
                     (> last-scroll-top 60))]
     [:div.column1
      (when (and alert? unread?)
-       [:a.fadein {:href "/notifications"
-                   :title (t :notifications)
-                   :style {:position "fixed"
-                           :top 64
-                           :right 64
-                           :z-index 9999}}
+       [:a {:href "/notifications"
+            :title (t :notifications)
+            :style {:position "fixed"
+                    :top 64
+                    :right 64
+                    :z-index 9999}}
         (ui/icon {:type "notifications"
                   :color colors/primary})])
 
@@ -211,12 +211,11 @@
         theme (citrus/react [:theme])
         mobile? (util/mobile?)]
     [:a.logo.row1.no-decoration {:href "/"
-                                 :style {:color "#fff8dc"}
                                  :on-click (fn []
                                              (citrus/dispatch! :citrus/re-fetch :home {})
                                              #?(:cljs (.scroll js/window #js {:top 0})))}
      (ui/icon {:type :logo
-               :color "#fff8dc"
+               :color "#ddd"
                :width 32
                :height 32})
      (when-not mobile?
@@ -227,8 +226,8 @@
         "utchar"])
      (when-not mobile?
        [:span {:style {:margin-left 6
-                       :font-size 10
-                       :color colors/primary}}
+                       :font-size 11
+                       :color "#FFF"}}
         "beta"])]))
 
 (rum/defc preview < rum/reactive

@@ -847,7 +847,7 @@ published: false
                          (util/get-domain link)
                          ")")]]]
                  (if (:title post)
-                   [:h1.post-page-title {:style {:color "#000"}}
+                   [:h1.post-page-title
                     (util/capitalize-first-char (:title post))]))
 
                [:div#post-user {:style {:font-style "italic"

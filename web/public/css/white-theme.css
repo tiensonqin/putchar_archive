@@ -37,7 +37,7 @@ a#quote-selection {
 }
 
 .btn-primary {
-  background-color: #778899;
+  background-color: #35475C;
   color: #FFF;
 }
 
@@ -82,10 +82,6 @@ label {
   color: #696969;
 }
 
-span.logo {
-  color: #071839;
-}
-
 .icon-button i {
   color: #999;
 }
@@ -123,14 +119,6 @@ span.logo {
   border-bottom: 1px solid #e9e9e9;
 }
 
-svg:hover {
-  fill: #071839;
-}
-
-a.like svg:hover {
-  fill: #E0245E;
-}
-
 a.tag {
   background: #E3E3E3;
   color: #071839;
@@ -159,7 +147,7 @@ a.tag.active {
 }
 
 *:not(pre) > code {
-  background: #FFE4C4;
+  background: #fafad2;
   color: #333;
   font-size: 15px;
   padding: 2px 4px;
@@ -210,6 +198,26 @@ a.tag.active {
 
 .menu a:hover {
   color: #071839;
+}
+
+svg:hover {
+  fill: #071839;
+}
+
+a.like svg:hover {
+  fill: #fa6c8d;
+}
+
+#head svg:hover {
+  fill: #FFF;
+}
+
+#head a {
+  color: #ddd;
+}
+
+#head a:hover {
+  color: #FFF;
 }
 
 .shadow {

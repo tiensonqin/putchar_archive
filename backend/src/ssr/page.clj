@@ -128,7 +128,8 @@
        [:link {:rel "stylesheet"
                :href "/css/style.css"}]
        [:link {:rel "stylesheet"
-               :href (str "/style-" version ".css")}])]))
+               :href (str "/style-" version ".css")}])
+     ]))
 
 (defn status-template
   [text]

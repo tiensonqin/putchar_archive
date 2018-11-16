@@ -322,7 +322,9 @@
          [:a {:on-click (fn [])
               :style {:margin-right 24}}
           (ui/icon {:type :more
-                    :color colors/shadow})]
+                    :color "#999"
+                    :width 20
+                    :height 20})]
          [(if (:permalink entity)
             [:a.button-text {:style {:font-size 14}
                              :on-click (fn []
@@ -345,7 +347,8 @@
             [:a.button-text {:on-click #(citrus/dispatch! :comment/delete comment entity [table fk])
                              :style {:font-size 14}}
              (t :delete-this-comment)])]
-         {:menu-style {:width 200}})
+         {:menu-style {:width 200}
+          :other-attrs {:trigger ["click"]}})
 
        [:a.control {:on-click (fn []
                                            (citrus/dispatch! :comment/reply comment)
@@ -515,8 +518,7 @@
         (if (> comments-count 0)
           [:div.space-between.auto-padding {:style {:align-items "center"
                                        :margin-bottom 12}}
-           [:h2 {:style {:margin 0
-                         :font-family "Helvetica,Arial,sans-serif"}}
+           [:h2.black-50 {:style {:margin 0}}
             (when-not (zero? (count comments))
               (str (+ (:comments_count entity) (if count-delta count-delta 0)) " " (t :replies)))]]))
 
