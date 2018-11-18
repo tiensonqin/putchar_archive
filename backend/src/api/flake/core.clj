@@ -43,13 +43,12 @@
 (deftype Flake [^long ts ^bytes worker-id ^short seq-no])
 
 (defonce ^{:private true}
-  default-epoch 1466577521161)
+  default-epoch (utils/epoch-mean 10))
 
 (defonce ^{:private true} sequence-bits  12)
 (defonce ^{:private true} worker-id-bits  10)
 (defonce ^{:private true} worker-id-shift sequence-bits)
 (defonce ^{:private true} timestamp-left-shift (+ sequence-bits worker-id-bits))
-(defonce ^{:private true} sequence-max 4096)
 
 (defonce ^{:private true}
   default-worker-id 0)

@@ -361,10 +361,6 @@ a.logo:hover svg {
     position: fixed;
 }
 
-.post-title {
-    font-size: 1.1487em;
-}
-
 @media screen and (min-width: 768px) {
     #head {
         height: 60px;

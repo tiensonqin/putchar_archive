@@ -51,6 +51,10 @@
                         [{:book_id (:book_id params)}
                          (:merge-path params)]
 
+                        (:tag params)
+                        [{:tag (:tag params)}
+                         (:merge-path params)]
+
                         ;; home
                         :else
                         [nil (:merge-path params)])]
@@ -115,7 +119,6 @@
                     :args {:posts (dissoc params :merge-path)}
                     :merge {:posts path}}
                    true]}))
-
 
    :post/update
    (fn [state data]
