@@ -102,8 +102,7 @@
                                   :text-overflow "ellipsis"}}
                       (util/tag-decode tag)])]
        (if (and more? (not @expand?))
-         [:div.row {:style {:flex-wrap "wrap"
-                            :width 243}}
+         [:div.row {:style {:flex-wrap "wrap"}}
           (for [item (take 12 tags)]
             (item-cp item))
           [:a.control {:style {:font-size 14
@@ -111,8 +110,7 @@
                                :padding-right 3}
                        :on-click #(swap! expand? not)}
            (t :show-all)]]
-         [:div.row {:style {:flex-wrap "wrap"
-                            :width 243}}
+         [:div.row {:style {:flex-wrap "wrap"}}
           (for [item tags]
             (item-cp item))
           [:a.control {:style {:font-size 14
@@ -189,7 +187,8 @@
 (rum/defc right
   []
   [:div {:style {:position "fixed"
-                 :top 76}}
+                 :top 76
+                 :width 243}}
    (tags)
    (books)
    ])

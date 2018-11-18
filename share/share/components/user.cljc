@@ -353,7 +353,8 @@ The posts and comments that you have posted will not be deleted, in order to pre
 
           (query/query
             (post/user-post-list id posts posts-path))]])
-      [:div.row {:style {:justify-content "center"}}
+      [:div.row {:style {:justify-content "center"
+                         :margin-top 24}}
        (ui/donut)])))
 
 (rum/defc links < rum/reactive

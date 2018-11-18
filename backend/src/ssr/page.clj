@@ -119,7 +119,7 @@
        :rel "mask-icon"}]
 
      [:meta {:content "#071839", :name "msapplication-TileColor"}]
-     [:meta {:content "#FFFFFF", :name "theme-color"}]
+     [:meta {:content "#35475C", :name "theme-color"}]
 
      [:link {:rel "manifest"
              :href "/manifest.json"}]
@@ -168,7 +168,7 @@
          :rel "mask-icon"}]
 
        [:meta {:content "#00a300", :name "msapplication-TileColor"}]
-       [:meta {:content "#FFFFFF", :name "theme-color"}]]
+       [:meta {:content "#35475C", :name "theme-color"}]]
       [:body {:style {:height "100%"
                       :width "100%"
                       :display "flex"
