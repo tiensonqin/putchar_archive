@@ -52,11 +52,12 @@
               {}
               posts)]
     (cache/wcar*
+     (car/del post/hot-tags-k)
      (doseq [[screen_name tags] tags]
        (car/hset post/tags-k
                  screen_name tags)
        (doseq [[tag c] tags]
-         (car/zadd post/hot-tags-k c tag))))))
+         (car/zincrby post/hot-tags-k c tag))))))
 
 (defn recompute-tags-job
   [db]
