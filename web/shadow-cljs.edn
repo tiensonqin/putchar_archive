@@ -30,7 +30,6 @@
 
         :compiler-options
                            {:language-in :ecmascript6
-                            :externs ["externs.js"]
                             ;; :pretty-print true
                             ;; :pseudo-names true
                             ;; :infer-externs :auto
