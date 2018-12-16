@@ -215,21 +215,6 @@
         [:script
          (str "web.core.init(" (state->str state) ")")]
 
-        [:script
-         (format
-          "
-// Check that service workers are registered
-if ('serviceWorker' in navigator) {
-  // Use the window load event to keep the page load performant
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw%s.js');
-  });
-}
-"
-          (if util/development?
-            "_dev"
-            ""))]
-
         ;; ;; Google analytics
         ;; [:script {:src "/ga.js"
         ;;           :defer true

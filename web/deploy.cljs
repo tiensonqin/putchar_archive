@@ -21,39 +21,10 @@
 (def uuid-re #"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
 
 (defonce version-path "../share/share/version.cljc")
-(defonce sw-path "./public/sw.js")
-(defonce sw-template-path "./public/sw_template.js")
 (defonce pre-version (atom nil))
 (defonce new-version (random-uuid))
 
-(defn read-version []
-  (.readFile fs version-path "utf8"
-             (fn [err data]
-               (let [v (re-find uuid-re data)]
-                 (reset! pre-version v)
-                 (.writeFile fs version-path (str/replace data v new-version)
-                             (fn [err]
-                               (if err
-                                 (println "Error: " err))))
-
-                 ;; sw template, suffix, mainjs, mainjs-version
-                 (.readFile fs sw-template-path "utf8"
-                            (fn [err data]
-                              (let [new-data (-> data
-                                                 (str/replace "{{suffix}}" (random-uuid))
-                                                 (str/replace "{{mainjs}}" (str "main-" new-version ".js"))
-                                                 (str/replace "{{mainjs-version}}" (random-uuid))
-                                                 (str/replace "{{maincss}}" (str "style-" new-version ".css"))
-                                                 (str/replace "{{maincss-version}}" (random-uuid))
-                                                 )]
-                                (.writeFile fs sw-path new-data
-                                           (fn [err]
-                                             (if err
-                                               (println "Error: " err)
-                                               (exec-sync "cp public/sw.js ../backend/resources/public")))))))))))
-
 (defn -main [& args]
-  (read-version)
   (exec-sync "rm -f public/main*.js")
   (exec-sync "rm -f public/*.css")
   (exec-sync "rm -f ../backend/resources/public/main*.js")
