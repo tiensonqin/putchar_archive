@@ -11,7 +11,7 @@
   (let [{:keys [loading? result q]} (citrus/react [:search])
         current-path (citrus/react [:router :handler])]
     (cond
-      (or (nil? q) (and (string? q) (<= (count q) 1)))
+      (and (string? q) (<= (count q) 1))
       [:div.column]
 
       :else

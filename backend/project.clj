@@ -13,11 +13,11 @@
                  [ring/ring-defaults "0.1.4"]
                  [ring/ring-devel "1.6.3"]
                  [ring-middleware-format "0.7.2"]
-                 [org.postgresql/postgresql "42.2.4"]
-                 [org.clojure/java.jdbc "0.7.3"]
+                 [org.postgresql/postgresql "42.2.5"]
+                 [org.clojure/java.jdbc "0.7.8"]
                  [honeysql "0.9.1"]
                  [ragtime "0.7.2"]
-                 [hikari-cp "1.8.2"]
+                 [hikari-cp "2.6.0"]
                  [com.taoensso/carmine "2.16.0"]
                  [buddy/buddy-sign "2.2.0"]
                  [environ "1.1.0"]
@@ -49,7 +49,6 @@
                  [enlive "1.1.6"]]
 
   :source-paths ["src" "../share"]
-  :java-source-paths ["src/jvm"]
   :jvm-opts ["-Duser.timezone=UTC" "-Dclojure.spec.check-asserts=true"]
 
   :plugins [[lein-environ "1.1.0"]]
