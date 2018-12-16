@@ -859,9 +859,10 @@ published: false
                (when-not link
                  [:div.divider])
 
-               (when (and (:link post) (:cover post))
-                 [:div.editor
-                  [:img {:src (:cover post)}]])]
+               ;; (when (and (:link post) (:cover post))
+               ;;   [:div.editor
+               ;;    [:img {:src (:cover post)}]])
+               ]
               [:div.post
                (if (:body_html post)
                  (widgets/raw-html {:on-mouse-up (fn [e]
