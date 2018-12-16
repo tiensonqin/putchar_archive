@@ -12,6 +12,6 @@
     (doseq [user users]
       (search/add-user user)))
 
-  (let [posts (j/query db ["select id, title from posts where is_draft = false"])]
+  (let [posts (j/query db ["select id, rank, title, tags from posts where is_draft = false"])]
     (doseq [post posts]
       (search/add-post post))))

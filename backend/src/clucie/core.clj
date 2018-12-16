@@ -129,7 +129,7 @@
                            (throw (ex-info "invalid mode" {:mode mode})))))
 
 (defn- search*
-  [mode index-store query-form max-results analyzer page results-per-page]
+  [mode index-store query-form max-results analyzer page results-per-page sorter]
   (with-open [reader (store/store-reader index-store)]
     (let [analyzer (or analyzer (standard-analyzer))
           page (or page 0)
@@ -137,7 +137,9 @@
           ^IndexSearcher searcher (IndexSearcher. reader)
           builder (QueryBuilder. analyzer)
           ^Query query (query-form->query mode query-form builder)
-          ^TopDocs hits (.search searcher query (int max-results))
+          ^TopDocs hits (if sorter
+                          (.search searcher query (int max-results) sorter)
+                          (.search searcher query (int max-results)))
           start (* page results-per-page)
           end (min (+ start results-per-page) (.totalHits hits) max-results)]
       (vec
@@ -149,22 +151,22 @@
 
 (defn search
   "Search the supplied index with a query string."
-  [index-store query-form max-results & [analyzer page results-per-page]]
-  (search* :query index-store query-form max-results analyzer page results-per-page))
+  [index-store query-form max-results & [analyzer page results-per-page sorter]]
+  (search* :query index-store query-form max-results analyzer page results-per-page sorter))
 
 (defn phrase-search
   "Search the supplied index with a pharse query string."
-  [index-store query-form max-results & [analyzer page results-per-page]]
-  (search* :phrase-query index-store query-form max-results analyzer page results-per-page))
+  [index-store query-form max-results & [analyzer page results-per-page sorter]]
+  (search* :phrase-query index-store query-form max-results analyzer page results-per-page sorter))
 
 (defn wildcard-search
   "Search the supplied index with a wildcard query string."
-  [index-store query-form max-results & [analyzer page results-per-page]]
-  (search* :wildcard-query index-store query-form max-results analyzer page results-per-page))
+  [index-store query-form max-results & [analyzer page results-per-page sorter]]
+  (search* :wildcard-query index-store query-form max-results analyzer page results-per-page sorter))
 
 (defn qp-search
   "Search the supplied index with a classic-queryparser query string.
   NB: This may throw org.apache.lucene.queryparser.classic.ParseException
   by invalid query string."
-  [index-store query-form max-results & [analyzer page results-per-page]]
-  (search* :qp-query index-store query-form max-results analyzer page results-per-page))
+  [index-store query-form max-results & [analyzer page results-per-page sorter]]
+  (search* :qp-query index-store query-form max-results analyzer page results-per-page sorter))

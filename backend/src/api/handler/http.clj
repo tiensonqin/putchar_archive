@@ -202,7 +202,8 @@
 
 (defmethod handle :search/search [[{:keys [uid datasource redis]} data]]
   (j/with-db-connection [conn datasource]
-    (util/ok (search/search {:q (:q data)} :limit (:limit data)))))
+    (util/ok (search/search {:q (:q data)}
+                            {:limit (:limit data)}))))
 
 (defmethod handle :post/read [[{:keys [uid datasource redis]} data request]]
   (j/with-db-transaction [conn datasource]

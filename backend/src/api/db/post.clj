@@ -88,7 +88,7 @@
   (->>
    (-> title
        (str/trim)
-       (str/replace #"[「」？…,=+>%<./\_?!:;()\[\]{}@#$%^&*'：，“”‘’ `\"\。《》【】|]" "-")
+       (str/replace #"[「」？…,=+>%<./\_?!:;()\[\]{}@#$%^&*'：，“”‘’ `\"\。《》（）【】|]" "-")
        (str/lower-case))
    (ascii-pinyin)
    (take 64)
@@ -125,7 +125,7 @@
   [body]
   (let [pattern (re-pattern (str "^" su/link-re))]
     (when-let [body (safe-trim body)]
-     (re-find pattern body))))
+      (re-find pattern body))))
 
 (defn query-opengraph
   "Get last url from post title and query it's open graph metadata."
@@ -136,7 +136,7 @@
         (util/update db table (:id post) {:data (pr-str data)}))
       (fn [e]
         (slack/error (str "Parse url: % failed, post-id: %s." url (:id post))
-         e)))))
+                     e)))))
 
 (defn body->html
   [body body-format]
@@ -416,7 +416,8 @@
            :or {limit 5
                 where post-conditions}}]
   (let [result (when-not (str/blank? (:post_title q))
-                 (let [result (search/search q :limit limit)]
+                 (let [result (search/search q
+                                             {:limit limit})]
                    (when (seq result)
                      (let [ids (->> (filter :post_id result)
                                     (mapv (comp au/->uuid :post_id)))

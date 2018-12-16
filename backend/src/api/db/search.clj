@@ -6,9 +6,12 @@
             [share.util :as util])
   (:import
    (org.apache.lucene.index Term IndexWriter IndexWriterConfig)
+   (org.apache.lucene.document.Field$Store)
+   (org.apache.lucene.document DoublePoint NumericDocValuesField StoredField)
    (org.apache.lucene.search TermQuery
                              BooleanQuery BooleanClause PrefixQuery
-                             BooleanClause$Occur FuzzyQuery)
+                             BooleanClause$Occur FuzzyQuery
+                             Sort SortField SortField$Type)
    (org.apache.lucene.queryparser.classic QueryParser)))
 
 
@@ -48,13 +51,24 @@
                   screen-name
                   analyzer))
 
+(defn post-rank->fields
+  [rank]
+  (let [key "post_rank"
+        value (double rank)]
+    [(DoublePoint. key (double-array 1 value))
+     (NumericDocValuesField. key (Double/doubleToRawLongBits value))
+     ;; (StoredField. key value)
+     ]))
+
 (defn add-post [post]
   (when (not (:is_draft post))
     (let [post {:post_id (:id post)
-                :post_title (:title post)}]
+                :post_title (:title post)
+                :post_tags (:tags post)
+                :clucie.core/raw-fields (post-rank->fields (:rank post))}]
       (lucene/add! @index-store
                    [post]
-                   [:post_id :post_title]
+                   [:post_id :post_rank :post_title :post_tags]
                    analyzer))))
 
 (defn delete-post [id]
@@ -69,14 +83,35 @@
     (add-post post)))
 
 (defn search
-  [q & {:keys [limit]}]
-  (let [limit (if limit limit 5)]
-    (lucene/search @index-store
-                   q
-                   limit ; max-num
-                   analyzer
-                   0 ; page
-                   limit))) ; max-num-per-page
+  ([q]
+   (search nil))
+  ([q {:keys [limit page sort per-page]
+       :or {limit 100
+            page 0
+            per-page 10}}]
+   (let [per-page (if per-page per-page limit)]
+     (lucene/search @index-store
+                    q
+                    limit ; max-num
+                    analyzer
+                    page
+                    per-page
+                    sort))))
+
+(defn search-posts-by-rank
+  ([q]
+   (search-posts-by-rank q nil))
+  ([q {:keys [page limit per-page]
+       :or {limit 100
+            page 0
+            per-page 10}}]
+   (let [stf (SortField. "post_rank" SortField$Type/DOUBLE true)
+         sort (Sort. stf)]
+     (search q
+             {:limit limit
+              :page page
+              :per-page per-page
+              :sort sort}))))
 
 (defn prefix-search
   [q {:keys [limit]
