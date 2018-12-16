@@ -24,7 +24,18 @@
 (defonce pre-version (atom nil))
 (defonce new-version (random-uuid))
 
+(defn read-version []
+  (.readFile fs version-path "utf8"
+             (fn [err data]
+               (let [v (re-find uuid-re data)]
+                 (reset! pre-version v)
+                 (.writeFile fs version-path (str/replace data v new-version)
+                             (fn [err]
+                               (if err
+                                 (println "Error: " err))))))))
+
 (defn -main [& args]
+  (read-version)
   (exec-sync "rm -f public/main*.js")
   (exec-sync "rm -f public/*.css")
   (exec-sync "rm -f ../backend/resources/public/main*.js")
