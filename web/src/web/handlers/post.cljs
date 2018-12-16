@@ -28,9 +28,6 @@
                       (= current-path :home)
                       :hot
 
-                      (contains? #{:book} current-path)
-                      :latest-reply
-
                       (contains? #{:user} current-path)
                       :latest
 
@@ -45,10 +42,6 @@
         [params path] (cond
                         specific-user-id
                         [{:user_id specific-user-id}
-                         (:merge-path params)]
-
-                        (:book_id params)
-                        [{:book_id (:book_id params)}
                          (:merge-path params)]
 
                         (:tag params)

@@ -8,10 +8,6 @@ Putchar.org is [Medium](https://medium.com/) for programmers, which is a place t
 
 * Post format supports Markdown and Emacs Org mode.
 
-* Each book has its own posts and followers.
-
-  For example, [Purely functional data structures](https://putchar.org/book/7).
-
 * You can select multiple languages you'd like to see throughout the site.
 
   Yes, not just English.

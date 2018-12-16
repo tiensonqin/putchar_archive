@@ -4,7 +4,6 @@
             [ssr.auth :as auth]
             [clojure.java.jdbc :as j]
             [api.db.user :as u]
-            [api.db.resource :as resource]
             [api.db.util :as du]
             [api.db.post :as post]
             [api.db.token :as token]
@@ -201,17 +200,6 @@
                        :description (str "Latest posts on putchar.org tagged in " tag)}
                    (j/with-db-connection [conn datasource]
                      (post/->rss (post/get-tag conn tag {:limit 20})))))
-
-        ;; book
-        (= :book-rss (:handler route))
-        (when-let [book-id (:book-id (:route-params route))]
-          (j/with-db-connection [conn datasource]
-            (when-let [book (resource/get conn {:object_type "book"
-                                                :object_id book-id})]
-              (util/rss {:title "putchar"
-                         :link (website-path "hot")
-                         :description (str "Latest posts on book: " (:title book))}
-                        (post/->rss (post/get-book-posts conn book-id {:limit 20}))))))
 
         (= :tag-rss (:handler route))
         (when-let [tag (:tag (:route-params route))]

@@ -4,7 +4,6 @@
             [api.db.util :as util]
             [api.db.cache :as cache]
             [api.db.user :as u]
-            [api.db.resource :as resource]
             [api.db.top :as top]
             [api.db.search :as search]
             [clojure.string :as str]
@@ -38,7 +37,6 @@
                                   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
                                   :lang :canonical_url
                                   :body :body_format :body_html :tags
-                                  :book_id :book_title
                                   :cover]
                          :from [table]})
 
@@ -154,20 +152,10 @@
            :body body
            :body_html body-html)))
 
-(defn with-book
-  [db data]
-  (if-let [book-id (:book_id data)]
-    (assoc data :book_title
-           (util/select-one-field db :resources
-                                  {:object_type "book"
-                                   :object_id book-id}
-                                  :title))
-    data))
-
 (defn extract-process
   [db m screen-name]
   (let [{:keys [is_draft] :as m}
-        (-> (with-book db (merge (fm/extract (:body m)) m))
+        (-> (merge (fm/extract (:body m)) m)
             (assoc-body-html (clojure.core/get m :body_format :markdown))
             (clojure.core/update :tags su/->tags))
         m (if (nil? (:cover m))
@@ -422,14 +410,6 @@
                [:= :user_id id]
                [:= :is_draft false]
                [:<> :link nil]] cursor))
-
-(defn get-book-posts
-  [db book-id cursor]
-  (get-latest-reply db
-                    [:and
-                     [:= :book_id book-id]
-                     [:= :is_draft false]]
-                    cursor))
 
 (defn search
   [db q & {:keys [limit where]

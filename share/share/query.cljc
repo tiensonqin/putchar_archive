@@ -3,7 +3,7 @@
             [share.util :as util]))
 
 (def post-fields
-  [:id :flake_id :user :title :rank :permalink :link :created_at :comments_count :tops :cover :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters :book_id :book_title])
+  [:id :flake_id :user :title :rank :permalink :link :created_at :comments_count :tops :cover :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
 
 (defn- get-post-filter
   [state]
@@ -52,7 +52,7 @@
                              :last_reply_at
                              :tops
                              :comments_count
-                             :book_id :book_title :link :cover
+                             :link :cover
                              [:user {:fields [:id :screen_name :name :bio]}]
                              [:comments {:fields [:*]
                                          :cursor {:limit 100}}]]}}
@@ -68,8 +68,7 @@
                                     :lang
                                     :permalink
                                     :is_draft
-                                    :tags
-                                    :book_id :book_title]}}
+                                    :tags]}}
              :args {:post {:id id}}}]
       #?(:clj q
          :cljs (let [current (get-in state [:post :current])]
@@ -109,30 +108,11 @@
   (fn [state args]
     (let [post-filter :links]
       {:q {:user {:fields [:id :screen_name :name :bio :github_handle :tags
-                           [:posts {:fields [:id :flake_id :title :permalink :link :created_at :tags :book_id :book_title]
+                           [:posts {:fields [:id :flake_id :title :permalink :link :created_at :tags]
                                     :filter post-filter
                                     :cursor {:limit 100}}]]}}
        :args {:user {:screen_name (:screen_name args)}}
        :merge {:user-posts [:posts :by-screen-name (:screen_name args) post-filter]}})))
-
-(def book-query
-  (fn [state args]
-    (let [post-filter :latest-reply]
-      {:q {:book {:fields [:id :object_id :object_type :screen_name :title :authors :description :cover :tags :link :stars :created_at :updated_at :followers
-                           [:posts {:fields post-fields
-                                    :filter post-filter}]]}}
-       :args {:book {:id (:book-id args)}}
-       :merge {:book-posts [:posts :by-book-id (:book-id args) post-filter]}})))
-
-(def book-edit-query
-  (fn [state args]
-    {:q {:book {:fields [:id :object_id :object_type :screen_name :title :authors :description :cover :tags :link :created_at :updated_at]}}
-     :args {:book {:id (:book-id args)}}}))
-
-(def books-query
-  (fn [state args]
-    {:q {:books {:fields [:id :title :description :stars :cover :authors
-                          :object_id :created_at :tags]}}}))
 
 (def drafts-query
   (fn [state args]
@@ -198,12 +178,6 @@
    :user user-query
 
    :links links-query
-
-   :book book-query
-
-   :books books-query
-
-   :book-edit book-edit-query
 
    :drafts drafts-query
 

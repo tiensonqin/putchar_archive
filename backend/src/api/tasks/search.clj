@@ -14,10 +14,4 @@
 
   (let [posts (j/query db ["select id, title from posts where is_draft = false"])]
     (doseq [post posts]
-      (search/add-post post)))
-
-  (let [resources (j/query db ["select object_id, object_type, title from resources"])]
-    (doseq [{:keys [object_id object_type title] :as resource} resources]
-      (when (= object_type "book")
-        (search/add-book resource))))
-  )
+      (search/add-post post))))

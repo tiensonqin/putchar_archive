@@ -56,27 +56,6 @@
         (mergef :user q {:user (dissoc user :posts)} :user)
         (mergef :posts q {:posts (:posts user)} :posts))))
 
-(defmethod mergef :book-posts [state route-handler q {:keys [book] :as result} _k]
-  (let [q (let [m (get-in q [:merge :book-posts])]
-            (-> q
-                (util/dissoc-in [:merge :book-posts])
-                (assoc-in [:merge :posts] m)))]
-    (-> state
-        (mergef :book q {:book (dissoc book :posts)} :book)
-        (mergef :posts q {:posts (:posts book)} :posts))))
-
-(defmethod mergef :book [state route-handler q {:keys [book] :as result} _k]
-  (-> state
-      (assoc-in [:book :current] book)
-      (update-merge [:book :by-id (:id book)] book)))
-
-(defmethod mergef :book-edit [state route-handler q {:keys [book] :as result} _k]
-  (mergef state :book q result :book))
-
-(defmethod mergef :books [state route-handler q {:keys [books] :as result} _k]
-  (-> state
-      (assoc-in [:books :latest] books)))
-
 (defmethod mergef :comments [state route-handler q {:keys [comments] :as result} _k]
   (update-in state (get-in q [:merge :comments])
              (fn [old]

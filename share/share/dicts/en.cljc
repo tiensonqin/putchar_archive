@@ -198,8 +198,6 @@
    :social "Social"
    :team-support "Team Support"
    :notifications "Notifications"
-   :star "Star"
-   :unstar "Unstar"
    :about "About"
    :report-delete-confirmation "Are you sure you want to delete this?"
    :no-replies-yet "No replies yet."
@@ -232,19 +230,15 @@
    :add-tags-label "Add tags (at least 1 tag):"
    :add-tags "Up to 5 tags, seperated by commas..."
    :email-notification-settings "Email notification settings"
-   :email-notification-settings-text "Email me when someone replies to my post or mentions my @username."
+   :email-notification-settings-text "Email me when someone replies to my post."
    :my-data "My Data"
    :about-text "
 
 # About
 
-Putchar.org is a place to discuss articles or [books](/books).
+Putchar.org is a place to share and discuss articles.
 
 ## Features
-
-* Each book has its own posts and followers.
-
-  For example, [Purely functional data structures](/book/7).
 
 * Post format supports Markdown and Emacs Org-mode.
 
@@ -300,9 +294,6 @@ Putchar.org is a place to discuss articles or [books](/books).
    :change "Change"
    :show-all "Show all"
    :no-votes-yet "No votes yet."
-   :books "Books"
-   :book "book"
-   :add-a-book "Add a book"
    :website "Website"
    :introduction "View introduction"
    :moderation-logs "Moderation Logs"

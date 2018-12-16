@@ -204,8 +204,6 @@
    :social "社交"
    :team-support "支持"
    :notifications "通知"
-   :star "收藏"
-   :unstar "取消收藏"
    :about "关于"
    :set-as-cover "设为封面"
    :save "保存"
@@ -247,13 +245,11 @@
    :about-text "
 
 ## 关于 Putchar.org
-Putchar.org 是一个纯粹的技术社区, 大家可以在这里发布和讨论文章或者 [书](/books)。
+Putchar.org 是一个纯粹的技术社区, 大家可以在这里发布和讨论文章。
 
 ### 功能
 
-* 用户可以添加或收藏自己喜欢的书和论文。
-
-  比如 [Purely functional data structures](/book/7)。
+* 用户可以分享或发布高质量的文章。
 
 * 文章支持多种格式，包括 Markdow 和 Emacs Org-mode。
 
@@ -306,9 +302,6 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里发布和讨论
    :change "修改"
    :show-all "显示所有"
    :no-votes-yet "暂时还没有顶的文章。"
-   :books "书"
-   :book "书"
-   :add-a-book "添加一本书"
    :website "网站"
    :introduction "查看介绍"
    :moderation-logs "管理日志"

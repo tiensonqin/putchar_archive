@@ -1,7 +1,6 @@
 (ns api.services.email
   (:require [clojure.java.io :as io]
             [api.config :refer [config]]
-            [api.db.invite :as invite]
             [api.db.util :as du]
             [taoensso.timbre :as t]
             [amazonica.core :as core]
@@ -74,31 +73,6 @@
                                 "/email_confirmation?code="
                                 confirmation-code)
                   :action-text (t :activate-your-account)}))))
-
-(defn send-invite
-  [db to {:keys [who]
-          :as data}]
-  (when (seq to)
-    (let [token (:token (invite/create db))
-          link (str "https://putchar.org" (if token (str "?token=" token)))
-          title (format "%s invited you to join Putchar.org!" who)]
-      (send-email to title
-                  (selmer/render (get-template "invite.txt")
-                    (merge data
-                           {:invite-link link}))
-                  (template/template
-                   title
-                   {:body [:div
-                           [:p "Hi there,
-"]
-                           [:p [:a {:href (str "https://putchar.org/@" who)
-                                    :target "_blank"}
-                                [:img {:src (str (:img-cdn config) "/" who ".jpg")
-                                       :style  "border-radius: 6px;margin-right:6px;"}]
-                                [:span who]]
-                            " invited you to join Putchar.org!"]]
-                    :invite-link link
-                    :action-text (str "Join Putchar.org")})))))
 
 (defn send-comment
   [to-addresses {:keys [title post-title post_url screen_name body created_at comment_url] :as data

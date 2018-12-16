@@ -8,7 +8,6 @@
             [api.db.post :as post]
             [api.db.comment :as comment]
             [api.db.report :as report]
-            [api.db.resource :as resource]
             [api.db.util :as du]
             [api.db.refresh-token :as refresh-token]
             [api.db.token :as token]
@@ -83,14 +82,6 @@
   (j/with-db-connection [conn datasource]
     (util/ok
      (query/get-current-user context data))))
-
-(defmethod handle :user/send-invites [[{:keys [uid datasource redis]
-                                        :as context} data]]
-  (future
-    (j/with-db-connection [conn datasource]
-      (email/send-invite conn (:to data)
-                         (dissoc data :to))))
-  (util/ok {:messge "sent"}))
 
 (defmethod handle :user/export [[{:keys [uid datasource redis]
                                   :as context} data]]
@@ -172,54 +163,6 @@
 (defmethod handle :user/update [[{:keys [uid datasource redis]} data]]
   (j/with-db-connection [conn datasource]
     (util/ok (u/update conn uid data))))
-
-(defmethod handle :user/star [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (case (:object_type data)
-      "book" (resource/star conn "book" (:object_id data) uid)
-      (slack/error "star wrong type: " (:object_type data) uid)))
-  (j/with-db-connection [conn datasource]
-    (let [user (u/get conn uid)]
-      (util/ok {:current user}))))
-
-(defmethod handle :user/unstar [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (let [result (case (:object_type data)
-                   "book" (resource/unstar conn "book" (:object_id data) uid)
-                   (slack/error "unstar wrong type: " (:object_type data) uid))]
-      (util/ok {:current (u/get conn uid)}))))
-
-(defmethod handle :resource/new [[{:keys [uid datasource redis]} data]]
-  (j/with-db-transaction [conn datasource]
-    (if (block/examine conn uid)
-      (let [user (u/get conn uid)]
-        (if (resource/exists? conn (select-keys data [:object_type
-                                                      :title]))
-          (util/bad :resource-title-exists)
-          (do
-            (future (slack/new (str "New resource: "
-                                    "Data: " data
-                                    ".")))
-            (util/ok
-             (resource/create conn (assoc data
-                                          :user_id (:id user)
-                                          :screen_name (:screen_name user)))))))
-      (util/bad "Sorry your account is disabled for now."))))
-
-(defmethod handle :resource/update [[{:keys [uid datasource]} data]]
-  (j/with-db-transaction [conn datasource]
-    (reject-not-owner-or-admin? conn uid :resources (:id data)
-                                (fn [moderator]
-                                  (resource/update conn (select-keys data [:object_id :object_type])
-                                                   (dissoc data :object_id :object_type))
-                                  (util/ok data)))))
-
-(defmethod handle :resource/delete [[{:keys [uid datasource]} data]]
-  (j/with-db-transaction [conn datasource]
-    (reject-not-owner-or-admin? conn uid :resources (:id data)
-                                (fn [moderator]
-                                  (resource/delete conn (:id data))
-                                  (util/ok data)))))
 
 (defmethod handle :report/new [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]
@@ -372,20 +315,11 @@
                                   (when-let [user (u/get conn user-id)]
                                     (swap! exclude-emails conj (:email user))
                                     user))))
-                     mention-emails (when-let [mentions (:mentions comment)]
-                                      (when-let [emails (->> (u/get-emails-by-screen-names conn mentions)
-                                                             (remove (set @exclude-emails))
-                                                             (seq))]
-                                        (swap! exclude-emails concat emails)
-                                        emails))
-                     offline-emails (u/filter-offline-emails conn (->> (concat [(:email parent)] mention-emails)
+                     offline-emails (u/filter-offline-emails conn (->> [(:email parent)]
                                                                        (remove nil?)))]
                  (when (seq offline-emails)
                    (when (contains? offline-emails (:email parent))
-                     (email/send-comment [(:email parent)] (assoc data :title (format "%s replied to you on Putchar." (:screen_name user)))))
-
-                   (when-let [mention-emails (seq (set/intersection offline-emails (set mention-emails)))]
-                     (email/send-comment (vec mention-emails) (assoc data :title (format "%s mentions you on Putchar." (:screen_name user))))))
+                     (email/send-comment [(:email parent)] (assoc data :title (format "%s replied to you on Putchar." (:screen_name user))))))
                  (reset! exclude-emails nil))))
             (util/ok comment)))
         (util/bad "Sorry your account is disabled for now.")))))

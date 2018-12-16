@@ -11,16 +11,7 @@
             [clojure.string :as str]))
 
 ;; common things between comment, post and item (future support)
-;; mentions, pictures, emojis, links
-
-(defn join-mention
-  [body pos screen-name]
-  (let [before (subs body 0 pos)
-        n (count (content/get-mention before))
-        head-part (str (subs body 0 (- pos n))
-                       screen-name ": ")
-        new-pos (count head-part)]
-    [new-pos (str head-part (subs body pos))]))
+;; pictures, emojis, links
 
 (defn join-emoji
   [body pos keyword]
@@ -40,8 +31,6 @@
    (fn [state body]
      (let [current-user (get-in state [:user :current])
            pos (get-in state [:post-box :cursor-position])
-           mention (and body current-user pos
-                        (content/get-mention (subs body 0 pos)))
            emoji (and body current-user pos
                       (content/get-emoji (subs body 0 pos)))
            last-char-blank? (str/blank? (str (last body)))]
@@ -50,10 +39,6 @@
          {:state {:search {:emojis-result nil
                            :result nil}}}
 
-         mention
-         {:state state
-          :dispatch [:search/search :user/search {:q {:screen_name mention}} :mentions]}
-
          emoji
          {:state state
           :dispatch [:search/emojis emoji]}
@@ -61,25 +46,6 @@
          :else
          {:state (assoc-in state [:search :result] nil)})))
 
-   :citrus/add-mention
-   (fn [state type id screen-name]
-     (let [pos (get-in state [:post-box :cursor-position])
-           [new-pos body dispatch-data] (case type
-                                  :post
-                                  (let [[new-pos body] (-> (get-in state [:post :form-data :body])
-                                                 (join-mention pos screen-name))]
-                                    [new-pos body [:citrus/set-post-form-data {:body body} {:completed? true}]])
-
-                                  :comment
-                                  (let [[new-pos body] (-> (get-in state [:comment :drafts id])
-                                                 (join-mention pos screen-name))]
-                                    [new-pos body [:comment/save-local id body]]))
-           state (-> state
-                     (assoc-in [:search :result] nil)
-                     (assoc-in [:post-box :cursor-position] (count body)))]
-       {:state state
-        :dispatch [dispatch-data
-                   [:post-box/set-focus-position new-pos]]}))
 
    :citrus/add-emoji
    (fn [state type id keyword]

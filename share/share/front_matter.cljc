@@ -29,7 +29,7 @@
                  :lang (or (:language spec) "en")
                  :is_draft (if (:published spec) false true)
                  :cover (:cover_image spec))
-          (select-keys [:title :tags :is_draft :lang :description :canonical_url :cover :book_id :body])))))
+          (select-keys [:title :tags :is_draft :lang :description :canonical_url :cover :body])))))
 
 (defn remove-front-matter
   [content]

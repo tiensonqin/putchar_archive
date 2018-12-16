@@ -6,7 +6,6 @@
             [api.util :as util]
             [api.db.top :as top]
             [api.db.report :as report]
-            [api.db.resource :as resource]
             [api.db.post :as post]
             [api.services.slack :as slack]
             [share.admins :as admins]
@@ -29,9 +28,6 @@
         route-params (if (and (= handler :home) uid)
                        (assoc route-params :current-user current-user)
                        route-params)
-        latest-books (when-not current-user
-                       (resource/get-resources db "book" {:limit 7} [:object_id :title]))
-
         state {:search-mode? false
                :router       (:ui/route req)
                :layout       {:show-panel? false
@@ -51,8 +47,7 @@
                :report       {:new? (if (and current-user (admins/admin? (:screen_name current-user)))
                                       (report/has-new? db (:screen_name current-user))
                                       false)}
-               :search       nil
-               :books   {:latest latest-books}}
+               :search       nil}
         state (if q-fn
                 (let [query (q-fn nil route-params)]
                   (if query

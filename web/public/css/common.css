@@ -430,7 +430,7 @@ textarea, input {
     cursor: pointer;
 }
 
-#book .editor p, .post-item .editor p {
+.post-item .editor p {
     margin-bottom: 0;
 }
 

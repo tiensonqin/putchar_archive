@@ -1,0 +1,2 @@
+{:up ["alter table comments drop column mentions"]
+ :down ["alter table comments add column mentions text[]"]}

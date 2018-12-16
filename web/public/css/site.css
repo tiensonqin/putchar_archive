@@ -311,15 +311,6 @@ a.logo:hover svg {
     background: #dfdfdf;
 }
 
-.mention {
-    padding: 2px 4px;
-    /* color: #646464; */
-    /* background: #e9e9e9; */
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 13px;
-}
-
 .images {
     display: flex;
     flex: 1;

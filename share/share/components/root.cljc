@@ -18,7 +18,6 @@
             [share.components.stats :as stats]
             [share.components.widgets :as widgets]
             [share.components.right :as right]
-            [share.components.book :as book]
             [share.components.tags :as tags]
             [share.helpers.image :as image]
             [share.util :as util]
@@ -85,14 +84,6 @@
                          (user/drafts params))
          :draft         (fn [params current-user]
                           (post/post params))
-         :books         (fn [params current-user]
-                          (book/books params))
-         :book          (fn [params current-user]
-                          (book/book params))
-         :new-book      (fn [params current-user]
-                          (book/new-book params))
-         :book-edit     (fn [params current-user]
-                          (book/book-edit params))
          :tags          (fn [params current-user]
                           (tags/tags params))}))
 
@@ -205,10 +196,7 @@
 
      [:div.divider {:style {:margin 0}}]
 
-     [:div {:style {:margin-top -20
-                    :padding "0 4px"}}
-      (right/books)
-      [:div.divider {:style {:margin 0}}]
+     [:div {:style {:padding "0 4px"}}
       (right/tags)
       [:div.divider {:style {:margin 0}}]
       (right/footer 12)
@@ -332,22 +320,6 @@
                                        :font-size 15
                                        :color colors/icon-color}}
              (t :signin)])
-
-          (when (and (not mobile?)
-                     (not post?))
-            (ui/dropdown {:overlay [:div.shadow
-                                    {:style {:background "#FFF"
-                                             :padding 12
-                                             :margin-top 24}}
-                                    (right/footer "12px 12px 0 12px")]
-                          :animation "slide-up"
-                          :trigger ["click"]}
-                         [:a {:style {:margin-left 12
-                                      :margin-right 12}}
-                          (ui/icon {:type :more
-                                    :width 20
-                                    :height 20
-                                    :color colors/icon-color})]))
 
           (when (and (not post?)
                      (not mobile?)
@@ -522,7 +494,7 @@
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-link :new-post :post-edit :post :comment :comments :drafts :draft :user-tag :login :stats :books :book :book-edit :new-book :links} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-link :new-post :post-edit :post :comment :comments :drafts :draft :user-tag :login :stats :links} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 0

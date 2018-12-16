@@ -14,8 +14,7 @@
      {:state {:loading? true
               :q (let [q (:q q)]
                    (or (:post_title q)
-                       (:screen_name q)
-                       (:book_name q)))
+                       (:screen_name q)))
               :result nil}
       :http {:params [api-path q]
              :on-load [:search/ready k]}})

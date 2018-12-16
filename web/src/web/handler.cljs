@@ -12,7 +12,6 @@
             [web.handlers.report :as report]
             [web.handlers.notification :as notification]
             [web.handlers.query :as query]
-            [web.handlers.resource :as resource]
             ))
 
 (def handler
@@ -31,5 +30,4 @@
     report/handlers
     notification/handlers
     query/handlers
-    resource/handlers
     )))

@@ -26,21 +26,9 @@
 (def ^:private base-map {:select fields
                          :from [table]})
 
-(defn get-user-stared-books
-  [db user]
-  (let [{:keys [stared_books]} user
-        books (if (seq stared_books)
-                (util/query db {:from [:resources]
-                                :select [:object_id :title]
-                                :where [:and
-                                        [:= :object_type "book"]
-                                        [:in :object_id stared_books]]}))]
-    {:stared_books books}))
-
 (defn db-get
   [db id]
-  (when-let [user (util/get db base-map id)]
-    (merge user (get-user-stared-books db user))))
+  (util/get db base-map id))
 
 (defn cache-reload
   [db id]

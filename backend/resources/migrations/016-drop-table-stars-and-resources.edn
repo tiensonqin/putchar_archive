@@ -1,0 +1,6 @@
+{:up ["drop table stars"
+      "drop table resources"
+      "alter table posts drop column book_id"
+      "alter table posts drop column book_title"
+      ]
+ :down [""]}

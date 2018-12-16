@@ -3,7 +3,6 @@
             [api.db.post :as post]
             [api.db.comment :as comment]
             [clojure.java.jdbc :as j]
-            [api.db.star :as star]
             [api.db.search :as search]
             [api.util :as util]
             [api.db.util :as du]))
@@ -30,7 +29,6 @@
       (j/execute! conn ["delete from blocks where user_id = ?" user-id])
       (j/execute! conn ["delete from likes where user_id = ?" user-id])
       (j/execute! conn ["delete from refresh_tokens where user_id = ?" user-id])
-      (j/execute! conn ["delete from stars where user_id = ?" user-id])
 
       (doseq [{:keys [post_id]} (j/query conn ["select * from tops where user_id = ?" user-id])]
         (post/untop conn user-id post_id))

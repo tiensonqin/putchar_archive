@@ -9,7 +9,6 @@
             [api.db.report :as report]
             [api.db.util :as du]
             [api.db.refresh-token :as refresh-token]
-            [api.db.resource :as resource]
             [api.db.search :as search]
             [api.db.notification :as notification]
             [api.db.moderation-log :as mlog]
@@ -175,9 +174,6 @@
                                           cursor)
 
                      ;; book
-                     (and (:book_id data) (= :latest-reply (:filter data)))
-                     (post/get-book-posts conn (:book_id data) cursor)
-
                      (= :toped (:filter data))
                      (post/get-toped conn uid cursor)
 
@@ -201,26 +197,6 @@
   (assoc entity
          :_id (:id entity)
          :id (:object_id entity)))
-
-;; books
-(defn get-book
-  [{:keys [uid datasource]} data]
-  (if-let [book (j/with-db-connection [conn datasource]
-                  (resource/get conn {:object_type "book"
-                                      :object_id (:id data)}))]
-    (expose-object-id book)
-    :not-found))
-
-(defn get-books
-  [{:keys [uid datasource]} data]
-  (let [result (j/with-db-connection [conn datasource]
-                 (resource/get-resources conn
-                                         "book"
-                                         (:cursor data)))
-        result (if (seq result)
-                 (mapv expose-object-id result)
-                 result)]
-    (wrap-end? result (get (:cursor data) :limit 10))))
 
 (def resolvers
   {
@@ -247,11 +223,7 @@
    :posts get-posts
    :drafts get-drafts
 
-   :comments get-comments
-
-   :book get-book
-   :books get-books
-   })
+   :comments get-comments})
 
 (defn one-to-many?
   [field]

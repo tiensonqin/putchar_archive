@@ -26,8 +26,6 @@
         ;; tag
         ["tags"                                                   :tags]
         [["tag/" [#"[^\/]+" :tag] "/latest.rss"]                  :tag-rss]
-        ;; book
-        [["book/" [ #"\d+" :book-id ] "/latest.rss"]              :book-rss]
         ["search"                                                 :search]
         ["reports"                                                :reports]
         ["moderation-logs"                                        :moderation-logs]
@@ -43,13 +41,7 @@
         [["p/" :post-id]                                          :draft]
         [["p/" :post-id "/edit"]                                              :post-edit]
         [["@" :screen_name "/" [#"[^\/]+" :permalink]]                        :post]
-        [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]       :comment]
-
-        ;; books
-        ["books"                                                 :books]
-        [["book/" [ #"\d+" :book-id ]]                                      :book]
-        ["new-book"                                                 :new-book]
-        [["book/" [ #"\d+" :book-id ] "/edit"]                              :book-edit]]])
+        [["@" :screen_name "/" [#"[^\/]+" :permalink] "/" :comment-idx]       :comment]]])
 
 (defn match-route-with-query-params
   [path & {:as options}]
@@ -65,9 +57,6 @@
                              params)
                     params (if (seq query-params)
                              (merge params query-params)
-                             params)
-                    params (if (:book-id params)
-                             (update params :book-id util/parse-int)
                              params)
                     params (if (:comment-idx params)
                              (update params :comment-idx util/parse-int)

@@ -49,32 +49,6 @@
        {:top top
         :left left})))
 
-(rum/defc mentions-cp < rum/reactive
-  [type id mentions]
-  #?(:clj [:div]
-     :cljs
-     (let [on-select (fn [item] (citrus/dispatch! :citrus/add-mention type id item))
-           width (citrus/react [:layout :current :width])
-           cursor-position (citrus/react [:post-box :cursor-position])
-           element [:span {:style
-                           (merge {:position "absolute"}
-                                  (get-complete-coords cursor-position width))}]]
-       (widgets/autocomplete
-        mentions
-        (fn [screen-name]
-          [:div.row1
-           (ui/avatar {:class "ant-avatar-sm"
-                       :src (util/cdn-image screen-name)})
-
-           [:span {:style {:margin-left 12
-                           :font-weight "500"}}
-            screen-name]])
-        element
-        on-select
-        {:placement "bottomRight"
-         :menu-style {:width 180}
-         :item-style {:justify-content "flex-start"}}))))
-
 (rum/defc emojis-cp < rum/reactive
   [type id emojis]
   (let [on-select (fn [[keyword unicode-or-src]] (citrus/dispatch! :citrus/add-emoji type id keyword))
@@ -112,7 +86,6 @@
    }
   [type id {:keys [placeholder style on-change value other-attrs]}]
   (let [{:keys [width height]} (citrus/react [:layout :current])
-        mentions (citrus/react [:search :result :mentions])
         emojis (citrus/react [:search :emojis-result])]
     [:div {:key "post-box"
            :style {:display "flex"
@@ -153,9 +126,6 @@
 
         :value value}
        other-attrs))
-
-     (when (seq mentions)
-       (mentions-cp type id mentions))
 
      (when (seq emojis)
        (emojis-cp type id emojis))]))

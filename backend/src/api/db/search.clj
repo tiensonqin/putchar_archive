@@ -48,25 +48,6 @@
                   screen-name
                   analyzer))
 
-(defn add-book [book]
-  (let [book {:book_id (:object_id book)
-              :book_title (:title book)}]
-    (lucene/add! @index-store
-                 [book]
-                 [:book_id :book_title]
-                 analyzer)))
-
-(defn delete-book [book-title]
-  (lucene/delete! @index-store
-                  :book-title
-                  book-title
-                  analyzer))
-
-(defn update-book [book]
-  (when (and (:title book) (:object_id book))
-    (delete-book (:title book))
-    (add-book book)))
-
 (defn add-post [post]
   (when (not (:is_draft post))
     (let [post {:post_id (:id post)

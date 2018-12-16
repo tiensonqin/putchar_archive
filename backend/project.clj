@@ -45,7 +45,6 @@
                  [com.vladsch.flexmark/flexmark-profile-pegdown "0.32.18"]
                  [compojure "1.6.0"]
                  [tongue "0.2.4"]
-                 [http-kit "2.2.0"]
                  [selmer "1.11.6"]
                  [enlive "1.1.6"]]
 

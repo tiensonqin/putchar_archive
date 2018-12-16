@@ -24,7 +24,7 @@
   (util/get db base-map id))
 
 ;; post email notification
-;; 1. default, email when someone replies or mentions
+;; 1. default, email when someone replies
 ;; 2. following, email when new comment
 ;; 3. mute
 (defn new-comment
@@ -90,31 +90,28 @@
      (:post_id m)
      (when-let [post (post/get db (:post_id m))]
        ;; update post last_reply_at
-       (let [mentions (some->> (seq (content/get-mentions (:body m)))
-                               (u/validate-screen-names db))]
-         (when-let [comment (util/create db table (assoc m
-                                                         :post_permalink (:permalink post)
-                                                         :mentions mentions) :flake? true)]
-           (let [result (-> comment
-                            (util/with :user_id #(u/get db % [:id :screen_name])))
-                 comment-user (get-in result [:user :screen_name])
-                 posters (if-let [posters (:frequent_posters post)]
-                           (let [posters (read-string posters)]
-                             (assoc posters comment-user (if-let [n (clojure.core/get posters comment-user)]
-                                                          (inc n)
-                                                          1)))
-                           {comment-user 1})]
-             (post/inc-comments-count db (:post_id m))
+       (when-let [comment (util/create db table (assoc m
+                                                       :post_permalink (:permalink post)) :flake? true)]
+         (let [result (-> comment
+                          (util/with :user_id #(u/get db % [:id :screen_name])))
+               comment-user (get-in result [:user :screen_name])
+               posters (if-let [posters (:frequent_posters post)]
+                         (let [posters (read-string posters)]
+                           (assoc posters comment-user (if-let [n (clojure.core/get posters comment-user)]
+                                                         (inc n)
+                                                         1)))
+                         {comment-user 1})]
+           (post/inc-comments-count db (:post_id m))
 
-             (post/update db (:id post) {:last_reply_at (util/sql-now)
-                                         :last_reply_by (:screen_name (u/get db (:user_id m)))
-                                         :last_reply_idx (:idx m)
-                                         :frequent_posters (pr-str posters)})
-             (when-let [reply-id (:reply_to m)]
-               (inc-replies-count db reply-id))
-             (new-comment db result)
-             result)
-           )))
+           (post/update db (:id post) {:last_reply_at (util/sql-now)
+                                       :last_reply_by (:screen_name (u/get db (:user_id m)))
+                                       :last_reply_idx (:idx m)
+                                       :frequent_posters (pr-str posters)})
+           (when-let [reply-id (:reply_to m)]
+             (inc-replies-count db reply-id))
+           (new-comment db result)
+           result)
+         ))
 
      :else
      nil)))

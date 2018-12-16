@@ -158,44 +158,6 @@
      {:state {:default-post-language value}
       :cookie [:set-forever "default-post-language" value]})
 
-   :user/star
-   (fn [state data]
-     (let [current-user (:current state)]
-       (cond
-         current-user
-         {:state {:loading? true}
-          :http {:params [:user/star data]
-                 :on-load [:citrus/star-success data]}}
-
-         :else
-         {:state {:signin-modal? true}})))
-
-   :citrus/star-success
-   (fn [state data result]
-     {:state (-> state
-                 (assoc-in [:user :loading?] false)
-                 (assoc-in [:user :current]
-                           (:current result)))})
-
-   :user/unstar
-   (fn [state data]
-     (let [current-user (:current state)]
-       (cond
-         current-user
-         {:state {:loading? true}
-          :http {:params [:user/unstar data]
-                 :on-load [:citrus/unstar-success data]}}
-
-         :else
-         {:state {:signin-modal? true}})))
-
-   :citrus/unstar-success
-   (fn [state data result]
-     {:state (-> state
-                 (assoc-in [:user :loading?] false)
-                 (assoc-in [:user :current]
-                           (:current result)))})
-
    ;; tags
    :user/follow
    (fn [state tag]

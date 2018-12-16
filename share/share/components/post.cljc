@@ -442,7 +442,6 @@ published: false
             user-link (str "/@" (:screen_name user))
             drafts-path? (= current-path :drafts)
             user-draft? (contains? #{:user :drafts :links} current-path)
-            book? (= current-path :book)
             [post-link router] (if drafts-path?
                                  [(str "/p/" (:id post) "/edit")
                                   {:handler :post-edit
@@ -459,20 +458,6 @@ published: false
         [:div.post-item.col-item {:style {:position "relative"}
                                   :on-click (fn [e]
                                               (citrus/dispatch! :router/push router true))}
-         (cond
-           (and (not book?)
-                (:book_id post)
-                (:book_title post))
-           [:div.row1 {:style {:font-size 14}}
-            [:span "Book:"]
-            [:a {:href (str "/book/" (:book_id post))
-                 :on-click util/stop
-                 :style {:margin-left 6
-                         :margin-right 12
-                         :margin-bottom 6
-                         :color colors/primary
-                         :display "block"}}
-             (:book_title post)]])
          (if user-draft?
            [:span
             [:span {:style {:margin-right 12}}
@@ -873,17 +858,6 @@ published: false
 
                (when-not link
                  [:div.divider])
-
-               (cond
-                 (and (:book_id post)
-                      (:book_title post))
-                 [:div.row1 {:style {:margin-bottom 12}}
-                  [:span "On book: "]
-                  [:a {:href (str "/book/" (:book_id post))
-                       :style {:color colors/primary
-                               :display "block"
-                               :margin-left 6}}
-                   (:book_title post)]])
 
                (when (and (:link post) (:cover post))
                  [:div.editor

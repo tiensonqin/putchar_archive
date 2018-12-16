@@ -112,20 +112,6 @@
     (-> body
         (s/replace quote-pattern replace-fn))))
 
-(rum/defc mention
-  [screen-name]
-  [:a.mention {:href (str "/@" screen-name)}
-   (str "@" screen-name)])
-
-(def mention-pattern #"^(?!.*\bRT\b)(?:.+\s)?@(\w+)")
-
-(defn get-mentions
-  [s]
-  (some->> s
-           (re-seq mention-pattern)
-           (map second)
-           (set)))
-
 (defn get-last-pattern
   [s start-char pattern]
   (let [valid-char? #(re-find pattern (str %))]
@@ -152,19 +138,6 @@
           :else
           (recur (dec len)
                  (str result (nth s len))))))))
-
-(defn get-mention
-  [s]
-  (get-last-pattern s \@ #"[A-Za-z0-9_]"))
-
-(defn mentions
-  [body body-format]
-  (-> body
-      (s/replace mention-pattern
-                 (fn [[_ screen_name]]
-                   (-> (mention screen_name)
-                       (wrap-render body-format))))))
-
 
 (def emoji-pattern #"\B:(\w+):(\[(\w+)\])?")
 
@@ -203,7 +176,6 @@
   (some-> body
           (embed-youtube)
           (quotes body-format)
-          (mentions body-format)
           (emojis body-format)
           (website-links body-format)))
 
