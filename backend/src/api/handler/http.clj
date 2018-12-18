@@ -237,6 +237,8 @@
                                                   :user_id uid
                                                   :permalink permalink
                                                   :is_draft false))]
+           (future
+             (search/add-post post))
            (util/ok post))))
       (util/bad "Sorry your account is disabled for now."))))
 
