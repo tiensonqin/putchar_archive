@@ -183,7 +183,9 @@
                      (:screen_name (u/get db (:user_id data) [:screen_name])))
         {:keys [tags] :as m} (extract-process db data screen-name)
 
-        result (util/create db table (assoc m :user_screen_name screen-name) :flake? true)]
+        result (util/create db table (assoc m
+                                            :user_screen_name screen-name
+                                            :rank 0.2) :flake? true)]
     (when (seq tags)
       (update-tags screen-name tags #{}))
     (get db (:id result))))
