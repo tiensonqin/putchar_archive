@@ -7,7 +7,8 @@
             [api.db.stat :refer [build-stats]]
             [api.services.slack :as slack]
             [taoensso.carmine :as car]
-            [clojure.java.jdbc :as j])
+            [clojure.java.jdbc :as j]
+            [api.tasks.search :as search])
   (:import [org.joda.time DateTimeZone]))
 
 (defn- schedule-job
@@ -32,7 +33,9 @@
   [db]
   (schedule-job db (t/hours 1) (fn [_time]
                                  (j/with-db-connection [conn db]
-                                   (post/recalculate-rank conn)))))
+                                   (post/recalculate-rank conn)
+                                   ;; rebuild search
+                                   (search/rebuild conn)))))
 
 (defn recompute-tags
   [db]
