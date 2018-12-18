@@ -389,7 +389,7 @@ published: false
                :height 20})]
     [
      ;; edit
-     (when self?
+     (when (and self? (not (:link post)))
        [:a.button-text {:style {:font-size 14}
                         :on-click (fn [e]
                                     (util/stop e)
@@ -847,9 +847,11 @@ published: false
                                 :color colors/primary}}
                  (util/date-format (:created_at post))]
 
-                (if (or
-                     (= (:id current-user) (:id user))
-                     (admins/admin? (:screen_name current-user)))
+                (if (and
+                     (not link)
+                     (or
+                      (= (:id current-user) (:id user))
+                      (admins/admin? (:screen_name current-user))))
                   [:a {:style {:color colors/primary
                                :margin-left 12}
                        :on-click (fn [e]

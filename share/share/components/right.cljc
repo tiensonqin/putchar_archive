@@ -130,7 +130,7 @@
 (rum/defc right
   []
   [:div {:style {:position "fixed"
-                 :top 76
+                 :top 56
                  :width 243}}
    (tags)
 

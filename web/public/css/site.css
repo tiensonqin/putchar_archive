@@ -353,10 +353,6 @@ a.logo:hover svg {
 }
 
 @media screen and (min-width: 768px) {
-    #head {
-        height: 60px;
-    }
-
     .heading-1 {
         font-size: 2.875rem;
     }
@@ -389,7 +385,6 @@ a.logo:hover svg {
 
     #head {
         padding: 3px 12px;
-        height: 60px;
     }
 
     .heading-1 {

@@ -209,15 +209,16 @@
   []
   (let [current-handler (citrus/react [:router :handler])
         theme (citrus/react [:theme])
-        mobile? (util/mobile?)]
+        mobile? (util/mobile?)
+        current-user (citrus/react [:user :current])]
     [:a.logo.row1.no-decoration {:href "/"
                                  :on-click (fn []
-                                             (citrus/dispatch! :citrus/re-fetch :home {})
+                                             (citrus/dispatch! :citrus/re-fetch :home {:current-user current-user})
                                              #?(:cljs (.scroll js/window #js {:top 0})))}
      (ui/icon {:type :logo
                :color "#ddd"
-               :width 32
-               :height 32})
+               :width 28
+               :height 28})
      (when-not mobile?
        [:span {:style {:font-size 20
                        :margin-top -3

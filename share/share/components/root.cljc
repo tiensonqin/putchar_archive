@@ -171,9 +171,9 @@
   [:div.drawer.drawer-left.drawer-open.column {:style {:width 300}}
    [:div.drawer-mask]
    [:div.drawer-content-wrapper.column.swipe-in
-    [:div.drawer-content
+    [:div.drawer-content {:style {:width 300}}
      [:div {:style {:padding 16
-                    :width 300}}
+                    :background "#35475C"}}
       (when-let [name (:screen_name current-user)]
         [:div.space-between {:style {:align-items "center"}}
          [:a {:href (str "/@" name)
@@ -185,12 +185,12 @@
                          :width 64
                          :height 64}}]]
          [:a {:href "/votes"}
-          (ui/icon {:type :thumb_up})]
+          (ui/icon {:type :thumb_up
+                    :color "#fff"})]
          [:a {:href "/settings"
               :style {:margin-left 24}}
-          (ui/icon {:type :settings})]])]
-
-     [:div.divider {:style {:margin 0}}]
+          (ui/icon {:type :settings
+                    :color "#fff"})]])]
 
      [:div {:style {:padding "0 4px"}}
       (right/tags)
@@ -205,7 +205,6 @@
   < rum/reactive
   [state mobile? width current-user preview?]
   (let [show-panel? (citrus/react [:layout :show-panel?])
-        last-scroll-top (citrus/react [:last-scroll-top (util/get-current-url)])
         search-mode? (citrus/react [:search-mode?])
         {:keys [handler route-params]} (citrus/react [:router])
         current-path handler
@@ -218,8 +217,7 @@
         user-page? (contains? #{:user :drafts :comments :user-tag} handler)
         post-edit-page? (contains? #{:new-post :post-edit} current-path)
         padding 12
-        ios? (util/ios?)
-        ]
+        ios? (util/ios?)]
     (if search-mode?
       (rum/with-key (search-box search-mode?) "search-box")
       [:div#nav-bar
@@ -480,7 +478,7 @@
        ;; left
        [:div#left {:key "left"
                    :class "row"
-                   :style {:margin-top 76
+                   :style {:margin-top 56
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]
 
