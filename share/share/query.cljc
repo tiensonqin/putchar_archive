@@ -90,10 +90,6 @@
     {:q {:moderation-logs {:fields [:*]
                            :cursor {:limit 20}}}}))
 
-(def stats-query
-  (fn [state args]
-    {:q {:stats {:fields [:*]}}}))
-
 (def user-query
   (fn [state args]
     (let [post-filter :latest]
@@ -167,8 +163,6 @@
    :reports reports-query
 
    :moderation-logs moderation-logs-query
-
-   :stats stats-query
 
    :post      post-query
 

@@ -238,7 +238,6 @@
    :notifications get-notifications
    :reports get-reports
    :moderation-logs get-moderation-logs
-   :stats get-stats
 
    ;; args {:filter (enum :hot :new) :user_id ID}
    :posts get-posts

@@ -351,12 +351,6 @@
                                 :style {:font-size 14}}
                 (t :votes)]
 
-               [:a.button-text {:href "/stats"
-                                :on-click (fn []
-                                            (citrus/dispatch! :citrus/re-fetch :stats nil))
-                                :style {:font-size 14}}
-                (t :stats)]
-
                [:a.button-text {:href "/settings"
                                 :style {:font-size 14}}
                 (t :settings)]
@@ -490,7 +484,7 @@
                            :padding-bottom 100}}
         (routes reconciler route params current-user)]
 
-       (when (and (not mobile?) (not (contains? #{:signup :user :new-link :new-post :post-edit :post :comment :comments :drafts :draft :user-tag :login :stats :links} route)))
+       (when (and (not mobile?) (not (contains? #{:signup :user :new-link :new-post :post-edit :post :comment :comments :drafts :draft :user-tag :login :links} route)))
          [:div#right {:key "right"
                       :class "column1"
                       :style {:margin-top 0

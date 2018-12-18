@@ -9,13 +9,12 @@
   (linked/map
     "en" "English"
     "zh" "中文"
-    "zh-cn" "中文"
-    "zh-tw" "中文"
     "japanese" "Japanese"
     "german" "German"
     "french" "French"
     "spanish" "Spanish"
     "russian" "Russian"
+    "dutch" "Dutch"
     "italian" "Italian"))
 
 (def dicts
