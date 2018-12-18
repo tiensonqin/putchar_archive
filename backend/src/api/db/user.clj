@@ -19,8 +19,8 @@
             [api.db.util :as du]))
 
 (defonce ^:private table :users)
-(def ^:private fields [:id :name :screen_name :email :language :languages :bio :stared_books
-                       :github_id :github_repo :github_handle :last_seen_at :email_notification
+(def ^:private fields [:id :name :screen_name :email :language :languages :bio
+                       :github_id :github_handle :last_seen_at :email_notification
                        :followed_tags :created_at])
 
 (def ^:private base-map {:select fields
@@ -140,39 +140,6 @@
   [id cursor]
   (-> (me-rule id :comments)
       (util/wrap-cursor cursor)))
-
-(defn get-github-path
-  [db user-id post-id]
-  (when-let [repo-map (util/select-one-field db table user-id :github_repo_map)]
-    (let [repo-map (read-string repo-map)]
-      (-> (su/get-first-true (fn [[k v]]
-               (= v post-id))
-                repo-map)
-          (first)))))
-
-(defn github-add-path
-  [db user-id repo-map path post-id]
-  (let [repo-map (if repo-map repo-map {})]
-    (util/update db table user-id
-                 {:github_repo_map (pr-str (assoc repo-map path post-id))})))
-
-(defn github-delete-path
-  [db id repo-map path]
-  (let [repo-map (if repo-map repo-map {})]
-    (util/update db table id
-                 {:github_repo_map (pr-str (dissoc repo-map path))})))
-
-(defn github-rename-path
-  [db id repo-map from-path to-path]
-  (let [repo-map (if repo-map repo-map {})]
-    (util/update db table id
-                 {:github_repo_map (pr-str (if-let [id (clojure.core/get repo-map from-path)]
-                                             (-> repo-map
-                                                 (dissoc from-path)
-                                                 (assoc to-path id))
-                                             (do
-                                               (slack/error "from-path lost: " from-path ".\n User id: " id)
-                                               repo-map)))})))
 
 (defn validate-screen-names
   [db screen-names]

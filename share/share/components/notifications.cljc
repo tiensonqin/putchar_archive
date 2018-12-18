@@ -26,7 +26,7 @@
 
      [:div.space-between {:style {:align-items "center"}}
       (if post
-        [:div.row {:style {:margin "12px 0"}}
+        [:div.row {:style {:margin "px 0"}}
          [:span {:style {:font-weight "600"
                          :width 100}}
           (str (t :post) ":")]
@@ -74,7 +74,6 @@
             :href (str "/" (str (:permalink post) "/" (:idx comment)))}
         (:title post)]]
 
-
       [:div.row {:style {:margin-top 12}}
        (let [screen-name (get-in comment [:user :screen_name])]
          (ui/avatar {:shape "circle"
@@ -89,7 +88,7 @@
 
          (util/time-ago (:created_at comment))]
 
-        (w/transform-content (:body comment) {})]]]]))
+        (w/transform-content (:body comment) {:style {:margin-top -12}})]]]]))
 
 
 (rum/defc notifications < rum/reactive

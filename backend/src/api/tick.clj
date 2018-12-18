@@ -75,4 +75,5 @@
   [db]
   [(recalculate-posts-rank db)
    (recompute-tags-job db)
-   (compute-stats db)])
+   ;; (compute-stats db)
+   ])

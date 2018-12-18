@@ -39,6 +39,12 @@
                                   :body :body_format :body_html :tags
                                   :cover]
                          :from [table]})
+(defonce ^:private feed-fields
+  [:id :flake_id :user_id :user_screen_name
+   :title :tops
+   :rank :comments_count :permalink :link
+   :created_at :updated_at :last_reply_at :last_reply_by :last_reply_idx :last_reply_idx :frequent_posters
+   :tags])
 
 ;; user-screen-name => (map of tag * post-count)
 (def tags-k "post-user-tags")
@@ -330,6 +336,17 @@
      (->> (util/get-by-ids db table ids {:where where})
           (map with-user)
           (flatten-frequent-posters)))))
+
+(defn get-by-tags
+  [db tags where {:keys [page]}]
+  (let [posts (search/search-posts-order-by-rank {:post_tags tags}
+                                                 {:page page})]
+    (when (seq posts)
+      (let [ids (mapv (comp su/uuid :post_id) posts)]
+        (->> (util/get-by-ids db table ids {:fields feed-fields
+                                            :where where})
+            (map with-user)
+            (flatten-frequent-posters))))))
 
 (defn get-top
   ([db cursor]

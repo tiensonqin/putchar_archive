@@ -177,6 +177,27 @@
                      (= :toped (:filter data))
                      (post/get-toped conn uid cursor)
 
+                     (and uid (= :feed (:filter data)))
+                     (let [user (u/get conn uid)
+                           tags (set (:followed_tags user))
+                           get-hot-posts (fn []
+                                        (post/get-hot conn
+                                                      [:and
+                                                       [:= :is_draft false]
+                                                       [:in :lang languages]]
+                                                      cursor))]
+                       (if (seq tags)
+
+                         (let [posts (post/get-by-tags conn tags
+                                                       [:and
+                                                        [:= :is_draft false]
+                                                        [:in :lang languages]]
+                                                       cursor)]
+                           (if (seq posts)
+                             posts
+                             (get-hot-posts)))
+                         (get-hot-posts)))
+
                      (= :hot (:filter data))
                      (post/get-hot conn
                                    [:and

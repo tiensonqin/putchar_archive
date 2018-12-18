@@ -17,9 +17,8 @@
         [["@" :screen_name]                                       :user]
         [["@" :screen_name "/links"]                              :links]
         ["votes"                                                  :votes]
-        ["stats"                                                  :stats]
         ["latest"                                                 :latest]
-        ["latest-reply"                                           :latest-reply]
+        ["hot"                                                 :hot]
         ;; rss
         ["hot.rss"                                                :hot-rss]
         [["@" :screen_name "/latest.rss"]                         :user-latest-rss]

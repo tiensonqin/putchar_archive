@@ -22,11 +22,11 @@
           (fn [v] (set (remove #(= id %) v)))))
 
 (defn post-params
-  [state params specific-user-id]
+  [state params specific-user-id current-user]
   (let [current-path (get-in state [:router :handler])
         post-filter (cond
                       (= current-path :home)
-                      :hot
+                      (if current-user :feed :hot)
 
                       (contains? #{:user} current-path)
                       :latest
@@ -76,11 +76,12 @@
 (def handlers
   {:citrus/load-more-posts
    (fn [state params]
-     (let [last-post (if (map? (:last params))
+     (let [current-user (get-in state [:user :current])
+           last-post (if (map? (:last params))
                        (:last params)
                        @(:last params))
            specific-user-id (:user_id params)
-           [current-path post-filter params path]  (post-params state params specific-user-id)
+           [current-path post-filter params path]  (post-params state params specific-user-id current-user)
            params (->> {:filter post-filter
                         :cursor (case post-filter
                                   :hot
@@ -95,12 +96,9 @@
                                   :latest
                                   {:after (:flake_id last-post)}
 
-                                  :latest-reply
-                                  (if-let [last-reply-at (:last_reply_at last-post)]
-                                    {:after last-reply-at
-                                     :where [[:< :last-reply-at last-reply-at]]}
-                                    {:after (:flake_id last-post)
-                                     :where [[:< :flake_id (:flake_id last-post)]]})
+                                  :feed
+                                  {:page (/ (count (get-in state [:posts :feed :result]))
+                                            10)}
 
                                   :voted
                                   {:after (:flake_id last-post)})}

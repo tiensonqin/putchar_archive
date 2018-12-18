@@ -26,16 +26,14 @@
      [:div.row1 {:style {:margin-bottom 12
                          :color colors/primary
                          :align-items "center"}}
-      [:span {:style {:padding-left 2
-                      :margin-right 4
-                      :font-weight "bold"
-                      :font-size 17}}
-       "#"]
+      [:span {:style {:color "#696969"
+                      :font-size 15}}
+       (t :followed-tags)]
 
-      [:a.row1 {:style {:color colors/primary
-                        :font-size 15}
-                :href "/tags"}
-       (t :tags)]]
+      [:a.control {:href "/tags"
+                   :style {:margin-left 6
+                           :font-size 14}}
+       "(" (t :hot) ")"]]
 
      (let [item-cp (fn [tag]
                      [:a {:key (str "tag-" tag)
@@ -70,49 +68,46 @@
 (rum/defc footer < rum/reactive
   [padding]
   (let [locale (citrus/react :locale)
-        zh-cn? (= locale :zh-cn)]
+        path (citrus/react [:router :handler])
+        zh-cn? (= locale :zh-cn)
+        hot? (= path :hot)
+        latest? (= path :latest)]
     [:div.right-sub.column1 {:style {:font-size 14
                                      :padding padding}}
 
-     [:div.row1 {:style {:align-items "center"}}
+     [:div.row1
+      [:a.control {:href "/hot"
+                   :style {:color (if hot? colors/primary colors/shadow)}}
+       (str/upper-case (t :hot))]
+
       [:a.control {:href "/latest"
-                   :on-click (fn []
-                               (citrus/dispatch! :citrus/re-fetch :latest {}))}
-       (t :new-created)]
-      [:a.control
-       {:style {:margin-left 24}
-        :key "about"
-        :href "/about"}
-       (t :about)]]
+                   :style {:margin-left 12
+                           :color (if latest? colors/primary colors/shadow)}}
+       (str/upper-case (t :latest))]
 
-     [:div.row1 {:style {:align-items "center"
-                         :margin-top 16}}
-
-      [:a.control {:href "/tag/feature-requests"}
-       (t :feature-requests)]
-
-      [:a.control
-       {:style {:margin-left 24}
-        :href "mailto:tiensonqin@gmail.com"}
-       (t :contact-us)]]
+      [:a.control {:key "about"
+                   :href "/about"
+                   :style {:margin-left 12}}
+       (str/upper-case (t :about))]]
 
      [:div.row1 {:style {:align-items "center"
                          :flex-wrap "wrap"
-                         :margin-top 16}}
+                         :margin-top 12}}
       (widgets/subscribe "/hot.rss")
 
       [:a {:href "https://github.com/tiensonqin/putchar"
-           :style {:margin-left 24}}
+           :style {:margin-left 14}}
        (ui/icon {:type :github
                  :width 18
                  :color colors/shadow})]
 
-      [:a {:href "https://twitter.com/putchar_org"
-           :style {:margin-left 16}}
-       (ui/icon {:type :twitter
+      [:a.control
+       {:style {:margin-left 12}
+        :href "mailto:tiensonqin@gmail.com"}
+       (ui/icon {:type :mail
                  :color colors/shadow
-                 :width 20
-                 :height 20
+                 :width 22
+                 :height 22
                  :opts {:style {:margin-top 1}}})]
 
       (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
@@ -125,8 +120,8 @@
                                  "English"
                                  "简体中文"))
                     :animation "slide-up"}
-                   [:a {:style {:margin-left 12
-                                :margin-top 3}}
+                   [:a {:style {:margin-left 10
+                                :margin-top 1}}
                     (ui/icon {:type :translate
                               :width 20
                               :height 20

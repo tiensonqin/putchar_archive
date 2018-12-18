@@ -893,7 +893,7 @@ published: false
           [:div.row {:style {:justify-content "center"}}
            (ui/donut)])))))
 
-(rum/defc sort-by-new < rum/reactive
+(rum/defc latest-posts < rum/reactive
   (mixins/query :latest)
   []
   [:div.column {:style {:padding-bottom 48}}
@@ -903,14 +903,15 @@ published: false
        (post-list posts
                   {:merge-path [:posts :latest]})))])
 
-(rum/defc sort-by-latest-reply < rum/reactive
-  (mixins/query :latest-reply)
+(rum/defc hot-posts < rum/reactive
+  (mixins/query :hot)
   []
   [:div.column {:style {:padding-bottom 48}}
-   (let [posts (citrus/react [:posts :latest-reply])]
+
+   (let [posts (citrus/react [:posts :hot])]
      (query/query
        (post-list posts
-                  {:merge-path [:posts :latest-reply]})))])
+                  {:merge-path [:posts :hot]})))])
 
 (rum/defc tag-posts < rum/reactive
   (mixins/query :tag)

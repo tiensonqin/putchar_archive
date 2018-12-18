@@ -15,7 +15,6 @@
             [share.components.search :as search]
             [share.components.report :as report]
             [share.components.moderation-logs :as logs]
-            [share.components.stats :as stats]
             [share.components.widgets :as widgets]
             [share.components.right :as right]
             [share.components.tags :as tags]
@@ -73,15 +72,12 @@
                           (report/reports params))
          :moderation-logs       (fn [params current-user]
                                   (logs/logs params))
-         :stats         (fn [params current-user]
-                          (stats/stats params))
-         :latest (fn [params current-user]
-                   (post/sort-by-new))
-         :latest-reply (fn [params current-user]
-                         (post/sort-by-latest-reply))
-
-         :drafts       (fn [params current-user]
-                         (user/drafts params))
+         :latest        (fn [params current-user]
+                          (post/latest-posts))
+         :hot           (fn [params current-user]
+                          (post/hot-posts))
+         :drafts        (fn [params current-user]
+                          (user/drafts params))
          :draft         (fn [params current-user]
                           (post/post params))
          :tags          (fn [params current-user]
@@ -118,12 +114,12 @@
          :type "search"
          :autoFocus true
          :style (cond->
-                    {:border "none"
-                     :height 48
-                     :line-height "30px"
-                     :font-size "18px"
-                     :font-weight "600"
-                     :background "initial"}
+                  {:border "none"
+                   :height 48
+                   :line-height "30px"
+                   :font-size "18px"
+                   :font-weight "600"
+                   :background "initial"}
                   (util/mobile?)
                   (assoc :max-width 300))
          :placeholder (t :search-posts)
@@ -278,10 +274,10 @@
                                    :href "/new-article"}
                  (t :write-new-post)]
                 [[:a.button-text {:href "/new-link"
-                                 :style {:font-size 14}}
-                 (t :or-submit-a-link)]]
-               {:menu-style {:margin-top 18
-                             :width 160}})))
+                                  :style {:font-size 14}}
+                  (t :or-submit-a-link)]]
+                {:menu-style {:margin-top 18
+                              :width 160}})))
 
           ;; publish
           (if post?
@@ -300,9 +296,9 @@
           (when (and current-user unread? (not post?))
             [:a {:href "/notifications"
                  :title (t :notifications)
-                 :style {:padding padding}}
+                 :style {:padding "10px 12px"}}
              (ui/icon {:type "notifications"
-                       :color "#0000ff"})])
+                       :color "#7fff00"})])
 
           ;; search
           (if (not post?)

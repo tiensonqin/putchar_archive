@@ -12,8 +12,10 @@
 (rum/defc home < rum/reactive
   (mixins/query :home)
   [params]
-  [:div.column.home
-   (let [posts (citrus/react [:posts :hot])]
-     (query/query
-       (post/post-list posts
-                       {:merge-path [:posts :hot]})))])
+  (let [current-user (citrus/react [:user :current])
+        post-filter (if current-user :feed :hot)]
+    [:div.column.home
+     (let [posts (citrus/react [:posts post-filter])]
+      (query/query
+        (post/post-list posts
+                        {:merge-path [:posts post-filter]})))]))

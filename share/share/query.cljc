@@ -5,13 +5,14 @@
 (def post-fields
   [:id :flake_id :user :title :rank :permalink :link :created_at :comments_count :tops :cover :last_reply_at :last_reply_by :last_reply_idx :tags :frequent_posters])
 
-(defn- get-post-filter
-  [state]
-  (or (get-in state [:post :filter]) :latest-reply))
-
 (def home-query
   (fn [state args]
-    (let [current-user (:current-user args)]
+    (if-let [current-user (:current-user args)]
+      ;; feed
+      {:q     {:posts {:fields post-fields
+                       :filter :feed}}
+       :args  nil
+       :merge {:posts [:posts :feed]}}
       {:q     {:posts {:fields post-fields
                        :filter :hot}}
        :args  nil
@@ -24,13 +25,12 @@
      :args  nil
      :merge {:posts [:posts :latest]}}))
 
-
-(def latest-reply-posts-query
+(def hot-posts-query
   (fn [state args]
     {:q     {:posts {:fields post-fields
-                     :filter :latest-reply}}
+                     :filter :hot}}
      :args  nil
-     :merge {:posts [:posts :latest-reply]}}))
+     :merge {:posts [:posts :hot]}}))
 
 (def post-query
   (fn [state args]
@@ -160,8 +160,7 @@
   {:home home-query
 
    :latest latest-posts-query
-
-   :latest-reply latest-reply-posts-query
+   :hot    hot-posts-query
 
    :notifications notifications-query
 

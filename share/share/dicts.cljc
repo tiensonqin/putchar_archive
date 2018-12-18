@@ -8,8 +8,9 @@
 (defonce langs
   (linked/map
     "en" "English"
-    "zh-cn" "简体中文"
-    "zh-tw" "正體中文"
+    "zh" "中文"
+    "zh-cn" "中文"
+    "zh-tw" "中文"
     "japanese" "Japanese"
     "german" "German"
     "french" "French"

@@ -98,9 +98,9 @@
                     per-page
                     sort))))
 
-(defn search-posts-by-rank
+(defn search-posts-order-by-rank
   ([q]
-   (search-posts-by-rank q nil))
+   (search-posts-order-by-rank q nil))
   ([q {:keys [page limit per-page]
        :or {limit 100
             page 0

@@ -21,8 +21,7 @@
             [share.components.root :as root]
             [api.db.task :as task]
             [cheshire.core :refer [generate-string]]
-            [cemerick.url :as url]
-            [api.services.github.webhook-push :as push]))
+            [cemerick.url :as url]))
 
 (defn get-referer
   [req]
@@ -73,14 +72,6 @@
           (task/delete-account conn uid)
           (-> (resp/redirect (:website-uri config/config))
               (assoc :cookies cookie/delete-token)))
-
-        ;; github push events
-        (= "/github/push" (:uri req))
-        (do
-          (j/with-db-connection [conn datasource]
-            (push/handle conn req))
-          {:status 200
-           :body "ok"})
 
         ;; github login
         (= "/auth/github" (:uri req))
@@ -177,13 +168,6 @@
                    :description "Latest posts on putchar.org"}
                   (j/with-db-connection [conn datasource]
                     (post/->rss (post/get-new conn {:limit 20}))))
-
-        (= :latest-reply-rss (:handler route))
-        (util/rss {:title "putchar"
-                   :link (website-path "latest-reply")
-                   :description "Latest replied posts on putchar.org"}
-                  (j/with-db-connection [conn datasource]
-                    (post/->rss (post/get-latest-reply conn {:limit 20}))))
 
         (= :hot-rss (:handler route))
         (util/rss {:title "putchar"

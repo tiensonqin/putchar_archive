@@ -223,12 +223,7 @@
                        :margin-top -3
                        :font-weight "bold"
                        :letter-spacing "0.05em"}}
-        "utchar"])
-     (when-not mobile?
-       [:span {:style {:margin-left 6
-                       :font-size 11
-                       :color "#FFF"}}
-        "beta"])]))
+        "utchar"])]))
 
 (rum/defc preview < rum/reactive
   [body-format form-data]

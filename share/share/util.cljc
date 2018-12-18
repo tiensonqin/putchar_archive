@@ -619,18 +619,6 @@
   #?(:cljs
      js/window.location.pathname))
 
-(defn get-github-repo-name
-  [url]
-  (-> (s/split url #"/")
-      (last)
-      (s/replace ".git" "")))
-
-(defn get-github-handle-repo
-  [url]
-  (let [[handle repo] (->> (s/split url #"/")
-                           (take-last 2))]
-    [handle (s/replace repo ".git" "")]))
-
 (defn set-href!
   [link]
   #?(:cljs (oset! js/window.location "href" link)))

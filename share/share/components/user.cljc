@@ -137,36 +137,6 @@
     (t :email-notification-settings-text)]])
 
 
-(rum/defc github-repo < rum/reactive
-  [user]
-  [:div#github-repo {:style {:padding "24px 12px"}}
-   [:h3 (t :github-sync)]
-
-   [:div.row1 {:style {:flex-wrap "wrap"
-                       :align-items "center"}}
-    [:span {:style {:margin-right 2}}
-     "https://github.com/"]
-    (ui/input {:class "ant-input"
-               :type "text"
-               :autoComplete "off"
-               :style {:border "none"
-                       :border-bottom "1px solid #aaa"
-                       :border-radius 0
-                       :padding 0
-                       :color colors/primary
-                       :font-size 15
-                       :width 200}
-               :placeholder (t :github-repo-link-placeholder)
-               :default-value (or (:github_repo @user) "")
-               :on-blur (fn [e]
-                          (let [repo (util/ev e)]
-                            (when (and
-                                   (not (str/blank? repo))
-                                   (not (str/starts-with? repo "http"))
-                                   (not= repo
-                                         (:github_repo @user)))
-                              (citrus/dispatch! :user/update {:github_repo repo}))))})]])
-
 (rum/defcs languages-settings <
   (rum/local nil ::languages)
   [state {:keys [languages] :as user}]
@@ -194,8 +164,7 @@
 
      [:div.row1 {:style {:flex-wrap "wrap"}}
       (button-cp "English" "en")
-      (button-cp "简体中文" "zh-cn")
-      (button-cp "正體中文" "zh-tw")
+      (button-cp "中文"     "zh")
       (button-cp "Japanese" "japanese")
       (button-cp "German" "german")
       (button-cp "French" "french")
@@ -281,9 +250,6 @@
         :on-submit (fn [form-data]
                      (let [data @form-data]
                        (citrus/dispatch! :user/update data)))})
-
-     ;; Github sync
-     (github-repo user)
 
      ;; email notification settings
      (email-notification-settings user)

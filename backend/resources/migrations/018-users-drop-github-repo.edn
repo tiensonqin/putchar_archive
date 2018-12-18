@@ -1,0 +1,4 @@
+{:up ["ALTER TABLE users drop column github_repo"
+      "ALTER TABLE users drop column github_repo_map"
+      "ALTER TABLE users drop column stared_books"]
+ :down []}
