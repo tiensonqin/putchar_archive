@@ -22,12 +22,11 @@
                  (map first (citrus/react [:hot-tags])))
         mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))
         more? (> (count tags) 12)]
-    [:div.column1 {:style {:padding 12}}
+    [:div.column1 {:style {:padding "6px 12px"}}
      [:div.row1 {:style {:margin-bottom 12
                          :color colors/primary
                          :align-items "center"}}
-      [:span {:style {:color "#696969"
-                      :font-size 15}}
+      [:span {:style {:font-size 15}}
        (t :followed-tags)]
 
       [:a.control {:href "/tags"

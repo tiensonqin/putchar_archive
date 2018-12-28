@@ -103,8 +103,8 @@
                                                     :padding 12
                                                     :margin-left 12
                                                     :margin-right 12}
-                                                   {:margin-top 64
-                                                    :margin-bottom 64
+                                                   {:margin-top 48
+                                                    :margin-bottom 48
                                                     :padding 24})}
      [:div {:class "space-between"}
       [:a {:href (str "/@" screen_name)
@@ -460,12 +460,12 @@
         latest? (= path :latest)]
     [:div.space-between.auto-padding {:style {:margin-top (if (util/mobile?) 16 8)}}
      [:div.row1
-      (if feed?
+      (if current-user
         [:a.control {:href "/"
                      :style {:color (if feed? "#000" "#666")}}
          (str/upper-case (t :feed))])
       [:a.control {:href "/hot"
-                   :style {:margin-left 12
+                   :style {:margin-left (if current-user 12 0)
                            :color (if hot? "#000" "#666")}}
        (str/upper-case (t :hot))]
       [:a.control {:href "/latest"
