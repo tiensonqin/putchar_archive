@@ -9,7 +9,8 @@
             [share.org-mode :as org-mode]
             [appkit.citrus :as citrus]
             [share.kit.colors :as colors]
-            [share.markdown :as md]))
+            [share.markdown :as md]
+            [share.front-matter :as fm]))
 
 (def youtube-re #"https://youtu\.be/([a-zA-Z0-9-_]+)(\?t=[a-zA-Z0-9]+)*")
 (def youtube-re-2 #"https://(www\.)?youtube\.com/watch\?v=([a-zA-Z0-9-_]+)")
@@ -179,13 +180,6 @@
           (emojis body-format)
           (website-links body-format)))
 
-(def spec-re #"////([^\[]+)////\s*")
-
-(defn post-transform
-  [body body-format]
-  (some-> body
-          (s/replace-first spec-re "")))
-
 (defn render
   [body body-format]
   (let [body-format (keyword body-format)
@@ -193,6 +187,6 @@
                     :markdown md/render
                     :org-mode org-mode/render)]
     (some-> body
+            (fm/remove-front-matter)
             (pre-transform body-format)
-            (render-fn)
-            (post-transform body-format))))
+            (render-fn))))

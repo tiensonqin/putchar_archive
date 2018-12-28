@@ -149,7 +149,7 @@ published: false
                   :font-size 18
                   :resize "none"
                   :width "100%"
-                  :line-height "1.7"
+                  :line-height "1.5"
                   :white-space "pre-wrap"
                   :overflow-wrap "break-word"
                   :overflow-y "hidden"
@@ -806,7 +806,7 @@ published: false
           (let [{:keys [user link]} post
                 current-reply (citrus/react [:comment :reply])
                 avatar (util/cdn-image (:screen_name user))]
-            [:div.column.center-area {:key "post"}
+            [:div.column.center-area.post-page {:key "post"}
              [:div.auto-padding {:style {:margin-top 24}}
               (when (seq (:tags post))
                 [:div.row {:style {:margin-bottom 24}}
@@ -899,7 +899,7 @@ published: false
   (mixins/query :latest)
   []
   [:div.column {:style {:padding-bottom 48}}
-
+   (widgets/posts-header)
    (let [posts (citrus/react [:posts :latest])]
      (query/query
        (post-list posts
@@ -909,7 +909,7 @@ published: false
   (mixins/query :hot)
   []
   [:div.column {:style {:padding-bottom 48}}
-
+   (widgets/posts-header)
    (let [posts (citrus/react [:posts :hot])]
      (query/query
        (post-list posts

@@ -3,6 +3,7 @@
             [share.kit.query :as query]
             [share.kit.ui :as ui]
             [share.components.post :as post]
+            [share.components.widgets :as widgets]
             [share.kit.mixins :as mixins]
             [share.util :as util]
             [appkit.citrus :as citrus]
@@ -15,6 +16,7 @@
   (let [current-user (citrus/react [:user :current])
         post-filter (if current-user :feed :hot)]
     [:div.column.home
+     (widgets/posts-header)
      (let [posts (citrus/react [:posts post-filter])]
       (query/query
         (post/post-list posts

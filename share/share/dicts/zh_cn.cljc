@@ -306,4 +306,4 @@ Putchar.org 是一个纯粹的技术社区, 大家可以在这里发布和讨论
    :submit-a-link "分享链接"
    :links "链接"
    :followed-tags "我的兴趣"
-   })
+   :feed "订阅"})

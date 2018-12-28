@@ -450,3 +450,27 @@
                 :on-click (fn []
                             (citrus/dispatch! :user/follow tag))}
       "Follow")))
+
+(rum/defc posts-header < rum/reactive
+  []
+  (let [current-user (citrus/react [:user :current])
+        path (citrus/react [:router :handler])
+        feed? (and (= path :home) current-user)
+        hot? (= path :hot)
+        latest? (= path :latest)]
+    [:div.space-between.auto-padding {:style {:margin-top (if (util/mobile?) 16 8)}}
+     [:div.row1
+      (if feed?
+        [:a.control {:href "/"
+                     :style {:color (if feed? "#000" "#666")}}
+         (str/upper-case (t :feed))])
+      [:a.control {:href "/hot"
+                   :style {:margin-left 12
+                           :color (if hot? "#000" "#666")}}
+       (str/upper-case (t :hot))]
+      [:a.control {:href "/latest"
+                   :style {:margin-left 12
+                           :color (if latest? "#000" "#666")}}
+       (str/upper-case (t :latest))]]
+     (when-not (util/mobile?)
+       (subscribe "/hot.rss"))]))

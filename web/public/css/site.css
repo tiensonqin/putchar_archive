@@ -379,9 +379,9 @@ a.logo:hover svg {
         padding: 12px;
     }
 
-    .col-item:hover {
-        background: #f0f8ff;
-    }
+    /* .col-item:hover { */
+    /*     background: #f0f8ff; */
+    /* } */
 
     #head {
         padding: 3px 12px;
@@ -407,6 +407,11 @@ a.logo:hover svg {
     }
 
     .auto-padding {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .post-page .auto-padding {
         padding-left: 24px;
         padding-right: 24px;
     }

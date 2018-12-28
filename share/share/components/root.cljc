@@ -194,8 +194,6 @@
 
      [:div {:style {:padding "0 4px"}}
       (right/tags)
-      [:div.divider {:style {:margin 0}}]
-      (right/footer 12)
       (if current-user
         (ui/button {:on-click #(citrus/dispatch! :user/logout)
                     :style {:margin "16px 12px"}}

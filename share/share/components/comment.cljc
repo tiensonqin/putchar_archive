@@ -101,7 +101,7 @@
            :style {:border-radius 4
                    :border "1px solid #999"
                    :font-size "16px"
-                   :line-height "1.7"
+                   :line-height "1.5"
                    :background "transparent"
                    :resize "none"
                    :width "100%"
@@ -192,7 +192,7 @@
                             :style {:border-radius 4
                                     :background "transparent"
                                     :font-size "16px"
-                                    :line-height "1.7"
+                                    :line-height "1.5"
                                     :resize "none"
                                     :width "100%"
                                     :padding 12

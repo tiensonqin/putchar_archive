@@ -21,7 +21,6 @@
   #?(:clj
      (when (and content (not (str/blank? content)))
        (let [content content
-             _ (prn {:content content})
              {:keys [exit out err]}
              (shell/sh "/usr/local/bin/mldoc_org"
                        :in content)]
@@ -29,9 +28,7 @@
            (do
              (slack/error "mldoc_org parser error:" err content)
              content)
-           (do
-             (prn out)
-             out))))
+           out)))
      :cljs
      (when (loaded?)
        (.parseHtml js/window.MldocOrg content))))

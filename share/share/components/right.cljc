@@ -65,74 +65,57 @@
                        :on-click #(swap! expand? not)}
            (if more? (t :collapse))]]))]))
 
-(rum/defc footer < rum/reactive
-  [padding]
-  (let [locale (citrus/react :locale)
-        path (citrus/react [:router :handler])
-        zh-cn? (= locale :zh-cn)
-        hot? (= path :hot)
-        latest? (= path :latest)]
-    [:div.right-sub.column1 {:style {:font-size 14
-                                     :padding padding}}
+;; (rum/defc footer < rum/reactive
+;;   [padding]
+;;   (let [locale (citrus/react :locale)
+;;         path (citrus/react [:router :handler])
+;;         zh-cn? (= locale :zh-cn)
+;;         hot? (= path :hot)
+;;         latest? (= path :latest)]
+;;     [:div.right-sub.column1 {:style {:font-size 14
+;;                                      :padding padding}}
 
-     [:div.row1
-      [:a.control {:href "/hot"
-                   :style {:color (if hot? colors/primary colors/shadow)}}
-       (str/upper-case (t :hot))]
 
-      [:a.control {:href "/latest"
-                   :style {:margin-left 12
-                           :color (if latest? colors/primary colors/shadow)}}
-       (str/upper-case (t :latest))]
+;;      [:div.row1 {:style {:align-items "center"
+;;                          :flex-wrap "wrap"
+;;                          :margin-top 12}}
+;;       (widgets/subscribe "/hot.rss")
 
-      [:a.control {:key "about"
-                   :href "/about"
-                   :style {:margin-left 12}}
-       (str/upper-case (t :about))]]
+;;       [:a {:href "https://github.com/tiensonqin/putchar"
+;;            :style {:margin-left 14}}
+;;        (ui/icon {:type :github
+;;                  :width 18
+;;                  :color colors/shadow})]
 
-     [:div.row1 {:style {:align-items "center"
-                         :flex-wrap "wrap"
-                         :margin-top 12}}
-      (widgets/subscribe "/hot.rss")
+;;       [:a.control
+;;        {:style {:margin-left 12}
+;;         :href "mailto:tiensonqin@gmail.com"}
+;;        (ui/icon {:type :mail
+;;                  :color colors/shadow
+;;                  :width 22
+;;                  :height 22
+;;                  :opts {:style {:margin-top 1}}})]
 
-      [:a {:href "https://github.com/tiensonqin/putchar"
-           :style {:margin-left 14}}
-       (ui/icon {:type :github
-                 :width 18
-                 :color colors/shadow})]
-
-      [:a.control
-       {:style {:margin-left 12}
-        :href "mailto:tiensonqin@gmail.com"}
-       (ui/icon {:type :mail
-                 :color colors/shadow
-                 :width 22
-                 :height 22
-                 :opts {:style {:margin-top 1}}})]
-
-      (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
-                                         :on-click (fn [e]
-                                                     (util/stop e)
-                                                     (citrus/dispatch! :citrus/set-locale (if zh-cn?
-                                                                                            :en
-                                                                                            :zh-cn)))}
-                               (if zh-cn?
-                                 "English"
-                                 "简体中文"))
-                    :animation "slide-up"}
-                   [:a {:style {:margin-left 10
-                                :margin-top 1}}
-                    (ui/icon {:type :translate
-                              :width 20
-                              :height 20
-                              :color colors/shadow})])]]))
+;;       (ui/dropdown {:overlay (ui/button {:style {:margin-top 6}
+;;                                          :on-click (fn [e]
+;;                                                      (util/stop e)
+;;                                                      (citrus/dispatch! :citrus/set-locale (if zh-cn?
+;;                                                                                             :en
+;;                                                                                             :zh-cn)))}
+;;                                (if zh-cn?
+;;                                  "English"
+;;                                  "简体中文"))
+;;                     :animation "slide-up"}
+;;                    [:a {:style {:margin-left 10
+;;                                 :margin-top 1}}
+;;                     (ui/icon {:type :translate
+;;                               :width 20
+;;                               :height 20
+;;                               :color colors/shadow})])]]))
 
 (rum/defc right
   []
   [:div {:style {:position "fixed"
                  :top 56
                  :width 243}}
-   (tags)
-
-   [:div.divider {:style {:margin 0}}]
-   (footer 12)])
+   (tags)])

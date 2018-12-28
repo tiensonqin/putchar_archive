@@ -298,4 +298,5 @@ Putchar.org is a place to share and discuss articles.
    :submit-a-link "Submit a link"
    :links "Links"
    :followed-tags "My tags"
+   :feed "Feed"
    })
