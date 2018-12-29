@@ -161,7 +161,7 @@
   (let [m (assoc-body-html m (clojure.core/get m :body_format :markdown))
         m (-> (merge (fm/extract (:body m) (:body_html m) (:body_format m)) m)
               (clojure.core/update :tags su/->tags))
-        m (assoc m :body_html (if (and (:body_html m) (= :org-mode (keyword (:body_format m))))
+        m (assoc m :body_html (if (and (:body_html m) (not= :asciidoc (keyword (:body_format m))))
                                 (pygments/highlight! (:body_html m))
                                 (:body_html m)))
         m (if (nil? (:cover m))

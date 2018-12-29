@@ -67,9 +67,9 @@
                       :org-mode         ; html
                       (extract-spec-from-html html)
                       :asciidoc         ; parse
-                      (let [{:keys [page-title attributes]} (:header (adoc/parse content))
-                            {:keys [description published cover_image language subtitle keywords canonical_url]} attributes]
-                        {:title page-title
+                      (let [{:keys [attributes]} (:header (adoc/parse content))
+                            {:keys [doctitle description published cover_image language subtitle keywords canonical_url]} attributes]
+                        {:title doctitle
                          :subtitle subtitle
                          :keyword keywords
                          :canonical_url canonical_url

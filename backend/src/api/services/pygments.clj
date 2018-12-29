@@ -37,6 +37,7 @@
                                       :attrs {:data-lang lang}
                                       :content (map (partial pygmentize lang) content)}))))
 
+;; FIXME: html/emit* ignore "\n"
 (defn highlight!
   [content]
   (let [result (when (and (string? content)
