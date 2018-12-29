@@ -872,3 +872,10 @@
       (if (re-find #"[^A-Za-z0-9]" (str (get s (dec index))))
         (recur (dec index))
         (subs s 0 index)))))
+
+(defn capitalize-words
+  "Capitalize every word in a string"
+  [s]
+  (->> (s/split (str s) #"\b")
+       (map s/capitalize)
+       s/join))

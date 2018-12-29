@@ -518,9 +518,9 @@
         (if (> comments-count 0)
           [:div.space-between.auto-padding {:style {:align-items "center"
                                        :margin-bottom 12}}
-           [:h2.black-50 {:style {:margin 0}}
+           [:h2 {:style {:margin 0}}
             (when-not (zero? (count comments))
-              (str (+ (:comments_count entity) (if count-delta count-delta 0)) " " (t :replies)))]]))
+              (str (+ (:comments_count entity) (if count-delta count-delta 0)) " " (str/capitalize (t :replies))))]]))
 
       (when (seq comments)
         (comments-stream entity [table fk] comments end? admin?))]]))

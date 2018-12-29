@@ -341,7 +341,10 @@ a.logo:hover svg {
 
 .post-page-title {
     margin-top: 0;
-    font-size: 230%;
+    font-size: 3rem;
+    color: #090a0b;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    text-align: center;
 }
 
 .user-posts .col-item {
@@ -447,6 +450,21 @@ a.logo:hover svg {
     padding-left: .625rem;
 }
 
+.post blockquote, .post-preview blockquote {
+    margin: 1.5em 0;
+    padding: 0 1.5em;
+    border-left: 3px solid #3eb0ef;
+    background: transparent;
+}
+
+.post blockquote p, .post-preview blockquote p {
+    margin: 0 0 1em;
+    color: inherit;
+    font-size: 1.1em;
+    line-height: inherit;
+    font-style: italic;
+}
+
 blockquote, .quote-header {
     margin: 0.5em 0;
     border-left: 5px solid #d9d9d9;
@@ -493,10 +511,6 @@ blockquote p {
 
 #stats table tr.even, #stats table tr.alt, #stats table tr:nth-of-type(even) { background: none; }
 
-.post-page a:hover {
-    text-decoration: underline;
-}
-
 .cover {
     position: relative;
     display: inline-block;
@@ -515,7 +529,7 @@ input#search {
 pre, pre > code { line-height: 1.4; font-family: "Droid Sans Mono","DejaVu Sans Mono","Monospace",monospace; font-weight: normal; }
 
 pre code {
-    display: block;
+    display: flex;
 }
 
 /** Improve readability of pre-formatted text in all browsers. */

@@ -4,7 +4,7 @@ $main-color: #fff;
     background: $main-color
 }
 
-$primary-color: #071839;
+$primary-color: #060708;
 $header-color: #FFF;
 
 body {
@@ -99,10 +99,6 @@ label {
     color: #696969;
 }
 
-.post-page-title {
-    color: $primary-color;
-}
-
 .hr-divider {
     background-color: rgb(211,211,211);
 }
@@ -148,19 +144,20 @@ a.tag.active {
 }
 
 *:not(pre) > code {
-    background: #fafad2;
-    color: #333;
+    background: #e5eff5;
     font-size: 15px;
     padding: 2px 4px;
     border-radius: 4px;
 }
 
-.org-mode pre {
+code[data-lang] {
     background: #f0f0f0;
-    padding: 12px;
-    margin-bottom: 1.25em;
-    margin-top: 0.25em;
     border-radius: 4px;
+    padding-left: 6px;
+}
+
+.post-preview code[data-lang] {
+    padding: 12px 6px;
 }
 
 .org-mode .code pre, .org-mode .linenos pre {

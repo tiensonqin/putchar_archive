@@ -212,6 +212,7 @@
         mobile? (util/mobile?)
         current-user (citrus/react [:user :current])]
     [:a.logo.row1.no-decoration {:href "/"
+                                 :style {:margin-left -4}
                                  :on-click (fn []
                                              (citrus/dispatch! :citrus/re-fetch :home {:current-user current-user})
                                              #?(:cljs (.scroll js/window #js {:top 0})))}
@@ -260,7 +261,7 @@
                        [:post :form-data :preview?]
                        (not (:preview? form-data))))}
       (ui/icon {:type "visibility"
-                :color (if (:preview? form-data) colors/primary colors/icon-color)})]]))
+                :color (if (:preview? form-data) "#3cb371" colors/icon-color)})]]))
 
 (rum/defc github-connect
   []
@@ -462,15 +463,15 @@
      [:div.row1
       (if current-user
         [:a.control {:href "/"
-                     :style {:color (if feed? "#000" "#666")}}
-         (str/upper-case (t :feed))])
+                     :style {:color (if feed? colors/primary "#666")}}
+         (str/lower-case (t :feed))])
       [:a.control {:href "/hot"
                    :style {:margin-left (if current-user 12 0)
-                           :color (if hot? "#000" "#666")}}
-       (str/upper-case (t :hot))]
+                           :color (if hot? colors/primary "#666")}}
+       (str/lower-case (t :hot))]
       [:a.control {:href "/latest"
                    :style {:margin-left 12
-                           :color (if latest? "#000" "#666")}}
-       (str/upper-case (t :latest))]]
+                           :color (if latest? colors/primary "#666")}}
+       (str/lower-case (t :latest))]]
      (when-not (util/mobile?)
        (subscribe "/hot.rss"))]))

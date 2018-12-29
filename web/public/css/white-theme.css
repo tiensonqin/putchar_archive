@@ -15,7 +15,7 @@ a.control {
 }
 
 a.control:hover {
-  color: #071839;
+  color: #060708;
 }
 
 a.is-active, .user-buttons a.is-active {
@@ -32,7 +32,7 @@ a.is-active, .user-buttons a.is-active {
 }
 
 a#quote-selection {
-  background: #071839;
+  background: #060708;
   color: #FFF;
 }
 
@@ -71,7 +71,7 @@ label {
 }
 
 .post-title:hover {
-  color: #071839;
+  color: #060708;
 }
 
 .user-posts .post-title:hover {
@@ -87,15 +87,11 @@ label {
 }
 
 .icon-button:hover i {
-  color: #071839;
+  color: #060708;
 }
 
 .right-sub h5 {
   color: #696969;
-}
-
-.post-page-title {
-  color: #071839;
 }
 
 .hr-divider {
@@ -117,7 +113,7 @@ label {
 
 a.tag {
   background: #E3E3E3;
-  color: #071839;
+  color: #060708;
 }
 
 a.tag:hover {
@@ -125,7 +121,7 @@ a.tag:hover {
 }
 
 a.tag.active {
-  background: #071839;
+  background: #060708;
   color: #FFF;
 }
 
@@ -139,23 +135,24 @@ a.tag.active {
 }
 
 .editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .ediptor h6 a {
-  color: #071839;
+  color: #060708;
 }
 
 *:not(pre) > code {
-  background: #fafad2;
-  color: #333;
+  background: #e5eff5;
   font-size: 15px;
   padding: 2px 4px;
   border-radius: 4px;
 }
 
-.org-mode pre {
+code[data-lang] {
   background: #f0f0f0;
-  padding: 12px;
-  margin-bottom: 1.25em;
-  margin-top: 0.25em;
   border-radius: 4px;
+  padding-left: 6px;
+}
+
+.post-preview code[data-lang] {
+  padding: 12px 6px;
 }
 
 .org-mode .code pre, .org-mode .linenos pre {
@@ -193,11 +190,11 @@ a.tag.active {
 }
 
 .menu a:hover {
-  color: #071839;
+  color: #060708;
 }
 
 svg:hover {
-  fill: #071839;
+  fill: #060708;
 }
 
 a.like svg:hover {

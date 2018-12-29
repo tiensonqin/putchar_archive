@@ -78,7 +78,7 @@
      (when post-edit?
        (if (some (fn [[tid image]]
                    (true? (:processing? image))) images)
-         [:div {:style {:margin-left 24}}
+         [:div {:style {:margin-left 18}}
           (ui/donut)]
 
          [:a {:title (t :photo-upload)
@@ -87,7 +87,7 @@
                              (.click (gdom/getElement "photo_upload")))
                            :clj
                            identity)
-              :style {:margin-left margin}}
+              :style {:margin-left 18}}
           (ui/icon {:type :photo
                     :color colors/icon-color})]))
      [:input
@@ -191,7 +191,7 @@ published: false
                       (not (str/blank? title))
                       (<= 4 (count title) 128))))]
       (ui/button {:class (if ok? "btn-primary" "disabled")
-                  :style (if ok? {:background colors/primary})
+                  :style (if ok? {:background "#3cb371"})
                   :on-click (fn []
                               (when ok?
                                 (on-publish)))}

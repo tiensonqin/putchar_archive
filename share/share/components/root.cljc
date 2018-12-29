@@ -173,7 +173,7 @@
    [:div.drawer-content-wrapper.column.swipe-in
     [:div.drawer-content {:style {:width 300}}
      [:div {:style {:padding 16
-                    :background "#35475C"}}
+                    :background "#060708"}}
       (when-let [name (:screen_name current-user)]
         [:div.space-between {:style {:align-items "center"}}
          [:a {:href (str "/@" name)
@@ -192,7 +192,8 @@
           (ui/icon {:type :settings
                     :color "#fff"})]])]
 
-     [:div {:style {:padding "0 4px"}}
+     [:div {:style {:padding "0 4px"
+                    :margin-top 12}}
       (right/tags)
       (if current-user
         (ui/button {:on-click #(citrus/dispatch! :user/logout)
