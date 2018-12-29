@@ -15,7 +15,7 @@ a.control {
 }
 
 a.control:hover {
-  color: #060708;
+  color: #24292E;
 }
 
 a.is-active, .user-buttons a.is-active {
@@ -32,7 +32,7 @@ a.is-active, .user-buttons a.is-active {
 }
 
 a#quote-selection {
-  background: #060708;
+  background: #24292E;
   color: #FFF;
 }
 
@@ -71,7 +71,7 @@ label {
 }
 
 .post-title:hover {
-  color: #060708;
+  color: #24292E;
 }
 
 .user-posts .post-title:hover {
@@ -87,7 +87,7 @@ label {
 }
 
 .icon-button:hover i {
-  color: #060708;
+  color: #24292E;
 }
 
 .right-sub h5 {
@@ -113,7 +113,7 @@ label {
 
 a.tag {
   background: #E3E3E3;
-  color: #060708;
+  color: #24292E;
 }
 
 a.tag:hover {
@@ -121,7 +121,7 @@ a.tag:hover {
 }
 
 a.tag.active {
-  background: #060708;
+  background: #24292E;
   color: #FFF;
 }
 
@@ -135,7 +135,7 @@ a.tag.active {
 }
 
 .editor h1 a, .editor h2 a, .editor h3 a, .editor h4 a, .editor h5 a, .ediptor h6 a {
-  color: #060708;
+  color: #24292E;
 }
 
 *:not(pre) > code {
@@ -190,11 +190,11 @@ code[data-lang] {
 }
 
 .menu a:hover {
-  color: #060708;
+  color: #24292E;
 }
 
 svg:hover {
-  fill: #060708;
+  fill: #24292E;
 }
 
 a.like svg:hover {

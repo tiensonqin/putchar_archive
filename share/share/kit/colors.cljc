@@ -2,7 +2,7 @@
   (:require #?(:cljs [appkit.cookie :as cookie])
             [clojure.string]))
 
-(def primary "#060708")
+(def primary "#24292E")
 
 (def shadow "#696969")
 

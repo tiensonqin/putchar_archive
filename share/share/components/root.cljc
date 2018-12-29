@@ -173,7 +173,7 @@
    [:div.drawer-content-wrapper.column.swipe-in
     [:div.drawer-content {:style {:width 300}}
      [:div {:style {:padding 16
-                    :background "#060708"}}
+                    :background "#24292E"}}
       (when-let [name (:screen_name current-user)]
         [:div.space-between {:style {:align-items "center"}}
          [:a {:href (str "/@" name)
