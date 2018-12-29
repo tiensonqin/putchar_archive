@@ -59,6 +59,7 @@
 (rum/defc edit-toolbox < rum/reactive
   []
   (let [form-data (citrus/react [:post :form-data])
+        query-params (citrus/react [:router :route-params])
         images (:images form-data)
         mobile? (util/mobile?)
         margin 24
@@ -68,6 +69,7 @@
         current-post (citrus/react [:post :current])
         body-format (or (citrus/react [:post :form-data :body_format])
                         (:body_format current-post)
+                        (keyword (:mode query-params))
                         (citrus/react [:latest-body-format])
                         :markdown)]
     [:div {:style {:display "flex"
@@ -130,10 +132,12 @@ tags:
 lang: en
 published: false
 ---")
+        query-params (citrus/react [:router :route-params])
         latest-height (citrus/react [:post :latest-height])
         mobile? (util/mobile?)
         body-format (or (citrus/react [:post :form-data :body_format])
                         body-format
+                        (keyword (:mode query-params))
                         :markdown)]
     [:div.row
      (when-not (and mobile? (:preview? form-data))
