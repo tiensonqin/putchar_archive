@@ -28,20 +28,22 @@
   ([content]
    (split-front-matter content 64))
   ([content fm-max-lines]
-   (let [orig-lines (str/split-lines (str/trim content))
-         non-fm [nil content]]
-     (if (= "---" (str/trim (first orig-lines)))
-       (loop [lines (rest orig-lines) idx 1]
-         (if (>= idx fm-max-lines)
-           non-fm
-           (if-let [line (first lines)]
-             (if (= "---" (str/trim line))
-               (let [[fm others] (split-at (inc idx) orig-lines)]
-                 [(str/join "\n" fm)
-                  (str/join "\n" others)])
-               (recur (rest lines) (inc idx)))
-             non-fm)))
-       non-fm))))
+   (let [non-fm [nil content]]
+     (if content
+      (let [orig-lines (str/split-lines (str/trim content))]
+        (if (= "---" (str/trim (first orig-lines)))
+          (loop [lines (rest orig-lines) idx 1]
+            (if (>= idx fm-max-lines)
+              non-fm
+              (if-let [line (first lines)]
+                (if (= "---" (str/trim line))
+                  (let [[fm others] (split-at (inc idx) orig-lines)]
+                    [(str/join "\n" fm)
+                     (str/join "\n" others)])
+                  (recur (rest lines) (inc idx)))
+                non-fm)))
+          non-fm))
+      non-fm))))
 
 ;; (def spec-re #"^---([\S\s]*)---\n?$")
 
