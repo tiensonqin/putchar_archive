@@ -294,7 +294,6 @@ Putchar.org is a place to share and discuss articles.
    :join "Join"
    :leave "Leave"
    :hot-tags "Hot Tags"
-   :or-submit-a-link "Or submit a link"
    :submit-a-link "Submit a link"
    :links "Links"
    :followed-tags "My tags"

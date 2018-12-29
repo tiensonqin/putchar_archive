@@ -838,9 +838,11 @@ published: false
                     (util/capitalize-first-char (:title post))]))
 
                (if (:subtitle post)
-                 [:h2 {:style {:margin-top 6
+                 [:h2 {:style {:margin-top 0
                                :margin-bottom 24
-                               :color "#666"}}
+                               :color "#666"
+                               :font-style "italic"
+                               :font-weight 300}}
                   (util/capitalize-first-char (:subtitle post))])
 
                [:div#post-user {:style {:font-style "italic"

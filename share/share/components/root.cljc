@@ -114,12 +114,12 @@
          :type "search"
          :autoFocus true
          :style (cond->
-                  {:border "none"
-                   :height 48
-                   :line-height "30px"
-                   :font-size "18px"
-                   :font-weight "600"
-                   :background "initial"}
+                    {:border "none"
+                     :height 48
+                     :line-height "30px"
+                     :font-size "18px"
+                     :font-weight "600"
+                     :background "initial"}
                   (util/mobile?)
                   (assoc :max-width 300))
          :placeholder (t :search-posts)
@@ -266,15 +266,19 @@
                (ui/icon {:type :edit
                          :color colors/icon-color
                          :width 22})]
-              (ui/menu
-                [:a.no-decoration {:style {:padding-right 12}
-                                   :href "/new-article"}
-                 (t :write-new-post)]
-                [[:a.button-text {:href "/new-link"
-                                  :style {:font-size 14}}
-                  (t :or-submit-a-link)]]
-                {:menu-style {:margin-top 18
-                              :width 160}})))
+              [:div.row1 {:style {:align-items "center"}}
+               [:a.control {:href "/new-link"
+                            :style {:font-size 14
+                                    :font-weight 500}}
+                (t :submit-a-link)]
+               [:span {:style {:color "#FFF"
+                               :margin "0 6px"}}
+                "|"]
+               [:a.control {:style {:font-size 14
+                                    :font-weight 500
+                                    :padding-right 12}
+                            :href "/new-article"}
+                (t :write-new-post)]]))
 
           ;; publish
           (if post?

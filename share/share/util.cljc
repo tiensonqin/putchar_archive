@@ -596,9 +596,10 @@
 
 (defn decode-permalink
   [permalink]
-  (let [[screen-name title] (s/split permalink #"/")]
-    {:screen_name (subs screen-name 1)
-     :permalink title}))
+  (if permalink
+    (let [[screen-name title] (s/split permalink #"/")]
+     {:screen_name (subs screen-name 1)
+      :permalink title})))
 
 (defn encode
   [tag]

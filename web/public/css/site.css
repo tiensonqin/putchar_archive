@@ -425,6 +425,7 @@ a.logo:hover svg {
 
     .post-page-title {
         font-size: 2rem;
+        text-align: left;
     }
 }
 
