@@ -537,7 +537,8 @@ published: false
                (vote post)]
 
               [:div.row1 {:style {:color "rgb(127,127,127)"
-                                  :font-size 14}}
+                                  :font-size 14
+                                  :align-items "center"}}
                (when-not mobile?
                  (let [last-reply-by (:last_reply_by post)
                        frequent_posters (-> (remove (hash-set (:screen_name user) last-reply-by)

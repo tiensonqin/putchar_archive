@@ -159,10 +159,11 @@
 (defn extract-process
   [db m screen-name]
   (let [m (assoc-body-html m (clojure.core/get m :body_format :markdown))
-        m (-> (merge (fm/extract (:body m) (:body_html m)) m)
+        m (-> (merge (fm/extract (:body m) (:body_html m) (:body_format m)) m)
               (clojure.core/update :tags su/->tags))
-        m (assoc m :body_html (if (:body_html m)
-                                (pygments/highlight! (:body_html m))))
+        m (assoc m :body_html (if (and (:body_html m) (= :org-mode (keyword (:body_format m))))
+                                (pygments/highlight! (:body_html m))
+                                (:body_html m)))
         m (if (nil? (:cover m))
             (dissoc m :cover)
             m)]

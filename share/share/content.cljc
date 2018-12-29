@@ -7,6 +7,7 @@
             #?(:cljs ["react-dom/server" :as react-dom-server])
             #?(:cljs [sablono.core :as html])
             [share.org-mode :as org-mode]
+            [share.asciidoc :as asciidoc]
             [appkit.citrus :as citrus]
             [share.kit.colors :as colors]
             [share.markdown :as md]
@@ -185,7 +186,8 @@
   (let [body-format (keyword body-format)
         render-fn (case body-format
                     :markdown md/render
-                    :org-mode org-mode/render)]
+                    :org-mode org-mode/render
+                    :asciidoc asciidoc/render)]
     (some-> body
             (fm/remove-front-matter)
             (pre-transform body-format)

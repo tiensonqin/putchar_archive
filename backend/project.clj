@@ -43,6 +43,7 @@
                  [org.clojure/clojurescript "1.9.946"]
                  [com.vladsch.flexmark/flexmark-all "0.32.18"]
                  [com.vladsch.flexmark/flexmark-profile-pegdown "0.32.18"]
+                 [org.asciidoctor/asciidoctorj "1.5.8.1"]
                  [compojure "1.6.0"]
                  [tongue "0.2.4"]
                  [selmer "1.11.6"]

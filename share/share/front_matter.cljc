@@ -1,7 +1,9 @@
 (ns share.front-matter
   (:require [clojure.string :as str]
             [share.util :as util]
-            #?(:clj [cheshire.core :as json]))
+            #?(:clj [cheshire.core :as json])
+            #?(:clj [api.asciidoc :as adoc])
+            )
   #?(:clj (:import (java.io BufferedReader StringReader))))
 
 #?(:clj
@@ -45,7 +47,7 @@
 
 #?(:clj
    (defn extract
-     [content html]
+     [content html body-format]
      (when-not (str/blank? content)
        (let [[spec _] (split-front-matter content)
              spec (if spec
@@ -61,8 +63,22 @@
                                                result)]
                                    [(keyword k) (if v (str/trim v))])))
                          (into {}))
-                    ;; html
-                    (extract-spec-from-html html))]
+                    (case (keyword body-format)
+                      :org-mode         ; html
+                      (extract-spec-from-html html)
+                      :asciidoc         ; parse
+                      (let [{:keys [page-title attributes]} (:header (adoc/parse content))
+                            {:keys [description published cover_image language subtitle keywords canonical_url]} attributes]
+                        {:title page-title
+                         :subtitle subtitle
+                         :keyword keywords
+                         :canonical_url canonical_url
+                         :language language
+                         :published published
+                         :cover_image cover_image
+                         :description description})
+                      nil)
+                    )]
          (-> (assoc spec
                     :body content
                     :lang (or (:language spec) "en")
@@ -77,13 +93,13 @@
 
 (defn extract-org-mode-title
   [content]
-  (let [result (re-find #"^#\+TITLE:\s+(.*)" content)]
+  (let [result (re-find #"#\+TITLE:\s+(.*)" content)]
     (when (>= (count result) 2)
       (nth result 1))))
 
 (defn extract-asciidoc-title
   [content]
-  (let [result (re-find #"^=\s+(.*)" content)]
+  (let [result (re-find #"=\s+(.*)" content)]
     (when (>= (count result) 2)
       (nth result 1))))
 

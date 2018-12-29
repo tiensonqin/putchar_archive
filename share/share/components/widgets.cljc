@@ -12,6 +12,7 @@
             [bidi.bidi :as bidi]
             [share.kit.mixins :as mixins]
             [share.org-mode :as org]
+            [share.asciidoc :as asciidoc]
             #?(:cljs [goog.dom :as gdom])
             #?(:cljs [appkit.macros :refer [oget]])
             #?(:cljs [cljs.core.async :as async]))
@@ -51,17 +52,29 @@
 (rum/defcs transform-content < rum/reactive
   {:init (fn [state props]
            #?(:cljs
-              (let [org-format? (= :org-mode (keyword (:body-format (second (:rum/args state)))))
-                    org-loaded? (org/loaded?)]
-                (when (and org-format? (not org-loaded?))
-                  (citrus/dispatch-sync! :citrus/default-update
-                                         [:org-loaded?]
-                                         false)
-                  (go
-                    (async/<! (org/load))
-                    (citrus/dispatch! :citrus/default-update
-                                      [:org-loaded?]
-                                      true)))))
+              (let [body-format (keyword (:body-format (second (:rum/args state))))]
+                (case body-format
+                  :org-mode
+                  (when-not (org/loaded?)
+                    (citrus/dispatch-sync! :citrus/default-update
+                                           [:org-loaded?]
+                                           false)
+                    (go
+                      (async/<! (org/load))
+                      (citrus/dispatch! :citrus/default-update
+                                        [:org-loaded?]
+                                        true)))
+                  :asciidoc
+                  (when-not (asciidoc/loaded?)
+                    (citrus/dispatch-sync! :citrus/default-update
+                                           [:asciidoc-loaded?]
+                                           false)
+                    (go
+                      (async/<! (asciidoc/load))
+                      (citrus/dispatch! :citrus/default-update
+                                        [:asciidoc-loaded?]
+                                        true)))
+                  nil)))
            state)}
   [state body {:keys [style
                       body-format
@@ -70,9 +83,14 @@
                :or {body-format :markdown}
                :as attrs}]
   (let [body-format (keyword body-format)
-        org-loaded? (citrus/react [:org-loaded?])]
-    (if (and (= body-format :org-mode)
-             (false? org-loaded?))
+        org-loaded? (citrus/react [:org-loaded?])
+        asciidoc-loaded? (citrus/react [:asciidoc-loaded?])
+        ]
+    (if (or
+         (and (= body-format :org-mode)
+              (false? org-loaded?))
+         (and (= body-format :asciidoc)
+              (false? asciidoc-loaded?)))
       [:div (t :loading)]
       [:div.column
        (cond->
@@ -212,7 +230,8 @@
         mobile? (util/mobile?)
         current-user (citrus/react [:user :current])]
     [:a.logo.row1.no-decoration {:href "/"
-                                 :style {:margin-left -4}
+                                 :style {:margin-left (if mobile? 0 -4)
+                                         :align-items "center"}
                                  :on-click (fn []
                                              (citrus/dispatch! :citrus/re-fetch :home {:current-user current-user})
                                              #?(:cljs (.scroll js/window #js {:top 0})))}
@@ -222,7 +241,7 @@
                :height 28})
      (when-not mobile?
        [:span {:style {:font-size 20
-                       :margin-top -3
+                       :margin-top -6
                        :font-weight "bold"
                        :letter-spacing "0.05em"}}
         "utchar"])]))
@@ -238,7 +257,7 @@
                                                {:body_format body-format})
                         (citrus/dispatch! :citrus/save-latest-body-format
                                           body-format))
-             all-formats [:markdown :org-mode]
+             all-formats [:markdown :org-mode :asciidoc]
              others (remove #{body-format} all-formats)]
          (ui/menu
            [:a.no-decoration.control {:style {:padding 12

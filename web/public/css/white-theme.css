@@ -11,7 +11,7 @@ a {
 }
 
 a.black {
-  color: #555;
+  color: #444;
   text-decoration: none;
 }
 
@@ -161,6 +161,10 @@ code[data-lang] {
   padding-left: 6px;
 }
 
+.asciidoc code[data-lang] {
+  padding-left: 0;
+}
+
 .post-preview code[data-lang] {
   padding: 12px 6px;
 }
@@ -211,7 +215,7 @@ a.like svg:hover {
   fill: #fa6c8d;
 }
 
-#left-card svg:hover, #head svg:hover {
+#head svg:hover {
   fill: #FFF;
 }
 

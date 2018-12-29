@@ -529,7 +529,7 @@ input#search {
 
 pre, pre > code { line-height: 1.4; font-family: "Droid Sans Mono","DejaVu Sans Mono","Monospace",monospace; font-weight: normal; }
 
-pre code {
+.markdown pre code, .org-mode pre code {
     display: flex;
 }
 

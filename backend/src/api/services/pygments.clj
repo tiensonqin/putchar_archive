@@ -39,11 +39,12 @@
 
 (defn highlight!
   [content]
-  (when (and (string? content)
-             (not (str/blank? content)))
-    (some->> (transform! (h content) [:pre :code])
-             html/emit*
-             (apply str))))
+  (let [result (when (and (string? content)
+                          (not (str/blank? content)))
+                 (some->> (transform! (h content) [:pre :code])
+                          html/emit*
+                          (apply str)))]
+    result))
 
 (comment
   (def content "<div class=\"sect2\">\n<h3 id=\"_test_highlight\">Test highlight</h3>\n<div class=\"listingblock\">\n<div class=\"content\">\n<pre class=\"pygments highlight\"><code data-lang=\"clojure\">(defn hello\n  [x]\n  (prn x))</code></pre>\n</div>\n</div>\n<div class=\"listingblock\">\n<div class=\"content\">\n<pre class=\"pygments highlight\"><code data-lang=\"ocaml\">let with_document opts source f =</code></pre>\n</div>\n</div>\n<div class=\"listingblock\">\n<div class=\"content\">\n<pre class=\"pygments highlight\"><code data-lang=\"ruby\">def output x\nend</code></pre>\n</div>\n</div>\n<div class=\"paragraph\">\n<p>Some long sentence. [^footnote]</p>\n</div>\n<div class=\"paragraph\">\n<p>[^footnote]: Test, [Link](<a href=\"https://google.com\" class=\"bare\">https://google.com</a>).</p>\n</div>\n</div>")

@@ -16,7 +16,7 @@ a {
 }
 
 a.black {
-    color: #555;
+    color: #444;
     text-decoration: none;
 }
 
@@ -164,6 +164,10 @@ code[data-lang] {
     background: #f0f0f0;
     border-radius: 4px;
     padding-left: 6px;
+}
+
+.asciidoc code[data-lang] {
+    padding-left: 0;
 }
 
 .post-preview code[data-lang] {
