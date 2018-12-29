@@ -112,6 +112,34 @@
 ;;                               :height 20
 ;;                               :color colors/shadow})])]]))
 
+(rum/defc links
+  []
+  [:div.column1
+   [:a.black {:href "/drafts"
+              :style {:padding "0 16px"
+                      :font-weight 500
+                      :margin-bottom 6}}
+    (t :my-drafts)]
+   [:a.black {:href "/votes"
+              :style {:padding "0 16px"
+                      :font-weight 500}}
+    (t :my-votes)]
+   [:div.divider {:style {:margin "12px 0"}}]
+   [:a.black {:href "/hot"
+              :style {:padding "0 16px"
+                      :font-weight 500
+                      :margin-bottom 6}}
+    (str/capitalize (str (t :hot) " " (t :posts)))]
+   [:a.black {:href "/latest"
+              :style {:padding "0 16px"
+                      :font-weight 500}}
+    (str/capitalize (str (t :latest) " " (t :posts)))]
+   [:div.divider {:style {:margin "12px 0"}}]
+   [:a.black {:href "/about"
+              :style {:padding "0 16px"
+                      :font-weight 500}}
+    (str/capitalize (t :about))]])
+
 (rum/defc right
   []
   [:div {:style {:position "fixed"

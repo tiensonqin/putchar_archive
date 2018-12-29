@@ -175,7 +175,7 @@
      [:div {:style {:padding 16
                     :background "#24292E"}}
       (when-let [name (:screen_name current-user)]
-        [:div.space-between {:style {:align-items "center"}}
+        [:div.space-between#left-card {:style {:align-items "center"}}
          [:a {:href (str "/@" name)
               :style {:margin-right 12}}
           [:img {:src (util/cdn-image name
@@ -184,9 +184,6 @@
                  :style {:border-radius "50%"
                          :width 64
                          :height 64}}]]
-         [:a {:href "/votes"}
-          (ui/icon {:type :thumb_up
-                    :color "#fff"})]
          [:a {:href "/settings"
               :style {:margin-left 24}}
           (ui/icon {:type :settings
@@ -195,6 +192,11 @@
      [:div {:style {:padding "0 4px"
                     :margin-top 12}}
       (right/tags)
+
+      [:div.divider {:style {:margin "12px 0"}}]
+
+      (right/links)
+
       (if current-user
         (ui/button {:on-click #(citrus/dispatch! :user/logout)
                     :style {:margin "16px 12px"}}
@@ -491,7 +493,7 @@
                       :style {:margin-top 0
                               :margin-left 12
                               :width 243
-                              :border-left "1px solid #ddd"}}
+                              :border-left "1px solid #efefef"}}
           (right/right)])]]
      (login/signin-modal mobile?)
      ;; report modal

@@ -10,6 +10,16 @@ a {
   color: #0366d6;
 }
 
+a.black {
+  color: #555;
+  text-decoration: none;
+}
+
+a.black:hover {
+  color: 3000;
+  text-decoration: none;
+}
+
 a.control {
   color: #696969;
 }
@@ -201,7 +211,7 @@ a.like svg:hover {
   fill: #fa6c8d;
 }
 
-#head svg:hover {
+#left-card svg:hover, #head svg:hover {
   fill: #FFF;
 }
 

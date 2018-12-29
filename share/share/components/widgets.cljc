@@ -153,7 +153,7 @@
                      :class (if drafts? "active" "")
                      :style {:align-items "center"
                              :margin 0
-                             :margin-left 12
+                             :margin-left (if mobile? 0 12)
                              :padding "2px 6px 0 6px"}}
              (t :drafts)])
           [:a.tag {:href (str "/@" screen_name "/links")
@@ -458,20 +458,22 @@
         path (citrus/react [:router :handler])
         feed? (and (= path :home) current-user)
         hot? (= path :hot)
-        latest? (= path :latest)]
-    [:div.space-between.auto-padding {:style {:margin-top (if (util/mobile?) 16 8)}}
-     [:div.row1
-      (if current-user
-        [:a.control {:href "/"
-                     :style {:color (if feed? colors/primary "#666")}}
-         (str/lower-case (t :feed))])
-      [:a.control {:href "/hot"
-                   :style {:margin-left (if current-user 12 0)
-                           :color (if hot? colors/primary "#666")}}
-       (str/lower-case (t :hot))]
-      [:a.control {:href "/latest"
-                   :style {:margin-left 12
-                           :color (if latest? colors/primary "#666")}}
-       (str/lower-case (t :latest))]]
-     (when-not (util/mobile?)
-       (subscribe "/hot.rss"))]))
+        latest? (= path :latest)
+        mobile? (or (util/mobile?) (<= (citrus/react [:layout :current :width]) 768))]
+    (when-not mobile?
+      [:div.space-between.auto-padding {:style {:margin-top (if mobile? 16 8)}}
+       [:div.row1
+        (if current-user
+          [:a.control {:href "/"
+                       :style {:color (if feed? colors/primary "#666")}}
+           (str/lower-case (t :feed))])
+        [:a.control {:href "/hot"
+                     :style {:margin-left (if current-user 12 0)
+                             :color (if hot? colors/primary "#666")}}
+         (str/lower-case (t :hot))]
+        [:a.control {:href "/latest"
+                     :style {:margin-left 12
+                             :color (if latest? colors/primary "#666")}}
+         (str/lower-case (t :latest))]]
+       (when-not (util/mobile?)
+         (subscribe "/hot.rss"))])))
