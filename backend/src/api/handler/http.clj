@@ -259,17 +259,10 @@
       (reject-not-owner-or-admin?
        conn uid :posts id
        (fn [moderator]
-         (let [{:keys [title is_draft] :as m} (fm/extract (:body data))]
-           (if (and (not (str/blank? title))
-                   (du/exists? conn :posts [:and
-                                            [:= :title title]
-                                            [:= :user_id uid]
-                                            [:<> :id id]]))
-            (util/bad :post-title-exists)
-            (let [post (post/update conn id (dissoc data :id))]
-              (when (not (:is_draft post))
-                (future (search/update-post post)))
-              (util/ok post)))))))))
+         (let [post (post/update conn id uid (dissoc data :id))]
+           (if (= post :post-title-exists)
+             (util/bad :post-title-exists)
+             (util/ok post))))))))
 
 (defmethod handle :post/delete [[{:keys [uid datasource redis]} data]]
   (j/with-db-transaction [conn datasource]

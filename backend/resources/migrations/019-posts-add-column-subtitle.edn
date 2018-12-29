@@ -1,0 +1,2 @@
+{:up ["alter table posts add column subtitle text default null"]
+ :down []}

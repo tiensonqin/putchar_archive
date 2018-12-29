@@ -146,9 +146,7 @@
 
 (defn body->html
   [body body-format]
-  (let [body-html (content/render body (or body-format :markdown))]
-    (if body-html
-      (pygments/highlight! body-html))))
+  (content/render body (or body-format :markdown)))
 
 (defn assoc-body-html
   [data body-format]
@@ -160,15 +158,16 @@
 
 (defn extract-process
   [db m screen-name]
-  (let [{:keys [is_draft] :as m}
-        (-> (merge (fm/extract (:body m)) m)
-            (assoc-body-html (clojure.core/get m :body_format :markdown))
-            (clojure.core/update :tags su/->tags))
+  (let [m (assoc-body-html m (clojure.core/get m :body_format :markdown))
+        m (-> (merge (fm/extract (:body m) (:body_html m)) m)
+              (clojure.core/update :tags su/->tags))
+        m (assoc m :body_html (if (:body_html m)
+                                (pygments/highlight! (:body_html m))))
         m (if (nil? (:cover m))
             (dissoc m :cover)
             m)]
     (cond
-      (and (not is_draft)
+      (and (not (:is_draft m))
            screen-name
            (:title m))
       (assoc m :permalink (permalink screen-name (:title m)))
@@ -191,7 +190,7 @@
     (get db (:id result))))
 
 (defn update
-  [db id m]
+  [db id uid m]
   (when-let [post (get db id)]
     (let [old-tags (:tags post)
 
@@ -200,18 +199,28 @@
         (let [m (if (:body m)
                   (extract-process db m (:user_screen_name post))
                   m)
-              {:keys [tags] :as m} m]
-          (util/update db table id (assoc m :updated_at (util/sql-now)))
-          (when (seq tags)
-            (let [s1 (set tags)
-                  s2 (if (seq old-tags)
-                       (set old-tags)
-                       #{})
-                  add-tags (set/difference s1 s2)
-                  remove-tags (set/difference s2 s1)]
-              (update-tags (:user_screen_name post)
-                           add-tags remove-tags)))
-          (get db id))))))
+              {:keys [tags title is_draft] :as m} m]
+          (if (and (not (str/blank? title))
+                   (util/exists? db :posts [:and
+                                            [:= :title title]
+                                            [:= :user_id uid]
+                                            [:<> :id id]]))
+            :post-title-exists
+            (do
+              (util/update db table id (assoc m :updated_at (util/sql-now)))
+              (when (seq tags)
+                (let [s1 (set tags)
+                      s2 (if (seq old-tags)
+                           (set old-tags)
+                           #{})
+                      add-tags (set/difference s1 s2)
+                      remove-tags (set/difference s2 s1)]
+                  (update-tags (:user_screen_name post)
+                               add-tags remove-tags)))
+              (let [post (get db id)]
+                (when (not (:is_draft post))
+                  (future (search/update-post post)))
+                post))))))))
 
 (defn delete
   ([db id-or-permalink]
@@ -347,8 +356,8 @@
       (let [ids (mapv (comp su/uuid :post_id) posts)]
         (->> (util/get-by-ids db table ids {:fields feed-fields
                                             :where where})
-            (map with-user)
-            (flatten-frequent-posters))))))
+             (map with-user)
+             (flatten-frequent-posters))))))
 
 (defn get-top
   ([db cursor]
@@ -381,7 +390,7 @@
       (let [new-tops (inc tops)
             data {:tops new-tops
                   :rank (au/ranking new-tops created_at)}]
-        (update db id data)
+        (update db id uid data)
         data))))
 
 (defn untop [db uid id]
@@ -389,7 +398,7 @@
     (let [new-tops (if (>= tops 1) (dec tops) tops)
           data {:tops new-tops
                 :rank (au/ranking new-tops created_at)}]
-      (update db id data)
+      (update db id uid data)
       (top/untop db {:user_id uid
                      :post_id id})
       data)))
@@ -459,7 +468,7 @@
   (let [posts (j/query db ["select id, tops, created_at from posts  where is_draft is not true order by created_at asc"])]
     (doseq [{:keys [id tops created_at]} posts]
       (let [rank (au/ranking tops created_at)]
-        (update db id {:rank rank})))))
+        (update db id nil {:rank rank})))))
 
 (defn ->rss
   [posts]

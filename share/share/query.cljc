@@ -42,20 +42,21 @@
                                   (:permalink args))}
                  {:id (:post-id args)})]
       {:q    {:post {:fields [:id
-                             :title
-                             :body_html
-                             :body_format
-                             :tags
-                             :permalink
-                             :created_at
-                             :updated_at
-                             :last_reply_at
-                             :tops
-                             :comments_count
-                             :link :cover
-                             [:user {:fields [:id :screen_name :name :bio]}]
-                             [:comments {:fields [:*]
-                                         :cursor {:limit 100}}]]}}
+                              :title
+                              :subtitle
+                              :body_html
+                              :body_format
+                              :tags
+                              :permalink
+                              :created_at
+                              :updated_at
+                              :last_reply_at
+                              :tops
+                              :comments_count
+                              :link :cover
+                              [:user {:fields [:id :screen_name :name :bio]}]
+                              [:comments {:fields [:*]
+                                          :cursor {:limit 100}}]]}}
        :args {:post args}})))
 
 (def post-edit-query
@@ -113,7 +114,7 @@
 (def drafts-query
   (fn [state args]
     {:q {:current-user {:fields [:id :screen_name :name :bio  :github_handle
-                         [:drafts {:fields [:*]}]]}}
+                                 [:drafts {:fields [:*]}]]}}
      :args nil}))
 
 (def comments-query
@@ -181,4 +182,4 @@
    :tag tag-posts-query
 
    :user-tag user-tag-posts-query
-})
+   })

@@ -87,34 +87,34 @@
   (let [last-idx (get-last-idx db m)
         m (assoc m :idx (if last-idx (inc last-idx) 1))]
     (cond
-     (:post_id m)
-     (when-let [post (post/get db (:post_id m))]
-       ;; update post last_reply_at
-       (when-let [comment (util/create db table (assoc m
-                                                       :post_permalink (:permalink post)) :flake? true)]
-         (let [result (-> comment
-                          (util/with :user_id #(u/get db % [:id :screen_name])))
-               comment-user (get-in result [:user :screen_name])
-               posters (if-let [posters (:frequent_posters post)]
-                         (let [posters (read-string posters)]
-                           (assoc posters comment-user (if-let [n (clojure.core/get posters comment-user)]
-                                                         (inc n)
-                                                         1)))
-                         {comment-user 1})]
-           (post/inc-comments-count db (:post_id m))
+      (:post_id m)
+      (when-let [post (post/get db (:post_id m))]
+        ;; update post last_reply_at
+        (when-let [comment (util/create db table (assoc m
+                                                        :post_permalink (:permalink post)) :flake? true)]
+          (let [result (-> comment
+                           (util/with :user_id #(u/get db % [:id :screen_name])))
+                comment-user (get-in result [:user :screen_name])
+                posters (if-let [posters (:frequent_posters post)]
+                          (let [posters (read-string posters)]
+                            (assoc posters comment-user (if-let [n (clojure.core/get posters comment-user)]
+                                                          (inc n)
+                                                          1)))
+                          {comment-user 1})]
+            (post/inc-comments-count db (:post_id m))
 
-           (post/update db (:id post) {:last_reply_at (util/sql-now)
-                                       :last_reply_by (:screen_name (u/get db (:user_id m)))
-                                       :last_reply_idx (:idx m)
-                                       :frequent_posters (pr-str posters)})
-           (when-let [reply-id (:reply_to m)]
-             (inc-replies-count db reply-id))
-           (new-comment db result)
-           result)
-         ))
+            (post/update db (:id post) nil {:last_reply_at (util/sql-now)
+                                            :last_reply_by (:screen_name (u/get db (:user_id m)))
+                                            :last_reply_idx (:idx m)
+                                            :frequent_posters (pr-str posters)})
+            (when-let [reply-id (:reply_to m)]
+              (inc-replies-count db reply-id))
+            (new-comment db result)
+            result)
+          ))
 
-     :else
-     nil)))
+      :else
+      nil)))
 
 (defn update
   [db id m]
@@ -196,13 +196,13 @@
   [db user-id cursor]
   (if user-id
     (-> {:select [:id :idx :flake_id :body :post_permalink :likes :created_at]
-        :from [table]
-        :where [:and
-                [:= :user_id user-id]
-                [:= :del false]]
-        }
-       (util/wrap-cursor cursor)
-       (->> (util/query db)))))
+         :from [table]
+         :where [:and
+                 [:= :user_id user-id]
+                 [:= :del false]]
+         }
+        (util/wrap-cursor cursor)
+        (->> (util/query db)))))
 
 (defn like
   [db uid id]

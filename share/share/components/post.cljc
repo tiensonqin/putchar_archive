@@ -107,7 +107,8 @@
       [:p.row1 {:style {:position "absolute"
                         :top -32
                         :right 0}}
-       (ui/icon {:type :warning})
+       (ui/icon {:type :warning
+                 :color "red"})
        [:span {:style {:margin-left 6}}
         "Article title already exists."]])))
 
@@ -184,7 +185,8 @@ published: false
     (let [ok? (and
                (not (str/blank? (:body form-data)))
                (>= (count (:body form-data)) 128)
-               (let [title (fm/extract-title (:body form-data))]
+               (let [title (fm/extract-title (:body form-data)
+                                             (:body_format form-data))]
                  (and title
                       (not (str/blank? title))
                       (<= 4 (count title) 128))))]
@@ -835,6 +837,12 @@ published: false
                    [:h1.post-page-title
                     (util/capitalize-first-char (:title post))]))
 
+               (if (:subtitle post)
+                 [:h2 {:style {:margin-top 6
+                               :margin-bottom 24
+                               :color "#666"}}
+                  (util/capitalize-first-char (:subtitle post))])
+
                [:div#post-user {:style {:font-style "italic"
                                         :font-size (if link 15 "1.1em")}}
                 [:a {:href (str "/@" (:screen_name user))
@@ -861,10 +869,9 @@ published: false
                (when-not link
                  [:div.divider])
 
-               ;; (when (and (:link post) (:cover post))
-               ;;   [:div.editor
-               ;;    [:img {:src (:cover post)}]])
-               ]
+               (when (and (nil? (:link post)) (:cover post))
+                 [:div.editor
+                  [:img {:src (:cover post)}]])]
               [:div.post
                (if (:body_html post)
                  (widgets/raw-html {:on-mouse-up (fn [e]
