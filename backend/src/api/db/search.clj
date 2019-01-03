@@ -30,13 +30,16 @@
 
 (defn delete-all
   []
-  (let [dir @index-store
-        iwc (create-idx-writer-config)
-        writer (IndexWriter. dir iwc)]
-    (doto writer
-      (.deleteAll)
-      (.commit)
-      (.close))))
+  (try
+    (let [dir @index-store
+         iwc (create-idx-writer-config)
+         writer (IndexWriter. dir iwc)]
+     (doto writer
+       (.deleteAll)
+       (.commit)
+       (.close)))
+    (catch Exception e
+      nil)))
 
 (defn add-user [user]
   (let [user {:screen_name (:screen_name user)}]
