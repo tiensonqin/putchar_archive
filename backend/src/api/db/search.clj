@@ -3,7 +3,9 @@
             [clucie.analysis :as lucene-ana]
             [clucie.store :as lucene-store]
             [api.config :as config]
-            [share.util :as util])
+            [share.util :as util]
+            [clojure.java.shell :as sh]
+            [clojure.java.io :as io])
   (:import
    (org.apache.lucene.index Term IndexWriter IndexWriterConfig)
    (org.apache.lucene.document.Field$Store)
@@ -15,44 +17,45 @@
    (org.apache.lucene.queryparser.classic QueryParser)))
 
 
-(defonce analyzer (lucene-ana/standard-analyzer))
+(defonce analyzer (atom nil))
 (defonce index-store (atom nil))
 
 (defn init! []
-  (if (nil? @index-store)
+  (when (nil? @analyzer)
+    (reset! analyzer
+            (lucene-ana/standard-analyzer)))
+  (when (nil? @index-store)
     (reset! index-store
             (lucene-store/disk-store (get-in config/config [:search :index-path])))))
 
-(defn create-idx-writer-config []
-  (let [iwc (IndexWriterConfig. analyzer)]
-    (.setRAMBufferSizeMB iwc 256.0)
-    iwc))
+(defn delete-dir! [dir-or-file]
+  (when (.isDirectory dir-or-file)
+    (doseq [child (.listFiles dir-or-file)]
+      (delete-dir! child)))
+  (.delete dir-or-file))
 
-(defn delete-all
-  []
-  (try
-    (let [dir @index-store
-         iwc (create-idx-writer-config)
-         writer (IndexWriter. dir iwc)]
-     (doto writer
-       (.deleteAll)
-       (.commit)
-       (.close)))
-    (catch Exception e
-      nil)))
+(defn finish! []
+  (let [path (get-in config/config [:search :index-path])]
+    (when @analyzer
+      (reset! analyzer nil))
+    (when @index-store
+      (lucene-store/close! @index-store)
+      (when path
+        (delete-dir! (io/file path)))
+      (reset! index-store nil))))
 
 (defn add-user [user]
   (let [user {:screen_name (:screen_name user)}]
     (lucene/add! @index-store
                  [user]
                  [:screen_name]
-                 analyzer)))
+                 @analyzer)))
 
 (defn delete-user [screen-name]
   (lucene/delete! @index-store
                   :screen_name
                   screen-name
-                  analyzer))
+                  @analyzer))
 
 (defn post-rank->fields
   [rank]
@@ -72,13 +75,13 @@
       (lucene/add! @index-store
                    [post]
                    [:post_id :post_rank :post_title :post_tags]
-                   analyzer))))
+                   @analyzer))))
 
 (defn delete-post [id]
   (lucene/delete! @index-store
                   :post_id
                   id
-                  analyzer))
+                  @analyzer))
 
 (defn update-post [post]
   (when (and (:title post) (:id post))
@@ -96,7 +99,7 @@
      (lucene/search @index-store
                     q
                     limit ; max-num
-                    analyzer
+                    @analyzer
                     page
                     per-page
                     sort))))
